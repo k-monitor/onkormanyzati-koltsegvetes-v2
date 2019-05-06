@@ -62,21 +62,18 @@ var visualization = new Vue({
 		}).fail(function (f1) {
 			console.log('ERR', f1);
 		});
+	},
+	updated: function() {
+		console.log('Updated', $('#bars').outerHeight());
 	}
 });
-
-function Category(id, name) {
-	var self = this;
-	self.id = id;
-	self.name = name;
-}
 
 function Node(name, value, children) {
 	var self = this;
 
 	self.name = name ? name : '<anon>';
 	self.value = value ? value : 0;
-	self.children = children ? children.sort(function (a, b) { return b.value - a.value; }) : [];
+	self.children = children || [];
 
 	self.update = function () {
 		if (self.children && self.children.length > 0) {
@@ -181,3 +178,36 @@ function mapToNode(object) {
 		object[k] = new Node('', object[k], []);
 	});
 }
+
+function groupNums(v) {
+	return (v + '').replace(/\d(?=(?:\d{3})+(?:\.|$))/g, function ($0, i) { return $0 + ' ' });
+}
+
+function curve(node, index) {
+	try {
+		var bars = $('#bars');
+		var barsHeight = bars.outerHeight();
+		var barsTop = $(bars).offset().top;
+
+		var bar = $('.bar[data-index=' + index + ']');
+		var barHeight = $(bar).outerHeight();
+		var barTop = $(bar).offset().top - barsTop;
+		var barMiddle = (barTop + barHeight / 2) / barsHeight;
+
+		var x1 = 0;
+		var y1 = barMiddle;
+		var x2 = 1;
+		var y2 = barMiddle;//self.labelY(node, index).slice(0, -1);
+		var cx1 = 0.25;
+		var cx2 = 0.50;
+		var m = x1 + ',' + y1;
+		var c1 = cx1 + ',' + y1;
+		var c2 = cx2 + ',' + y2;
+		var e = x2 + ',' + y2;
+		return 'M' + m + ' C' + c1 + ' ' + c2 + ' ' + e;
+	} catch (e) {
+		return '';
+	}
+}
+
+// console.log(curve(visualization.children[0],0))
