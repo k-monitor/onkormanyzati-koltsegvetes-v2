@@ -63,21 +63,36 @@
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
-					<h1>VIZU</h1>
+						<h2>Költségvetés</h2>
+						<hr class="divider my-4 mb-5">
 				</div>
 			</div>
 		</div>
 	</section>
 
 	<section class="page-section" id="milestones">
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row justify-content-center">
-				<div class="col-lg-8 text-center">
-					<h1>MILESTONES</h1>
+				<div class="col text-center">
+					<h2>Fejlesztések</h2>
+					<hr class="divider my-4 mb-5">
+					<div class="card-columns">
+						<milestone-card v-for="m in milestones" :milestone="m"></milestone-card>
+					</div>
 				</div>
 			</div>
 		</div>
 	</section>
+	<script type="text/x-template" id="milestone-card-template">
+		<div class="card">
+			<img :src="'http://mintavaros.deepdata.hu' + milestone.picture" class="card-img-top" alt="...">
+			<div class="card-body">
+				<h5 class="card-title">{{ milestone.title }}</h5>
+				<p class="card-text small text-muted">{{ milestone.description }}</p>
+				<p class="card-text font-weight-bold small text-muted">{{ milestone['text 1'] }}</p>
+			</div>
+		</div>
+	</script>
 
 	<footer class="bg-light py-5">
 		<div class="container">
@@ -89,8 +104,9 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.3/papaparse.min.js'></script>
 	<script src="js/okv.min.js"></script>
-
+	<script src="js/milestones.min.js"></script>
 </body>
 
 </html>

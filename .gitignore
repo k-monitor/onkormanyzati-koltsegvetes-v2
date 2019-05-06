@@ -1,4 +1,4 @@
 bower_components
 css
 node_modules
-okv.min.js
+*.min.js

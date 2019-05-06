@@ -117,7 +117,8 @@ function js() {
 // Watch files
 function watchFiles() {
   gulp.watch("./scss/**/*", css);
-  gulp.watch("./js/script.js", js);
+  gulp.watch("./js/milestones.js", js);
+  gulp.watch("./js/okv.js", js);
   gulp.watch("./**/*.html", browserSyncReload);
 }
 
