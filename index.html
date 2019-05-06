@@ -72,6 +72,14 @@
 				<div class="col-lg-8 text-center">
 					<h2>Költségvetés</h2>
 					<hr class="divider my-4 mb-5">
+					<div class="spinner-border" role="status" v-if="loading">
+						<span class="sr-only">Loading...</span>
+					</div>
+					<div id="vis" v-else>
+						<ul>
+							<li v-for="(n,i) in view.children" @click="down(i)">{{ n ?n.name:'NULL' }} ({{ n?n.value:'NULL' }})</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>

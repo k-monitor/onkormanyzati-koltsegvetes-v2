@@ -4,13 +4,37 @@ var FUNC = {};
 var visualization = new Vue({
 	el: '#visualization',
 	data: {
-		datasets: [ECON, FUNC],
+		roots: [ECON, FUNC],
 		loading: true,
-		mode: 1
+		mode: 1,
+		path: []
 	},
 	computed: {
-		dataset: function() {
-			return this.datasets[this.mode % 2];
+		root: function () {
+			return this.roots[this.mode % 2];
+		},
+		view: function () {
+			var r = this.root;
+			for (var p = 0; p < this.path.length; p++) {
+				var i = this.path[p];
+				if (r.children[i] && r.children[i].children.length > 0) {
+					r = r.children[i];
+				} else {
+					break;
+				}
+			}
+			return r;
+		}
+	},
+	methods: {
+		down: function (index) {
+			if (this.view.children[index].children.length > 0) {
+				this.path.push(index);
+				console.log('DOWN', index, this.path);
+			}
+		},
+		up: function () {
+			visualization.path.splice(-1, 1);
 		}
 	},
 	mounted: function () {
@@ -23,14 +47,22 @@ var visualization = new Vue({
 			loadFlatTree(b[0]);
 			loadTreeData(e[0], ECON);
 			loadTreeData(f[0], FUNC);
+
+			ECON = new Node('ECON', 0, Object.values(ECON));
+			FUNC = new Node('FUNC', 0, Object.values(FUNC));
+
+			self.roots = [ECON, FUNC];
+			//ECON.forEach(function(e) { e.update(); });
+			//FUNC.forEach(function(e) { e.update(); });
+
 			//generateColors();
+
 			self.loading = false;
 		}).fail(function (f1) {
 			console.log('ERR', f1);
 		});
 	}
 });
-
 
 function Category(id, name) {
 	var self = this;
