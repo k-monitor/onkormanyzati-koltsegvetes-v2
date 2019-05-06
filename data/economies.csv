@@ -1,0 +1,73 @@
+﻿id,value,parent_id
+1,Törvény szerinti illetmények munkabérek,15
+3,Céljuttatás projektprémium ,15
+4,Készenléti ügyeleti helyettesítési díj túlóra túlszolgálat,15
+5,Végkielégítés ,15
+6,Jubileumi jutalom ,15
+7,Béren kívüli juttatások,15
+9,Közlekedési költségtérítés,15
+10,Egyéb költségtérítések,15
+12,Szociális támogatások,15
+13,Foglalkoztatottak egyéb személyi juttatásai,15
+15,Foglalkoztatottak személyi juttatásai,20
+16,Választott tisztségviselők juttatásai ,19
+17,Munkavégzésre irányuló egyéb jogviszonyban nem saját foglalkoztatottnak fizetett juttatások,19
+18,Egyéb külső személyi juttatások,19
+19,Külső személyi juttatások,20
+20,Személyi juttatások,268
+21,Munkaadókat terhelő járulékok és szociális hozzájárulási adó,321
+321,Járulékok,268
+29,Szakmai anyagok beszerzése,32
+30,Üzemeltetési anyagok beszerzése,32
+32,Készletbeszerzés,61
+33,Informatikai szolgáltatások igénybevétele,35
+34,Egyéb kommunikációs szolgáltatások,35
+35,Kommunikációs szolgáltatások,61
+36,Közüzemi díjak,46
+37,Vásárolt élelmezés,46
+38,Bérleti és lízing díjak,46
+40,Karbantartási kisjavítási szolgáltatások,46
+41,Közvetített szolgáltatások,46
+43,Szakmai tevékenységet segítő szolgáltatások,46
+44,Egyéb szolgáltatások,46
+46,Szolgáltatási kiadások,61
+47,Kiküldetések kiadásai,49
+48,Reklám és propagandakiadások,49
+49,Kiküldetések reklám és propagandakiadások,61
+50,Működési célú előzetesen felszámított általános forgalmi adó,60
+51,Fizetendő általános forgalmi adó,60
+52,Kamatkiadások,60
+55,Egyéb pénzügyi műveletek kiadásai,60
+59,Egyéb dologi kiadások,60
+60,Különféle befizetések és egyéb dologi kiadások,61
+61,Dologi kiadások,268
+101,Egyéb nem intézményi ellátások,121
+121,Ellátottak pénzbeli juttatásai,268
+124,A helyi önkormányzatok előző évi elszámolásából származó kiadások,127
+125,A helyi önkormányzatok törvényi előíráson alapuló befizetései,127
+127,Elvonások és befizetések,191
+151,Egyéb működési célú támogatások államháztartáson belülre,191
+164,Működési célú visszatérítendő támogatások kölcsönök nyújtása államháztartáson kívülre,191
+179,Egyéb működési célú támogatások államháztartáson kívülre,191
+190,Tartalékok,191
+191,Egyéb működési kiadások,268
+192,Immateriális javak beszerzése létesítése,200
+193,Ingatlanok beszerzése létesítése,200
+195,Informatikai eszközök beszerzése létesítése,200
+196,Egyéb tárgyi eszközök beszerzése létesítése,200
+199,Beruházási célú előzetesen felszámított általános forgalmi adó,200
+200,Beruházások,268
+201,Ingatlanok felújítása,205
+204,Felújítási célú előzetesen felszámított általános forgalmi adó,205
+205,Felújítások,268
+229,Egyéb felhalmozási célú támogatások államháztartáson belülre,267
+242,Felhalmozási célú visszatérítendő támogatások kölcsönök nyújtása államháztartáson kívülre,267
+256,Egyéb felhalmozási célú támogatások államháztartáson kívülre,267
+267,Egyéb felhalmozási kiadások,268
+x268,Költségvetési kiadások,309
+271,"Likviditási célú hitelek, kölcsönök törlesztése pénzügyi vállalkozásnak",274
+274,"Hitel-, kölcsöntörlesztés államháztartáson kívülre",297
+289,Államháztartáson belüli megelőlegezések visszafizetése,297
+297,Belföldi finanszírozás kiadásai,308
+x308,Finanszírozási kiadások,309
+x309,Kiadások összesen,NA

@@ -1,0 +1,554 @@
+﻿id,value,parent_id
+107054,Családsegítés,1070
+107014,Támogatott lakhatás hajléktalan személyek részére,1070
+900070,Fejezeti és általános tartalékok elszámolása,9000
+11220,"Adó-, vám- és jövedéki igazgatás",112
+84070,"A fiatalok társadalmi integrációját segítő struktúra, szakmai szolgáltatások fejlesztése, működtetése",840
+104060,"A gyermekek, fiatalok és családok életminőségét javító programok",1040
+104070,A gyermeki jogok érvényre juttatásával összefüggő feladatok,1040
+13110,A közszolgálat egyetemes humánerő-gazdálkodása,131
+91240,Alapfokú művészetoktatás,912
+91250,Alapfokú művészetoktatással összefüggő működtetési feladatok,912
+140,Alapkutatás,1
+17010,Államadóssággal kapcsolatos tranzakciók,170
+170,Államadóssággal kapcsolatos tranzakciók,1
+11230,Államadósság kezelése,112
+11110,Államhatalmi szervek tevékenysége,111
+111,"Államhatalmi, törvényhozó és végrehajtó szervezetek",1
+16030,Állampolgársági ügyek,160
+42180,Állat-egészségügy,421
+411,Általános gazdasági és kereskedelmi ügyek,4
+41110,Általános gazdasági és kereskedelmi ügyek igazgatása,411
+180,Általános jellegű transzferek a kormányzat különböző szintjei között,1
+14010,Általános K+F politika,140
+731,Általános kórházi szolgáltatások,7
+1,Általános közszolgáltatások,NA
+150,Általános közszolgáltatásokhoz kapcsolódó K+F,1
+15010,Általános közszolgáltatásokkal kapcsolatos alkalmazott kutatás és fejlesztés,150
+412,Általános munkaügyek,4
+721,Általános orvosi szolgáltatások,7
+72190,Általános orvosi szolgáltatások finanszírozása és támogatása,721
+131,Általános személyzeti szolgáltatások,1
+47410,Ár- és belvízvédelemmel összefüggő tevékenységek,474
+441,Ásványianyag- (kivéve: szilárd ásványi fűtőanyag) bányászat,4
+44110,Ásványianyag- (kivéve: szilárd ásványi fűtőanyag) bányászat igazgatása és támogatása,441
+13210,Átfogó tervezési és statisztikai szolgáltatások,132
+132,Átfogó tervezési és statisztikai szolgáltatások,1
+11210,"Az államháztartás igazgatása, ellenőrzése",112
+13340,Az állami vagyonnal való gazdálkodással kapcsolatos feladatok,133
+102050,Az időskorúak társadalmi integrációját célzó programok,1020
+13350,Az önkormányzati vagyonnal való gazdálkodással kapcsolatos feladatok,133
+31070,Baleset-megelőzés,310
+734,Bentlakásos egészségügyi ápolási szolgáltatások,7
+73130,Bentlakásos egészségügyi rehabilitációs ellátás általános kórházakban,731
+73230,Bentlakásos egészségügyi rehabilitációs ellátás szakkórházakban,732
+73420,Bentlakásos hospice-ellátás,734
+101110,"Bentlakásos, nem kórházi ellátás, ápolás",1011
+1011,Betegség,10
+101150,"Betegséggel kapcsolatos pénzbeli ellátások, támogatások",1011
+72160,"Betegszállítás, valamint orvosi rendelvényű halottszállítás",721
+14020,Biotechnológiai alapkutatás,140
+33020,Bírósági tevékenység,330
+104044,Biztos Kezdet Gyerekház,1040
+31060,Bűnmegelőzés,310
+340,Büntetés-végrehajtási tevékenységek,3
+34020,Büntetés-végrehajtási tevékenységek,340
+34010,Büntetés-végrehajtási tevékenység igazgatása,340
+41150,Cégnyilvántartás,411
+84031,Civil szervezetek működési támogatása,840
+84032,Civil szervezetek programtámogatása,840
+1040,Család és gyermekek,10
+104043,Család és gyermekjóléti központ,1040
+104042,Család és gyermekjóléti szolgáltatások,1040
+74031,Család és nővédelmi egészségügyi gondozás,740
+107020,Családon belüli erőszak sértettjeinek bentlakásos ellátása,1070
+104052,Családtámogatások,1040
+455,Csővezetékes és egyéb szállítás,4
+45510,Csővezetékes és egyéb szállítás igazgatása és támogatása,455
+45530,Csővezetékes szállítás,455
+102026,Demens betegek átmeneti ellátása,1020
+102032,Demens betegek nappali ellátása,1020
+102024,Demens betegek tartós bentlakásos ellátása,1020
+81023,Doppingellenes tevékenység,810
+18050,Egészségbiztosítási alap bevételei államháztartáson belülről,180
+900040,Egészségbiztosítási Alap funkcióra nem sorolható bevételei államháztartáson kívülről,9000
+76020,Egészségbiztosítási szolgáltatások igazgatása,760
+75010,Egészségüggyel kapcsolatos alkalmazott kutatás és fejlesztés,750
+7,Egészségügy,NA
+73410,Egészségügyi ápolás bentlakással,734
+76010,Egészségügy igazgatása,760
+750,Egészségügyi K+F,7
+72420,Egészségügyi laboratóriumi szolgáltatások,724
+32050,"Egészségügyi stratégiai tartalékok tárolása, kezelése",320
+76040,Egészségügyi szakértői tevékenységek,760
+94130,Egészségügyi szakmai képzés,941
+160,Egyéb általános közszolgáltatások,1
+133,Egyéb általános szolgáltatások,1
+760,Egyéb egészségügy,7
+76090,Egyéb egészségügyi szolgáltatások finanszírozása és támogatása,760
+436,Egyéb energiaipar,4
+43610,Egyéb energiaipar igazgatása és támogatása,436
+490,Egyéb gazdasági ügyek,4
+712,Egyéb gyógyászati termékek,7
+71220,Egyéb gyógyászati termékek finanszírozása,712
+71210,Egyéb gyógyászati termék kiskereskedelme,712
+83030,Egyéb kiadói tevékenység,830
+13390,Egyéb kiegészítő szolgáltatások,133
+660,Egyéb kommunális feladatok,6
+560,Egyéb környezetvédelem,5
+360,Egyéb közrend és biztonsági ügyek,3
+72480,Egyéb paramedikális szolgáltatások,724
+31050,"Egyéb rendészeti, bűnüldözési tevékenységek",310
+860,"Egyéb szabadidő, kultúra és vallás",8
+86090,Egyéb szabadidős szolgáltatás,860
+45150,Egyéb szárazföldi személyszállítás,451
+1070,Egyéb szociális kirekesztettség,10
+107060,"Egyéb szociális pénzbeli és természetbeni ellátások, támogatások",1070
+46030,Egyéb távközlés,460
+434,Egyéb tüzelőanyag-ipar,4
+43410,Egyéb tüzelőanyag-ipar igazgatása és támogatása,434
+250,Egyéb védelmi ügyek,2
+25090,Egyéb védelmi ügyek,250
+84040,Egyházak közösségi és hitéleti tevékenységének támogatása,840
+73160,Egynapos sebészeti ellátás (egynapos beavatkozás),731
+76070,"Élelmezés- és táplálkozás-egészségügyi felügyelet, ellenőrzés, tanácsadás",760
+42170,Élelmiszerlánc-biztonság igazgatása,421
+103010,Elhunyt személyek hátramaradottainak pénzbeli ellátásai,1030
+18040,Elkülönített állami pénzalapok bevételei államháztartáson belülről,180
+900030,Elkülönített állami pénzalapok funkcióra nem sorolható bevételei államháztartáson kívülről,9000
+471,"Elosztó kereskedelem, tárolás, raktározás",4
+443,"Építésügy, építőipar",4
+44310,Építésügy igazgatása,443
+44320,Építőipar támogatása,443
+84060,"Érdekképviseleti, szakszervezeti tevékenységek támogatása",840
+422,Erdőgazdálkodás,4
+42220,Erdőgazdálkodás,422
+42210,Erdőgazdálkodás igazgatása és támogatása,422
+107080,Esélyegyenlőség elősegítését célzó tevékenységek és programok,1070
+107055,"Falugondnoki, tanyagondnoki szolgáltatás",1070
+73110,Fekvőbetegek aktív ellátása általános kórházakban,731
+73210,Fekvőbetegek aktív ellátása szakkórházakban,732
+73120,Fekvőbetegek krónikus ellátása általános kórházakban,731
+73220,Fekvőbetegek krónikus ellátása szakkórházakban,732
+73190,Fekvőbeteg-ellátás finanszírozása és támogatása,731
+442,Feldolgozóipar,4
+44210,Feldolgozóipar igazgatása és támogatása,442
+91260,Felnőttoktatás 1-4. évfolyamon,912
+92140,Felnőttoktatás 5-8. évfolyamon,921
+942,Felsőfokú oktatás,9
+94210,Felsőfokú oktatás,942
+93010,Felsőfokú végzettségi szintet nem biztosító képzések,930
+94110,Felsőoktatási szakképzés,941
+941,Felsőszintű képzés,9
+74040,"Fertőző megbetegedések megelőzése, járványügyi ellátás",740
+72450,Fizikoterápiás szolgáltatás,724
+74011,Foglalkozás-egészségügyi alapellátás,740
+74012,Foglalkozás-egészségügyi szakellátás,740
+105020,Foglalkoztatást elősegítő képzések és egyéb támogatások,1050
+72311,Fogorvosi alapellátás,723
+72390,Fogorvosi ellátás finanszírozása és támogatása,723
+72313,Fogorvosi szakellátás,723
+723,Fogorvosi szolgáltatások,7
+72312,Fogorvosi ügyeleti ellátás,723
+1012,Fogyatékosság,10
+101215,Fogyatékossággal élők ápoló-gondozó lakóotthoni ellátása,1012
+101213,Fogyatékossággal élők átmeneti ellátása,1012
+81044,"Fogyatékossággal élők iskolai, diáksport-tevékenysége és támogatása",810
+101221,Fogyatékossággal élők nappali ellátása,1012
+101212,Fogyatékossággal élők rehabilitációs célú bentlakásos ellátása,1012
+101216,Fogyatékossággal élők rehabilitációs célú lakóotthoni ellátása,1012
+101270,"Fogyatékossággal élők társadalmi integrációját és életminőségét segítő programok, támogatások",1012
+101211,Fogyatékossággal élők tartós bentlakásos ellátása,1012
+81042,Fogyatékossággal élők versenysport tevékenysége és támogatása,810
+101231,"Fogyatékossággal összefüggő pénzbeli ellátások, támogatások",1012
+41160,"Földmérés, térképészet",411
+41120,Földügy igazgatása,411
+900060,Forgatási és befektetési célú finanszírozási műveletek,9000
+121,Gazdasági segítség nyújtása fejlődő és átmeneti gazdaságú országoknak,1
+12110,Gazdasági segítség nyújtása fejlődő és átmeneti gazdaságú országoknak,121
+122,Gazdasági segítség nyújtása nemzetközi szervezeteken keresztül,1
+12210,Gazdasági segítség nyújtása nemzetközi szervezeteken keresztül,122
+4,Gazdasági ügyek,NA
+480,Gazdasági ügyekhez kapcsolódó K+F,4
+48010,Gazdasági ügyekkel kapcsolatos alkalmazott kutatás és fejlesztés,480
+42140,"Génmegőrzés, fajtavédelem",421
+92260,Gimnázium és szakképző iskola tanulóinak közismereti és szakmai elméleti oktatásával összefüggő működtetési feladatok,922
+92211,"Gimnáziumi oktatás, nevelés szakmai feladatai",922
+104012,Gyermekek átmeneti ellátása,1040
+104031,Gyermekek bölcsődei ellátása,1040
+104030,Gyermekek napközbeni ellátása,1040
+104035,"Gyermekétkeztetés bölcsődében, fogyatékosok nappali intézményében",1040
+96015,Gyermekétkeztetés köznevelési intézményben,960
+104011,Gyermekvédelmi bentlakásos ellátások,1040
+104051,Gyermekvédelmi pénzbeli és természetbeni ellátások,1040
+733,Gyógyászati központok és szülőotthonok szolgáltatásai,7
+73310,Gyógyászati központok és szülőotthonok szolgáltatásai,733
+713,Gyógyászati segédeszközök,7
+71320,Gyógyászati segédeszközök és felszerelések finanszírozása,713
+71310,Gyógyászati segédeszközök és felszerelések kereskedelme,713
+711,Gyógyszeripari termékek,7
+71110,Gyógyszer-kiskereskedelem,711
+71120,Gyógyszertámogatás finanszírozása,711
+107013,Hajléktalanok átmeneti ellátása,1070
+107015,Hajléktalanok nappali ellátása,1070
+107012,Hajléktalanok rehabilitációs célú bentlakásos ellátása,1070
+107011,Hajléktalanok tartós bentlakásos ellátása,1070
+423,Halászat és vadászat,4
+42360,"Halászat, haltenyésztés",423
+42350,Halászat igazgatása és támogatása,423
+94260,"Hallgatói és oktatói ösztöndíjak, egyéb juttatások",942
+94280,Hallgatók lakhatásának biztosítása,942
+51070,Használt eszköz bontása,510
+86010,Határon túli magyarok egyéb támogatásai,860
+95010,Határon túli magyarok oktatási támogatásai,950
+31042,"Határrendészet, határvédelem",310
+72111,Háziorvosi alapellátás,721
+72112,Háziorvosi ügyeleti ellátás,721
+107052,Házi segítségnyújtás,1070
+86020,"Helyi, térségi közösségi tér biztosítása, működtetése",860
+45130,"Híd, alagút építése",451
+460,Hírközlés,4
+46010,Hírközlés és az információs társadalom fejlesztésének igazgatása és támogatása,460
+46040,"Hírügynökségi, információs szolgáltatás",460
+41233,Hosszabb időtartamú közfoglalkoztatás,412
+510,Hulladékgazdálkodás,5
+51010,Hulladékgazdálkodás igazgatása,510
+51080,Hulladék újrahasznosítása,510
+102030,"Idősek, demens betegek nappali ellátása",1020
+102031,Idősek nappali ellátása,1020
+1020,"Időskor, demens betegek",10
+102040,Időskorral összefüggő pénzbeli ellátások,1020
+102025,Időskorúak átmeneti ellátása,1020
+102023,Időskorúak tartós bentlakásos ellátása,1020
+74032,Ifjúság-egészségügyi gondozás,740
+330,Igazságszolgáltatás,3
+33010,Igazságügy igazgatása,330
+36010,Igazságügyi szakértői tevékenység,360
+13370,"Informatikai fejlesztések, szolgáltatások",133
+104037,Intézményen kívüli gyermekétkeztetés,1040
+81043,"Iskolai, diáksport-tevékenység és támogatása",810
+96020,Iskolai intézményi étkeztetés,960
+912,"Iskolai nevelés, oktatás az 1-4. évfolyamokon",9
+921,"Iskolai nevelés, oktatás az 5-8. évfolyamokon",9
+95020,"Iskolarendszeren kívüli egyéb oktatás, képzés",950
+92150,Iskolarendszeren kívüli ISCED 2 szintű OKJ-s képzés,921
+92290,Iskolarendszeren kívüli ISCED 3 szintű OKJ-s képzés,922
+93020,Iskolarendszeren kívüli ISCED 4 szintű OKJ-s képzés,930
+94170,Iskolarendszeren kívüli ISCED 5 szintű OKJ-s képzés,941
+94290,Iskolarendszeren kívüli ISCED 6 szintű OKJ-s képzés,942
+72240,Járóbetegek egynapos ellátása,722
+72230,Járóbetegek gyógyító gondozása,722
+72210,Járóbetegek gyógyító szakellátása,722
+72220,Járóbetegek rehabilitációs szakellátása,722
+72290,Járóbeteg-ellátás finanszírozása és támogatása,722
+104020,Javítóintézeti ellátás,1040
+107053,Jelzőrendszeres házi segítségnyújtás,1070
+36020,"Jogi segítségnyújtás, áldozatsegítés, kárenyhítés, kárpótlás",360
+74052,"Kábítószer-megelőzés programjai, tevékenységei",740
+21040,Katonai nemzetbiztonsági tevékenység,210
+21030,Katonai ügyészségi tevékenység,210
+210,Katonai védelem,2
+49030,Kéményseprő-ipari tevékenység,490
+76064,Kémiaibiztonság-egészségügyi feladatok,760
+72430,Képalkotó diagnosztikai szolgáltatások,724
+45161,"Kerékpárutak üzemeltetése, fenntartása",451
+49020,K+F tevékenységekhez kapcsolódó innováció,490
+16080,Kiemelt állami és önkormányzati rendezvények,160
+47460,Kis- és középvállalkozások működési és fejlesztési támogatásai,474
+47110,Kis- és nagykereskedelem igazgatása és támogatása,471
+45230,Komp- és révközlekedés,452
+74054,"Komplex egészségfejlesztő, prevenciós programok",740
+56010,Komplex környezetvédelmi programok támogatása,560
+83020,Könyvkiadás,830
+82043,"Könyvtári állomány feltárása, megőrzése, védelme",820
+82042,"Könyvtári állomány gyarapítása, nyilvántartása",820
+82044,Könyvtári szolgáltatások,820
+432,Kőolaj- és gázipar,4
+43210,Kőolaj- és gázipar igazgatása és támogatása,432
+98024,Korai fejlesztés és fejlesztő nevelés tevékenység működtetési feladatai,980
+98023,Korai fejlesztés és fejlesztő nevelés tevékenység szakmai feladatai,980
+11120,Kormányzati igazgatási tevékenység,111
+76061,Környezet-egészségügyi feladatok,760
+530,Környezetszennyezés csökkentése,5
+53010,Környezetszennyezés csökkentésének igazgatása,530
+5,Környezetvédelem,NA
+55010,Környezetvédelemmel kapcsolatos alkalmazott kutatás és fejlesztés,550
+550,Környezetvédelmi K+F,5
+31010,"Közbiztonság, közrend igazgatása",310
+740,Közegészségügyi szolgáltatások,7
+74090,Közegészségügyi szolgáltatások finanszírozása és támogatása,740
+922,"Középfokú nevelés, oktatás",9
+930,Középiskolát követő nem felsőfokú oktatás,9
+41237,Közfoglalkoztatási mintaprogram,412
+41234,Közfoglalkoztatás mobilitását szolgáló támogatás (közhasznú kölcsönző részére),412
+92221,Közismereti és szakképesítés megszerzésére felkészítő szakmai elméleti oktatás szakmai feladatai a szakképző iskolákban,922
+82093,"Közművelődés - egész életre kiterjedő tanulás, amatőr művészetek",820
+82092,Közművelődés - hagyományos közösségi kulturális értékek gondozása,820
+82091,Közművelődés - közösségi és társadalmi részvétel fejlesztése,820
+82094,Közművelődés - kulturális alapú gazdaságfejlesztés,820
+91220,"Köznevelési intézmény 1-4. évfolyamán tanulók nevelésével, oktatásával összefüggő működtetési feladatok",912
+92120,"Köznevelési intézmény 5-8. évfolyamán tanulók nevelésével, oktatásával összefüggő működtetési feladatok",921
+96040,"Köznevelési intézményben tanulók kollégiumi, externátusi nevelése",960
+96030,Köznevelési intézményben tanulók lakhatásának biztosítása,960
+91211,"Köznevelési intézményben tanulók nappali rendszerű nevelésének, oktatásának szakmai feladatai 1-4. évfolyamon",912
+92111,"Köznevelési intézményben tanulók nappali rendszerű nevelésének, oktatásának szakmai feladatai 5-8. évfolyamon",921
+900010,Központi költségvetés funkcióra nem sorolható bevételei államháztartáson kívülről,9000
+18020,Központi költségvetési befizetések,180
+35010,Közrenddel és közbiztonsággal kapcsolatos alkalmazott kutatás és kísérleti fejlesztés,350
+3,Közrend és közbiztonság,NA
+350,Közrendhez és közbiztonsághoz kapcsolódó K+F,3
+13320,Köztemető-fenntartás és -működtetés,133
+31030,Közterület rendjének fenntartása,310
+45160,"Közutak, hidak, alagutak üzemeltetése, fenntartása",451
+45180,Közúti járművontatás,451
+451,Közúti közlekedés,4
+45190,Közúti közlekedési eszközök műszaki vizsgálata,451
+45110,Közúti közlekedés igazgatása és támogatása,451
+640,Közvilágítás,6
+64010,Közvilágítás,640
+230,Külföldi katonai segély,2
+82010,Kultúra igazgatása,820
+820,Kulturális szolgáltatások,8
+113,Külügyek,1
+11310,Külügyek igazgatása,113
+610,Lakásépítés,6
+6,Közösségi létesítmények,NA
+65010,"Lakás- és közműellátással, településfejlesztéssel kapcsolatos alkalmazott kutatás és fejlesztés",650
+650,"Lakás- és közműellátással, településfejlesztéssel kapcsolatos K+F",6
+106020,"Lakásfenntartással, lakhatással összefüggő ellátások",1060
+61030,Lakáshoz jutást segítő támogatások,610
+61010,Lakáspolitika igazgatása,610
+1060,Lakhatás,10
+61020,Lakóépület építése,610
+106010,"Lakóingatlan szociális célú bérbeadása, üzemeltetése",1060
+454,Légi szállítás,4
+45410,Légi szállítás igazgatása és támogatása,454
+82051,"Levéltári állomány gyarapítása, kezelése és védelme",820
+82052,"Levéltári szolgáltatás, tudományos, publikációs és információközvetítő tevékenység",820
+980,Máshová be nem sorolt oktatás,9
+49010,Máshova nem sorolt gazdasági ügyek,490
+13360,"Más szerv részére végzett pénzügyi-gazdálkodási, üzemeltetési, egyéb szolgáltatások",133
+101232,"Megváltozott munkaképességgel összefüggő pénzbeli ellátások, támogatások",1012
+101240,"Megváltozott munkaképességű személyek foglalkoztatását elősegítő képzések, támogatások",1012
+107070,"Menekültek, befogadottak, oltalmazottak ideiglenes ellátása és támogatása",1070
+31020,Menekültügy igazgatása,310
+72440,Mentés,724
+41180,Meteorológiai szolgáltatás,411
+421,Mezőgazdaság,4
+42110,Mezőgazdaság igazgatása,421
+42150,"Mezőgazdasági öntözőrendszer építése, fenntartása, üzemeltetése",421
+42120,Mezőgazdasági támogatások,421
+47470,Működőtőke-beruházások komplex támogatásai,474
+95040,Munkaerő-piaci felnőttképzéshez kapcsolódó szakmai szolgáltatások,950
+104036,Munkahelyi étkeztetés bölcsődében,1040
+96025,Munkahelyi étkeztetés köznevelési intézményben,960
+105010,Munkanélküli aktív korúak ellátásai,1050
+1050,Munkanélküliség,10
+41210,Munkaügy igazgatása,412
+41220,Munkavédelmi célú támogatások és közcélú információs rendszer működtetése,412
+830,Műsorszolgáltatási és kiadói szolgáltatások,8
+83010,Műsorszolgáltatási és kiadói ügyek igazgatása,830
+41170,"Műszaki vizsgálat, elemzés",411
+82030,Művészeti tevékenységek (kivéve: színház),820
+82061,Múzeumi gyűjteményi tevékenység,820
+82063,Múzeumi kiállítási tevékenység,820
+82064,"Múzeumi közművelődési, közönségkapcsolati tevékenység",820
+82062,Múzeumi tudományos feldolgozó és publikációs tevékenység,820
+74051,Nem fertőző megbetegedések megelőzése,740
+51040,"Nem veszélyes hulladék kezelése, ártalmatlanítása",510
+51020,"Nem veszélyes (települési) hulladék összetevőinek válogatása, elkülönített begyűjtése, szállítása, átrakása",510
+51030,"Nem veszélyes (települési) hulladék vegyes (ömlesztett) begyűjtése, szállítása, átrakása",510
+82041,Nemzeti könyvtári feladatok,820
+84020,Nemzetiségi közfeladatok ellátása és támogatása,840
+83080,Nemzetiségi médiatartalom-szolgáltatás és támogatása,830
+91130,"Nemzetiségi óvodai nevelés, ellátás szakmai feladatai",911
+92213,"Nemzetiségi tanulók gimnáziumi oktatásának, nevelésének szakmai feladatai",922
+92223,Nemzetiségi tanulók közismereti és szakképesítés megszerzésére felkészítő szakmai elméleti oktatás szakmai feladatai a szakképző iskolákban,922
+91213,"Nemzetiségi tanulók nappali rendszerű nevelésének, oktatásának szakmai feladatai 1-4. évfolyamon",912
+92113,"Nemzetiségi tanulók nappali rendszerű nevelésének, oktatásának szakmai feladatai 5-8. évfolyamon",921
+109070,Nemzetközi humanitárius segítségnyújtás,1090
+32040,Nemzetközi katasztrófavédelmi segítségnyújtás,320
+23010,Nemzetközi katonai és rendészeti szerepvállalás béketámogató és válságkezelő műveletekben,230
+86030,Nemzetközi kulturális együttműködés,860
+98040,Nemzetközi oktatási együttműködés,980
+11320,Nemzetközi szervezetekben való részvétel,113
+16040,Nemzetpolitikai tevékenység igazgatása és támogatása,160
+104013,Nevelőszülőnél elhelyezettek ellátása,1040
+82080,Növény- és állatkertek működtetése és megőrzése,820
+42130,"Növénytermesztés, állattenyésztés és kapcsolódó szolgáltatások",421
+433,Nukleáris fűtőanyagipar,4
+43310,Nukleáris fűtőanyagipar igazgatása és támogatása,433
+18060,Nyugdíjbiztosítási alap bevételei államháztartáson belülről,180
+900050,Nyugdíjbiztosítási Alap funkcióra nem sorolható bevételei államháztartáson kívülről,9000
+102010,Nyugdíjbiztosítási szolgáltatások igazgatása,1020
+9,Oktatás,NA
+97010,Oktatáshoz kapcsolódó alkalmazott kutatás és fejlesztés,970
+970,Oktatáshoz kapcsolódó K+F,9
+98010,Oktatás igazgatása,980
+960,Oktatást kiegészítő szolgáltatások,9
+18010,Önkormányzatok elszámolásai a központi költségvetéssel,180
+11130,Önkormányzatok és önkormányzati hivatalok jogalkotó és általános igazgatási tevékenysége,111
+900020,Önkormányzatok funkcióra nem sorolható bevételei államháztartáson kívülről,9000
+16010,"Országgyűlési, önkormányzati és európai parlamenti képviselőválasztásokhoz kapcsolódó tevékenységek",160
+11140,Országos és helyi nemzetiségi önkormányzatok igazgatási tevékenysége,111
+16020,Országos és helyi népszavazással kapcsolatos tevékenységek,160
+41236,Országos közfoglalkoztatási program,412
+76050,"Orvos- és nővérszálló, hozzátartozói szállás fenntartása, üzemeltetése",760
+72410,Otthoni (egészségügyi) szakápolás,724
+96010,Ovodai intézményi étkeztetés,960
+911,Óvodai nevelés,9
+91140,"Óvodai nevelés, ellátás működtetési feladatai",911
+91110,"Óvodai nevelés, ellátás szakmai feladatai",911
+74013,Pálya- és munkaalkalmassági vizsgálatok,740
+13330,"Pályázat- és támogatáskezelés, ellenőrzés",133
+724,Paramedikális szolgáltatások,7
+72490,"Paramedikális szolgáltatások finanszírozása, támogatása",724
+45170,"Parkoló, garázs üzemeltetése, fenntartása",451
+34030,Pártfogó felügyelői tevékenység,340
+98032,Pedagógiai szakmai szolgáltatások működtetési feladatai,980
+98031,Pedagógiai szakmai szolgáltatások szakmai feladatai,980
+98022,Pedagógiai szakszolgáltató tevékenység működtetési feladatai,980
+98021,Pedagógiai szakszolgáltató tevékenység szakmai feladatai,980
+112,"Pénzügyi és költségvetési tevékenységek, adózási ügyek",1
+47120,Piac üzemeltetése,471
+220,Polgári honvédelem,2
+22010,"Polgári honvédelem ágazati feladatai, a lakosság felkészítése",220
+31080,Polgári nemzetbiztonsági tevékenység,310
+32060,"Polgári védelmi stratégiai tartalékok tárolása, kezelése",320
+84050,Politikai pártok tevékenységének támogatása,840
+101131,Pszichiátriai betegek átmeneti ellátása,1011
+101143,Pszichiátriai betegek közösségi alapellátása,1011
+101141,Pszichiátriai betegek nappali ellátása,1011
+101123,Pszichiátriai betegek rehabilitációs célú bentlakásos ellátása,1011
+101125,Pszichiátriai betegek rehabilitációs lakóotthoni ellátása,1011
+101121,Pszichiátriai betegek tartós bentlakásos ellátása,1011
+83040,Rádióműsor szolgáltatása és támogatása,830
+310,Rendészeti tevékenységek,3
+107090,"Romák társadalmi integrációját elősegítő tevékenységek, programok",1070
+41231,Rövid időtartamú közfoglalkoztatás,412
+91120,"Sajátos nevelési igényű gyermekek óvodai nevelésének, ellátásának szakmai feladatai",911
+92212,"Sajátos nevelési igényű tanulók gimnáziumi nevelésének, oktatásának szakmai feladatai",922
+92222,Sajátos nevelési igényű tanulók közismereti és szakképesítés megszerzésére felkészítő szakmai elméleti oktatásának szakmai feladatai a szakképző iskolákban,922
+91212,"Sajátos nevelési igényű tanulók nappali rendszerű nevelésének, oktatásának szakmai feladatai 1-4. évfolyamon",912
+92112,"Sajátos nevelési igényű tanulók nappali rendszerű nevelésének, oktatásának szakmai feladatai 5-8. évfolyamon",921
+92232,Sajátos nevelési igényű tanulók szakképesítés megszerzésére felkészítő szakmai gyakorlati oktatásának szakmai feladatai a szakképző iskolákban,922
+81030,"Sportlétesítmények, edzőtáborok működtetése és fejlesztése",810
+74020,"Sportolók sportegészségügyi vizsgálata, felügyelete, ellenőrzése",740
+81021,Sportszövetségek és szabályozó testületek működésének támogatása,810
+81022,"Sportteljesítmények elismerése, járadékok, ösztöndíjak",810
+81010,Sportügyek igazgatása,810
+41232,Start-munka program - Téli közfoglalkoztatás,412
+76063,Sugár-egészségügyi feladatok,760
+810,Szabadidős és sportszolgáltatások,8
+81061,"Szabadidős park, fürdő és strandszolgáltatás",810
+8,Szabadidő,NA
+81045,Szabadidősport- (rekreációs sport-) tevékenység és támogatása,810
+850,"Szabadidős tevékenységekhez, kultúrához és valláshoz kapcsolódó K+F",8
+85010,"Szabadidős tevékenységekkel, sporttal, kultúrával és vallással kapcsolatos alkalmazott kutatás és fejlesztés",850
+900080,Szabadkapacitás,9000
+94120,Szakirányú továbbképzés,941
+92231,Szakképesítés megszerzésére felkészítő szakmai gyakorlati oktatás szakmai feladatai a szakképző iskolákban,922
+95030,Szakképzési és felnőttképzési támogatások,950
+92270,Szakképző iskolai tanulók szakmai gyakorlati oktatásával összefüggő működtetési feladatok,922
+732,Szakosított kórházi szolgáltatások,7
+722,Szakosított orvosi szolgáltatások,7
+47210,Szálloda- és vendéglátóipar igazgatása és támogatása,472
+472,Szállodák és éttermek,4
+47450,Szektorhoz nem köthető komplex gazdaságfejlesztési projektek támogatása,474
+41130,Szellemi tulajdon és innováció igazgatása,411
+43110,Szén- és egyéb ásványi fűtőanyagipar igazgatása és támogatása,431
+431,Szén- és egyéb szilárd ásványi fűtőanyagipar,4
+53020,Szennyeződésmentesítési tevékenységek,530
+52080,"Szennyvízcsatorna építése, fenntartása, üzemeltetése",520
+520,Szennyvízelvezetés és -tisztítás,5
+52010,Szennyvízgazdálkodás igazgatása,520
+52020,"Szennyvíz gyűjtése, tisztítása, elhelyezése",520
+52030,"Szennyvíziszap kezelése, ártalmatlanítása",520
+101145,Szenvedélybetegek alacsonyküszöbű ellátása,1011
+101132,Szenvedélybetegek átmeneti ellátása,1011
+101144,Szenvedélybetegek közösségi alapellátása (kivéve: alacsonyküszöbű ellátás),1011
+101142,Szenvedélybetegek nappali ellátása,1011
+101124,Szenvedélybetegek rehabilitációs célú bentlakásos ellátása,1011
+101126,Szenvedélybetegek rehabilitációs lakóotthoni ellátása,1011
+101122,Szenvedélybetegek tartós bentlakásos ellátása,1011
+74053,"Szenvedélybetegségek (kivéve: kábítószer) megelőzésének programjai, tevékenységei",740
+82020,Színházak tevékenysége,820
+950,Szint alapján nem meghatározható oktatási szolgáltatások,9
+108010,Szociális biztonsággal kapcsolatos alkalmazott kutatás és fejlesztés,1080
+107051,Szociális étkeztetés,1070
+107030,Szociális foglalkoztatás,1070
+1090,Szociális segítségnyújtás egyéb feladatai,10
+109010,Szociális szolgáltatások igazgatása,1090
+109020,Szociális szolgáltatások módszertani szakirányítása,1090
+1080,Szociális védelemhez kapcsolódó K+F,10
+18030,Támogatási célú finanszírozási műveletek,180
+101222,Támogató szolgáltatás fogyatékos személyek részére,1012
+101214,Támogatott lakhatás fogyatékos személyek részére,1012
+101133,Támogatott lakhatás pszichiátriai betegek részére,1011
+101134,Támogatott lakhatás szenvedélybetegek részére,1011
+94250,Tankönyv- és jegyzettámogatás,942
+84010,"Társadalmi tevékenységekkel, esélyegyenlőséggel, érdekképviselettel, nemzetiségekkel, egyházakkal összefüggő feladatok igazgatása és szabályozása",840
+14040,"Társadalomtudományi, humán alapkutatás",140
+9000,Technikai funkciókódok,90
+61040,Telepszerű lakókörnyezetek felszámolását célzó programok,610
+76062,Település-egészségügyi feladatok,760
+620,Településfejlesztés,6
+62010,Településfejlesztés igazgatása,620
+62020,Településfejlesztési projektek és támogatásuk,620
+83050,Televízió-műsor szolgáltatása és támogatása,830
+72460,Terápiás célú gyógyfürdő- és kapcsolódó szolgáltatások,724
+109030,Természetes személyek adósságrendezésével kapcsolatos feladatok,1090
+540,Természet- és tájvédelem,5
+54010,Természet- és tájvédelem igazgatása és támogatása,540
+72470,Természetgyógyászat,724
+14030,"Természettudományi, műszaki alapkutatás",140
+41140,Területfejlesztés igazgatása,411
+104041,Területi gyermekvédelmi szakszolgáltatás,1040
+474,Többcélú fejlesztési projektek,4
+82070,"Történelmi hely, építmény, egyéb látványosság működtetése és megóvása",820
+1030,Túlélő hozzátartozók,10
+473,Turizmus,4
+47320,Turizmusfejlesztési támogatások és tevékenységek,473
+47310,Turizmus igazgatása és támogatása,473
+32010,Tűz- és katasztrófavédelem igazgatása,320
+320,Tűz- és katasztrófavédelemmel kapcsolatos tevékenységek (kivéve: ár- és belvízvédelem),3
+32020,Tűz- és katasztrófavédelmi tevékenységek,320
+81071,Üdülői szálláshely-szolgáltatás és étkeztetés,810
+33030,Ügyészségi tevékenység,330
+45120,"Út, autópálya építése",451
+107016,Utcai szociális munka,1070
+42320,Vadgazdálkodás,423
+42310,Vadgazdálkodás igazgatása és támogatása,423
+900090,Vállalkozási tevékenységek kiadásai és bevételei,9000
+41235,Vállalkozás részére foglalkoztatást helyettesítő támogatásban részesülő személy foglalkoztatásához nyújtható támogatás,412
+840,Vallási és egyéb közösségi szolgáltatások,8
+31041,Vámrendészet,310
+45140,Városi és elővárosi közúti személyszállítás,451
+66020,"Város-, községgazdálkodási egyéb szolgáltatások",660
+45320,Vasút építése,453
+453,Vasúti közlekedés,4
+45310,Vasúti közlekedés igazgatása és támogatása,453
+2,Védelem,NA
+240,Védelemhez kapcsolódó K+F,2
+25020,"Védelmi célú stratégiai tartalékok tárolása, kezelése",250
+25010,Védelmi feladatok igazgatása és szabályozása,250
+21020,"Védelmi képesség fenntartása, fejlesztése, honvédelmi felkészítés",210
+24010,Védelmi tevékenységekkel kapcsolatos alkalmazott kutatás és fejlesztés,240
+54020,"Védett természeti területek és természeti értékek bemutatása, megőrzése és fenntartása",540
+81041,Versenysport- és utánpótlás-nevelési tevékenység és támogatása,810
+74060,"Vér-, szövet- és egyéb kapcsolódó szövetbank",740
+51050,"Veszélyes hulladék begyűjtése, szállítása, átrakása",510
+51060,"Veszélyes hulladék kezelése, ártalmatlanítása",510
+46020,"Vezetékes műsorelosztás, városi és kábeltelevíziós rendszerek",460
+435,Villamosenergia-ipar,4
+43510,Villamosenergia-ipar igazgatása és támogatása,435
+630,Vízellátás,6
+63080,"Vízellátással kapcsolatos közmű építése, fenntartása, üzemeltetése",630
+452,Vízi közlekedés,4
+45210,Vízi közlekedés igazgatása és támogatása,452
+45220,Vízi létesítmény építése (kivéve: árvízvédelmi létesítmények),452
+63070,Vízrajzi mérés,630
+63020,"Víztermelés, -kezelés, -ellátás",630
+63010,Vízügy igazgatása,630
+66010,Zöldterület-kezelés,660
+10,Szociális védelem,NA
