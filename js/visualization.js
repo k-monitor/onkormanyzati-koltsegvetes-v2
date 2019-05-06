@@ -1,10 +1,7 @@
-var ECON = {};
-var FUNC = {};
-
 var visualization = new Vue({
 	el: '#visualization',
 	data: {
-		roots: [ECON, FUNC],
+		roots: [],
 		loading: true,
 		mode: 1,
 		path: []
@@ -51,16 +48,13 @@ var visualization = new Vue({
 			$.get('data/economies.csv'),
 			$.get('data/functions.csv')
 		).then(function (b, e, f) {
-			loadFlatTree(b[0]);
-			loadTreeData(e[0], ECON);
-			loadTreeData(f[0], FUNC);
-
-			ECON = new Node('ECON', 0, Object.values(ECON));
-			FUNC = new Node('FUNC', 0, Object.values(FUNC));
-
-			self.roots = [ECON, FUNC];
-			//ECON.forEach(function(e) { e.update(); });
-			//FUNC.forEach(function(e) { e.update(); });
+			var b = loadFlatTree(b[0]);
+			loadTreeData(e[0], b.econ);
+			loadTreeData(f[0], b.func);
+			self.roots = [
+				new Node('ECON', 0, Object.values(b.econ)),
+				new Node('FUNC', 0, Object.values(b.func))
+			];
 
 			//generateColors();
 
@@ -130,13 +124,17 @@ function loadFlatTree(csv) {
 		}
 	}
 
+	var econ = {};
+	var func = {};
 	$.each(budget, function (k, v) {
-		addOrInc(ECON, v.econ_id, Number(v.value));
-		addOrInc(FUNC, v.func_id, Number(v.value));
+		addOrInc(econ, v.econ_id, Number(v.value));
+		addOrInc(func, v.func_id, Number(v.value));
 	});
 
-	mapToNode(ECON);
-	mapToNode(FUNC);
+	mapToNode(econ);
+	mapToNode(func);
+
+	return { econ: econ, func: func };
 }
 
 function loadTreeData(csv, TREE) { // data is CSV: id, value, parent_id
