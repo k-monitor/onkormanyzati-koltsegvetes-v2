@@ -13,7 +13,7 @@ var visualization = new Vue({
 		root: function () {
 			return this.roots[this.mode % 2];
 		},
-		view: function () {
+		node: function () {
 			var r = this.root;
 			for (var p = 0; p < this.path.length; p++) {
 				var i = this.path[p];
@@ -24,11 +24,18 @@ var visualization = new Vue({
 				}
 			}
 			return r;
+		},
+		children: function () {
+			return this.node.children.filter(function (n) {
+				return n.value > 0;
+			}).sort(function (a, b) {
+				return b.value - a.value;
+			});
 		}
 	},
 	methods: {
 		down: function (index) {
-			if (this.view.children[index].children.length > 0) {
+			if (this.children[index].children.length > 0) {
 				this.path.push(index);
 				console.log('DOWN', index, this.path);
 			}
