@@ -74,8 +74,8 @@ var visualization = new Vue({
 			loadTreeData(e[0], b.econ);
 			loadTreeData(f[0], b.func);
 			self.roots = [
-				new Node('ECON', 0, Object.values(b.econ)),
-				new Node('FUNC', 0, Object.values(b.func))
+				new Node('Teljes költségvetés', 0, Object.values(b.econ)),
+				new Node('Teljes költségvetés', 0, Object.values(b.func))
 			];
 
 			//generateColors();
@@ -207,7 +207,7 @@ function groupNums(v) {
 
 function curve(node, index) {
 	try {
-		var bars = $('#bars');
+		var bars = $('#vis');
 		var barsHeight = bars.outerHeight();
 		var barsTop = $(bars).offset().top;
 

@@ -11,8 +11,7 @@
 	<title>{{ city }} költségvetése</title>
 
 	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css' />
-	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext"
-		rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext" rel="stylesheet">
 	<link href="css/okv.min.css" rel="stylesheet">
 </head>
 
@@ -21,9 +20,8 @@
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
 		<div class="container">
 			<a class="navbar-brand js-scroll-trigger" href="#page-top">{{ city }}</a>
-			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-				data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-				aria-label="Toggle navigation">
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+			 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
@@ -35,8 +33,8 @@
 						<a class="nav-link js-scroll-trigger" href="#milestones">Fejlesztések</a>
 					</li>
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+						 aria-haspopup="true" aria-expanded="false">
 							{{ year }}
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -69,23 +67,47 @@
 	<section class="page-section bg-light" id="visualization">
 		<div class="container">
 			<div class="row justify-content-center">
-				<div class="col-lg-8 text-center">
-					<h2>Költségvetés</h2>
+				<div class="col-lg-8">
+					<h2 class="text-center">Költségvetés</h2>
 					<hr class="divider my-4 mb-5">
 					<div class="spinner-border" role="status" v-if="loading">
 						<span class="sr-only">Loading...</span>
 					</div>
-					<div class="d-flex" id="vis" v-else>
-						<div class="d-flex flex-column" id="bars">
-							<div class="bar border" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }" @click="down(i)">{{ groupNums(n.value) }} Ft ({{ Math.round(n.value/root.value*100) }}%)</div>
+					<div v-else>
+						<div class="d-flex" id="breadcrumbs">
+							<div class="left-column" id="total">
+								<div class="label">
+									<div class="text-right w-100">
+										{{ groupNums(node.value) }} Ft
+									</div>
+								</div>
+							</div>
+							<div class="middle-column text-center">
+								<div class="btn btn-sm btn-light" v-if="path.length > 0">
+									<i class="fas fa-fw fa-level-up-alt" @click="up()"></i>
+								</div>
+							</div>
+							<div class="ml-auto right-column" id="current">
+								<div class="label">
+									{{ node.name }}
+								</div>
+							</div>
 						</div>
-						<div id="curves">
-							<svg height="100%" width="100%">
-								<path class="curve" v-for="d in curves" :d="d" style="stroke: red" vector-effect="non-scaling-stroke"></path>
-							</svg>
-						</div>
-						<div class="d-flex flex-column" id="labels">
-							<div class="label" v-for="(n,i) in children" :data-id="n.id" :data-index="i" @click="down(i)">{{ n.name }}</div>
+						<div class="d-flex" id="vis">
+							<div class="d-flex flex-column left-column">
+								<div class="bar border" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }"
+								 @click="down(i)">
+									<div class="text-right w-100">{{ groupNums(n.value) }} Ft ({{ Math.round(n.value/root.value*100) }}%)</div>
+								</div>
+							</div>
+							<div class="middle-column" id="curves">
+								<svg height="100%" width="100%">
+									<path class="curve" v-for="d in curves" :d="d" style="stroke: red" vector-effect="non-scaling-stroke"></path>
+								</svg>
+							</div>
+							<div class="d-flex flex-column right-column">
+								<div class="label" v-for="(n,i) in children" :data-id="n.id" :data-index="i" @click="down(i)">{{ n.name }}</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -126,14 +148,18 @@
 					</a>
 				</div>
 				<div class="col-sm-6 col-lg-4" id="logos">
-					<a href="http://www.kfib.hu/" target="_blank"><img
-							src="http://mintavaros.deepdata.hu/assets/img/kfib-logo.png" alt=""></a>
-					<a href="https://k-monitor.hu/" target="_blank"><img
-							src="http://mintavaros.deepdata.hu/assets/img/k-monitor-logo.png" alt=""></a>
-					<a href="https://www.deepdata.hu/" target="_blank"><img
-							src="http://mintavaros.deepdata.hu/assets/img/deepdata-logo.png" alt=""></a>
+					<a href="http://www.kfib.hu/" target="_blank"><img src="http://mintavaros.deepdata.hu/assets/img/kfib-logo.png"
+						 alt=""></a>
+					<a href="https://k-monitor.hu/" target="_blank"><img src="http://mintavaros.deepdata.hu/assets/img/k-monitor-logo.png"
+						 alt=""></a>
+					<a href="https://www.deepdata.hu/" target="_blank"><img src="http://mintavaros.deepdata.hu/assets/img/deepdata-logo.png"
+						 alt=""></a>
 				</div>
 				<div class="col-lg-4 mt-5 mt-lg-0" id="license">
+					<i class="fab fa-fw fa-creative-commons"></i>
+					<i class="fab fa-fw fa-creative-commons-by"></i>
+					<i class="fab fa-fw fa-creative-commons-sa mr-2"></i>
+					<br class="d-none d-lg-inline-block">
 					Ez a Mű a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons
 						Nevezd
 						meg! - Így add tovább! 4.0 Nemzetközi Licenc</a> feltételeinek megfelelően felhasználható.

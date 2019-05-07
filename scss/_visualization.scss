@@ -1,14 +1,9 @@
-#vis {
-	border: 1px solid red;
-	display: flex;
-	height: 75vh;
-
-	#bars, #labels {
+#visualization {
+	.left-column, .right-column {
 		width: 45%;
 	}
 
-	#curves {
-		height: 100%;
+	.middle-column {
 		width: 10%;
 	}
 
@@ -17,16 +12,33 @@
 		cursor: pointer;
 		display: flex;
 		flex: 1;
-		justify-content: center;
-		padding: .25rem;
+		padding: .1rem .5rem;
 	}
 
 	.curve {
 		fill: none;
 	}
 
+	.label {
+		text-align: left;
+	}
+
 	svg {
 		height: 100%;
 		width: 100%;
+	}
+}
+
+#breadcrumbs {
+	font-weight: bold;
+}
+
+#vis {
+	display: flex;
+	height: 50vh;
+	min-height: 400px;
+
+	& > div {
+		height: 100%;
 	}
 }
