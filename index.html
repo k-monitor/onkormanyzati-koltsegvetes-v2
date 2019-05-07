@@ -116,10 +116,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="d-flex border-top border-bottom" id="vis">
+					<div class="d-flex border-top border-bottom" id="vis" @mouseout="hovered=-1">
 						<div class="d-flex flex-column left-column">
 							<div class="bar" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
-							 @click="down(i)">
+							 @click="down(i)" @mouseover="hovered=i">
 								<div class="text-right w-100">
 									{{ groupNums(n.value) }} Ft
 									<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
@@ -132,10 +132,9 @@
 							</svg>
 						</div>
 						<div class="d-flex flex-column right-column text-left">
-							<div class="label" v-for="(n,i) in children" :data-id="n.id" :data-index="i" @click="down(i)">{{ n.name }}</div>
+							<div class="label" v-for="(n,i) in children" :class="{ 'text-muted': hovered > -1 && i != hovered }" :data-id="n.id" :data-index="i" @click="down(i)" @mouseover="hovered=i">{{ n.name }}</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>

@@ -1,4 +1,4 @@
-$(function() {
+$(function () {
 	$('[data-toggle="tooltip"]').tooltip();
 });
 
@@ -6,6 +6,7 @@ var visualization = new Vue({
 	el: '#visualization',
 	data: {
 		curves: [],
+		hovered: -1,
 		loading: true,
 		mode: 1,
 		path: [],
@@ -39,6 +40,7 @@ var visualization = new Vue({
 	},
 	watch: {
 		node: function () {
+			$('.nav-pills .nav-link').blur();
 			this.$nextTick(function () {
 				this.updateCurves();
 			});
@@ -59,21 +61,25 @@ var visualization = new Vue({
 				'#bb208a' /* 10 Szociális védelem */,
 				'#ef538c' /* 9000 Technikai funkciókódok */,
 			];
-			var index = this.colorIndex(node, index);
-			var color = colors[index];
+			var color = colors[this.colorIndex(node, index)];
 			if (this.path.length > 0) {
 				var opacity = node.value / this.node.children[0].value;
 				opacity = 0.5 + opacity * 0.5;
 
 				color = tinycolor(color);
 				color.setAlpha(opacity);
-				return color.toRgbString();
+				color = color.toRgbString();
+			}
+			if (this.hovered > -1 && index != this.hovered) {
+				color = tinycolor(color);
+				color.setAlpha(color.getAlpha() * 0.5);
+				color = color.toRgbString();
 			}
 			return color;
 		},
-		fgColor: function(node, index) {
+		fgColor: function (node, index) {
 			var color = tinycolor(this.bgColor(node, index));
-			return color.isLight() ? 'black' : 'white';
+			return color.isLight() || color.getAlpha() < 0.5 ? 'black' : 'white';
 		},
 		colorIndex: function (node, index) {
 			var id = node.id;
