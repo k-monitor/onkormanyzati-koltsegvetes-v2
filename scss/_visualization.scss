@@ -14,19 +14,6 @@
 		padding: .1rem .5rem;
 	}
 
-	@mixin color($i, $bg, $fg) {
-		.bar[data-color-index="#{$i}"] {
-			background-color: $bg;
-			color: $fg;
-		}
-		.curve[data-color-index="#{$i}"] {
-			stroke: $bg;
-		}
-	}
-	@for $i from 0 through 15 {
-		@include color($i, nth($vis-colors, 1 + $i % length($vis-colors)), white);
-	}
-
 	.curve {
 		fill: none;
 	}

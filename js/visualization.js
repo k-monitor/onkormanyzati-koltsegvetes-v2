@@ -34,21 +34,51 @@ var visualization = new Vue({
 		}
 	},
 	watch: {
-		node: function() {
-			this.$nextTick(function() {
+		node: function () {
+			this.$nextTick(function () {
 				this.updateCurves();
 			});
 		}
 	},
 	methods: {
+		bgColor: function (node, index) {
+			var colors = [
+				'#f7981d' /* 01 Általános közszolgáltatások */,
+				'#5c628f' /* 02 Védelem */,
+				'#ee2a7b' /* 03 Közrend és közbiztonság */,
+				'#254478' /* 04 Gazdasági ügyek */,
+				'#d32027' /* 05 Környezetvédelem */,
+				'#5c9ad2' /* 06 Lakásépítés és kommunális létesítménye */,
+				'#e5960a' /* 07 Egészségügy */,
+				'#70ac45' /* 08 Szabadidő, sport, kultúra, vallás */,
+				'#4971b6' /* 09 Oktatás */,
+				'#bb208a' /* 10 Szociális védelem */,
+				'#ef538c' /* 9000 Technikai funkciókódok */,
+			];
+			var index = this.colorIndex(node, index);
+			var color = colors[index];
+			if (this.path.length > 0) {
+				var opacity = node.value / this.node.children[0].value;
+				opacity = 0.5 + opacity * 0.5;
+
+				color = tinycolor(color);
+				color.setAlpha(opacity);
+				return color.toRgbString();
+			}
+			return color;
+		},
+		fgColor: function(node, index) {
+			var color = tinycolor(this.bgColor(node, index));
+			return color.isLight() ? 'black' : 'white';
+		},
 		colorIndex: function (node, index) {
 			var id = node.id;
 			if (this.path.length > 0) {
 				id = this.root.children[this.path[0]].id;
 			}
 			var ids = this.root.children
-				.map(function(c) { return c.id; })
-				.sort(function(a,b) { return Number(a)-Number(b); });
+				.map(function (c) { return c.id; })
+				.sort(function (a, b) { return Number(a) - Number(b); });
 			return ids.indexOf(id);
 		},
 		down: function (index) {
@@ -93,7 +123,7 @@ var visualization = new Vue({
 		});
 	}
 });
-window.onresize = function() {
+window.onresize = function () {
 	visualization.updateCurves();
 }
 

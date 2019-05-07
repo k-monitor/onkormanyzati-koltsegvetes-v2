@@ -95,14 +95,14 @@
 						</div>
 						<div class="d-flex border-top border-bottom" id="vis">
 							<div class="d-flex flex-column left-column">
-								<div class="bar" v-for="(n,i) in children" :data-color-index="colorIndex(n,i)" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }"
+								<div class="bar" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
 								 @click="down(i)">
 									<div class="text-right w-100">{{ groupNums(n.value) }} Ft ({{ Math.round(n.value/node.value*100) }}%)</div>
 								</div>
 							</div>
 							<div class="middle-column" id="curves">
 								<svg height="100%" width="100%">
-									<path class="curve" v-for="(n,i) in children" :d="curves[i]" :data-color-index="colorIndex(n,i)" vector-effect="non-scaling-stroke"></path>
+									<path class="curve" v-for="(n,i) in children" :d="curves[i]" :style="{ stroke: bgColor(n,i) }" vector-effect="non-scaling-stroke"></path>
 								</svg>
 							</div>
 							<div class="d-flex flex-column right-column">
@@ -174,6 +174,7 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.3/papaparse.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js'></script>
 	<script src="js/okv.min.js"></script>
 	<script src="js/milestones.min.js"></script>
 	<script src="js/visualization.min.js"></script>
