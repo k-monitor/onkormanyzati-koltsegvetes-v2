@@ -9,10 +9,22 @@
 
 	.bar, .label {
 		align-items: center;
-		cursor: pointer;
 		display: flex;
 		flex: 1;
 		padding: .1rem .5rem;
+	}
+
+	@mixin color($i, $bg, $fg) {
+		.bar[data-color-index="#{$i}"] {
+			background-color: $bg;
+			color: $fg;
+		}
+		.curve[data-color-index="#{$i}"] {
+			stroke: $bg;
+		}
+	}
+	@for $i from 0 through 15 {
+		@include color($i, nth($vis-colors, 1 + $i % length($vis-colors)), white);
 	}
 
 	.curve {
@@ -27,18 +39,21 @@
 		height: 100%;
 		width: 100%;
 	}
-}
 
-#breadcrumbs {
-	font-weight: bold;
-}
+	#breadcrumbs {
+		font-weight: bold;
+	}
 
-#vis {
-	display: flex;
-	height: 50vh;
-	min-height: 400px;
+	#vis {
+		height: 50vh;
+		min-height: 400px;
 
-	& > div {
-		height: 100%;
+		& > div {
+			height: 100%;
+		}
+
+		.bar, .label {
+			cursor: pointer;
+		}
 	}
 }

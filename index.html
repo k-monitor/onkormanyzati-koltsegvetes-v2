@@ -74,7 +74,7 @@
 						<span class="sr-only">Loading...</span>
 					</div>
 					<div class="text-left" v-else>
-						<div class="d-flex" id="breadcrumbs">
+						<div class="d-flex mb-2" id="breadcrumbs">
 							<div class="left-column" id="total">
 								<div class="label">
 									<div class="text-right w-100">
@@ -93,16 +93,16 @@
 								</div>
 							</div>
 						</div>
-						<div class="d-flex" id="vis">
+						<div class="d-flex border-top border-bottom" id="vis">
 							<div class="d-flex flex-column left-column">
-								<div class="bar border" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }"
+								<div class="bar" v-for="(n,i) in children" :data-color-index="colorIndex(n,i)" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }"
 								 @click="down(i)">
-									<div class="text-right w-100">{{ groupNums(n.value) }} Ft ({{ Math.round(n.value/root.value*100) }}%)</div>
+									<div class="text-right w-100">{{ groupNums(n.value) }} Ft ({{ Math.round(n.value/node.value*100) }}%)</div>
 								</div>
 							</div>
 							<div class="middle-column" id="curves">
 								<svg height="100%" width="100%">
-									<path class="curve" v-for="d in curves" :d="d" style="stroke: red" vector-effect="non-scaling-stroke"></path>
+									<path class="curve" v-for="(n,i) in children" :d="curves[i]" :data-color-index="colorIndex(n,i)" vector-effect="non-scaling-stroke"></path>
 								</svg>
 							</div>
 							<div class="d-flex flex-column right-column">

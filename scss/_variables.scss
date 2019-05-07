@@ -8,5 +8,18 @@ $headings-font-family: $font-family-sans-serif !default;
 
 // Custom variables
 
+$vis-colors:
+	#f7981d, /* 01 Általános közszolgáltatások */
+	#5c628f, /* 02 Védelem */
+	#ee2a7b, /* 03 Közrend és közbiztonság */
+	#254478, /* 04 Gazdasági ügyek */
+	#d32027, /* 05 Környezetvédelem */
+	#5c9ad2, /* 06 Lakásépítés és kommunális létesítménye */
+	#e5960a, /* 07 Egészségügy */
+	#70ac45, /* 08 Szabadidő, sport, kultúra, vallás */
+	#4971b6, /* 09 Oktatás */
+	#bb208a, /* 10 Szociális védelem */
+	#ef538c, /* 9000 Technikai funkciókódok */
+;
 $masthead-overlay: darkblue;
 $navbar-height: 72px;

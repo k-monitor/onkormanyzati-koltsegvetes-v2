@@ -41,6 +41,16 @@ var visualization = new Vue({
 		}
 	},
 	methods: {
+		colorIndex: function (node, index) {
+			var id = node.id;
+			if (this.path.length > 0) {
+				id = this.root.children[this.path[0]].id;
+			}
+			var ids = this.root.children
+				.map(function(c) { return c.id; })
+				.sort(function(a,b) { return Number(a)-Number(b); });
+			return ids.indexOf(id);
+		},
 		down: function (index) {
 			if (this.children[index].children.length > 0) {
 				this.path.push(index);
