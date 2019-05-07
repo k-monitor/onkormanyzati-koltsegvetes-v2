@@ -27,8 +27,6 @@ var visualization = new Vue({
 			try {
 				return this.node.children.filter(function (n) {
 					return n.value > 0;
-				}).sort(function (a, b) {
-					return b.value - a.value;
 				});
 			} catch (e) {
 				return [];
@@ -46,7 +44,6 @@ var visualization = new Vue({
 		down: function (index) {
 			if (this.children[index].children.length > 0) {
 				this.path.push(index);
-				console.log('DOWN', index, this.path);
 			}
 		},
 		up: function () {
@@ -99,12 +96,12 @@ function Node(name, value, children) {
 
 	self.update = function () {
 		if (self.children && self.children.length > 0) {
-			self.children = children.sort(function (a, b) { return b.value - a.value; });
 			self.value = 0;
 			self.children.forEach(function (child) {
 				child.update();
 				self.value += child.value;
 			});
+			self.children = children.sort(function (a, b) { return b.value - a.value; });
 		}
 	};
 
