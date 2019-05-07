@@ -1,3 +1,7 @@
+$(function() {
+	$('[data-toggle="tooltip"]').tooltip();
+});
+
 var visualization = new Vue({
 	el: '#visualization',
 	data: {

@@ -70,46 +70,72 @@
 				<div class="col-lg-8 text-center">
 					<h2>Költségvetés</h2>
 					<hr class="divider my-4 mb-5">
+				</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-lg-8 text-center">
+					<ul class="justify-content-center mb-5 nav nav-pills w-100">
+						<li class="nav-item">
+							<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="A költségvetési kiadásokat osztályozza, azok társadalmi-gazdasági cél szerinti összetételét mutatja. Az általános közszolgáltatásoktól a védelmi kiadásokig összesen 10 kategóriában tartalmazza a kerület működésének területeit." :class="{ active: mode == 1 }"  @click="mode = 1">
+								Funkcionális nézet
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben." :class="{ active: mode == 0 }" @click="mode = 0">
+								Közgazdasági nézet
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="row" v-if="loading">
+				<div class="col text-center">
 					<div class="spinner-border" role="status" v-if="loading">
 						<span class="sr-only">Loading...</span>
 					</div>
-					<div class="text-left" v-else>
-						<div class="d-flex mb-2" id="breadcrumbs">
-							<div class="left-column" id="total">
-								<div class="label">
-									<div class="text-right w-100">
-										{{ groupNums(node.value) }} Ft
-									</div>
-								</div>
-							</div>
-							<div class="middle-column text-center">
-								<div class="btn btn-sm btn-light" v-if="path.length > 0">
-									<i class="fas fa-fw fa-level-up-alt" @click="up()"></i>
-								</div>
-							</div>
-							<div class="ml-auto right-column" id="current">
-								<div class="label">
-									{{ node.name }}
+				</div>
+			</div>
+			<div class="row justify-content-center" v-else>
+				<div class="col-lg-8 text-center">
+					<div class="d-flex mb-2" id="breadcrumbs">
+						<div class="left-column" id="total">
+							<div class="label">
+								<div class="text-right w-100">
+									{{ groupNums(node.value) }} Ft
 								</div>
 							</div>
 						</div>
-						<div class="d-flex border-top border-bottom" id="vis">
-							<div class="d-flex flex-column left-column">
-								<div class="bar" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
-								 @click="down(i)">
-									<div class="text-right w-100">{{ groupNums(n.value) }} Ft ({{ Math.round(n.value/node.value*100) }}%)</div>
-								</div>
+						<div class="middle-column text-center">
+							<div class="btn btn-sm btn-light" v-if="path.length > 0">
+								<i class="fas fa-fw fa-level-up-alt" @click="up()"></i>
 							</div>
-							<div class="middle-column" id="curves">
-								<svg height="100%" width="100%">
-									<path class="curve" v-for="(n,i) in children" :d="curves[i]" :style="{ stroke: bgColor(n,i) }" vector-effect="non-scaling-stroke"></path>
-								</svg>
-							</div>
-							<div class="d-flex flex-column right-column">
-								<div class="label" v-for="(n,i) in children" :data-id="n.id" :data-index="i" @click="down(i)">{{ n.name }}</div>
+						</div>
+						<div class="ml-auto right-column text-left" id="current">
+							<div class="label">
+								{{ node.name }}
 							</div>
 						</div>
 					</div>
+					<div class="d-flex border-top border-bottom" id="vis">
+						<div class="d-flex flex-column left-column">
+							<div class="bar" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
+							 @click="down(i)">
+								<div class="text-right w-100">
+									{{ groupNums(n.value) }} Ft
+									<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
+								</div>
+							</div>
+						</div>
+						<div class="middle-column" id="curves">
+							<svg height="100%" width="100%">
+								<path class="curve" v-for="(n,i) in children" :d="curves[i]" :style="{ stroke: bgColor(n,i) }" vector-effect="non-scaling-stroke"></path>
+							</svg>
+						</div>
+						<div class="d-flex flex-column right-column text-left">
+							<div class="label" v-for="(n,i) in children" :data-id="n.id" :data-index="i" @click="down(i)">{{ n.name }}</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>
