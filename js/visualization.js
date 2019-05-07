@@ -1,10 +1,11 @@
 var visualization = new Vue({
 	el: '#visualization',
 	data: {
-		roots: [],
+		curves: [],
 		loading: true,
 		mode: 1,
-		path: []
+		path: [],
+		roots: [],
 	},
 	computed: {
 		root: function () {
@@ -23,10 +24,21 @@ var visualization = new Vue({
 			return r;
 		},
 		children: function () {
-			return this.node.children.filter(function (n) {
-				return n.value > 0;
-			}).sort(function (a, b) {
-				return b.value - a.value;
+			try {
+				return this.node.children.filter(function (n) {
+					return n.value > 0;
+				}).sort(function (a, b) {
+					return b.value - a.value;
+				});
+			} catch (e) {
+				return [];
+			}
+		}
+	},
+	watch: {
+		node: function() {
+			this.$nextTick(function() {
+				this.updateCurves();
 			});
 		}
 	},
@@ -39,6 +51,16 @@ var visualization = new Vue({
 		},
 		up: function () {
 			visualization.path.splice(-1, 1);
+		},
+		updateCurves: function () {
+			var svg = $('#curves svg');
+			var svgHeight = $(svg).outerHeight();
+			var svgWidth = $(svg).outerWidth();
+			$(svg).attr('viewBox', [0, 0, svgWidth, svgHeight].join(' '));
+
+			this.curves = this.children.map(function (n, i) {
+				return curve(n, i);
+			});
 		}
 	},
 	mounted: function () {
@@ -62,11 +84,11 @@ var visualization = new Vue({
 		}).fail(function (f1) {
 			console.log('ERR', f1);
 		});
-	},
-	updated: function() {
-		console.log('Updated', $('#bars').outerHeight());
 	}
 });
+window.onresize = function() {
+	visualization.updateCurves();
+}
 
 function Node(name, value, children) {
 	var self = this;
@@ -192,22 +214,28 @@ function curve(node, index) {
 		var bar = $('.bar[data-index=' + index + ']');
 		var barHeight = $(bar).outerHeight();
 		var barTop = $(bar).offset().top - barsTop;
-		var barMiddle = (barTop + barHeight / 2) / barsHeight;
+		var barMiddle = barTop + barHeight / 2;
+
+		var label = $('.label[data-index=' + index + ']');
+		var labelHeight = $(label).outerHeight();
+		var labelTop = $(label).offset().top - barsTop;
+		var labelMiddle = labelTop + labelHeight / 2;
+
+		var svg = $('#curves svg');
+		var svgWidth = $(svg).outerWidth();
 
 		var x1 = 0;
 		var y1 = barMiddle;
-		var x2 = 1;
-		var y2 = barMiddle;//self.labelY(node, index).slice(0, -1);
-		var cx1 = 0.25;
-		var cx2 = 0.50;
+		var x2 = svgWidth;
+		var y2 = labelMiddle;//self.labelY(node, index).slice(0, -1);
+		var cx1 = svgWidth * 0.2;
+		var cx2 = svgWidth * 0.8;
 		var m = x1 + ',' + y1;
 		var c1 = cx1 + ',' + y1;
 		var c2 = cx2 + ',' + y2;
 		var e = x2 + ',' + y2;
-		return 'M' + m + ' C' + c1 + ' ' + c2 + ' ' + e;
+		return ['M' + m, 'C' + c1, c2, e].join(' ');
 	} catch (e) {
 		return '';
 	}
 }
-
-// console.log(curve(visualization.children[0],0))

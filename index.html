@@ -77,12 +77,11 @@
 					</div>
 					<div class="d-flex" id="vis" v-else>
 						<div class="d-flex flex-column" id="bars">
-							<div class="bar border" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }">{{ groupNums(n.value) }} Ft ({{ Math.round(n.value/root.value*100) }}%)</div>
+							<div class="bar border" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }" @click="down(i)">{{ groupNums(n.value) }} Ft ({{ Math.round(n.value/root.value*100) }}%)</div>
 						</div>
 						<div id="curves">
-							<svg >
-								<rect x=0 y=0 width=1 height=1></rect>
-								<path class="curve" v-for="(n,i) in children" :d="curve(n, i)" style="stroke: red" vector-effect="non-scaling-stroke"></path>
+							<svg height="100%" width="100%">
+								<path class="curve" v-for="d in curves" :d="d" style="stroke: red" vector-effect="non-scaling-stroke"></path>
 							</svg>
 						</div>
 						<div class="d-flex flex-column" id="labels">
