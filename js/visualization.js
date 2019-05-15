@@ -2,15 +2,17 @@ $(function () {
 	$('[data-toggle="tooltip"]').tooltip();
 });
 
-var visualization = new Vue({
-	el: '#visualization',
-	data: {
-		curves: [],
-		hovered: -1,
-		loading: true,
-		mode: 1,
-		path: [],
-		roots: [],
+Vue.component('vis', {
+	template: '#vis-template',
+	props: ['id', 'mode'],
+	data: function () {
+		return {
+			curves: [],
+			hovered: -1,
+			loading: true,
+			path: [],
+			roots: [],
+		};
 	},
 	computed: {
 		root: function () {
@@ -97,16 +99,17 @@ var visualization = new Vue({
 			}
 		},
 		up: function () {
-			visualization.path.splice(-1, 1);
+			this.path.splice(-1, 1);
 		},
 		updateCurves: function () {
-			var svg = $('#curves svg');
+			var svg = $('#' + this.id + ' .curves svg');
 			var svgHeight = $(svg).outerHeight();
 			var svgWidth = $(svg).outerWidth();
 			$(svg).attr('viewBox', [0, 0, svgWidth, svgHeight].join(' '));
 
+			var self = this;
 			this.curves = this.children.map(function (n, i) {
-				return curve(n, i);
+				return curve(self.id, n, i);
 			});
 		}
 	},
@@ -128,14 +131,22 @@ var visualization = new Vue({
 			//generateColors();
 
 			self.loading = false;
+
+			window.addEventListener('resize', function () {
+				self.updateCurves();
+			});
 		}).fail(function (f1) {
 			console.log('ERR', f1);
 		});
 	}
 });
-window.onresize = function () {
-	visualization.updateCurves();
-}
+
+var visualization = new Vue({
+	el: '#visualization',
+	data: {
+		mode: 1
+	}
+});
 
 function Node(name, value, children) {
 	var self = this;
@@ -252,23 +263,22 @@ function groupNums(v) {
 	return (v + '').replace(/\d(?=(?:\d{3})+(?:\.|$))/g, function ($0, i) { return $0 + ' ' });
 }
 
-function curve(node, index) {
+function curve(id, node, index) {
 	try {
-		var bars = $('#vis');
-		var barsHeight = bars.outerHeight();
+		var bars = $('#' + id);
 		var barsTop = $(bars).offset().top;
 
-		var bar = $('.bar[data-index=' + index + ']');
+		var bar = $('#' + id + ' .bar[data-index=' + index + ']');
 		var barHeight = $(bar).outerHeight();
 		var barTop = $(bar).offset().top - barsTop;
 		var barMiddle = barTop + barHeight / 2;
 
-		var label = $('.label[data-index=' + index + ']');
+		var label = $('#' + id + ' .label[data-index=' + index + ']');
 		var labelHeight = $(label).outerHeight();
 		var labelTop = $(label).offset().top - barsTop;
 		var labelMiddle = labelTop + labelHeight / 2;
 
-		var svg = $('#curves svg');
+		var svg = $('#' + id + ' .curves svg');
 		var svgWidth = $(svg).outerWidth();
 
 		var x1 = 0;
