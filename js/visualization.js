@@ -4,12 +4,13 @@ $(function () {
 
 Vue.component('vis', {
 	template: '#vis-template',
-	props: ['id', 'mode'],
+	props: ['id', 'b', 'e', 'f'],
 	data: function () {
 		return {
 			curves: [],
 			hovered: -1,
 			loading: true,
+			mode: 1,
 			path: [],
 			roots: [],
 		};
@@ -19,7 +20,7 @@ Vue.component('vis', {
 			return this.roots[this.mode % 2];
 		},
 		node: function () {
-			var r = this.root;
+			var r = this.root || new Node('', 0, []);
 			for (var p = 0; p < this.path.length; p++) {
 				var i = this.path[p];
 				if (r.children[i] && r.children[i].children.length > 0) {
@@ -116,9 +117,9 @@ Vue.component('vis', {
 	mounted: function () {
 		var self = this;
 		$.when(
-			$.get('data/budget.csv'),
-			$.get('data/economies.csv'),
-			$.get('data/functions.csv')
+			$.get(self.b),
+			$.get(self.e),
+			$.get(self.f)
 		).then(function (b, e, f) {
 			var b = loadFlatTree(b[0]);
 			loadTreeData(e[0], b.econ);
@@ -129,6 +130,8 @@ Vue.component('vis', {
 			];
 
 			//generateColors();
+
+			console.log(self.roots);
 
 			self.loading = false;
 
@@ -144,7 +147,6 @@ Vue.component('vis', {
 var visualization = new Vue({
 	el: '#visualization',
 	data: {
-		mode: 1
 	}
 });
 

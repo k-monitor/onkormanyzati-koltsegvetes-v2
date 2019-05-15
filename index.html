@@ -65,7 +65,7 @@
 	</header>
 
 	<div id="visualization">
-		<section class="page-section bg-light">
+		<section class="page-section">
 			<div class="container">
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
@@ -75,7 +75,12 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<vis :id="'income-vis'" :mode="mode"></vis>
+						<vis
+							:id="'income-vis'"
+							:b="'data/budget.csv'"
+							:e="'data/economies.csv'"
+							:f="'data/functions.csv'"
+						></vis>
 					</div>
 				</div>
 			</div>
@@ -90,23 +95,12 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<ul class="justify-content-center mb-5 nav nav-pills w-100">
-							<li class="nav-item">
-								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="A költségvetési kiadásokat osztályozza, azok társadalmi-gazdasági cél szerinti összetételét mutatja. Az általános közszolgáltatásoktól a védelmi kiadásokig összesen 10 kategóriában tartalmazza a kerület működésének területeit." :class="{ active: mode == 1 }"  @click="mode = 1">
-									Funkcionális nézet
-								</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben." :class="{ active: mode == 0 }" @click="mode = 0">
-									Közgazdasági nézet
-								</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="row justify-content-center">
-					<div class="col-lg-8 text-center">
-						<vis :id="'expenses-vis'" :mode="mode"></vis>
+						<vis
+							:id="'expenses-vis'"
+							:b="'data/budget.csv'"
+							:e="'data/economies.csv'"
+							:f="'data/functions.csv'"
+						></vis>
 					</div>
 				</div>
 			</div>
@@ -118,8 +112,24 @@
 				<span class="sr-only">Loading...</span>
 			</div>
 			<div v-else>
+				<div class="row justify-content-center">
+					<div class="col-lg-8 text-center">
+						<ul class="justify-content-center mb-5 nav nav-pills w-100">
+							<li class="nav-item">
+								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="A költségvetési kiadásokat osztályozza, azok társadalmi-gazdasági cél szerinti összetételét mutatja. Az általános közszolgáltatásoktól a védelmi kiadásokig összesen 10 kategóriában tartalmazza a kerület működésének területeit." :class="{ active: mode == 1 }"  @click="path = []; mode = 1">
+									Funkcionális nézet
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben." :class="{ active: mode == 0 }" @click="path = []; mode = 0">
+									Közgazdasági nézet
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
 				<div class="d-flex mb-2 breadcrumbs">
-					<div class="left-column" id="total">
+					<div class="left-column">
 						<div class="label">
 							<div class="text-right w-100">
 								{{ groupNums(node.value) }} Ft
