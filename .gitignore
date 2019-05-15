@@ -2,3 +2,9 @@ bower_components
 css
 node_modules
 *.min.js
+
+# generated data
+data/2*
+
+# source data
+data/src
