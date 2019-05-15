@@ -16,20 +16,20 @@ const INPUT_FILE = 'data/src/tápió adatok.xlsx';
 		const name = sheet.split(' ')[1]
 			.replace('BEVÉTEL', 'income')
 			.replace('KIADÁS', 'expense');
-		convertBudget(workbook, sheet, `data/${year}/${name}`);
+		const matrixFile = `data/${year}/${name}.tsv`;
+
+		console.log(`Converting ${INPUT_FILE}[${sheet}] -> ${matrixFile}`);
+		const sheetTsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheet], { FS: '\t' });
+		convertBudget(sheetTsv, matrixFile);
 	});
 })();
 
 // lib
 
-function convertBudget(workbook, sheetName, csvName) {
-	csvName += '.tsv';
-	mkdirp(path.dirname(csvName));
-	console.log(`Converting ${sheetName} -> ${csvName}`);
-
+function convertBudget(tsv, outputFile) {
+	mkdirp(path.dirname(outputFile));
 	const outputLines = [];
 
-	const tsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 	let funcIds;
 	const rows = tsv.split('\n').splice(1); // remove first row
 	rows.forEach((row, i) => {
@@ -53,5 +53,5 @@ function convertBudget(workbook, sheetName, csvName) {
 		}
 	});
 
-	fs.writeFileSync(csvName, outputLines.join('\n'));
+	fs.writeFileSync(outputFile, outputLines.join('\n'));
 }
