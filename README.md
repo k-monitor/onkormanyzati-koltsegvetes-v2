@@ -8,7 +8,7 @@ Az oldal alapja a StartBootstrap / Creative sablon.
 
 A vizualizáció az alábbi adatfájlokból dolgozik:
 
-- `data/functions.csv`: a funkcionális kategóriák fa struktúrája
+- `data/functions.tsv`: a funkcionális kategóriák fa struktúrája
 - `data/<évszám>/expense.tsv`: kiadásra vonatkozó összegek, közgazdasági és funkcionális bontásban
 - `data/<évszám>/expense-tree.tsv`: kiadásra vonatkozó közgazdasági kategóriák fa struktúrája
 - `data/<évszám>/income.tsv`: bevételre vonatkozó összegek, közgazdasági és funkcionális bontásban
@@ -72,15 +72,15 @@ Az ilyen munkalapokról hiányzik a funkcionális bontás. A formátum hasonló 
 
 
 
-### data/functions.csv
+### data/functions.tsv
 
 A funkcionális kategóriák fa struktúráját írja le.
 
-Formátuma CSV, oszlopai: kategória azonosító, címke, szülő kategória azonosító.
+Formátuma TSV, oszlopai: kategória azonosító, címke, szülő kategória azonosító.
 
 Ha az utóbbi oszlopba olyan érték kerül, amihez nem tartozik sor, akkor az adott kategória a gyökérben lesz látható.
 
-```csv
+```tsv
 id,value,parent_id
 107054,Családsegítés,1070
 107014,Támogatott lakhatás hajléktalan személyek részére,1070
