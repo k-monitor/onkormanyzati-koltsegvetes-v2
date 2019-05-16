@@ -5,7 +5,13 @@ const xlsx = require('xlsx');
 
 // configruation
 
-const INPUT_FILE = 'data/src/tápió adatok.xlsx';
+if(process.argv.length < 3) {
+	console.log('\nKérlek add meg az input fájl útvonalát! Példa:\n');
+	console.log('\t node scripts/prepare-data data/src/input_fajl.xslx\n');
+	return;
+}
+
+const INPUT_FILE = process.argv[2];
 
 // main script
 
@@ -44,9 +50,9 @@ function convertBudget(tsv, outputFile) {
 		const cols = row.split('\t');
 		if (i == 0) {
 			funcIds = cols.map(s => s.split(' ')[0]);
-			funcIds[2] = '*';
+			funcIds[2] = '+';
 		} else if (cols[0].trim().match(/^\d{2,}$/)) { // valid econ ID
-			const econId = Number(cols[0]);
+			const econId = cols[0];
 			const econDesc = cols[1];
 			if (econDesc.indexOf('=') == -1) {
 				for (let j = 2; j < cols.length; j++) {
@@ -73,7 +79,7 @@ function generateTree(tsv, outputFile) {
 	rows.forEach(row => {
 		const cols = row.split('\t');
 		if (cols[0].trim().match(/^\d{2,}$/)) { // valid econ ID
-			const id = Number(cols[0]);
+			const id = cols[0];
 			const name = cols[1]
 				.replace(/ \([BK0-9\-]+\)/g, '') // remove alt. ID
 				.replace(/ \([=>0-9+….]+\)/, '') // remove equation
