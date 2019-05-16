@@ -5,13 +5,14 @@ const xlsx = require('xlsx');
 
 // configruation
 
-if(process.argv.length < 3) {
-	console.log('\nKérlek add meg az input fájl útvonalát! Példa:\n');
-	console.log('\t node scripts/prepare-data data/src/input_fajl.xslx\n');
-	return;
-}
+//if(process.argv.length < 3) {
+//	console.log('\nKérlek add meg az input fájl útvonalát! Példa:\n');
+//	console.log('\t node scripts/prepare-data data/src/input_fajl.xslx\n');
+//	return;
+//}
 
-const INPUT_FILE = process.argv[2];
+const INPUT_FILE = //process.argv[2];
+	'data/src/tápió adatok.xlsx';
 
 // main script
 
@@ -19,7 +20,9 @@ const INPUT_FILE = process.argv[2];
 	console.log(`Processing file: ${INPUT_FILE}`);
 	const workbook = xlsx.readFile(INPUT_FILE);
 
-	workbook.SheetNames.forEach(sheet => {
+	//workbook.SheetNames.forEach(sheet => {
+		sheet = "2018 BEVÉTEL";
+
 		console.log(`Processing sheet: ${sheet}`);
 		const sheetTsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheet], { FS: '\t' });
 
@@ -35,7 +38,7 @@ const INPUT_FILE = process.argv[2];
 		const treeFile = `data/${year}/${name}-tree.tsv`;
 		console.log(`\tGenerating tree -> ${treeFile}`);
 		generateTree(sheetTsv, treeFile);
-	});
+	//});
 })();
 
 // lib
