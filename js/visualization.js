@@ -131,8 +131,6 @@ Vue.component('vis', {
 
 			//generateColors();
 
-			console.log(self.roots);
-
 			self.loading = false;
 
 			window.addEventListener('resize', function () {
@@ -171,37 +169,22 @@ function Node(name, value, children) {
 	self.update();
 } // node
 
-function loadFlatTree(csv) {
+function loadFlatTree(tsv) {
 	/*
-		CSV structure:
-		line 0: ECON ID
-		line 1: ECON TITLE
-		col 0: FUNC ID
-		col 0: FUNC TITLE
-		cell i>1, j>1: VALUE
+		TSV structure:
+
+		econId \t funcId \t value
 	*/
 
-	// read CSV
-	var data = Papa.parse(csv, {
-		dynamicTyping: true,
-		header: false, // let's handle manually this time
-		skipEmptyLines: true
-	}).data;
-
-	// convert to JSON
-	var econ = data[0], budget = [];
-	for (var y = 0; y < data.length; y++) {
-		var func = data[y][0];
-		for (var x = 2; x < data[y].length; x++) {
-			if (2 <= y) {
-				budget.push({
-					econ_id: econ[x],
-					func_id: func,
-					value: Number((data[y][x] || '').toString().replace(/\D+/g, ''))
-				});
-			}
-		}
-	}
+	var budget = [];
+	tsv.split('\n').forEach(function (row) {
+		var cols = row.split('\t');
+		budget.push({
+			econ_id: cols[0],
+			func_id: cols[1].replace(/^0+/g, ''),
+			value: cols[2]
+		});
+	});
 
 	var econ = {};
 	var func = {};
@@ -216,22 +199,23 @@ function loadFlatTree(csv) {
 	return { econ: econ, func: func };
 }
 
-function loadTreeData(csv, TREE) { // data is CSV: id, value, parent_id
+function loadTreeData(tsv, TREE) {
+	/*
+		TSV structure:
 
-	// 0. parsing CSV
-	var data = Papa.parse(csv, {
-		dynamicTyping: true,
-		header: true,
-		skipEmptyLines: true,
-		trimHeader: true
-	}).data;
+		id \t name \t parent
+	*/
 
 	// 1. updating nodes with label and parent_id
-	$.each(data, function (k, v) {
-		if (!TREE[v.id]) TREE[v.id] = new Node('', 0, []);
-		TREE[v.id].name = v.value.trim();
-		TREE[v.id]['parent_id'] = v.parent_id;
-		TREE[v.id]['id'] = v.id;
+	tsv.split('\n').forEach(function (row) {
+		var cols = row.split('\t');
+		var id = cols[0];
+		var name = cols[1];
+		var parent = cols[2];
+		if (!TREE[id]) TREE[id] = new Node('', 0, []);
+		TREE[id].name = name.trim();
+		TREE[id]['parent_id'] = parent;
+		TREE[id]['id'] = id;
 	});
 
 	// 2. building up children arrays
