@@ -21,7 +21,7 @@
 180	Általános jellegű transzferek a kormányzat különböző szintjei között	1
 14010	Általános K+F politika	140
 731	Általános kórházi szolgáltatások	7
-1	Általános közszolgáltatások	NA
+1	Általános közszolgáltatások	0
 150	Általános közszolgáltatásokhoz kapcsolódó K+F	1
 15010	Általános közszolgáltatásokkal kapcsolatos alkalmazott kutatás és fejlesztés	150
 412	Általános munkaügyek	4
@@ -73,7 +73,7 @@
 900040	Egészségbiztosítási Alap funkcióra nem sorolható bevételei államháztartáson kívülről	9000
 76020	Egészségbiztosítási szolgáltatások igazgatása	760
 75010	Egészségüggyel kapcsolatos alkalmazott kutatás és fejlesztés	750
-7	Egészségügy	NA
+7	Egészségügy	0
 73410	Egészségügyi ápolás bentlakással	734
 76010	Egészségügy igazgatása	760
 750	Egészségügyi K+F	7
@@ -167,7 +167,7 @@
 12110	Gazdasági segítség nyújtása fejlődő és átmeneti gazdaságú országoknak	121
 122	Gazdasági segítség nyújtása nemzetközi szervezeteken keresztül	1
 12210	Gazdasági segítség nyújtása nemzetközi szervezeteken keresztül	122
-4	Gazdasági ügyek	NA
+4	Gazdasági ügyek	0
 480	Gazdasági ügyekhez kapcsolódó K+F	4
 48010	Gazdasági ügyekkel kapcsolatos alkalmazott kutatás és fejlesztés	480
 42140	Génmegőrzés, fajtavédelem	421
@@ -270,7 +270,7 @@
 76061	Környezet-egészségügyi feladatok	760
 530	Környezetszennyezés csökkentése	5
 53010	Környezetszennyezés csökkentésének igazgatása	530
-5	Környezetvédelem	NA
+5	Környezetvédelem	0
 55010	Környezetvédelemmel kapcsolatos alkalmazott kutatás és fejlesztés	550
 550	Környezetvédelmi K+F	5
 31010	Közbiztonság, közrend igazgatása	310
@@ -294,7 +294,7 @@
 900010	Központi költségvetés funkcióra nem sorolható bevételei államháztartáson kívülről	9000
 18020	Központi költségvetési befizetések	180
 35010	Közrenddel és közbiztonsággal kapcsolatos alkalmazott kutatás és kísérleti fejlesztés	350
-3	Közrend és közbiztonság	NA
+3	Közrend és közbiztonság	0
 350	Közrendhez és közbiztonsághoz kapcsolódó K+F	3
 13320	Köztemető-fenntartás és -működtetés	133
 31030	Közterület rendjének fenntartása	310
@@ -311,7 +311,7 @@
 113	Külügyek	1
 11310	Külügyek igazgatása	113
 610	Lakásépítés	6
-6	Közösségi létesítmények	NA
+6	Közösségi létesítmények	0
 65010	Lakás- és közműellátással, településfejlesztéssel kapcsolatos alkalmazott kutatás és fejlesztés	650
 650	Lakás- és közműellátással, településfejlesztéssel kapcsolatos K+F	6
 106020	Lakásfenntartással, lakhatással összefüggő ellátások	1060
@@ -380,7 +380,7 @@
 18060	Nyugdíjbiztosítási alap bevételei államháztartáson belülről	180
 900050	Nyugdíjbiztosítási Alap funkcióra nem sorolható bevételei államháztartáson kívülről	9000
 102010	Nyugdíjbiztosítási szolgáltatások igazgatása	1020
-9	Oktatás	NA
+9	Oktatás	0
 97010	Oktatáshoz kapcsolódó alkalmazott kutatás és fejlesztés	970
 970	Oktatáshoz kapcsolódó K+F	9
 98010	Oktatás igazgatása	980
@@ -440,7 +440,7 @@
 76063	Sugár-egészségügyi feladatok	760
 810	Szabadidős és sportszolgáltatások	8
 81061	Szabadidős park, fürdő és strandszolgáltatás	810
-8	Szabadidő	NA
+8	Szabadidő	0
 81045	Szabadidősport- (rekreációs sport-) tevékenység és támogatása	810
 850	Szabadidős tevékenységekhez, kultúrához és valláshoz kapcsolódó K+F	8
 85010	Szabadidős tevékenységekkel, sporttal, kultúrával és vallással kapcsolatos alkalmazott kutatás és fejlesztés	850
@@ -527,7 +527,7 @@
 45320	Vasút építése	453
 453	Vasúti közlekedés	4
 45310	Vasúti közlekedés igazgatása és támogatása	453
-2	Védelem	NA
+2	Védelem	0
 240	Védelemhez kapcsolódó K+F	2
 25020	Védelmi célú stratégiai tartalékok tárolása, kezelése	250
 25010	Védelmi feladatok igazgatása és szabályozása	250
@@ -550,4 +550,4 @@
 63020	Víztermelés, -kezelés, -ellátás	630
 63010	Vízügy igazgatása	630
 66010	Zöldterület-kezelés	660
-10	Szociális védelem	NA
+10	Szociális védelem	0

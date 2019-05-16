@@ -179,11 +179,13 @@ function loadFlatTree(tsv) {
 	var budget = [];
 	tsv.split('\n').forEach(function (row) {
 		var cols = row.split('\t');
-		budget.push({
-			econ_id: cols[0],
-			func_id: cols[1].replace(/^0+/g, ''),
-			value: cols[2]
-		});
+		if (cols[1] !== '+') {
+			budget.push({
+				econ_id: Number(cols[0]),
+				func_id: Number(cols[1]),
+				value: cols[2]
+			});
+		}
 	});
 
 	var econ = {};
@@ -209,9 +211,9 @@ function loadTreeData(tsv, TREE) {
 	// 1. updating nodes with label and parent_id
 	tsv.split('\n').forEach(function (row) {
 		var cols = row.split('\t');
-		var id = cols[0];
+		var id = Number(cols[0]);
 		var name = cols[1];
-		var parent = cols[2];
+		var parent = Number(cols[2]);
 		if (!TREE[id]) TREE[id] = new Node('', 0, []);
 		TREE[id].name = name.trim();
 		TREE[id]['parent_id'] = parent;
@@ -220,9 +222,11 @@ function loadTreeData(tsv, TREE) {
 
 	// 2. building up children arrays
 	$.each(TREE, function (k, v) {
-		if (TREE[v.parent_id]) {
-			TREE[v.parent_id].children.push(v);
-			TREE[v.parent_id].update();
+		//var p = Number('0' + (v.parent_id || '').replace(/\D+/g, ''));
+		var p = v.parent_id;
+		if (TREE[p]) {
+			TREE[p].children.push(v);
+			TREE[p].update();
 		} else {
 			v.parent_id = null;
 		}

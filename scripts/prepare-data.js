@@ -84,7 +84,7 @@ function generateTree(tsv, outputFile) {
 				.replace(/ \([BK0-9\-]+\)/g, '') // remove alt. ID
 				.replace(/ \([=>0-9+….]+\)/, '') // remove equation
 				.trim();
-			const formulaMatch = cols[1].match(/ \(\D*([0-9+….]+)\)/);
+			const formulaMatch = cols[1].match(/ \([=>]*([0-9+….]+)\)/);
 			const formula = formulaMatch ? formulaMatch[1] : '';
 			const children = parseFormula(formula);
 			nodes[Number(id)] = {

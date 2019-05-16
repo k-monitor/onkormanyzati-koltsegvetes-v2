@@ -81,10 +81,9 @@ Formátuma TSV, oszlopai: kategória azonosító, címke, szülő kategória azo
 Ha az utóbbi oszlopba olyan érték kerül, amihez nem tartozik sor, akkor az adott kategória a gyökérben lesz látható.
 
 ```tsv
-id,value,parent_id
-107054,Családsegítés,1070
-107014,Támogatott lakhatás hajléktalan személyek részére,1070
-900070,Fejezeti és általános tartalékok elszámolása,9000
+107054	Családsegítés	1070
+107014	Támogatott lakhatás hajléktalan személyek részére	1070
+900070	Fejezeti és általános tartalékok elszámolása	9000
 ...
 ```
 
@@ -99,7 +98,6 @@ Formátuma TSV, oszlopai: közgazdasági kategória azonosítója, funkcionális
 Ahol a funkcionális kategória azonosítója helyett `+` jel van, az csak a közgazdasági kategória szerinti összegzést jelent, vagyis benne van az összes funkcionális kategória. Erre a prognózisoknál van szükség, ahol a funkcionális bontás nem ismert.
 
 ```tsv
-...
 09	082044	137772
 09	086090	15308
 10	+	53130
