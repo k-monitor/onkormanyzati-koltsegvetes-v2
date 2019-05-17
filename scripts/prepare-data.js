@@ -152,9 +152,16 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		}
 		sumNode(root);
 
-		// TODO remove nodes with 0 value recursively
+		function cleanUp(node) {
+			delete node.deletable;
+			if (node.children) {
+				node.children = node.children.filter(n => n.value && n.value > 0);
+				node.children.forEach(cleanUp);
+			}
+		}
+		cleanUp(root);
 
-		return JSON.stringify(root, null, 2);
+		return JSON.stringify(root);
 	} else {
 		console.log('No functional data found.');
 		return null;
