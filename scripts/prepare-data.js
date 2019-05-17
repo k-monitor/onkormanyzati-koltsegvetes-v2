@@ -129,11 +129,14 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 			if (node.parent) {
 				if (nodes[node.parent]) {
 					nodes[node.parent].children = (nodes[node.parent].children || []).concat(node);
+					node.deletable = true;
+				} else {
+					console.log(`Parent node not found: ${node.parent}`);
 				}
 			}
 		});
 		Object.values(nodes)
-			.filter(node => node.parent)
+			.filter(node => node.deletable)
 			.forEach(node => delete nodes[node.id]);
 		const root = {
 			children: Object.values(nodes)
@@ -150,8 +153,6 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		sumNode(root);
 
 		// TODO remove nodes with 0 value recursively
-
-		// TODO something's wrong with tree, total is lower
 
 		return JSON.stringify(root, null, 2);
 	} else {
