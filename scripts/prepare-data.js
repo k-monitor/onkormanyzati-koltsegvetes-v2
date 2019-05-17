@@ -36,7 +36,7 @@ const INPUT_FILE = //process.argv[2];
 			writeToFile(generateFunctionalTree(matrixTsv, funcTreeTsv), funcFile);
 
 		} else {
-			console.log('  - Invalid sheet name!');
+			console.log('Invalid sheet name!');
 		}
 	});
 })();
@@ -47,8 +47,10 @@ const INPUT_FILE = //process.argv[2];
  * @param {string} matrixTsv Input matrix in TSV string
  * @returns {string} Economical tree
  */
-function generateEconomicTree(matrixTsv, ) {
+function generateEconomicTree(matrixTsv) {
 	const nodes = {};
+
+	// collecting all nodes
 	matrixTsv.split('\n')
 		.splice(2) // header is at least 2 rows
 		.filter(row => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
@@ -57,14 +59,26 @@ function generateEconomicTree(matrixTsv, ) {
 			id = Number(id);
 			value = Number(value.replace(/\D+/g, ''));
 			const { name, childrenIds, altId } = parseEconomicDescriptor(descriptor);
-			nodes[id] = { id, altId, name, childrenIds };
+			nodes[id] = { id, altId, name, childrenIds, value };
 		});
-	console.log(nodes);
-	/*
-		- header kuka és csak az első 3 oszlop kell
-		- kiparszoljuk a sorokból a [ id, name, value, child_ids ] objektumokat
-		- végigmegyünk rajtuk, és a child_ids alapján összerakjuk a fát
-	*/
+
+	// filling relations
+	Object.values(nodes).forEach(node => {
+		if (node.childrenIds) {
+			node.children = [];
+			node.childrenIds.forEach(cid => {
+				if (nodes[cid]) {
+					nodes[cid].parent = node.id;
+					node.children.push(nodes[cid]);
+				}
+			});
+			delete node.childrenIds;
+		}
+	});
+
+	// output is the list of nodes that have no parent
+	const childrenOfRoot = Object.values(nodes).filter(node => !node.parent);
+	return JSON.stringify(childrenOfRoot);
 }
 
 /**
@@ -118,7 +132,7 @@ function parseEconomicDescriptor(descriptor) {
 		childrenIds = parseFormula(m[1]);
 	}
 
-	name = descriptor.replace(/\([>=+….\) \(BK0-9\-]+\)$/, '');
+	name = descriptor.replace(/ +\([>=+….\) \(BK0-9\-]+\)$/, '');
 
 	return { altId, childrenIds, name };
 }
@@ -148,7 +162,7 @@ function parseFormula(f) {
  */
 function writeToFile(content, filename) {
 	if (content && content.length > 0) {
-		console.log(`Writing file (~${Math.round(content.length / 1024)} KB): ${filename}`);
+		console.log(`Writing file (${Math.round(content.length / 102.4) / 10} KB): ${filename}`);
 		fs.writeFileSync(filename, content);
 	}
 }
