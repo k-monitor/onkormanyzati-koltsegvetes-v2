@@ -8,16 +8,17 @@ Vue.component('vis', {
 	data: function () {
 		return {
 			curves: [],
+			economicTree: null,
+			functionalTree: null,
 			hovered: -1,
 			loading: true,
 			mode: 1,
-			path: [],
-			roots: [],
+			path: []
 		};
 	},
 	computed: {
 		root: function () {
-			return this.roots[this.mode % 2];
+			return this.mode % 2 == 0 ? this.economicTree : this.functionalTree;
 		},
 		node: function () {
 			var r = this.root || new Node('', 0, []);
@@ -120,7 +121,8 @@ Vue.component('vis', {
 			$.get(self.e),
 			$.get(self.f)
 		).then(function (e, f) {
-			self.roots = [e[0], f[0]];
+			self.economicTree = e[0];
+			self.functionalTree = f[0];
 			self.loading = false;
 			window.addEventListener('resize', function () {
 				self.updateCurves();
