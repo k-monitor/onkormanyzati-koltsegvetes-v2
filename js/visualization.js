@@ -4,7 +4,7 @@ $(function () {
 
 Vue.component('vis', {
 	template: '#vis-template',
-	props: ['id', 'b', 'e', 'f'],
+	props: ['id', 'e', 'f'],
 	data: function () {
 		return {
 			curves: [],
@@ -117,22 +117,11 @@ Vue.component('vis', {
 	mounted: function () {
 		var self = this;
 		$.when(
-			$.get(self.b),
 			$.get(self.e),
 			$.get(self.f)
-		).then(function (b, e, f) {
-			var b = loadFlatTree(b[0]);
-			loadTreeData(e[0], b.econ);
-			loadTreeData(f[0], b.func);
-			self.roots = [
-				new Node('Teljes költségvetés', 0, Object.values(b.econ)),
-				new Node('Teljes költségvetés', 0, Object.values(b.func))
-			];
-
-			//generateColors();
-
+		).then(function (e, f) {
+			self.roots = [e[0], f[0]];
 			self.loading = false;
-
 			window.addEventListener('resize', function () {
 				self.updateCurves();
 			});
@@ -168,86 +157,6 @@ function Node(name, value, children) {
 
 	self.update();
 } // node
-
-function loadFlatTree(tsv) {
-	/*
-		TSV structure:
-
-		econId \t funcId \t value
-	*/
-
-	var budget = [];
-	tsv.split('\n').forEach(function (row) {
-		var cols = row.split('\t');
-		if (cols[1] !== '+') {
-			budget.push({
-				econ_id: Number(cols[0]),
-				func_id: Number(cols[1]),
-				value: cols[2]
-			});
-		}
-	});
-
-	var econ = {};
-	var func = {};
-	$.each(budget, function (k, v) {
-		addOrInc(econ, v.econ_id, Number(v.value));
-		addOrInc(func, v.func_id, Number(v.value));
-	});
-
-	mapToNode(econ);
-	mapToNode(func);
-
-	return { econ: econ, func: func };
-}
-
-function loadTreeData(tsv, TREE) {
-	/*
-		TSV structure:
-
-		id \t name \t parent
-	*/
-
-	// 1. updating nodes with label and parent_id
-	tsv.split('\n').forEach(function (row) {
-		var cols = row.split('\t');
-		var id = Number(cols[0]);
-		var name = cols[1];
-		var parent = Number(cols[2]);
-		if (!TREE[id]) TREE[id] = new Node('', 0, []);
-		TREE[id].name = name.trim();
-		TREE[id]['parent_id'] = parent;
-		TREE[id]['id'] = id;
-	});
-
-	// 2. building up children arrays
-	$.each(TREE, function (k, v) {
-		//var p = Number('0' + (v.parent_id || '').replace(/\D+/g, ''));
-		var p = v.parent_id;
-		if (TREE[p]) {
-			TREE[p].children.push(v);
-			TREE[p].update();
-		} else {
-			v.parent_id = null;
-		}
-	});
-
-	// 3. remove non-root elements
-	$.each(TREE, function (k, v) {
-		if (null != v.parent_id) delete TREE[k];
-	});
-}
-
-function addOrInc(object, key, value) {
-	if (!object[key]) object[key] = 0;
-	object[key] += value;
-}
-
-function mapToNode(object) {
-	Object.keys(object).map(function (k) {
-		object[k] = new Node('', object[k], []);
-	});
-}
 
 function groupNums(v) {
 	return (v + '').replace(/\d(?=(?:\d{3})+(?:\.|$))/g, function ($0, i) { return $0 + ' ' });
