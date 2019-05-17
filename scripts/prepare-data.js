@@ -89,8 +89,8 @@ function generateFilenames(sheetName) {
 	let [year, name] = sheetName.split(' ');
 	name = name.replace('BEVÉTEL', 'income').replace('KIADÁS', 'expense');
 	const dir = `data/${year}`;
-	const econFile = `${dir}/${name}-econ.tsv`
-	const funcFile = `${dir}/${name}-func.tsv`
+	const econFile = `${dir}/${name}-econ.json`;
+	const funcFile = `${dir}/${name}-func.json`;
 	return { dir, econFile, funcFile };
 }
 
@@ -100,13 +100,15 @@ function generateFilenames(sheetName) {
  * @returns {string} Functional tree (if available in the matrix)
  */
 function generateFunctionalTree(matrixTsv, funcTreeTsv) {
-	/*
-		- töröljük a tényleges subtotal sorokat! (amiben ">=" van, azt nem) és aztán az első 3 oszlopot
-		- oszloponként összegezzük a maradékot, így [id, value] objektumokat kapunk
-		- betöltjük a funkcionális fa definíciót
-		- az alapján felépítjük a fát
-		- rekurzívan összegzünk
-	*/
+	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv);
+
+	// TODO import and sum values from matrix into nodes
+	//- töröljük a tényleges subtotal sorokat! (amiben ">=" van, azt nem) és aztán az első 3 oszlopot
+	//- oszloponként összegezzük a maradékot, így [id, value] objektumokat kapunk
+	// TODO add children
+	// TODO remove parentless
+	// TODO recursive sum
+	// TODO output array
 }
 
 /**
@@ -155,6 +157,23 @@ function parseFormula(f) {
 }
 
 /**
+ * @param {string} tsv Functional tree descriptor TSV string
+ * @returns Functional tree nodes having `{id, name, parent}` inside an object where key is the `id`
+ */
+function parseFunctionalTreeDescriptor(tsv) {
+	const nodes = {};
+	tsv.split('\n').forEach(row => {
+		console.log(row);
+		let [id, name, parent] = row.split('\t');
+		id = Number(id);
+		parent = Number('0' + parent.replace(/\D+/g, ''));
+		parent = parent > 0 ? parent : null;
+		nodes[id] = { id, name, parent };
+	});
+	return nodes;
+}
+
+/**
  * Writes content to file if the content is actually containing anything.
  *
  * @param {string} content Content to be written into file
@@ -166,80 +185,3 @@ function writeToFile(content, filename) {
 		fs.writeFileSync(filename, content);
 	}
 }
-
-// olds
-
-function convertBudget(tsv, outputFile) {
-	mkdirp(path.dirname(outputFile));
-	const outputLines = [];
-
-	let funcIds;
-	const rows = tsv.split('\n').splice(1); // remove first row
-	rows.forEach((row, i) => {
-		const cols = row.split('\t');
-		if (i == 0) {
-			funcIds = cols.map(s => s.split(' ')[0]);
-			funcIds[2] = '+';
-		} else if (cols[0].trim().match(/^\d{2,}$/)) { // valid econ ID
-			const econId = cols[0];
-			const econDesc = cols[1];
-			if (econDesc.indexOf('=') == -1) {
-				for (let j = 2; j < cols.length; j++) {
-					const value = Number(cols[j].replace(/\D+/g, ''));
-					if (value > 0) {
-						const outputLine = [
-							econId,
-							funcIds[j],
-							value
-						].join('\t');
-						outputLines.push(outputLine);
-					}
-				}
-			}
-		}
-	});
-
-	fs.writeFileSync(outputFile, outputLines.join('\n'));
-}
-
-function generateTree(tsv, outputFile) {
-	const rows = tsv.split('\n').splice(2); // remove first 2 rows
-	const nodes = {};
-	rows.forEach(row => {
-		const cols = row.split('\t');
-		if (cols[0].trim().match(/^\d{2,}$/)) { // valid econ ID
-			const id = cols[0];
-			const name = cols[1]
-				.replace(/ \([BK0-9\-]+\)/g, '') // remove alt. ID
-				.replace(/ \([=>0-9+….]+\)/, '') // remove equation
-				.trim();
-			const formulaMatch = cols[1].match(/ \([=>]*([0-9+….]+)\)/);
-			const formula = formulaMatch ? formulaMatch[1] : '';
-			const children = parseFormula(formula);
-			nodes[Number(id)] = {
-				id,
-				name,
-				children
-			};
-		}
-	});
-	Object.values(nodes).forEach(parent => {
-		parent.children.forEach(childId => {
-			if (nodes[childId]) {
-				nodes[childId].parent = parent.id;
-			}
-		});
-	});
-
-	const outputLines = [];
-	Object.values(nodes).forEach(node => {
-		const outputLine = [
-			node.id,
-			node.name,
-			node.parent || 0
-		].join('\t');
-		outputLines.push(outputLine);
-	});
-	fs.writeFileSync(outputFile, outputLines.join('\n'));
-}
-
