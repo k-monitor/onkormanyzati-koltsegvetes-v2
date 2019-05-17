@@ -106,18 +106,21 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 	const header = rows[1].split('\t').map(col => Number(col.split(' ')[0]));
 	if (header.length > 3) {
 
-		// collecting values for nodes
-		rows.splice(2).forEach(row => {
-			const cols = row.split('\t');
-			const econDescriptor = cols[1] || '';
-			if (!isCompleteSubtotal(econDescriptor)) {
-				cols.forEach((col, i) => {
-					if (i > 2) {
-						const id = header[i];
-						const value = Number(col.replace(/\D+/g, ''));
-						nodes[id].value = (nodes[id].value || 0) + value;
-					}
-				});
+		// finding the total row
+		let max = 0, maxRow = '';
+		rows.forEach(row => {
+			const sum = Number((row.split('\t')[2] || '0').replace(/\D+/g, ''));
+			if (sum > max) {
+				max = sum;
+				maxRow = row;
+			}
+		});
+
+		// collecting total values for nodes
+		maxRow.split('\t').forEach((col, i) => {
+			if (i > 2) {
+				const id = header[i];
+				nodes[id].value = Number(col.replace(/\D+/g, ''));
 			}
 		});
 
@@ -136,17 +139,6 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 			children: Object.values(nodes)
 		};
 
-		/*function sumNode(node) {
-			if (node.children) {
-				return node.children
-					.map(n => sumNode(n))
-					.reduce((a, b) => a + b, 0);
-			} else {
-				return node.value || 0;
-			}
-		}
-		root.value = sumNode(root);*/
-
 		function sumNode(node) {
 			if (node.children) {
 				node.value = node.children
@@ -159,21 +151,13 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 
 		// TODO remove nodes with 0 value recursively
 
-		// TODO check sum...
+		// TODO something's wrong with tree, total is lower
 
 		return JSON.stringify(root, null, 2);
 	} else {
 		console.log('No functional data found.');
 		return null;
 	}
-}
-
-/**
- * @param {string} d Economic category descriptor
- * @returns {boolean} Whether it indicates a complete subtotal (all parts are known and does not add new information)
- */
-function isCompleteSubtotal(d) {
-	return d.match(/ \(=?[0-9+….]+\)/) ? true : false;
 }
 
 /**
