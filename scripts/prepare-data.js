@@ -19,29 +19,141 @@ const INPUT_FILE = //process.argv[2];
 (() => {
 	console.log(`Processing file: ${INPUT_FILE}`);
 	const workbook = xlsx.readFile(INPUT_FILE);
+	const funcTreeTsv = fs.readFileSync('data/functions.tsv', 'utf-8');
 
-	//workbook.SheetNames.forEach(sheet => {
-		sheet = "2018 BEVÉTEL";
+	workbook.SheetNames.forEach(sheetName => {
+		console.log(`Reading sheet: ${sheetName}`);
+		const matrixTsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 
-		console.log(`Processing sheet: ${sheet}`);
-		const sheetTsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheet], { FS: '\t' });
+		if (isSheetNameValid(sheetName)) {
+			const { dir, econFile, funcFile } = generateFilenames(sheetName);
+			mkdirp(dir);
 
-		const year = sheet.split(' ')[0];
-		const name = sheet.split(' ')[1]
-			.replace('BEVÉTEL', 'income')
-			.replace('KIADÁS', 'expense');
+			console.log('Generating economic tree');
+			writeToFile(generateEconomicTree(matrixTsv), econFile);
 
-		const matrixFile = `data/${year}/${name}.tsv`;
-		console.log(`\tGenerating matrix -> ${matrixFile}`);
-		convertBudget(sheetTsv, matrixFile);
+			console.log('Generating functional tree');
+			writeToFile(generateFunctionalTree(matrixTsv, funcTreeTsv), funcFile);
 
-		const treeFile = `data/${year}/${name}-tree.tsv`;
-		console.log(`\tGenerating tree -> ${treeFile}`);
-		generateTree(sheetTsv, treeFile);
-	//});
+		} else {
+			console.log('  - Invalid sheet name!');
+		}
+	});
 })();
 
 // lib
+
+/**
+ * @param {string} matrixTsv Input matrix in TSV string
+ * @returns {string} Economical tree
+ */
+function generateEconomicTree(matrixTsv, ) {
+	const nodes = {};
+	matrixTsv.split('\n')
+		.splice(2) // header is at least 2 rows
+		.filter(row => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
+		.forEach(row => {
+			let [id, descriptor, value] = row.split('\t'); // we need only these 3 columns
+			id = Number(id);
+			value = Number(value.replace(/\D+/g, ''));
+			const { name, childrenIds, altId } = parseEconomicDescriptor(descriptor);
+			nodes[id] = { id, altId, name, childrenIds };
+		});
+	console.log(nodes);
+	/*
+		- header kuka és csak az első 3 oszlop kell
+		- kiparszoljuk a sorokból a [ id, name, value, child_ids ] objektumokat
+		- végigmegyünk rajtuk, és a child_ids alapján összerakjuk a fát
+	*/
+}
+
+/**
+ * @param {string} sheetName Worksheet name
+ * @returns {{dir: string, econFile: string, funcFile: string}} Directory name and filenames for economical and functional trees, based on worksheet name
+ */
+function generateFilenames(sheetName) {
+	let [year, name] = sheetName.split(' ');
+	name = name.replace('BEVÉTEL', 'income').replace('KIADÁS', 'expense');
+	const dir = `data/${year}`;
+	const econFile = `${dir}/${name}-econ.tsv`
+	const funcFile = `${dir}/${name}-func.tsv`
+	return { dir, econFile, funcFile };
+}
+
+/**
+ * @param {string} matrixTsv Input matrix in TSV string
+ * @param {string} funcTreeTsv Functional tree descriptor in TSV string
+ * @returns {string} Functional tree (if available in the matrix)
+ */
+function generateFunctionalTree(matrixTsv, funcTreeTsv) {
+	/*
+		- töröljük a tényleges subtotal sorokat! (amiben ">=" van, azt nem) és aztán az első 3 oszlopot
+		- oszloponként összegezzük a maradékot, így [id, value] objektumokat kapunk
+		- betöltjük a funkcionális fa definíciót
+		- az alapján felépítjük a fát
+		- rekurzívan összegzünk
+	*/
+}
+
+/**
+ * @param {string} sheetName Worksheet name
+ * @returns {boolean} Whether the sheet name is valid for processing
+ */
+function isSheetNameValid(sheetName) {
+	return sheetName.match(/^\d{4} (BEVÉTEL|KIADÁS)$/);
+}
+
+/**
+ * @param {string} descriptor Economical category descriptor (2nd column in matrix)
+ * @returns {{altId: string, childrenIds: number[], name: string}} Components of category descriptor
+ */
+function parseEconomicDescriptor(descriptor) {
+	let altId, childrenIds, name, m;
+
+	if ((m = descriptor.match(/ \(([BK0-9\-]+)\)$/))) {
+		altId = m[1];
+	}
+
+	if ((m = descriptor.match(/ \([>=]*([0-9+….]+)\) /))) {
+		childrenIds = parseFormula(m[1]);
+	}
+
+	name = descriptor.replace(/\([>=+….\) \(BK0-9\-]+\)$/, '');
+
+	return { altId, childrenIds, name };
+}
+
+/**
+ * @param {string} f Formula like `01+…+04+21`
+ * @returns {number[]} All the numbers referenced in the formula, e.g. `[1,2,3,4,21]`
+ */
+function parseFormula(f) {
+	const ids = [];
+	f.replace(/\+[….]+\+/, ':').split('\+').forEach(el => {
+		if (el.match(/^\d+$/g)) {
+			ids.push(Number(el));
+		} else if (el.indexOf(':') > -1) {
+			const bounds = el.split(':').map(b => b.match(/^\d+$/) ? Number(b) : 0);
+			for (let i = bounds[0]; i <= bounds[1]; i++) ids.push(i);
+		}
+	});
+	return ids;
+}
+
+/**
+ * Writes content to file if the content is actually containing anything.
+ *
+ * @param {string} content Content to be written into file
+ * @param {string} filename Output filename
+ */
+function writeToFile(content, filename) {
+	if (content && content.length > 0) {
+		console.log(`Writing file (~${Math.round(content.length / 1024)} KB): ${filename}`);
+		fs.writeFileSync(filename, content);
+	}
+}
+
+// olds
 
 function convertBudget(tsv, outputFile) {
 	mkdirp(path.dirname(outputFile));
@@ -117,15 +229,3 @@ function generateTree(tsv, outputFile) {
 	fs.writeFileSync(outputFile, outputLines.join('\n'));
 }
 
-function parseFormula(f) {
-	const ids = [];
-	f.replace(/\+[….]+\+/, ':').split('\+').forEach(el => {
-		if (el.match(/^\d+$/g)) {
-			ids.push(Number(el));
-		} else if (el.indexOf(':') > -1) {
-			const bounds = el.split(':').map(b => b.match(/^\d+$/) ? Number(b) : 0);
-			for (let i = bounds[0]; i <= bounds[1]; i++) ids.push(i);
-		}
-	});
-	return ids;
-}
