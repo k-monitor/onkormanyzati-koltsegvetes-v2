@@ -74,9 +74,8 @@ function generateEconomicTree(matrixTsv) {
 		}
 	});
 
-	// output is the list of nodes that have no parent
-	const children = Object.values(nodes).filter(node => !node.parent);
-	return JSON.stringify({ children });
+	// ideally we have only one child, so it can be the root
+	return JSON.stringify(Object.values(nodes).filter(node => !node.parent)[0]);
 }
 
 /**
