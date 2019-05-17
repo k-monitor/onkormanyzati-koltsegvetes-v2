@@ -22,6 +22,8 @@ Ezt a fájlt ajánlott a `data/src/` könyvtárba helyezni, majd a JSON fájloka
 node scripts/prepare-data data/src/input_fajl.xslx
 ```
 
+**TODO: milestones**
+
 
 
 ### Excel fájl formátuma
