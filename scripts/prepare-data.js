@@ -136,6 +136,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 			.filter(node => node.deletable)
 			.forEach(node => delete nodes[node.id]);
 		const root = {
+			name: 'Teljes költségvetés',
 			children: Object.values(nodes)
 		};
 

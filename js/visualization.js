@@ -33,8 +33,8 @@ Vue.component('vis', {
 		},
 		children: function () {
 			try {
-				return this.node.children.filter(function (n) {
-					return n.value > 0;
+				return this.node.children.sort(function (a, b) {
+					return b.value - a.value;
 				});
 			} catch (e) {
 				return [];
@@ -95,7 +95,7 @@ Vue.component('vis', {
 			return ids.indexOf(id);
 		},
 		down: function (index) {
-			if (this.children[index].children.length > 0) {
+			if (this.children[index].children && this.children[index].children.length > 0) {
 				this.path.push(index);
 			}
 		},
