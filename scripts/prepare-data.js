@@ -102,13 +102,38 @@ function generateFilenames(sheetName) {
 function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv);
 
-	// TODO import and sum values from matrix into nodes
-	//- töröljük a tényleges subtotal sorokat! (amiben ">=" van, azt nem) és aztán az első 3 oszlopot
-	//- oszloponként összegezzük a maradékot, így [id, value] objektumokat kapunk
-	// TODO add children
-	// TODO remove parentless
-	// TODO recursive sum
-	// TODO output array
+	const rows = matrixTsv.split('\n');
+	const header = rows[1].split('\t').map(col => Number(col.split(' ')[0]));
+	if (header.length > 3) {
+		rows.splice(2).forEach(row => {
+			const cols = row.split('\t');
+			const econDescriptor = cols[1] || '';
+			if (!isCompleteSubtotal(econDescriptor)) {
+				cols.forEach((col, i) => {
+					if (i > 2) {
+						const id = header[i];
+						const value = Number(col.replace(/\D+/g, ''));
+						nodes[id].value = (nodes[id].value || 0) + value;
+					}
+				});
+			}
+		});
+		// TODO add children
+		// TODO remove parentless
+		// TODO recursive sum
+		// TODO output array
+	} else {
+		console.log('No functional data found.');
+		return null;
+	}
+}
+
+/**
+ * @param {string} d Economic category descriptor
+ * @returns {boolean} Whether it indicates a complete subtotal (all parts are known and does not add new information)
+ */
+function isCompleteSubtotal(d) {
+	return d.match(/ \(=?[0-9+….]+\)/) ? true : false;
 }
 
 /**
@@ -163,7 +188,6 @@ function parseFormula(f) {
 function parseFunctionalTreeDescriptor(tsv) {
 	const nodes = {};
 	tsv.split('\n').forEach(row => {
-		console.log(row);
 		let [id, name, parent] = row.split('\t');
 		id = Number(id);
 		parent = Number('0' + parent.replace(/\D+/g, ''));
