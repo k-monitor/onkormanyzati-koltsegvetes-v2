@@ -77,8 +77,8 @@ function generateEconomicTree(matrixTsv) {
 	});
 
 	// output is the list of nodes that have no parent
-	const childrenOfRoot = Object.values(nodes).filter(node => !node.parent);
-	return JSON.stringify(childrenOfRoot);
+	const children = Object.values(nodes).filter(node => !node.parent);
+	return JSON.stringify({ children });
 }
 
 /**
@@ -105,6 +105,8 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 	const rows = matrixTsv.split('\n');
 	const header = rows[1].split('\t').map(col => Number(col.split(' ')[0]));
 	if (header.length > 3) {
+
+		// collecting values for nodes
 		rows.splice(2).forEach(row => {
 			const cols = row.split('\t');
 			const econDescriptor = cols[1] || '';
@@ -118,10 +120,48 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 				});
 			}
 		});
-		// TODO add children
-		// TODO remove parentless
-		// TODO recursive sum
-		// TODO output array
+
+		// transforming into tree
+		Object.values(nodes).forEach(node => {
+			if (node.parent) {
+				if (nodes[node.parent]) {
+					nodes[node.parent].children = (nodes[node.parent].children || []).concat(node);
+				}
+			}
+		});
+		Object.values(nodes)
+			.filter(node => node.parent)
+			.forEach(node => delete nodes[node.id]);
+		const root = {
+			children: Object.values(nodes)
+		};
+
+		/*function sumNode(node) {
+			if (node.children) {
+				return node.children
+					.map(n => sumNode(n))
+					.reduce((a, b) => a + b, 0);
+			} else {
+				return node.value || 0;
+			}
+		}
+		root.value = sumNode(root);*/
+
+		function sumNode(node) {
+			if (node.children) {
+				node.value = node.children
+					.map(n => sumNode(n))
+					.reduce((sum, node) => sum + (node.value || 0), 0);
+			}
+			return node;
+		}
+		sumNode(root);
+
+		// TODO remove nodes with 0 value recursively
+
+		// TODO check sum...
+
+		return JSON.stringify(root, null, 2);
 	} else {
 		console.log('No functional data found.');
 		return null;
