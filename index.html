@@ -94,11 +94,11 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<!--vis
+						<vis
 							:id="'expenses-vis'"
 							:e="'data/2018/expense-econ.json'"
 							:f="'data/2018/expense-func.json'"
-						></vis-->
+						></vis>
 					</div>
 				</div>
 			</div>
@@ -111,7 +111,7 @@
 			</div>
 			<div v-else>
 				<div class="row justify-content-center">
-					<div class="col-lg-8 text-center">
+					<div class="col-lg-8 text-center" v-if="e && f">
 						<ul class="justify-content-center mb-5 nav nav-pills w-100">
 							<li class="nav-item">
 								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="A költségvetési kiadásokat osztályozza, azok társadalmi-gazdasági cél szerinti összetételét mutatja. Az általános közszolgáltatásoktól a védelmi kiadásokig összesen 10 kategóriában tartalmazza a kerület működésének területeit." :class="{ active: mode == 1 }"  @click="path = []; mode = 1">

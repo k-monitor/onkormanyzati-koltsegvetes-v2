@@ -4,7 +4,7 @@ const xlsx = require('xlsx');
 
 // configruation
 
-if(process.argv.length < 3) {
+if (process.argv.length < 3) {
 	console.log('\nKérlek add meg az input fájl útvonalát! Példa:\n');
 	console.log('\t node scripts/prepare-data data/src/input_fajl.xslx\n');
 	return;
@@ -75,7 +75,9 @@ function generateEconomicTree(matrixTsv) {
 	});
 
 	// ideally we have only one child, so it can be the root
-	return JSON.stringify(Object.values(nodes).filter(node => !node.parent)[0]);
+	const root = Object.values(nodes).filter(node => !node.parent)[0];
+	root.name = 'Összesen';
+	return JSON.stringify(root);
 }
 
 /**
@@ -136,7 +138,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 			.filter(node => node.deletable)
 			.forEach(node => delete nodes[node.id]);
 		const root = {
-			name: 'Teljes költségvetés',
+			name: 'Összesen',
 			children: Object.values(nodes)
 		};
 
