@@ -1,18 +1,16 @@
 const fs = require('fs');
-const path = require('path');
 const mkdirp = require('mkdirp').sync;
 const xlsx = require('xlsx');
 
 // configruation
 
-//if(process.argv.length < 3) {
-//	console.log('\nKérlek add meg az input fájl útvonalát! Példa:\n');
-//	console.log('\t node scripts/prepare-data data/src/input_fajl.xslx\n');
-//	return;
-//}
+if(process.argv.length < 3) {
+	console.log('\nKérlek add meg az input fájl útvonalát! Példa:\n');
+	console.log('\t node scripts/prepare-data data/src/input_fajl.xslx\n');
+	return;
+}
 
-const INPUT_FILE = //process.argv[2];
-	'data/src/tápió adatok.xlsx';
+const INPUT_FILE = process.argv[2];
 
 // main script
 

@@ -9,14 +9,14 @@ Az oldal alapja a StartBootstrap / Creative sablon.
 A vizualizáció az alábbi adatfájlokból dolgozik:
 
 - `data/functions.tsv`: a funkcionális kategóriák fa struktúrája
-- `data/<évszám>/expense.tsv`: kiadásra vonatkozó összegek, közgazdasági és funkcionális bontásban
-- `data/<évszám>/expense-tree.tsv`: kiadásra vonatkozó közgazdasági kategóriák fa struktúrája
-- `data/<évszám>/income.tsv`: bevételre vonatkozó összegek, közgazdasági és funkcionális bontásban
-- `data/<évszám>/income-tree.tsv`: bevételre vonatkozó közgazdasági kategóriák fa struktúrája
+- `data/<évszám>/expense-econ.json`: adott év kiadásai, közgazdasági bontásban, fa struktúrába rendezve
+- `data/<évszám>/expense-func.json`: adott év kiadásai, funkcionális bontásban, fa struktúrába rendezve
+- `data/<évszám>/income-econ.json`: adott év bevételei, közgazdasági bontásban, fa struktúrába rendezve
+- `data/<évszám>/income-func.json`: adott év bevételei, funkcionális bontásban, fa struktúrába rendezve
 
 Az első fájl adott, míg a többi **legenerálható az általános KGR rendszer importjából,** ami egy XLSX (Excel) fájl.
 
-Ezt a fájlt ajánlott a `data/src/` könyvtárba helyezni, majd a TSV fájlokat az alábbi paranccsal lehet elkészíteni:
+Ezt a fájlt ajánlott a `data/src/` könyvtárba helyezni, majd a JSON fájlokat az alábbi paranccsal lehet elkészíteni:
 
 ```
 node scripts/prepare-data data/src/input_fajl.xslx
@@ -33,15 +33,15 @@ A program ezeket a neveket átalakítja fájlnevekké a következő módon:
 ```
 Munkalapok:         Fájlok:
 
-2018 BEVÉTEL   ->   data/2018/income.tsv   +  data/2018/income-tree.tsv
-2018 KIADÁS    ->   data/2018/expense.tsv  +  data/2018/expense-tree.tsv
-2019 BEVÉTEL   ->   data/2019/income.tsv   +  data/2019/income-tree.tsv
-2019 KIADÁS    ->   data/2019/expense.tsv  +  data/2019/expense-tree.tsv
+2018 BEVÉTEL   ->   data/2018/income-econ.json   +  data/2018/income-func.json
+2018 KIADÁS    ->   data/2018/expense-econ.json  +  data/2018/expense-func.json
+2019 BEVÉTEL   ->   data/2019/income-econ.json
+2019 KIADÁS    ->   data/2019/expense-econ.json
 ```
 
-A program minden munkafüzethez le fog generálni 2 TSV fájlt. Az egyik a mátrixot írja le tömörebb formában, a másik pedig a közgazdasági kategóriák fa struktúráját. (Részletek alább.)
+A program minden munkafüzethez le fog generálni 2-2 JSON fájlt, melyek a közgazdasági és funkcionális bontásban fogják tárolni az összegeket.
 
-A munkalapoknak 2 formátumát ismeri a program. Az egyik az elmúlt évekre vonatkozik, a másik a prognózisokra. A bevételi és kiadási oldal adott éven belül azonos formátumú.
+A munkalapoknak 2 formátumát ismeri a program. Az egyik az elmúlt évekre vonatkozik, a másik a prognózisokra. A bevételi és kiadási oldal adott éven belül azonos formátumú. Prognózisok esetében a funkcionális bontást nem tartalmazza az input.
 
 
 
@@ -89,34 +89,39 @@ Ha az utóbbi oszlopba olyan érték kerül, amihez nem tartozik sor, akkor az a
 
 
 
-### data/<évszám>/expense.tsv és income.tsv
+### data/<évszám>/*.json
 
-Az adott év kiadásait és bevételeit írják le közgazdasági és funkcionális bontásban.
+Ezek a fájlok az adott kiadásait (`expense`) vagy bevételeit (`income`) írják le, közgazdasági (`econ`) vagy funkcionális (`func`) bontásban.
 
-Formátuma TSV, oszlopai: közgazdasági kategória azonosítója, funkcionális kategória azonosítója, összeg.
+Formátuma JSON, mely egy fát ír le. A fa node-jainak az alábbi mezői lehetnek:
 
-Ahol a funkcionális kategória azonosítója helyett `+` jel van, az csak a közgazdasági kategória szerinti összegzést jelent, vagyis benne van az összes funkcionális kategória. Erre a prognózisoknál van szükség, ahol a funkcionális bontás nem ismert.
+- `id`: kategória azonosító
+- `name`: kategória elnevezése
+- `value`: kategóriához tartozó összeg
+- `children`: alkategóriák tömbje
 
-```tsv
-09	082044	137772
-09	086090	15308
-10	+	53130
-10	066020	53130
-...
-```
+A JSON egy gyökér node-ot tartalmaz.
 
-
-
-### data/<évszám>/expense-tree.tsv és income-tree.tsv
-
-Az adott év kiadásaihoz és bevételeihez tartozó közgazdasági kategóriák fa struktúráját írják le.
-
-Formátuma TSV, oszlopai: kategória azonosítója, elnevezése, szülő kategória azonosítója.
-
-```tsv
-01	Törvény szerinti illetmények, munkabérek	15
-04	Készenléti, ügyeleti, helyettesítési díj, túlóra, túlszolgálat	15
-07	Béren kívüli juttatások	15
-09	Közlekedési költségtérítés	15
-...
+```json
+{
+	"children": [
+		{
+			"id": 306,
+			"altId": "K1-K9",
+			"name": "Kiadások összesen",
+			"value": 916129781,
+			"children": [
+				{
+					"id": 265,
+					"altId": "K1-K8",
+					"name": "Költségvetési kiadások",
+					"value": 631598447,
+					"children": [...]
+				},
+				...
+			]
+		},
+		...
+	]
+}
 ```
