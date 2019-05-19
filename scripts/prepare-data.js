@@ -49,7 +49,7 @@ function generateEconomicTree(matrixTsv) {
 	const nodes = {};
 
 	// collecting all nodes
-	matrixTsv.split('\n')
+	matrixTsv.split('FINANSZÍROZÁSI')[0].split('\n')
 		.splice(2) // header is at least 2 rows
 		.filter(row => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
 		.forEach(row => {
@@ -77,7 +77,7 @@ function generateEconomicTree(matrixTsv) {
 	// ideally we have only one child, so it can be the root
 	const root = Object.values(nodes).filter(node => !node.parent)[0];
 	root.name = 'Összesen';
-	return JSON.stringify(root);
+	return JSON.stringify(root, null, 2);
 }
 
 /**
