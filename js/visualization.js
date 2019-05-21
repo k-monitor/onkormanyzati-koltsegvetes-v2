@@ -132,6 +132,9 @@ Vue.component('vis', {
 		}).fail(function (f1) {
 			console.log('ERR', f1);
 		});
+	},
+	updated: function() {
+		$('[data-toggle="tooltip"]').tooltip();
 	}
 });
 
