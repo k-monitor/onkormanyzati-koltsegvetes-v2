@@ -57,7 +57,9 @@ function generateEconomicTree(matrixTsv) {
 			id = Number(id);
 			value = Number(value.replace(/\D+/g, ''));
 			const { name, childrenIds, altId } = parseEconomicDescriptor(descriptor);
-			nodes[id] = { id, altId, name, childrenIds, value };
+			if (altId) {
+				nodes[id] = { id, altId, name, childrenIds, value };
+			}
 		});
 
 	// filling relations
@@ -77,7 +79,7 @@ function generateEconomicTree(matrixTsv) {
 	// ideally we have only one child, so it can be the root
 	const root = Object.values(nodes).filter(node => !node.parent)[0];
 	root.name = 'Összesen';
-	return JSON.stringify(root, null, 2);
+	return JSON.stringify(root);
 }
 
 /**
