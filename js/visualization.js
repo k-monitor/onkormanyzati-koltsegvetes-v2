@@ -65,6 +65,7 @@ Vue.component('vis', {
 				'#bb208a' /* 10 Szociális védelem */,
 				'#ef538c' /* 9000 Technikai funkciókódok */,
 			];
+
 			var color = colors[this.colorIndex(node, index)];
 			if (this.path.length > 0) {
 				var opacity = node.value / this.node.children[0].value;
@@ -133,7 +134,7 @@ Vue.component('vis', {
 			console.log('ERR', f1);
 		});
 	},
-	updated: function() {
+	updated: function () {
 		$('[data-toggle="tooltip"]').tooltip();
 	}
 });

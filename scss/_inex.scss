@@ -3,12 +3,17 @@
 		align-items: center;
 		display: flex;
 		flex: 1;
+		justify-content: space-between;
 		margin-bottom: 1px;
 		padding: .1rem .5rem;
 	}
 
 	.left-column, .right-column {
 		width: 47.5%;
+	}
+
+	.no-wrap {
+		white-space: nowrap;
 	}
 
 	.vis {
