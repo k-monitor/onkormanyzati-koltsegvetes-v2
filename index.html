@@ -27,7 +27,7 @@
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto my-2 my-lg-0">
 					<li class="nav-item">
-						<a class="nav-link js-scroll-trigger" href="#visualization">Költségvetés</a>
+						<a class="nav-link js-scroll-trigger" href="#inex">Költségvetés</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link js-scroll-trigger" href="#milestones">Fejlesztések</a>
@@ -58,7 +58,7 @@
 					<p class="text-white-75 font-weight-light mb-5">Ezen az oldalon megtekintheted {{ city }}
 						költségvetését és
 						fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!</p>
-					<a class="btn btn-primary btn-xl js-scroll-trigger" href="#visualization">Tovább</a>
+					<a class="btn btn-primary btn-xl js-scroll-trigger" href="#inex">Tovább</a>
 				</div>
 			</div>
 		</div>
@@ -91,28 +91,36 @@
 					<div class="left-column text-right">
 						Bevételek
 						<br>
-						{{ groupNums(incomeTree.value) }} Ft
+						{{ groupNums(incomeTree.value, true) }}
 					</div>
 					<div class="ml-auto right-column text-left">
 						Kiadások
 						<br>
-						{{ groupNums(expenseTree.value) }} Ft
+						{{ groupNums(expenseTree.value, true) }}
 					</div>
 				</div>
-				<div class="d-flex border-top border-bottom vis">
+				<div class="d-flex border-top border-bottom mb-4 vis">
 					<div class="d-flex flex-column left-column">
-						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }">
+						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(incomeTree, n, 'darkseagreen'), color: fgColor(incomeTree, n, 'darkseagreen'), flexGrow: n.value }">
 							<div class="text-right w-100">
-								{{ n.name }} - {{ groupNums(n.value) }}&nbsp;Ft
+								{{ n.name }} - <strong>{{ groupNums(n.value, true) }}</strong>
 							</div>
 						</div>
 					</div>
 					<div class="d-flex flex-column ml-auto right-column">
-						<div class="bar" v-for="(n,i) in expenseChildren" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }">
+						<div class="bar" v-for="(n,i) in expenseChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(expenseTree, n, 'indianred'), color: fgColor(expenseTree, n, 'indianred'), flexGrow: n.value }">
 							<div class="text-left w-100">
-								{{ groupNums(n.value) }}&nbsp;Ft - {{ n.name }}
+								<strong>{{ groupNums(n.value, true) }}</strong> - {{ n.name }}
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="d-flex font-weight-bold mb-2 breadcrumbs">
+					<div class="left-column">
+						<a href="#income" class="btn btn-outline-success js-scroll-trigger">Részletek</a>
+					</div>
+					<div class="ml-auto right-column">
+						<a href="#expense" class="btn btn-outline-danger js-scroll-trigger">Részletek</a>
 					</div>
 				</div>
 			</div>
@@ -120,7 +128,7 @@
 	</script>
 
 	<div id="visualization">
-		<section class="page-section">
+		<section class="page-section" id="income">
 			<div class="container">
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
@@ -135,7 +143,7 @@
 				</div>
 			</div>
 		</section>
-		<section class="page-section bg-light">
+		<section class="page-section bg-light" id="expense">
 			<div class="container">
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
@@ -177,7 +185,7 @@
 					<div class="left-column">
 						<div class="label">
 							<div class="text-right w-100">
-								{{ groupNums(node.value) }} Ft
+								{{ groupNums(node.value) }}
 							</div>
 						</div>
 					</div>
@@ -197,7 +205,7 @@
 						<div class="bar" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
 							@click="down(i)" @mouseover="hovered=i">
 							<div class="text-right w-100">
-								{{ groupNums(n.value) }} Ft
+								{{ groupNums(n.value) }}
 								<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
 							</div>
 						</div>

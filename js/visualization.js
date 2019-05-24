@@ -165,10 +165,6 @@ function Node(name, value, children) {
 	self.update();
 } // node
 
-function groupNums(v) {
-	return (v + '').replace(/\d(?=(?:\d{3})+(?:\.|$))/g, function ($0, i) { return $0 + ' ' });
-}
-
 function curve(id, node, index) {
 	try {
 		var bars = $('#' + id);
