@@ -57,7 +57,7 @@ function generateEconomicTree(matrixTsv) {
 			id = Number(id);
 			value = Number(value.replace(/\D+/g, ''));
 			const { name, childrenIds, altId } = parseEconomicDescriptor(descriptor);
-			if (altId) {
+			if (altId && altId.indexOf('-') == -1) {
 				nodes[id] = { id, altId, name, childrenIds, value };
 			}
 		});
@@ -76,9 +76,14 @@ function generateEconomicTree(matrixTsv) {
 		}
 	});
 
-	// ideally we have only one child, so it can be the root
-	const root = Object.values(nodes).filter(node => !node.parent)[0];
-	root.name = 'Összesen';
+	// we dropped out total sum line (via altId filter) so we calculate it
+	const children = Object.values(nodes).filter(node => !node.parent);
+	const value = children.map(n => n.value).reduce((sum, v) => sum + v);
+	const root = {
+		name: 'Összesen',
+		children,
+		value
+	};
 	return JSON.stringify(root);
 }
 
