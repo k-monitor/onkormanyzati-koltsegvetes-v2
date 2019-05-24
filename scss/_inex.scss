@@ -1,0 +1,19 @@
+#inex {
+	.bar {
+		align-items: center;
+		border: 1px solid red;
+		display: flex;
+		flex: 1;
+		padding: .1rem .5rem;
+	}
+
+	.left-column, .right-column {
+		width: 47.5%;
+	}
+
+	.vis {
+		height: 50vh;
+		font-size: 90%;
+		min-height: 400px;
+	}
+}

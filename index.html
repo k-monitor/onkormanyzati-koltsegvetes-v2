@@ -64,6 +64,61 @@
 		</div>
 	</header>
 
+	<section class="page-section bg-light" id="inex">
+		<div class="container">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8 text-center">
+						<h2>Mérleg</h2>
+						<hr class="divider my-4 mb-5">
+					</div>
+				</div>
+				<div class="row justify-content-center">
+					<div class="col-lg-10 text-center">
+						<inex :in="'data/2018/income-econ.json'" :ex="'data/2018/expense-econ.json'"></inex>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script type="text/x-template" id="inex-template">
+		<div>
+			<div class="spinner-border" role="status" v-if="loading">
+				<span class="sr-only">Loading...</span>
+			</div>
+			<div v-else>
+				<div class="d-flex font-weight-bold mb-2 breadcrumbs">
+					<div class="left-column text-right">
+						Bevételek
+						<br>
+						{{ groupNums(incomeTree.value) }} Ft
+					</div>
+					<div class="ml-auto right-column text-left">
+						Kiadások
+						<br>
+						{{ groupNums(expenseTree.value) }} Ft
+					</div>
+				</div>
+				<div class="d-flex border-top border-bottom vis">
+					<div class="d-flex flex-column left-column">
+						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }">
+							<div class="text-right w-100">
+								{{ n.name }} - {{ groupNums(n.value) }}&nbsp;Ft
+							</div>
+						</div>
+					</div>
+					<div class="d-flex flex-column ml-auto right-column">
+						<div class="bar" v-for="(n,i) in expenseChildren" :data-id="n.id" :data-index="i" :style="{ flexGrow: n.value }">
+							<div class="text-left w-100">
+								{{ groupNums(n.value) }}&nbsp;Ft - {{ n.name }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+
 	<div id="visualization">
 		<section class="page-section">
 			<div class="container">
@@ -75,11 +130,7 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<vis
-							:id="'income-vis'"
-							:e="'data/2018/income-econ.json'"
-							:f="'data/2018/income-func.json'"
-						></vis>
+						<vis :id="'income-vis'" :e="'data/2018/income-econ.json'" :f="'data/2018/income-func.json'"></vis>
 					</div>
 				</div>
 			</div>
@@ -94,11 +145,7 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<vis
-							:id="'expenses-vis'"
-							:e="'data/2018/expense-econ.json'"
-							:f="'data/2018/expense-func.json'"
-						></vis>
+						<vis :id="'expenses-vis'" :e="'data/2018/expense-econ.json'" :f="'data/2018/expense-func.json'"></vis>
 					</div>
 				</div>
 			</div>
@@ -229,6 +276,7 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.3/papaparse.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js'></script>
 	<script src="js/okv.min.js"></script>
+	<script src="js/inex.min.js"></script>
 	<script src="js/milestones.min.js"></script>
 	<script src="js/visualization.min.js"></script>
 </body>
