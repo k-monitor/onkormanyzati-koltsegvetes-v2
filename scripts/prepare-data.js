@@ -84,6 +84,16 @@ function generateEconomicTree(matrixTsv) {
 		children,
 		value
 	};
+
+	// cleaning up
+	function cleanUp(node) {
+		delete node.parent;
+		if (node.children) {
+			node.children.forEach(cleanUp);
+		}
+	}
+	cleanUp(root);
+
 	return JSON.stringify(root);
 }
 
@@ -149,6 +159,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 			children: Object.values(nodes)
 		};
 
+		// calculating sums
 		function sumNode(node) {
 			if (node.children) {
 				node.value = node.children
@@ -159,6 +170,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		}
 		sumNode(root);
 
+		// cleaning up
 		function cleanUp(node) {
 			delete node.deletable;
 			if (node.children) {
