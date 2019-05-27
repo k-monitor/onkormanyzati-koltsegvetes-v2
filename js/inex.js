@@ -16,6 +16,9 @@ Vue.component('inex', {
 				return n.name.indexOf('Finanszírozási') == -1;
 			});
 		},
+		expenseCorrection: function() {
+			return Math.max(0, this.incomeSum - this.expenseSum);
+		},
 		expenseSum: function() {
 			return this.expenseChildren.map(function (node) {
 				return node.value;
@@ -29,6 +32,9 @@ Vue.component('inex', {
 			}).filter(function(n) {
 				return n.name.indexOf('Finanszírozási') == -1;
 			});
+		},
+		incomeCorrection: function() {
+			return Math.max(0, this.expenseSum - this.incomeSum);
 		},
 		incomeSum: function() {
 			return this.incomeChildren.map(function (node) {
