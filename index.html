@@ -230,14 +230,19 @@
 	</script>
 
 	<section class="page-section" id="milestones">
-		<div class="container">
+		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="col text-center">
 					<h2>Fejlesztések</h2>
 					<hr class="divider my-4 mb-5">
-					<div class="card-columns">
-						<milestone-card v-for="m in milestones" :milestone="m"></milestone-card>
-					</div>
+					<!--<div class="card-columns">
+						<milestone-card v-for="(m, i) in milestones" :milestone="m" :class="{ 'bg-primary': i%2==0, 'text-white': i%2==0 }"></milestone-card>
+					</div>-->
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 col-lg-4 p-3 milestone-col" v-for="(m, i) in milestones" :_class="{ 'bg-primary': i%2==0, 'text-white': i%2==0 }">
+					<milestone-card :milestone="m"></milestone-card>
 				</div>
 			</div>
 		</div>
@@ -247,8 +252,8 @@
 			<img :src="'http://mintavaros.deepdata.hu' + milestone.picture" class="card-img-top" alt="...">
 			<div class="card-body">
 				<h5 class="card-title">{{ milestone.title }}</h5>
-				<p class="card-text small text-muted">{{ milestone.description }}</p>
-				<p class="card-text font-weight-bold small text-muted">{{ milestone['text 1'] }}</p>
+				<p class="card-text small">{{ milestone.description }}</p>
+				<p class="card-text font-weight-bold small">{{ milestone['text 1'] }}</p>
 			</div>
 		</div>
 	</script>

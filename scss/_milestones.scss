@@ -7,7 +7,32 @@
 	@include media-breakpoint-up(lg) {
 		column-count: 3;
 	}
-	@include media-breakpoint-up(xl) {
+	/*@include media-breakpoint-up(xl) {
 		column-count: 4;
+	}*/
+}
+
+#milestones .milestone-col {
+	background-color: $primary;
+	$ac: darken($primary, 10%);
+	color: white;
+	@include media-breakpoint-only(md) {
+		&:nth-child(4n-2), &:nth-child(4n-1) {
+			background-color: $ac;
+			//color: white;
+		}
+	}
+	@include media-breakpoint-up(lg) {
+
+		&:nth-child(even) {
+			background-color: $ac;
+			//color: white;
+		}
+	}
+
+	.card {
+		background-color: rgba(255,255,255,.1);
+		border: none;
+		height: 100%;
 	}
 }
