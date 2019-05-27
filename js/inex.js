@@ -11,14 +11,32 @@ Vue.component('inex', {
 	computed: {
 		expenseChildren: function () {
 			return this.expenseTree.children.sort(function (a, b) {
-				return b.value - a.value;
+				return a.altId.localeCompare(b.altId);
+			}).filter(function(n) {
+				return n.name.indexOf('Finanszírozási') == -1;
+			});
+		},
+		expenseSum: function() {
+			return this.expenseChildren.map(function (node) {
+				return node.value;
+			}).reduce(function(sum, value) {
+				return sum + value;
 			});
 		},
 		incomeChildren: function () {
 			return this.incomeTree.children.sort(function (a, b) {
-				return b.value - a.value;
+				return a.altId.localeCompare(b.altId);
+			}).filter(function(n) {
+				return n.name.indexOf('Finanszírozási') == -1;
 			});
-		}
+		},
+		incomeSum: function() {
+			return this.incomeChildren.map(function (node) {
+				return node.value;
+			}).reduce(function(sum, value) {
+				return sum + value;
+			});
+		},
 	},
 	methods: {
 		bgColor: function (tree, node, color) {//darkseagreen, indianred
