@@ -1,0 +1,62 @@
+<template>
+	<header class="masthead d-flex align-items-center">
+		<div class="container h-100">
+			<div class="row h-100 align-items-center justify-content-center text-center">
+				<div class="col-lg-10 align-self-end">
+					<h1 class="text-uppercase text-white font-weight-bold">{{ $config.title }}</h1>
+					<hr class="divider my-4">
+				</div>
+				<div class="col-lg-8 align-self-baseline">
+					<p class="text-white-75 font-weight-light mb-5">{{ $config.headline }}</p>
+					<a
+					 class="btn btn-primary btn-xl js-scroll-trigger"
+					 href="#inex"
+					>Tovább</a>
+				</div>
+			</div>
+		</div>
+	</header>
+</template>
+
+<style lang="scss">
+@import '../scss/variables';
+@import "~bootstrap/scss/functions";
+@import '~bootstrap/scss/variables';
+@import "~bootstrap/scss/mixins";
+
+header.masthead {
+	padding-top: 10rem;
+	padding-bottom: calc(10rem - #{$navbar-height});
+	background: linear-gradient(
+			to bottom,
+			#{fade-out($masthead-overlay, 0.2)} 0%,
+			#{fade-out($masthead-overlay, 0.2)} 100%
+		),
+		url($masthead-img);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-attachment: scroll;
+	background-size: cover;
+	h1 {
+		font-size: 2.25rem;
+	}
+	@include media-breakpoint-up(lg) {
+		//height: 100vh;
+		min-height: 40rem;
+		padding-top: $navbar-height;
+		padding-bottom: 0;
+		p {
+			font-size: 1.15rem;
+		}
+		h1 {
+			font-size: 3rem;
+		}
+	}
+	@include media-breakpoint-up(xl) {
+		h1 {
+			font-size: 3.5rem;
+		}
+	}
+}
+</style>
+

@@ -1,0 +1,80 @@
+<template>
+	<footer class="bg-dark py-5 text-white-75">
+		<div class="container">
+			<div class="row">
+				<div
+				 class="col-sm-6 col-lg-4"
+				 id="city-logo"
+				>
+					<a
+					 href="#"
+					 target="_blank"
+					>
+						<img
+						 src="http://mintavaros.deepdata.hu/assets/img/mintavaros-square-logo.png"
+						 alt=""
+						>
+					</a>
+				</div>
+				<div
+				 class="col-sm-6 col-lg-4"
+				 id="logos"
+				>
+					<a
+					 href="http://www.kfib.hu/"
+					 target="_blank"
+					><img
+						 src="http://mintavaros.deepdata.hu/assets/img/kfib-logo.png"
+						 alt=""
+						></a>
+					<a
+					 href="https://k-monitor.hu/"
+					 target="_blank"
+					><img
+						 src="http://mintavaros.deepdata.hu/assets/img/k-monitor-logo.png"
+						 alt=""
+						></a>
+					<a
+					 href="https://www.deepdata.hu/"
+					 target="_blank"
+					><img
+						 src="http://mintavaros.deepdata.hu/assets/img/deepdata-logo.png"
+						 alt=""
+						></a>
+				</div>
+				<div
+				 class="col-lg-4 mt-5 mt-lg-0"
+				 id="license"
+				>
+					<i class="fab fa-fw fa-creative-commons"></i>
+					<i class="fab fa-fw fa-creative-commons-by"></i>
+					<i class="fab fa-fw fa-creative-commons-sa mr-2"></i>
+					<br class="d-none d-lg-inline-block">
+					Ez a Mű a <a
+					 rel="license"
+					 href="http://creativecommons.org/licenses/by-sa/4.0/"
+					>Creative Commons
+						Nevezd
+						meg! - Így add tovább! 4.0 Nemzetközi Licenc</a> feltételeinek megfelelően felhasználható.
+				</div>
+			</div>
+		</div>
+	</footer>
+</template>
+
+<style>
+#license a {
+	color: white !important;
+}
+
+#city-logo img {
+	max-height: 64px;
+}
+
+#logos img {
+	display: inline-block;
+	margin: 0 1rem 1rem 0;
+	max-height: 32px;
+}
+</style>
+

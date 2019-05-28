@@ -1,30 +1,25 @@
 {
-    "private": true,
-    "name": "onkormanyzati-koltsegvetes",
-    "version": "2.0.0",
-    "scripts": {
-        "build": "gulp build",
-        "start": "gulp watch"
-    },
-    "description": "Önkörmányzati költségvetés vizualizáció 2.0+",
-    "author": "Zsolt Jurányi <juranyi@deepdata.hu>",
-    "dependencies": {
-        "bootstrap": "4.3.1"
-    },
-    "devDependencies": {
-        "browser-sync": "^2.26.5",
-        "del": "4.0.0",
-        "fast-glob": "^2.2.7",
-        "gulp": "4.0.0",
-        "gulp-autoprefixer": "6.0.0",
-        "gulp-clean-css": "4.0.0",
-        "gulp-header": "2.0.7",
-        "gulp-plumber": "^1.2.1",
-        "gulp-rename": "1.4.0",
-        "gulp-sass": "4.0.2",
-        "gulp-uglify": "3.0.2",
-        "merge-stream": "^1.0.1",
-        "mkdirp": "^0.5.1",
-        "xlsx": "^0.14.3"
-    }
+  "private": true,
+  "name": "onkormanyzati-koltsegvetes",
+  "version": "2.0.0",
+  "description": "Önkörmányzati költségvetés vizualizáció 2.0+",
+  "author": "Zsolt Jurányi <juranyi@deepdata.hu>",
+  "scripts": {
+    "build": "gridsome build",
+    "develop": "gridsome develop",
+    "explore": "gridsome explore"
+  },
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "gridsome": "^0.6.0",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.15.0"
+  },
+  "devDependencies": {
+    "fast-glob": "^2.2.7",
+    "mkdirp": "^0.5.1",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0",
+    "xlsx": "^0.14.3"
+  }
 }
