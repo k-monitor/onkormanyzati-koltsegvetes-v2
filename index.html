@@ -75,7 +75,7 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-10 text-center">
-						<inex :in="'data/2018/income-econ.json'" :ex="'data/2018/expense-econ.json'"></inex>
+						<inex :in="'data/2018/income-econ.json'" :ex="'data/2018/expense-econ.json'" :tt="'data/tooltips.tsv'"></inex>
 					</div>
 				</div>
 			</div>
@@ -102,7 +102,7 @@
 				<div class="d-flex border-top border-bottom mb-4 vis">
 					<div class="d-flex flex-column left-column">
 						<div v-if="incomeCorrection > 0" :style="{ flexGrow: incomeCorrection }"></div>
-						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }">
+						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }" data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId]">
 							<div class="text-left">
 								{{ n.name }}
 							</div>
@@ -113,7 +113,7 @@
 					</div>
 					<div class="d-flex flex-column ml-auto right-column">
 						<div v-if="expenseCorrection > 0" :style="{ flexGrow: expenseCorrection }"></div>
-						<div class="bar" v-for="(n,i) in expenseChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(expenseTree, n, 'firebrick'), color: fgColor(expenseTree, n, 'firebrick'), flexGrow: n.value }">
+						<div class="bar" v-for="(n,i) in expenseChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(expenseTree, n, 'firebrick'), color: fgColor(expenseTree, n, 'firebrick'), flexGrow: n.value }" data-toggle="tooltip" data-placement="right" :title="tooltips[n.altId]">
 							<div class="no-wrap text-left">
 								<strong>{{ groupNums(n.value, true) }}</strong>
 							</div>

@@ -10,7 +10,7 @@ var milestones = new Vue({
 	},
 	mounted: function () {
 		var self = this;
-		$.get('data/milestones.csv', function (data) {
+		$.get('data/milestones.tsv', function (data) {
 			self.milestones = Papa.parse(data.trim(), {
 				delimiter: '\t',
 				header: true

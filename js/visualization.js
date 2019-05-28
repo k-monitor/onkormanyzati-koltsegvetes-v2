@@ -120,7 +120,7 @@ Vue.component('vis', {
 		var self = this;
 		$.when(
 			$.get(self.e),
-			$.get(self.f)
+			$.get(self.f),
 		).then(function (e, f) {
 			// TODO still not checks whether files are missing (regardless of given URL)
 			self.economicTree = self.e ? e[0] : null;

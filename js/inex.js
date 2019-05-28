@@ -1,45 +1,46 @@
 Vue.component('inex', {
 	template: '#inex-template',
-	props: ['in', 'ex'],
+	props: ['in', 'ex', 'tt'],
 	data: function () {
 		return {
 			expenseTree: null,
 			incomeTree: null,
-			loading: true
+			loading: true,
+			tooltips: {}
 		};
 	},
 	computed: {
 		expenseChildren: function () {
 			return this.expenseTree.children.sort(function (a, b) {
 				return a.altId.localeCompare(b.altId);
-			}).filter(function(n) {
+			}).filter(function (n) {
 				return n.name.indexOf('Finanszírozási') == -1;
 			});
 		},
-		expenseCorrection: function() {
+		expenseCorrection: function () {
 			return Math.max(0, this.incomeSum - this.expenseSum);
 		},
-		expenseSum: function() {
+		expenseSum: function () {
 			return this.expenseChildren.map(function (node) {
 				return node.value;
-			}).reduce(function(sum, value) {
+			}).reduce(function (sum, value) {
 				return sum + value;
 			});
 		},
 		incomeChildren: function () {
 			return this.incomeTree.children.sort(function (a, b) {
 				return a.altId.localeCompare(b.altId);
-			}).filter(function(n) {
+			}).filter(function (n) {
 				return n.name.indexOf('Finanszírozási') == -1;
 			});
 		},
-		incomeCorrection: function() {
+		incomeCorrection: function () {
 			return Math.max(0, this.expenseSum - this.incomeSum);
 		},
-		incomeSum: function() {
+		incomeSum: function () {
 			return this.incomeChildren.map(function (node) {
 				return node.value;
-			}).reduce(function(sum, value) {
+			}).reduce(function (sum, value) {
 				return sum + value;
 			});
 		},
@@ -59,11 +60,17 @@ Vue.component('inex', {
 		var self = this;
 		$.when(
 			$.get(self.ex),
-			$.get(self.in)
-		).then(function (e, i) {
+			$.get(self.in),
+			$.get(self.tt)
+		).then(function (e, i, t) {
 			self.expenseTree = e[0];
 			self.incomeTree = i[0];
+			(t[0] || '').trim().split('\n').forEach(function (row) {
+				var parts = row.split('\t');
+				self.tooltips[parts[0]] = parts[1];
+			});
 			self.loading = false;
+			$('[data-toggle="tooltip"]').tooltip();
 		}).fail(function (f1) {
 			console.log('ERR', f1);
 		});
