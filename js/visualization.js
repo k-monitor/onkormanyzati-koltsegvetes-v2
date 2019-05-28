@@ -125,7 +125,7 @@ Vue.component('vis', {
 			// TODO still not checks whether files are missing (regardless of given URL)
 			self.economicTree = self.e ? e[0] : null;
 			self.functionalTree = self.f ? f[0] : null;
-			self.mode = self.f ? 1 : 0;
+			self.mode = self.e ? 0 : 1;
 			self.loading = !self.e && !self.f;
 			window.addEventListener('resize', function () {
 				self.updateCurves();

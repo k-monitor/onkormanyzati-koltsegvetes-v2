@@ -8,7 +8,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>{{ city }} költségvetése</title>
+	<title>Mintaváros költségvetése</title>
 
 	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css' />
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext" rel="stylesheet">
@@ -19,7 +19,7 @@
 
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
 		<div class="container">
-			<a class="navbar-brand js-scroll-trigger" href="#page-top">{{ city }}</a>
+			<a class="navbar-brand js-scroll-trigger" href="#page-top">Mintaváros</a>
 			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
 			 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -51,11 +51,11 @@
 		<div class="container h-100">
 			<div class="row h-100 align-items-center justify-content-center text-center">
 				<div class="col-lg-10 align-self-end">
-					<h1 class="text-uppercase text-white font-weight-bold">{{ city }} költségvetése</h1>
+					<h1 class="text-uppercase text-white font-weight-bold">Mintaváros költségvetése</h1>
 					<hr class="divider my-4">
 				</div>
 				<div class="col-lg-8 align-self-baseline">
-					<p class="text-white-75 font-weight-light mb-5">Ezen az oldalon megtekintheted {{ city }}
+					<p class="text-white-75 font-weight-light mb-5">Ezen az oldalon megtekintheted Mintaváros
 						költségvetését és
 						fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!</p>
 					<a class="btn btn-primary btn-xl js-scroll-trigger" href="#inex">Tovább</a>
@@ -177,13 +177,13 @@
 					<div class="col-lg-8 text-center" v-if="e && f">
 						<ul class="justify-content-center mb-5 nav nav-pills w-100">
 							<li class="nav-item">
-								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="A költségvetési kiadásokat osztályozza, azok társadalmi-gazdasági cél szerinti összetételét mutatja. Az általános közszolgáltatásoktól a védelmi kiadásokig összesen 10 kategóriában tartalmazza a kerület működésének területeit." :class="{ active: mode == 1 }"  @click="path = []; mode = 1">
-									Funkcionális nézet
+								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben." :class="{ active: mode == 0 }" @click="path = []; mode = 0">
+									Közgazdasági nézet
 								</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben." :class="{ active: mode == 0 }" @click="path = []; mode = 0">
-									Közgazdasági nézet
+								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="A költségvetési kiadásokat osztályozza, azok társadalmi-gazdasági cél szerinti összetételét mutatja. Az általános közszolgáltatásoktól a védelmi kiadásokig összesen 10 kategóriában tartalmazza a kerület működésének területeit." :class="{ active: mode == 1 }"  @click="path = []; mode = 1">
+									Funkcionális nézet
 								</a>
 							</li>
 						</ul>
