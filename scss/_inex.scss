@@ -21,4 +21,16 @@
 		font-size: 90%;
 		min-height: 400px;
 	}
+
+	.wrap-md {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+
+		@include media-breakpoint-up(md) {
+			overflow: unset;
+			text-overflow: unset;
+			white-space: unset;
+		}
+	}
 }

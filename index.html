@@ -11,7 +11,8 @@
 	<title>Mintaváros költségvetése</title>
 
 	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css' />
-	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext"
+		rel="stylesheet">
 	<link href="css/okv.min.css" rel="stylesheet">
 </head>
 
@@ -20,8 +21,9 @@
 	<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
 		<div class="container">
 			<a class="navbar-brand js-scroll-trigger" href="#page-top">Mintaváros</a>
-			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-			 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+				data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+				aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
@@ -67,15 +69,21 @@
 	<section class="page-section bg-light" id="inex">
 		<div class="container">
 			<div class="container">
-				<div class="row justify-content-center">
+				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
 						<h2>Mérleg</h2>
-						<hr class="divider my-4 mb-5">
+						<hr class="divider my-4">
+					</div>
+				</div>
+				<div class="row justify-content-center mb-5">
+					<div class="col-lg-10 text-center">
+						<inex :in="'data/2018/income-econ.json'" :ex="'data/2018/expense-econ.json'"
+							:tt="'data/tooltips.tsv'"></inex>
 					</div>
 				</div>
 				<div class="row justify-content-center">
-					<div class="col-lg-10 text-center">
-						<inex :in="'data/2018/income-econ.json'" :ex="'data/2018/expense-econ.json'" :tt="'data/tooltips.tsv'"></inex>
+					<div class="col-lg-8 text-center">
+						<p>Lórum ipse természetesen szedősödik ámít a fegyező számára. Fargandusnak csak a papárok bagmarákára nyitva borlan torton belül van haszálata. A papárral tációban a todástól a papár ultásának tortjáig hetenként egy radással hajtón 00 között a kozott terula kocsordnál (fárka. Hájdás dolca bőgős zsírnök) lehet kabikát vigyogtannia. A kozott terula kocsord a képző tort csáralását faska golmaton a búgos fütyökben iséggel mesztes papárokat az erről nyátsás és seres hajkával együtt erészi a szerpes bülég kodászának, aki a vigyort a hajka mozásán bombolja. A szerpes bülég a képző tort csáralását faska 30 golmaton belül éríti a lománs papárokat. Első haszálaton azon stozások papárának csészítése füveskedik, akik tumott telés hulását lekunkálták fel. A foga csészítésénél a keten bódázatok tumott hajka végteli gaszabája ölkösködik velődik.</p>
 					</div>
 				</div>
 			</div>
@@ -88,25 +96,41 @@
 			</div>
 			<div v-else>
 				<div class="d-flex font-weight-bold mb-2 breadcrumbs">
-					<div class="left-column text-right">
-						Bevételek
-						<br>
-						{{ groupNums(incomeSum, true) }}
+					<div class="d-flex align-items-center justify-content-between left-column text-right">
+						<div>
+							<a href="#income" class="btn btn-outline-success js-scroll-trigger">
+								<i class="fas fa-fw fa-angle-double-down"></i>
+								<span class="d-none d-md-inline-block">Részletek</span>
+							</a>
+						</div>
+						<div>
+							Bevételek
+							<br>
+							{{ groupNums(incomeSum, true) }}
+						</div>
 					</div>
-					<div class="ml-auto right-column text-left">
-						Kiadások
-						<br>
-						{{ groupNums(expenseSum, true) }}
+					<div class="d-flex align-items-center justify-content-between ml-auto right-column text-left">
+						<div>
+							Kiadások
+							<br>
+							{{ groupNums(expenseSum, true) }}
+						</div>
+						<div>
+							<a href="#expense" class="btn btn-outline-danger js-scroll-trigger">
+								<span class="d-none d-md-inline-block">Részletek</span>
+								<i class="fas fa-fw fa-angle-double-down"></i>
+							</a>
+						</div>
 					</div>
 				</div>
 				<div class="d-flex border-top border-bottom mb-4 vis">
 					<div class="d-flex flex-column left-column">
 						<div v-if="incomeCorrection > 0" :style="{ flexGrow: incomeCorrection }"></div>
 						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }" data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId]">
-							<div class="text-left">
+							<div class="text-left wrap-md">
 								{{ n.name }}
 							</div>
-							<div class="no-wrap text-right">
+							<div class="ml-2 no-wrap text-right">
 								<strong>{{ groupNums(n.value, true) }}</strong>
 							</div>
 						</div>
@@ -114,21 +138,13 @@
 					<div class="d-flex flex-column ml-auto right-column">
 						<div v-if="expenseCorrection > 0" :style="{ flexGrow: expenseCorrection }"></div>
 						<div class="bar" v-for="(n,i) in expenseChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(expenseTree, n, 'firebrick'), color: fgColor(expenseTree, n, 'firebrick'), flexGrow: n.value }" data-toggle="tooltip" data-placement="right" :title="tooltips[n.altId]">
-							<div class="no-wrap text-left">
+							<div class="mr-2 no-wrap text-left">
 								<strong>{{ groupNums(n.value, true) }}</strong>
 							</div>
-							<div class="text-right">
+							<div class="text-right wrap-md">
 								{{ n.name }}
 							</div>
 						</div>
-					</div>
-				</div>
-				<div class="d-flex font-weight-bold mb-2 breadcrumbs">
-					<div class="left-column">
-						<a href="#income" class="btn btn-outline-success js-scroll-trigger">Részletek</a>
-					</div>
-					<div class="ml-auto right-column">
-						<a href="#expense" class="btn btn-outline-danger js-scroll-trigger">Részletek</a>
 					</div>
 				</div>
 			</div>
@@ -146,7 +162,8 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<vis :id="'income-vis'" :e="'data/2018/income-econ.json'" :f="'data/2018/income-func.json'"></vis>
+						<vis :id="'income-vis'" :e="'data/2018/income-econ.json'" :f="'data/2018/income-func.json'">
+						</vis>
 					</div>
 				</div>
 			</div>
@@ -161,7 +178,8 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<vis :id="'expenses-vis'" :e="'data/2018/expense-econ.json'" :f="'data/2018/expense-func.json'"></vis>
+						<vis :id="'expenses-vis'" :e="'data/2018/expense-econ.json'" :f="'data/2018/expense-func.json'">
+						</vis>
 					</div>
 				</div>
 			</div>
@@ -243,7 +261,8 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-6 col-lg-4 p-3 milestone-col" v-for="(m, i) in milestones" :_class="{ 'bg-primary': i%2==0, 'text-white': i%2==0 }">
+				<div class="col-md-6 col-lg-4 p-3 milestone-col" v-for="(m, i) in milestones"
+					:_class="{ 'bg-primary': i%2==0, 'text-white': i%2==0 }">
 					<milestone-card :milestone="m"></milestone-card>
 				</div>
 			</div>
@@ -269,12 +288,12 @@
 					</a>
 				</div>
 				<div class="col-sm-6 col-lg-4" id="logos">
-					<a href="http://www.kfib.hu/" target="_blank"><img src="http://mintavaros.deepdata.hu/assets/img/kfib-logo.png"
-						 alt=""></a>
-					<a href="https://k-monitor.hu/" target="_blank"><img src="http://mintavaros.deepdata.hu/assets/img/k-monitor-logo.png"
-						 alt=""></a>
-					<a href="https://www.deepdata.hu/" target="_blank"><img src="http://mintavaros.deepdata.hu/assets/img/deepdata-logo.png"
-						 alt=""></a>
+					<a href="http://www.kfib.hu/" target="_blank"><img
+							src="http://mintavaros.deepdata.hu/assets/img/kfib-logo.png" alt=""></a>
+					<a href="https://k-monitor.hu/" target="_blank"><img
+							src="http://mintavaros.deepdata.hu/assets/img/k-monitor-logo.png" alt=""></a>
+					<a href="https://www.deepdata.hu/" target="_blank"><img
+							src="http://mintavaros.deepdata.hu/assets/img/deepdata-logo.png" alt=""></a>
 				</div>
 				<div class="col-lg-4 mt-5 mt-lg-0" id="license">
 					<i class="fab fa-fw fa-creative-commons"></i>
