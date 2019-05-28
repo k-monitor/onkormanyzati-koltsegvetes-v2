@@ -9,20 +9,18 @@ Az oldal alapja a StartBootstrap / Creative sablon.
 A vizualizáció az alábbi adatfájlokból dolgozik:
 
 - `data/functions.tsv`: a funkcionális kategóriák fa struktúrája
+- `data/milestones.tsv`: a fejlesztések leírásai
+- `data/tooltips.tsv`: az egyes kategóriákhoz tartozó tooltip-ek szövegei
 - `data/<évszám>/expense-econ.json`: adott év kiadásai, közgazdasági bontásban, fa struktúrába rendezve
 - `data/<évszám>/expense-func.json`: adott év kiadásai, funkcionális bontásban, fa struktúrába rendezve
 - `data/<évszám>/income-econ.json`: adott év bevételei, közgazdasági bontásban, fa struktúrába rendezve
 - `data/<évszám>/income-func.json`: adott év bevételei, funkcionális bontásban, fa struktúrába rendezve
 
-Az első fájl adott, míg a többi **legenerálható az általános KGR rendszer importjából,** ami egy XLSX (Excel) fájl.
-
-Ezt a fájlt ajánlott a `data/src/` könyvtárba helyezni, majd a JSON fájlokat az alábbi paranccsal lehet elkészíteni:
+Az első 3 fájl szerepel a repóban, míg a többi **legenerálható az általános KGR rendszer importjából,** ami egy XLSX (Excel) fájl. Ezt a fájlt ajánlott a `data/src/` könyvtárba helyezni, majd a JSON fájlokat az alábbi paranccsal lehet elkészíteni:
 
 ```
 node scripts/prepare-data data/src/input_fajl.xslx
 ```
-
-**TODO: milestones**
 
 
 
@@ -74,6 +72,26 @@ Az ilyen munkalapokról hiányzik a funkcionális bontás. A formátum hasonló 
 
 
 
+### data/milestones.tsv
+
+A *Fejlesztések* szakasz tartalmát definiálja.
+
+Formátuma TSV, fejléccel. Oszlopait a vizualizáció korábbi verziójából örökölte, nincs mindegyik használatban és a végleges verzióban változhat a szerkezet.
+
+- `id`: régről visszamaradt oszlop, nincs használatban
+- `picture`: a képfájl elérési útvonala
+- `title`: fejléc
+- `description`: szövegtörzs
+- `text 1`: további szövegmező, mely jelenleg a szövegtörzs alatt jelenik meg
+
+```tsv
+id	picture	title	description	text 1
+!	/assets/img/milestone/0_2019.jpg	Ülésezik Mintaváros képviselő-testülete	A közel 12 ezer lakosú Mintaváros önkormányzata ...	Mintaváros idei költségvetése
+1	/assets/img/milestone/func/1_2019.jpg	A Polgármesteri Hivatal épülete	Az általános közszolgáltatások között szerepelnek...	100 Ft-ból 35 forintot költünk közszolgáltatásokra
+```
+
+
+
 ### data/functions.tsv
 
 A funkcionális kategóriák fa struktúráját írja le.
@@ -91,9 +109,25 @@ Ha az utóbbi oszlopba olyan érték kerül, amihez nem tartozik sor, akkor az a
 
 
 
-### data/<évszám>/*.json
+### data/tooltips.tsv
 
-Ezek a fájlok az adott kiadásait (`expense`) vagy bevételeit (`income`) írják le, közgazdasági (`econ`) vagy funkcionális (`func`) bontásban.
+A kategóriákhoz tartozó tooltip-ek szövegeit tartalmazza. Egyelőre csak a nyitóábrában van használva, ahol a közgazdasági bontás felső szintje van megjelenítve.
+
+Formátuma TSV, oszlopai: kategória alternatív azonosítója (`B1`, `B2`, `K1`, `K2`, stb.), tooltip szövege.
+
+Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog megjelenni a tooltip.
+
+```tsv
+B1	Lorem ipsum for B1
+B2	Lorem ipsum for B2
+...
+```
+
+
+
+### data/<évszám>/*.json (generálható, ld. fent)
+
+Ezek a fájlok az adott év kiadásait (`expense`) vagy bevételeit (`income`) írják le, közgazdasági (`econ`) vagy funkcionális (`func`) bontásban.
 
 Formátuma JSON, mely egy fát ír le. A fa node-jainak az alábbi mezői lehetnek:
 

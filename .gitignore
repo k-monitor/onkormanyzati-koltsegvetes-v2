@@ -8,3 +8,6 @@ data/2*
 
 # source data
 data/src
+
+# generated docs
+README.pdf
