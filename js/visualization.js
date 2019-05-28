@@ -4,7 +4,7 @@ $(function () {
 
 Vue.component('vis', {
 	template: '#vis-template',
-	props: ['id', 'e', 'f'],
+	props: ['id', 'e', 'f', 'tt'],
 	data: function () {
 		return {
 			curves: [],
@@ -13,7 +13,8 @@ Vue.component('vis', {
 			hovered: -1,
 			loading: true,
 			mode: null,
-			path: []
+			path: [],
+			tooltips: {}
 		};
 	},
 	computed: {
@@ -97,6 +98,7 @@ Vue.component('vis', {
 			return ids.indexOf(id);
 		},
 		down: function (index) {
+			$('.tooltip').remove();
 			if (this.children[index].children && this.children[index].children.length > 0) {
 				this.path.push(index);
 			}
@@ -118,13 +120,20 @@ Vue.component('vis', {
 	},
 	mounted: function () {
 		var self = this;
+		console.log(self.tt);
 		$.when(
 			$.get(self.e),
-			$.get(self.f)
-		).then(function (e, f) {
+			$.get(self.f),
+			$.get(self.tt)
+		).then(function (e, f, t) {
 			// TODO still not checks whether files are missing (regardless of given URL)
 			self.economicTree = self.e ? e[0] : null;
 			self.functionalTree = self.f ? f[0] : null;
+			(t[0] || '').trim().split('\n').forEach(function (row) {
+				var parts = row.split('\t');
+				self.tooltips[parts[0]] = parts[1];
+			});
+
 			self.mode = self.e ? 0 : 1;
 			self.loading = !self.e && !self.f;
 			window.addEventListener('resize', function () {

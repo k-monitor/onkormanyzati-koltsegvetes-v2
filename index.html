@@ -162,7 +162,7 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<vis :id="'income-vis'" :e="'data/2018/income-econ.json'" :f="'data/2018/income-func.json'">
+						<vis :id="'income-vis'" :e="'data/2018/income-econ.json'" :f="'data/2018/income-func.json'" :tt="'data/tooltips.tsv'">
 						</vis>
 					</div>
 				</div>
@@ -178,7 +178,7 @@
 				</div>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
-						<vis :id="'expenses-vis'" :e="'data/2018/expense-econ.json'" :f="'data/2018/expense-func.json'">
+						<vis :id="'expenses-vis'" :e="'data/2018/expense-econ.json'" :f="'data/2018/expense-func.json'" :tt="'data/tooltips.tsv'">
 						</vis>
 					</div>
 				</div>
@@ -228,8 +228,9 @@
 				</div>
 				<div class="d-flex border-top border-bottom vis" :id="id" @mouseout="hovered=-1">
 					<div class="d-flex flex-column left-column">
-						<div class="bar" v-for="(n,i) in children" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
-							@click="down(i)" @mouseover="hovered=i">
+						<div class="bar" v-for="(n,i) in children" :key="n.id" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
+							@click="down(i)" @mouseover="hovered=i"
+							data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId] || tooltips[n.id]">
 							<div class="text-right w-100">
 								{{ groupNums(n.value) }}
 								<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
