@@ -38,3 +38,8 @@ hr.light {
 .page-section {
   padding: 8rem 0;
 }
+
+// Tooltip over Intro.js
+.tooltip {
+  z-index: 10000000 !important;
+}
