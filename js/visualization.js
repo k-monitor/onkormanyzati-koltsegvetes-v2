@@ -76,7 +76,7 @@ Vue.component('vis', {
 				color.setAlpha(opacity);
 				color = color.toRgbString();
 			}
-			if (this.hovered > -1 && index != this.hovered) {
+			if (this.hovered > -1 && index != this.hovered && index > -1) {
 				color = tinycolor(color);
 				color.setAlpha(color.getAlpha() * 0.5);
 				color = color.toRgbString();
