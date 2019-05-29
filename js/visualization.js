@@ -21,8 +21,23 @@ Vue.component('vis', {
 		root: function () {
 			return this.mode % 2 == 0 ? this.economicTree : this.functionalTree;
 		},
-		node: function () {
+		nodePath: function () {
 			var r = this.root || new Node('', 0, []);
+			var np = [r];
+			for (var p = 0; p < this.path.length; p++) {
+				var i = this.path[p];
+				if (r.children[i] && r.children[i].children.length > 0) {
+					r = r.children[i];
+					np.push(r);
+				} else {
+					break;
+				}
+			}
+			return np;
+		},
+		node: function () {
+			return this.nodePath[this.nodePath.length - 1];
+			/*var r = this.root || new Node('', 0, []);
 			for (var p = 0; p < this.path.length; p++) {
 				var i = this.path[p];
 				if (r.children[i] && r.children[i].children.length > 0) {
@@ -31,7 +46,7 @@ Vue.component('vis', {
 					break;
 				}
 			}
-			return r;
+			return r;*/
 		},
 		children: function () {
 			try {
@@ -103,8 +118,12 @@ Vue.component('vis', {
 				this.path.push(index);
 			}
 		},
-		up: function () {
-			this.path.splice(-1, 1);
+		up: function (n) {
+			n = Math.max(n || 1, 0);
+			while (n > 0) {
+				this.path.pop();
+				n--;
+			}
 		},
 		updateCurves: function () {
 			var svg = $('#' + this.id + ' .curves svg');

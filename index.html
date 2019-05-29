@@ -239,6 +239,12 @@
 						</ul>
 					</div>
 				</div>
+
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item" v-for="(n,i) in nodePath" :class="{ active: i == nodePath.length - 1 }" @click="up(path.length - i)">{{ n.name }}</li>
+					</ol>
+				</nav>
 				<div class="d-flex mb-2 vis-header">
 					<div class="left-column">
 						<div class="label">

@@ -24,6 +24,10 @@
 		}
 	}
 
+	.breadcrumb-item:not(.active) {
+		cursor: pointer;
+	}
+
 	.curve {
 		fill: none;
 	}
