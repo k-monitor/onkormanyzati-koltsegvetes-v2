@@ -24,7 +24,15 @@
 		}
 	}
 
+	.breadcrumb-item.active, .breadcrumb .subtotal {
+		color: $dark;
+		font-weight: bold;
+	}
+
 	.breadcrumb-item:not(.active) {
+		&:not(:hover) {
+			color: $text-muted;
+		}
 		cursor: pointer;
 	}
 
