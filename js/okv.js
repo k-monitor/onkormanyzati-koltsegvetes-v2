@@ -20,6 +20,11 @@
     $('.navbar-collapse').collapse('hide');
   });
 
+  // Remove focus
+  $('.js-scroll-trigger').click(function() {
+    $(this).blur();
+  });
+
   // Activate scrollspy to add active class to navbar items on scroll
   $('body').scrollspy({
     target: '#mainNav',
