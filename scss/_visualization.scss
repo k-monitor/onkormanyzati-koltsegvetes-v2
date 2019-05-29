@@ -15,6 +15,14 @@
 		padding: .1rem .5rem;
 	}
 
+	.back-bar {
+		margin-right: 1px;
+
+		&:hover {
+			opacity: .8;
+		}
+	}
+
 	.curve {
 		fill: none;
 	}

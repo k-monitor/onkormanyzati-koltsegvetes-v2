@@ -67,7 +67,7 @@ Vue.component('vis', {
 				'#ef538c' /* 9000 Technikai funkciókódok */,
 			];
 
-			var color = colors[this.colorIndex(node, index)];
+			var color = colors[this.colorIndex(node)];
 			if (this.path.length > 0) {
 				var opacity = node.value / this.node.children[0].value;
 				opacity = 0.5 + opacity * 0.5;
@@ -87,7 +87,7 @@ Vue.component('vis', {
 			var color = tinycolor(this.bgColor(node, index));
 			return color.isLight() || color.getAlpha() < 0.5 ? 'black' : 'white';
 		},
-		colorIndex: function (node, index) {
+		colorIndex: function (node) {
 			var id = node.id;
 			if (this.path.length > 0) {
 				id = this.root.children[this.path[0]].id;
