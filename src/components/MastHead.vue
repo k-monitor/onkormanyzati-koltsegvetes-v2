@@ -10,18 +10,24 @@
 					<p class="text-white-75 font-weight-light mb-5">{{ $config.headline }}</p>
 					<a
 					 class="btn btn-primary btn-xl js-scroll-trigger"
-					 href="#inex"
-					>Tovább</a>
+					 :href="href"
+					>{{ $config.headerAction }}</a>
 				</div>
 			</div>
 		</div>
 	</header>
 </template>
 
+<script>
+export default {
+	props: ["href"]
+};
+</script>
+
 <style lang="scss">
-@import '../scss/variables';
+@import "../scss/variables";
 @import "~bootstrap/scss/functions";
-@import '~bootstrap/scss/variables';
+@import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
 header.masthead {
@@ -56,6 +62,9 @@ header.masthead {
 		h1 {
 			font-size: 3.5rem;
 		}
+	}
+	.btn-xl {
+		border: none;
 	}
 }
 </style>

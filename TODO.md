@@ -1,0 +1,4 @@
+- kiszervezhetnék egy Section komponenst, props: title, bg, light-text (boolean), és lehetnének különbző slotjai
+- milestones
+- inex
+- vis

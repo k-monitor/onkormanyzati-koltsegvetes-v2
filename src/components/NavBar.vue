@@ -7,7 +7,7 @@
 			<a
 			 class="navbar-brand js-scroll-trigger"
 			 href="#page-top"
-			>Mintaváros</a>
+			>{{ $config.city }}</a>
 			<button
 			 class="navbar-toggler navbar-toggler-right"
 			 type="button"
@@ -24,17 +24,15 @@
 			 id="navbarResponsive"
 			>
 				<ul class="navbar-nav ml-auto my-2 my-lg-0">
-					<li class="nav-item">
+					<li
+					 class="nav-item"
+					 v-for="(e, i) in $config.navLinks"
+					 :key="i"
+					>
 						<a
 						 class="nav-link js-scroll-trigger"
-						 href="#inex"
-						>Költségvetés</a>
-					</li>
-					<li class="nav-item">
-						<a
-						 class="nav-link js-scroll-trigger"
-						 href="#milestones"
-						>Fejlesztések</a>
+						 :href="e.href"
+						>{{ e.text }}</a>
 					</li>
 					<!--<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -52,10 +50,38 @@
 	</nav>
 </template>
 
+<script>
+import $ from "jquery";
+import "bootstrap";
+
+export default {
+	mounted() {
+		// Activate scrollspy to add active class to navbar items on scroll
+		$("body").scrollspy({
+			target: "#mainNav",
+			offset: 75
+		});
+
+		// Collapse Navbar
+		var navbarCollapse = function() {
+			if ($("#mainNav").offset().top > 100) {
+				$("#mainNav").addClass("navbar-scrolled");
+			} else {
+				$("#mainNav").removeClass("navbar-scrolled");
+			}
+		};
+		// Collapse now if page is not at top
+		navbarCollapse();
+		// Collapse the navbar when page is scrolled
+		$(window).scroll(navbarCollapse);
+	}
+};
+</script>
+
 <style lang="scss">
-@import '../scss/variables';
+@import "../scss/variables";
 @import "~bootstrap/scss/functions";
-@import '~bootstrap/scss/variables';
+@import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
 #mainNav {

@@ -1,8 +1,9 @@
 <template>
 	<div class="d-flex flex-column h-100">
 		<NavBar />
-		<MastHead />
+		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
+			<Welcome />
 			<slot />
 		</div>
 		<Footer />
@@ -10,8 +11,9 @@
 </template>
 
 <script>
-import config from "~/data/config.json";
+import config from "~/data/config.js";
 import $ from "jquery";
+import "jquery.easing";
 import "popper.js";
 import "bootstrap";
 
@@ -32,37 +34,45 @@ export default {
 					"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css"
 			}
 		],
-		script: [
-			/*{
-				src:
-					"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js",
-				body: true
-			},
-			{
-				src:
-					"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js",
-				body: true
-			},*/
-			/*{
-				src:
-					"https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js",
-				body: true
-			},
-			{
-				src:
-					"https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.3/papaparse.min.js",
-				body: true
-			},
-			{
-				src:
-					"https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js",
-				body: true
-			}*/
-		],
 		bodyAttrs: {
 			id: "page-top"
 		},
 		title: config.title
+	},
+	mounted() {
+		// Smooth scrolling using jQuery easing
+		$('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function() {
+			if (
+				location.pathname.replace(/^\//, "") ==
+					this.pathname.replace(/^\//, "") &&
+				location.hostname == this.hostname
+			) {
+				var target = $(this.hash);
+				target = target.length
+					? target
+					: $("[name=" + this.hash.slice(1) + "]");
+				if (target.length) {
+					$("html, body").animate(
+						{
+							scrollTop: target.offset().top - 72
+						},
+						1000,
+						"easeInOutExpo"
+					);
+					return false;
+				}
+			}
+		});
+
+		// Closes responsive menu when a scroll trigger link is clicked
+		$(".js-scroll-trigger").click(function() {
+			$(".navbar-collapse").collapse("hide");
+		});
+
+		// Remove focus
+		$(".js-scroll-trigger").click(function() {
+			$(this).blur();
+		});
 	}
 };
 </script>
@@ -104,7 +114,6 @@ hr.light {
 	font-size: 0.85rem;
 	font-weight: 700;
 	text-transform: uppercase;
-	border: none;
 	border-radius: 10rem;
 }
 
