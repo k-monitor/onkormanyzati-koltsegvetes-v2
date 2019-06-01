@@ -34,16 +34,15 @@
 						 :href="e.href"
 						>{{ e.text }}</a>
 					</li>
-					<!--<li class="nav-item dropdown">
+					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
 						 aria-haspopup="true" aria-expanded="false">
 							{{ year }}
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="#">{{ year-1 }}</a>
-							<a class="dropdown-item" href="#">{{ year-2 }}</a>
+							<a class="dropdown-item" v-for="y in years" :key="y" href="javascript:void(0)" @click="$emit('yearSelected', y)">{{ y }}</a>
 						</div>
-					</li>-->
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -55,6 +54,7 @@ import $ from "jquery";
 import "bootstrap";
 
 export default {
+	props: ['year', 'years'],
 	mounted() {
 		// Activate scrollspy to add active class to navbar items on scroll
 		$("body").scrollspy({

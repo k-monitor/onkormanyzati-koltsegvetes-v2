@@ -1,9 +1,10 @@
 <template>
 	<div class="d-flex flex-column h-100">
-		<NavBar />
+		<NavBar :year="year" :years="$config.years" @yearSelected="handleYearSelected" />
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
 			<Welcome />
+			<Inex :year="year" />
 			<slot />
 		</div>
 		<Footer />
@@ -38,6 +39,16 @@ export default {
 			id: "page-top"
 		},
 		title: config.title
+	},
+	data() {
+		return {
+			year: 2018
+		}
+	},
+	methods: {
+		handleYearSelected(year) {
+			this.year = year;
+		}
 	},
 	mounted() {
 		// Smooth scrolling using jQuery easing
