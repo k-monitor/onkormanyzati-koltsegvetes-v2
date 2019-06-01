@@ -50,9 +50,6 @@
 </template>
 
 <script>
-import $ from "jquery";
-import "bootstrap";
-
 export default {
 	props: ['year', 'years'],
 	mounted() {

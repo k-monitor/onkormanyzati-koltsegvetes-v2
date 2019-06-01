@@ -13,10 +13,6 @@
 
 <script>
 import config from "~/data/config.js";
-import $ from "jquery";
-import "jquery.easing";
-import "popper.js";
-import "bootstrap";
 
 export default {
 	metaInfo: {
