@@ -13,10 +13,10 @@ function gatherIds(node) {
 	}
 }
 
-fg.sync(['data/**/*.json'])
+fg.sync(['.src/data/**/*.json']) // TODO we should use data.json instead
 	.map(fn => fs.readFileSync(fn, 'utf-8'))
 	.map(raw => JSON.parse(raw))
 	.forEach(gatherIds);
 
 const output = Object.keys(ids).sort().map(id => `${id}\tLorem ipsum for ${id}`).join('\n');
-fs.writeFileSync('data/lorem-tooltips.tsv', output);
+fs.writeFileSync('./src/data/lorem-tooltips.tsv', output);

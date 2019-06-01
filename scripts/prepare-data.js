@@ -1,4 +1,5 @@
 const fs = require('fs');
+const fg = require('fast-glob');
 const mkdirp = require('mkdirp').sync;
 const xlsx = require('xlsx');
 
@@ -6,7 +7,7 @@ const xlsx = require('xlsx');
 
 if (process.argv.length < 3) {
 	console.log('\nKérlek add meg az input fájl útvonalát! Példa:\n');
-	console.log('\t node scripts/prepare-data data/src/input_fajl.xslx\n');
+	console.log('\t node scripts/prepare-data src/data/src/input_fajl.xslx\n');
 	return;
 }
 
@@ -17,7 +18,7 @@ const INPUT_FILE = process.argv[2];
 (() => {
 	console.log(`Processing file: ${INPUT_FILE}`);
 	const workbook = xlsx.readFile(INPUT_FILE);
-	const funcTreeTsv = fs.readFileSync('data/functions.tsv', 'utf-8');
+	const funcTreeTsv = fs.readFileSync('./src/data/functions.tsv', 'utf-8');
 
 	workbook.SheetNames.forEach(sheetName => {
 		console.log(`Reading sheet: ${sheetName}`);
@@ -37,6 +38,23 @@ const INPUT_FILE = process.argv[2];
 			console.log('Invalid sheet name!');
 		}
 	});
+
+	const OUTPUT_FILE = './src/data/data.json';
+	console.log('Building all-in-one JSON');
+	const data = {};
+	fg.sync('./src/data/2*/*.json').forEach(f => {
+		const m = f.match(/.*\/(\d{4})\/(expense|income)-(econ|func)\.json$/);
+		console.log(f);
+		if (m) {
+			const year = m[1];
+			const inex = m[2];
+			const tree = m[3];
+			data[year] = data[year] || {};
+			data[year][inex] = data[year][inex] || {};
+			data[year][inex][tree] = JSON.parse(fs.readFileSync(f, 'utf-8'));
+		}
+	});
+	writeToFile(JSON.stringify(data), OUTPUT_FILE);
 })();
 
 // lib
@@ -104,7 +122,7 @@ function generateEconomicTree(matrixTsv) {
 function generateFilenames(sheetName) {
 	let [year, name] = sheetName.split(' ');
 	name = name.replace('BEVÉTEL', 'income').replace('KIADÁS', 'expense');
-	const dir = `data/${year}`;
+	const dir = `src/data/${year}`;
 	const econFile = `${dir}/${name}-econ.json`;
 	const funcFile = `${dir}/${name}-func.json`;
 	return { dir, econFile, funcFile };

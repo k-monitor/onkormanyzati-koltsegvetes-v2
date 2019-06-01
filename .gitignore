@@ -12,6 +12,7 @@ dist
 
 # Generated data:
 src/data/2*
+src/data/data.json
 src/data/lorem*
 
 # Input data:

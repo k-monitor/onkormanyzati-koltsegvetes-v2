@@ -1,19 +1,20 @@
 <template>
 	<div>
-		<h1>HELLÓ INEX {{ year }}</h1>
-		<h2>{{ name }}</h2>
 	</div>
 </template>
 
 <script>
-import data from '~/data/data.byhand.js';
+import data from "~/data/data.json";
 
 export default {
-	props: ['year'],
+	props: ["year"],
 	data() {
-		return {
-			name: data.d18.name
+		return {};
+	},
+	computed: {
+		data() {
+			return data[this.year];
 		}
 	}
-}
+};
 </script>
