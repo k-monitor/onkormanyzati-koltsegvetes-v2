@@ -1,4 +1,6 @@
 # Gridsome .gitignore
+# -------------------
+
 *.log
 .cache
 .DS_Store
@@ -9,14 +11,15 @@ dist
 .env.*
 
 # Custom .gitignore
+# -----------------
+
+# Input data:
+input
 
 # Generated data:
 src/data/2*
 src/data/data.json
 src/data/lorem*
 
-# Input data:
-src/data/src
-
-# Generated docs
+# Generated docs:
 README.pdf
