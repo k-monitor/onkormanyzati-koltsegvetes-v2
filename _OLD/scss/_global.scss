@@ -31,11 +31,15 @@ hr.light {
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
-  border: none;
   border-radius: 10rem;
 }
 
 // Page section padding
 .page-section {
   padding: 8rem 0;
+}
+
+// Tooltip over Intro.js
+.tooltip {
+  z-index: 10000000 !important;
 }

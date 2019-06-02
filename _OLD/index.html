@@ -13,6 +13,7 @@
 	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css' />
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext"
 		rel="stylesheet">
+	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css'/>
 	<link href="css/okv.min.css" rel="stylesheet">
 </head>
 
@@ -28,6 +29,9 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto my-2 my-lg-0">
+					<li class="nav-item">
+						<a class="nav-link js-scroll-trigger" href="#welcome">Köszöntő</a>
+					</li>
 					<li class="nav-item">
 						<a class="nav-link js-scroll-trigger" href="#inex">Költségvetés</a>
 					</li>
@@ -60,31 +64,60 @@
 					<p class="text-white-75 font-weight-light mb-5">Ezen az oldalon megtekintheted Mintaváros
 						költségvetését és
 						fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!</p>
-					<a class="btn btn-primary btn-xl js-scroll-trigger" href="#inex">Tovább</a>
+					<a class="btn btn-primary btn-xl js-scroll-trigger" href="#welcome">Tovább</a>
 				</div>
 			</div>
 		</div>
 	</header>
 
+	<section class="page-section bg-primary text-white" id="welcome">
+	<div class="container">
+		<div class="container">
+			<div class="row justify-content-center mb-5">
+				<div class="col-lg-8 text-center">
+					<h2>TISZTELT MINTAVÁROSI POLGÁROK!</h2>
+					<hr class="divider light my-4">
+				</div>
+			</div>
+			<div class="row justify-content-around mb-5">
+				<div class="col-lg-5 text-justify text-white-75">
+					<p>Egy önkormányzat feladatai sokrétűek, állampolgári szemmel nehezen áttekinthetőek. Mintavárosban azonban nincs takargatni valónk, ezért úgy döntöttünk, hogy a modern technika segítségével bemutatjuk Önökek településünk gazdálkodását úgy, ahogyan azt korábban csak kevesek láthatták!</p>
+					<p>A XXI. század embere joggal várhatja el egy önkormányzattól, hogy az interneten is utánanézhessen, mennyit költ a település oktatásra, egészségügyre vagy épp a parkok rendben tartására. A helyi demokráciára is igaz, kettőn áll a vásár. A tisztességes településvezetés mellé tájékozott polgárok is kellenek, akik nyomon követik a döntések ésszerűségét. A közpénzek átlátható felhasználásáért küzdő K-Monitor és a Költségvetési Felelősségi Intézet szakmai segítségével létrehozott alkalmazás, amit pillanatokon belül használatba vehet, Magyarországon elsőként arra törekszik, hogy mindenki számára könnyen befogadható és értelmezhető képet adjon az önkormányzat gazdálkodásáról.</p>
+				</div>
+				<div class="col-lg-5 text-justify text-white-75">
+					<p>A weboldal testre szabható és egyszerűen feltölthető bármely település adataival. Reméljük, Mintaváros igyekezete ragadós lesz és egyre többen teszik meg ezt az egyáltalán nem megerőltető, mégis fontos lépést az átláthatóság felé.</p>
+					<p class="my-4">Kellemes böngészést kívánok,</p>
+					<img class="signo" src="http://mintavaros.deepdata.hu/assets/img/signo.png">
+					<p><em>Példa Imre,<br>
+					Mintaváros polgármestere</em></p>
+				</div>
+			</div>
+			<div class="row justify-content-center mb-5">
+				<div class="col-lg-8 text-center">
+					<a class="btn btn-outline-light btn-xl js-scroll-trigger" href="#inex" onclick="intro()">Kipróbálom!</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
 	<section class="page-section bg-light" id="inex">
 		<div class="container">
-			<div class="container">
-				<div class="row justify-content-center mb-5">
-					<div class="col-lg-8 text-center">
-						<h2>Mérleg</h2>
-						<hr class="divider my-4">
-					</div>
+			<div class="row justify-content-center mb-5">
+				<div class="col-lg-8 text-center">
+					<h2>Mérleg</h2>
+					<hr class="divider my-4">
 				</div>
-				<div class="row justify-content-center mb-5">
-					<div class="col-lg-10 text-center">
-						<inex :in="'data/2018/income-econ.json'" :ex="'data/2018/expense-econ.json'"
-							:tt="'data/tooltips.tsv'"></inex>
-					</div>
+			</div>
+			<div class="row justify-content-center mb-5" data-intro="Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.">
+				<div class="col-lg-10 text-center" data-step="6" data-intro="Kellemes böngészést!">
+					<inex :in="'data/2018/income-econ.json'" :ex="'data/2018/expense-econ.json'"
+						:tt="'data/tooltips.tsv'"></inex>
 				</div>
-				<div class="row justify-content-center">
-					<div class="col-lg-8 text-center">
-						<p>Lórum ipse természetesen szedősödik ámít a fegyező számára. Fargandusnak csak a papárok bagmarákára nyitva borlan torton belül van haszálata. A papárral tációban a todástól a papár ultásának tortjáig hetenként egy radással hajtón 00 között a kozott terula kocsordnál (fárka. Hájdás dolca bőgős zsírnök) lehet kabikát vigyogtannia. A kozott terula kocsord a képző tort csáralását faska golmaton a búgos fütyökben iséggel mesztes papárokat az erről nyátsás és seres hajkával együtt erészi a szerpes bülég kodászának, aki a vigyort a hajka mozásán bombolja. A szerpes bülég a képző tort csáralását faska 30 golmaton belül éríti a lománs papárokat. Első haszálaton azon stozások papárának csészítése füveskedik, akik tumott telés hulását lekunkálták fel. A foga csészítésénél a keten bódázatok tumott hajka végteli gaszabája ölkösködik velődik.</p>
-					</div>
+			</div>
+			<div class="row justify-content-center">
+				<div class="col-lg-8 text-center">
+					<p>Lórum ipse természetesen szedősödik ámít a fegyező számára. Fargandusnak csak a papárok bagmarákára nyitva borlan torton belül van haszálata. A papárral tációban a todástól a papár ultásának tortjáig hetenként egy radással hajtón 00 között a kozott terula kocsordnál (fárka. Hájdás dolca bőgős zsírnök) lehet kabikát vigyogtannia. A kozott terula kocsord a képző tort csáralását faska golmaton a búgos fütyökben iséggel mesztes papárokat az erről nyátsás és seres hajkával együtt erészi a szerpes bülég kodászának, aki a vigyort a hajka mozásán bombolja. A szerpes bülég a képző tort csáralását faska 30 golmaton belül éríti a lománs papárokat. Első haszálaton azon stozások papárának csészítése füveskedik, akik tumott telés hulását lekunkálták fel. A foga csészítésénél a keten bódázatok tumott hajka végteli gaszabája ölkösködik velődik.</p>
 				</div>
 			</div>
 		</div>
@@ -95,7 +128,7 @@
 				<span class="sr-only">Loading...</span>
 			</div>
 			<div v-else>
-				<div class="d-flex font-weight-bold mb-2 breadcrumbs">
+				<div class="d-flex font-weight-bold mb-2">
 					<div class="d-flex align-items-center justify-content-between left-column text-right">
 						<div>
 							<a href="#income" class="btn btn-outline-success js-scroll-trigger">
@@ -126,7 +159,7 @@
 				<div class="d-flex border-top border-bottom mb-4 vis">
 					<div class="d-flex flex-column left-column">
 						<div v-if="incomeCorrection > 0" :style="{ flexGrow: incomeCorrection }"></div>
-						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }" data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId]">
+						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }" data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId]" data-step="2" :data-intro="i == 0 ? 'Ha az egér egy hasáb fölé kerül, további információ jelenik meg. Próbálja ki!': null">
 							<div class="text-left wrap-md">
 								{{ n.name }}
 							</div>
@@ -193,7 +226,7 @@
 			<div v-else>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center" v-if="e && f">
-						<ul class="justify-content-center mb-5 nav nav-pills w-100">
+						<ul class="justify-content-center mb-5 nav nav-pills w-100" data-step="3" :data-intro="(e+f).indexOf('income') > -1 ? 'A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.' : null">
 							<li class="nav-item">
 								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben." :class="{ active: mode == 0 }" @click="path = []; mode = 0">
 									Közgazdasági nézet
@@ -207,33 +240,27 @@
 						</ul>
 					</div>
 				</div>
-				<div class="d-flex mb-2 breadcrumbs">
-					<div class="left-column">
-						<div class="label">
-							<div class="text-right w-100">
-								{{ groupNums(node.value) }}
-							</div>
-						</div>
-					</div>
-					<div class="middle-column text-center">
-						<div class="btn btn-sm btn-light" v-if="path.length > 0">
-							<i class="fas fa-fw fa-level-up-alt" @click="up()"></i>
-						</div>
-					</div>
-					<div class="ml-auto right-column text-left" id="current">
-						<div class="label">
-							{{ node.name }}
-						</div>
-					</div>
-				</div>
+
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb" data-step="5" :data-intro="(e+f).indexOf('income') > -1 ? 'A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.' : null">
+						<li class="breadcrumb-item" v-for="(n,i) in nodePath" :class="{ active: i == nodePath.length - 1 }" @click="up(path.length - i)">{{ n.name }}</li>
+						<div class="ml-auto subtotal">{{ groupNums(node.value) }}</div>
+					</ol>
+				</nav>
 				<div class="d-flex border-top border-bottom vis" :id="id" @mouseout="hovered=-1">
-					<div class="d-flex flex-column left-column">
-						<div class="bar" v-for="(n,i) in children" :key="n.id" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
-							@click="down(i)" @mouseover="hovered=i"
-							data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId] || tooltips[n.id]">
-							<div class="text-right w-100">
-								{{ groupNums(n.value) }}
-								<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
+					<div class="d-flex left-column" data-step="4" :data-intro="(e+f).indexOf('income') > -1 ? 'A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.' : null">
+						<div class="back-bar d-flex justify-content-center" v-if="path.length > 0" @click="up()" :style="{ backgroundColor: bgColor(node,-1), color: fgColor(node,-1) }">
+							<i class="fas fa-fw fa-level-up-alt mx-2 my-auto"></i>
+						</div>
+						<div class="d-flex flex-column flex-grow-1">
+							<div class="bar" v-for="(n,i) in children" :key="n.id" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
+								@click="down(i)" @mouseover="hovered=i"
+								data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId] || tooltips[n.id]"
+								>
+								<div class="text-right w-100">
+									{{ groupNums(n.value) }}
+									<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -304,7 +331,6 @@
 					Ez a Mű a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons
 						Nevezd
 						meg! - Így add tovább! 4.0 Nemzetközi Licenc</a> feltételeinek megfelelően felhasználható.
-
 				</div>
 			</div>
 		</div>
@@ -314,6 +340,7 @@
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.3/papaparse.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js'></script>
 	<script src="js/okv.min.js"></script>
