@@ -69,6 +69,40 @@ function intro() {
       .setOption("showProgress", false)
       .setOption("showStepNumbers", false)
       .setOption("skipLabel", "Kilépés")
+      .setOption("tooltipPosition", "left")
+      .setOptions({
+        steps: [
+          {
+            element: '#inex-wrapper',
+            intro: 'Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.',
+            position: 'left'
+          },
+          {
+            element: '#inex-wrapper .vis .left-column .bar:nth-child(1)',
+            intro: 'Ha az egér egy hasáb fölé kerül, további információ jelenik meg. Próbálja ki!',
+            position: 'top'
+          },
+          {
+            element: '#income ul',
+            intro: 'A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.',
+            position: 'top'
+          },
+          {
+            element: '#income .vis > div',
+            intro: 'A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.'
+          },
+          {
+            element: '#income ol.breadcrumb',
+            intro: 'A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.',
+            position: 'bottom'
+          },
+          {
+            element: '#inex-wrapper',
+            intro: 'Kellemes böngészést!',
+            position: 'right'
+          }
+        ]
+      })
       .start();
   }, 1000);
 }

@@ -116,8 +116,8 @@
 					<hr class="divider my-4">
 				</div>
 			</div>
-			<div class="row justify-content-center mb-5" data-intro="Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.">
-				<div class="col-lg-10 text-center" data-step="6" data-intro="Kellemes böngészést!">
+			<div class="row justify-content-center mb-5">
+				<div class="col-lg-10 text-center" id="inex-wrapper">
 					<inex :in="'data/2018/income-econ.json'" :ex="'data/2018/expense-econ.json'"
 						:tt="'data/tooltips.tsv'"></inex>
 				</div>
@@ -166,7 +166,7 @@
 				<div class="d-flex border-top border-bottom mb-4 vis">
 					<div class="d-flex flex-column left-column">
 						<div v-if="incomeCorrection > 0" :style="{ flexGrow: incomeCorrection }"></div>
-						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }" data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId]" data-step="2" :data-intro="i == 0 ? 'Ha az egér egy hasáb fölé kerül, további információ jelenik meg. Próbálja ki!': null">
+						<div class="bar" v-for="(n,i) in incomeChildren" :data-id="n.id" :data-index="i" :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }" data-toggle="tooltip" data-placement="left" :title="tooltips[n.altId]">
 							<div class="text-left wrap-md">
 								{{ n.name }}
 							</div>
@@ -233,7 +233,7 @@
 			<div v-else>
 				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center" v-if="e && f">
-						<ul class="justify-content-center mb-5 nav nav-pills w-100" data-step="3" :data-intro="(e+f).indexOf('income') > -1 ? 'A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.' : null">
+						<ul class="justify-content-center mb-5 nav nav-pills w-100">
 							<li class="nav-item">
 								<a class="nav-link" href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben." :class="{ active: mode == 0 }" @click="path = []; mode = 0">
 									Közgazdasági nézet
@@ -249,13 +249,13 @@
 				</div>
 
 				<nav aria-label="breadcrumb">
-					<ol class="breadcrumb" data-step="5" :data-intro="(e+f).indexOf('income') > -1 ? 'A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.' : null">
+					<ol class="breadcrumb">
 						<li class="breadcrumb-item" v-for="(n,i) in nodePath" :class="{ active: i == nodePath.length - 1 }" @click="up(path.length - i)">{{ n.name }}</li>
 						<div class="ml-auto subtotal">{{ groupNums(node.value) }}</div>
 					</ol>
 				</nav>
 				<div class="d-flex border-top border-bottom vis" :id="id" @mouseout="hovered=-1">
-					<div class="d-flex left-column" data-step="4" :data-intro="(e+f).indexOf('income') > -1 ? 'A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.' : null">
+					<div class="d-flex left-column">
 						<div class="back-bar d-flex justify-content-center" v-if="path.length > 0" @click="up()" :style="{ backgroundColor: bgColor(node,-1), color: fgColor(node,-1) }">
 							<i class="fas fa-fw fa-level-up-alt mx-2 my-auto"></i>
 						</div>
