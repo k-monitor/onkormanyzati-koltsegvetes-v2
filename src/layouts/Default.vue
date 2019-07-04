@@ -1,6 +1,10 @@
 <template>
 	<div class="d-flex flex-column h-100">
-		<NavBar :year="year" :years="$config.years" @yearSelected="handleYearSelected" />
+		<NavBar
+		 :year="year"
+		 :years="$config.years"
+		 @yearSelected="handleYearSelected"
+		/>
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
 			<Welcome />
@@ -39,7 +43,7 @@ export default {
 	data() {
 		return {
 			year: 2018
-		}
+		};
 	},
 	methods: {
 		handleYearSelected(year) {

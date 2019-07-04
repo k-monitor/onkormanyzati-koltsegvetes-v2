@@ -15,4 +15,18 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('Inex', Inex);
 	Vue.component('Footer', Footer);
 	Vue.prototype.$config = config;
+	Vue.prototype.$util = {
+		groupNums(v, ns) {
+			var s = ['', 'e', 'M', 'Mrd'];
+			var i = 0;
+			v = Number(v);
+			while (ns && i < s.length && v > 1000) {
+				v /= 1000;
+				i++;
+			}
+			v = Math.round(v);
+			var vs = (v + '').replace(/\d(?=(?:\d{3})+(?:\.|$))/g, function ($0, i) { return $0 + ' ' });
+			return (vs + ' ' + s[i] + ' Ft').trim();
+		}
+	};
 }

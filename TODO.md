@@ -1,4 +1,7 @@
 - inex
+	- load tooltips, remove _ prefix from _:title attrs
 - vis
 - kiszervezhetnék egy Section komponenst, props: title, bg, light-text (boolean), és lehetnének különbző slotjai
 - milestones
+- read years from data
+- config += default year
