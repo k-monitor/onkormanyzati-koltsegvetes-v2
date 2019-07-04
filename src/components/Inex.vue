@@ -60,11 +60,11 @@
 							 v-for="(n,i) in incomeChildren"
 							 :data-id="n.id"
 							 :data-index="i"
-							 :key="i"
+							 :key="year + '/' + i"
 							 :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }"
 							 data-toggle="tooltip"
 							 data-placement="left"
-							 _:title="tooltips[n.altId]"
+							 :title="$tooltips[n.altId]"
 							>
 								<div class="text-left wrap-md">
 									{{ n.name }}
@@ -84,11 +84,11 @@
 							 v-for="(n,i) in expenseChildren"
 							 :data-id="n.id"
 							 :data-index="i"
-							 :key="i"
+							 :key="year + '/' + i"
 							 :style="{ backgroundColor: bgColor(expenseTree, n, 'firebrick'), color: fgColor(expenseTree, n, 'firebrick'), flexGrow: n.value }"
 							 data-toggle="tooltip"
 							 data-placement="right"
-							 _:title="tooltips[n.altId]"
+							 :title="$tooltips[n.altId]"
 							>
 								<div class="mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
@@ -190,7 +190,16 @@ export default {
 		fgColor: function(tree, node, color) {
 			var color = window.tinycolor(this.bgColor(tree, node, color));
 			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
+		},
+		regenerateTooltips() {
+			$('[data-toggle="tooltip"]').tooltip();
 		}
+	},
+	mounted() {
+		this.regenerateTooltips();
+	},
+	updated() {
+		this.regenerateTooltips();
 	}
 };
 </script>

@@ -6,6 +6,7 @@ import Inex from '~/components/Inex.vue';
 import Footer from '~/components/Footer.vue';
 
 import config from '~/data/config.js';
+import tooltips from '~/data/tooltips.json';
 
 export default function (Vue, { router, head, isClient }) {
 	Vue.component('Layout', DefaultLayout);
@@ -15,6 +16,7 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('Inex', Inex);
 	Vue.component('Footer', Footer);
 	Vue.prototype.$config = config;
+	Vue.prototype.$tooltips = tooltips;
 	Vue.prototype.$util = {
 		groupNums(v, ns) {
 			var s = ['', 'e', 'M', 'Mrd'];

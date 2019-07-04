@@ -15,7 +15,7 @@ A beüzemelés lépései:
 1. A projekt mappájában futtasd le a `yarn install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
 1. Másold be az önkormányzattól kapott XLSX fájlt az `input` mappába.
 1. A projekt mappájában futtasd le a `node scrips/prepare-data input/INPUT_FAJL.xlsx` parancsot, ez az XLSX fájlból kinyeri és megfelelő formára hozza az adatokat a vizualizáció számára. A generált adatfájlok az `src/data` mappába kerülnek.
-1. Szerkeszd a `src/data/tooltips.tsv` és `milestones.tsv` fájlokat, hogy testreszabd a vizualizáció szövegeit (részletek alább).
+1. Szerkeszd a `src/data/tooltips.json` és `milestones.tsv` fájlokat, hogy testreszabd a vizualizáció szövegeit (részletek alább).
 1. Szerkeszd a `src/data/config.js` fájlban a változókat, hogy testreszabd a weboldal szövegeit.
 1. A projekt mappájában indítsd el a `gridsome develop` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
 1. A weboldal legenerálásához használd a `gridsome build` parancsot. A kész weboldal a `dist` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
@@ -39,7 +39,7 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 - **src/data/data.json (generált)** - A vizualizáció adatai.
 - **src/data/functions.tsv** - A funkcionális kategóriák fa struktúrája.
 - **src/data/milestones.tsv** - A fejlesztések leírásai.
-- **src/data/tooltips.tsv** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei.
+- **src/data/tooltips.json** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei.
 
 A `data.json` fájl az általános KGR rendszer importjából generálható le, ami egy XLSX fájl. A konverzióhoz az alábbi parancsot kell lefuttatni:
 
@@ -121,18 +121,20 @@ id	picture	title	description	text 1
 
 
 
-### src/data/tooltips.tsv
+### src/data/tooltips.json
 
-A kategóriákhoz tartozó tooltip-ek szövegeit tartalmazza. Egyelőre csak a nyitóábrában van használva, ahol a közgazdasági bontás felső szintje van megjelenítve.
+A kategóriákhoz tartozó tooltip-ek szövegeit tartalmazza.
 
-Formátuma TSV, oszlopai: kategória alternatív azonosítója (`B1`, `B2`, `K1`, `K2`, stb.), tooltip szövege.
+Formátuma JSON: egyetlen objektum, benne kulcs érték párok, ahol a kulcs a kategória alternatív azonosítója (`B1`, `B2`, `K1`, `K2`, stb.), az érték pedig a tooltip szövege.
 
 Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog megjelenni a tooltip.
 
-```tsv
-B1	Lorem ipsum for B1
-B2	Lorem ipsum for B2
-...
+```json
+{
+	"B1": "Lorem ipsum for B1",
+	"B2": "Lorem ipsum for B2",
+	...
+}
 ```
 
 
