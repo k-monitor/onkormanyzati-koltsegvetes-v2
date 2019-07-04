@@ -9,6 +9,8 @@
 		<div class="flex-grow-1">
 			<Welcome />
 			<Inex :year="year" />
+			<VisualizationSection :year="year" side="income" title="Bevételek" />
+			<VisualizationSection :year="year" side="expense" title="Kiadások" class="bg-light" />
 			<slot />
 		</div>
 		<Footer />
