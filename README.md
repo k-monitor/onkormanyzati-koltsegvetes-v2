@@ -17,7 +17,7 @@ A beüzemelés lépései:
 1. A projekt mappájában futtasd le a `yarn install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
 1. Másold be az önkormányzattól kapott XLSX fájlt az `input` mappába.
 1. A projekt mappájában futtasd le a `node scrips/prepare-data input/INPUT_FAJL.xlsx` parancsot, ez az XLSX fájlból kinyeri és megfelelő formára hozza az adatokat a vizualizáció számára. A generált adatfájlok az `src/data` mappába kerülnek.
-1. Szerkeszd a `src/data/tooltips.json` és `milestones.tsv` fájlokat, hogy testreszabd a vizualizáció szövegeit (részletek alább).
+1. Szerkeszd a `src/data/tooltips.json` és `milestones.json` fájlokat, hogy testreszabd a vizualizáció szövegeit (részletek alább).
 1. Szerkeszd a `src/data/config.js` fájlban a változókat, hogy testreszabd a weboldal szövegeit.
 1. A projekt mappájában indítsd el a `gridsome develop` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
 1. A weboldal legenerálásához használd a `gridsome build` parancsot. A kész weboldal a `dist` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
@@ -40,7 +40,7 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 - **src/data/config.js** - A weboldal beállításai, szövegei.
 - **src/data/data.json (generált)** - A vizualizáció adatai.
 - **src/data/functions.tsv** - A funkcionális kategóriák fa struktúrája.
-- **src/data/milestones.tsv** - A fejlesztések leírásai.
+- **src/data/milestones.json** - A fejlesztések leírásai.
 - **src/data/tooltips.json** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei.
 
 A `data.json` fájl az általános KGR rendszer importjából generálható le, ami egy XLSX fájl. A konverzióhoz az alábbi parancsot kell lefuttatni:
@@ -103,22 +103,27 @@ Ha az utóbbi oszlopba olyan érték kerül, amihez nem tartozik sor, akkor az a
 
 
 
-### src/data/milestones.tsv
+### src/data/milestones.json
 
 A *Fejlesztések* szakasz tartalmát definiálja.
 
-Formátuma TSV, fejléccel. Oszlopait a vizualizáció korábbi verziójából örökölte, nincs mindegyik használatban és a végleges verzióban változhat a szerkezet.
+Formátuma JSON: egy tömb, az alábbi mezőkből álló objektumokból:
 
-- `id`: régről visszamaradt oszlop, nincs használatban
 - `picture`: a képfájl elérési útvonala
 - `title`: fejléc
 - `description`: szövegtörzs
-- `text 1`: további szövegmező, mely jelenleg a szövegtörzs alatt jelenik meg
+- `text`: további szövegmező, mely jelenleg a szövegtörzs alatt jelenik meg
 
-```tsv
-id	picture	title	description	text 1
-!	/assets/img/milestone/0_2019.jpg	Ülésezik Mintaváros képviselő-testülete	A közel 12 ezer lakosú Mintaváros önkormányzata ...	Mintaváros idei költségvetése
-1	/assets/img/milestone/func/1_2019.jpg	A Polgármesteri Hivatal épülete	Az általános közszolgáltatások között szerepelnek...	100 Ft-ból 35 forintot költünk közszolgáltatásokra
+```json
+[
+	{
+		"picture": "/assets/img/milestone/0_2019.jpg",
+		"title": "Ülésezik Mintaváros képviselő-testülete",
+		"description": "A közel 12 ezer lakosú Mintaváros önkormányzata ...",
+		"text": "Mintaváros idei költségvetése"
+	},
+	...
+]
 ```
 
 

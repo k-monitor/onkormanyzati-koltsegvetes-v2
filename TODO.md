@@ -1,2 +1,1 @@
 - fix icon spaces differ
-- fix lorem-tooltips.js - should read data.json and produce JSON
