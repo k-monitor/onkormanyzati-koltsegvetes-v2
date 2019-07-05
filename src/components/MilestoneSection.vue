@@ -1,10 +1,10 @@
 <template>
-	<section class="page-section milestones">
+	<section class="page-section milestones bg-primary text-white">
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="col text-center">
 					<h2>Fejlesztések</h2>
-					<hr class="divider my-4 mb-5">
+					<hr class="divider light my-4 mb-5">
 				</div>
 			</div>
 			<div class="row">
