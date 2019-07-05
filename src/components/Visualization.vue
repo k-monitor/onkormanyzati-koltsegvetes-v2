@@ -48,6 +48,70 @@
 				<div class="ml-auto subtotal">{{ $util.groupNums(node.value) }}</div>
 			</ol>
 		</nav>
+
+		<div
+		 class="d-flex border-top border-bottom vis"
+		 :id="id"
+		 @mouseout="hovered=-1"
+		>
+			<div class="d-flex left-column">
+				<div
+				 class="back-bar d-flex justify-content-center"
+				 v-if="path.length > 0"
+				 @click="up()"
+				 :style="{ backgroundColor: bgColor(node,-1), color: fgColor(node,-1) }"
+				>
+					<i class="fas fa-fw fa-level-up-alt mx-2 my-auto"></i>
+				</div>
+				<div class="d-flex flex-column flex-grow-1">
+					<div
+					 class="bar"
+					 v-for="(n,i) in children"
+					 :key="n.id"
+					 :data-id="n.id"
+					 :data-index="i"
+					 :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
+					 @click="down(i)"
+					 @mouseover="hovered=i"
+					 data-toggle="tooltip"
+					 data-placement="left"
+					 :title="$tooltips[n.altId] || $tooltips[n.id]"
+					>
+						<div class="text-right w-100">
+							{{ $util.groupNums(n.value) }}
+							<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="middle-column curves">
+				<svg
+				 height="100%"
+				 width="100%"
+				>
+					<path
+					 class="curve"
+					 v-for="(n,i) in children"
+					 :d="curves[i]"
+					 :key="n.id"
+					 :style="{ stroke: bgColor(n,i) }"
+					 vector-effect="non-scaling-stroke"
+					></path>
+				</svg>
+			</div>
+			<div class="d-flex flex-column right-column text-left">
+				<div
+				 class="label"
+				 v-for="(n,i) in children"
+				 :class="{ 'text-muted': hovered > -1 && i != hovered }"
+				 :data-id="n.id"
+				 :data-index="i"
+				 :key="n.id"
+				 @click="down(i)"
+				 @mouseover="hovered=i"
+				>{{ n.name }}</div>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -62,7 +126,8 @@ export default {
 			hovered: -1,
 			loading: true,
 			mode: 0,
-			path: []
+			path: [],
+			resizeTimeout: null
 		};
 	},
 	computed: {
@@ -82,7 +147,7 @@ export default {
 			return this.nodePath[this.nodePath.length - 1];
 		},
 		nodePath: function() {
-			var r = this.root || new Node("", 0, []);
+			var r = this.root;
 			var np = [r];
 			for (var p = 0; p < this.path.length; p++) {
 				var i = this.path[p];
@@ -96,7 +161,13 @@ export default {
 			return np;
 		},
 		root: function() {
-			return this.mode % 2 == 0 ? this.data.econ : this.data.func;
+			return (
+				(this.mode % 2 == 0 ? this.data.econ : this.data.func) || {
+					name: "",
+					value: 0,
+					children: []
+				}
+			);
 		}
 	},
 	watch: {
@@ -105,6 +176,10 @@ export default {
 			this.$nextTick(function() {
 				this.updateCurves();
 			});
+		},
+		year: function(y) {
+			if (!this.data.func) this.mode = 0;
+			this.path = []; // go to the top, bc path contains indices, and they're different between years (due to sorting)
 		}
 	},
 	methods: {
@@ -224,8 +299,12 @@ export default {
 	mounted: function() {
 		this.regenerateTooltips();
 		var self = this;
+		self.updateCurves();
 		window.addEventListener("resize", function() {
-			self.updateCurves();
+			clearTimeout(self.resizeTimeout);
+			self.resizeTimeout = setTimeout(function() {
+				self.updateCurves();
+			}, 100);
 		});
 	},
 	updated: function() {
