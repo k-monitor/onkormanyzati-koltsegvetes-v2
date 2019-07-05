@@ -109,6 +109,7 @@
 
 <script>
 import data from "~/data/data.json";
+import tinycolor from "tinycolor2";
 
 export default {
 	props: ["year"],
@@ -179,13 +180,12 @@ export default {
 					return Math.max(m, v);
 				});
 			var alpha = (node.value / max) * 0.75 + 0.25;
-			return window
-				.tinycolor(color)
+			return tinycolor(color)
 				.setAlpha(alpha)
 				.toRgbString();
 		},
 		fgColor: function(tree, node, color) {
-			var color = window.tinycolor(this.bgColor(tree, node, color));
+			var color = tinycolor(this.bgColor(tree, node, color));
 			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
 		},
 		regenerateTooltips() {

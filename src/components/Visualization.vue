@@ -117,6 +117,7 @@
 
 <script>
 import data from "~/data/data.json";
+import tinycolor from "tinycolor2";
 
 export default {
 	props: ["id", "year", "side"], // side is "expense" or "income"
