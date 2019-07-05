@@ -1,8 +1,5 @@
 <template>
-	<section
-	 class="page-section bg-light"
-	 id="inex"
-	>
+	<section class="page-section bg-light">
 		<div class="container">
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-8 text-center">
@@ -217,10 +214,11 @@ export default {
 		flex: 1;
 		justify-content: space-between;
 		margin-bottom: 1px;
-		padding: .1rem .5rem;
+		padding: 0.1rem 0.5rem;
 	}
 
-	.left-column, .right-column {
+	.left-column,
+	.right-column {
 		width: 47.5%;
 	}
 

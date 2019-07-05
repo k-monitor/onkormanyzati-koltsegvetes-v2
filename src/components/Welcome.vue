@@ -1,8 +1,5 @@
 <template>
-	<section
-	 class="page-section bg-primary text-white"
-	 id="welcome"
-	>
+	<section class="page-section bg-primary text-white">
 		<div class="container">
 			<div class="container">
 				<div class="row justify-content-center mb-5">

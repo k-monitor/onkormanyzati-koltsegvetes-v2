@@ -15,9 +15,11 @@ const years = [
 	2019,
 	2018
 ]; // TODO this should be defined in the data instead
+const defaultYear = 2018;
 
 module.exports = {
 	city,
+	defaultYear,
 	title,
 	headline,
 	headerAction,

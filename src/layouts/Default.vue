@@ -7,10 +7,24 @@
 		/>
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
-			<Welcome />
-			<Inex :year="year" />
-			<VisualizationSection :year="year" side="income" title="Bevételek" />
-			<VisualizationSection :year="year" side="expense" title="Kiadások" class="bg-light" />
+			<Welcome id="welcome" />
+			<Inex
+			 :year="year"
+			 id="inex"
+			/>
+			<VisualizationSection
+			 :year="year"
+			 id="income"
+			 side="income"
+			 title="Bevételek"
+			/>
+			<VisualizationSection
+			 :year="year"
+			 class="bg-light"
+			 id="expense"
+			 side="expense"
+			 title="Kiadások"
+			/>
 			<slot />
 		</div>
 		<Footer />
@@ -44,7 +58,7 @@ export default {
 	},
 	data() {
 		return {
-			year: 2018
+			year: config.defaultYear
 		};
 	},
 	methods: {

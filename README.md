@@ -1,5 +1,7 @@
 # Önkormányzati költségvetés vizualizáció 2.0+
 
+*KÖKÖ: Közérthető Költségvetés*
+
 Az oldal alapja a StartBootstrap / Creative sablon.
 
 
