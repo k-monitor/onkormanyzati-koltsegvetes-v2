@@ -1,5 +1,3 @@
-- kis képernyőn összeesik a masthead
-- kiszervezhetnék egy Section komponenst, props: title, bg, light-text (boolean), és lehetnének különbző slotjai
 - milestones
-- read years from data
+- tutorial
 - fix lorem-tooltips.js - should read data.json and produce JSON
