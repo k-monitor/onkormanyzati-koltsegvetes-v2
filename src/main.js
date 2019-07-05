@@ -1,13 +1,16 @@
-import DefaultLayout from '~/layouts/Default.vue';
-import NavBar from '~/components/NavBar.vue';
-import MastHead from '~/components/MastHead.vue';
-import Welcome from '~/components/Welcome.vue';
+import DefaultLayout from '~/layouts/Default';
+import NavBar from '~/components/NavBar';
+import MastHead from '~/components/MastHead';
+import Welcome from '~/components/Welcome';
 import Inex from '~/components/Inex.vue';
 import Visualization from '~/components/Visualization';
 import VisualizationSection from '~/components/VisualizationSection';
-import Footer from '~/components/Footer.vue';
+import Milestone from '~/components/Milestone';
+import MilestoneSection from '~/components/MilestoneSection';
+import Footer from '~/components/Footer';
 
 import config from '~/data/config.js';
+import milestones from '~/data/milestones.json';
 import tooltips from '~/data/tooltips.json';
 
 export default function (Vue, { router, head, isClient }) {
@@ -18,9 +21,12 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('Inex', Inex);
 	Vue.component('Visualization', Visualization);
 	Vue.component('VisualizationSection', VisualizationSection);
+	Vue.component('Milestone', Milestone);
+	Vue.component('MilestoneSection', MilestoneSection);
 	Vue.component('Footer', Footer);
 
 	Vue.prototype.$config = config;
+	Vue.prototype.$milestones = milestones;
 	Vue.prototype.$tooltips = tooltips;
 	Vue.prototype.$util = {
 		groupNums(v, ns) {

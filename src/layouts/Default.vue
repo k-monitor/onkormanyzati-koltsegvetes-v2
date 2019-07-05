@@ -25,6 +25,7 @@
 			 side="expense"
 			 title="Kiadások"
 			/>
+			<MilestoneSection id="milestones" class="bg-primary pb-0" />
 			<slot />
 		</div>
 		<Footer />

@@ -1,3 +1,3 @@
-- milestones
+- fix icon spaces differ
 - tutorial
 - fix lorem-tooltips.js - should read data.json and produce JSON
