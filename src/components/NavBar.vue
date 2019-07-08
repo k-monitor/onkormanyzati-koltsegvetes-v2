@@ -34,7 +34,7 @@
 						 :href="e.href"
 						>{{ e.text }}</a>
 					</li>
-					<li class="nav-item dropdown">
+					<li class="nav-item dropdown" v-if="years.length > 1">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
 						 aria-haspopup="true" aria-expanded="false">
 							{{ year }}

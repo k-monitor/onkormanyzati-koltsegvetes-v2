@@ -10,6 +10,7 @@ import MilestoneSection from '~/components/MilestoneSection';
 import Footer from '~/components/Footer';
 
 import config from '~/data/config.js';
+import data from '~/data/data.json';
 import milestones from '~/data/milestones.json';
 import tooltips from '~/data/tooltips.json';
 
@@ -26,6 +27,7 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('Footer', Footer);
 
 	Vue.prototype.$config = config;
+	Vue.prototype.$d = data;
 	Vue.prototype.$milestones = milestones;
 	Vue.prototype.$tooltips = tooltips;
 	Vue.prototype.$util = {

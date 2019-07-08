@@ -11,10 +11,6 @@ const navLinks = [
 	{ href: '#milestones', text: 'Fejlesztések' }
 ];
 
-const years = [
-	2019,
-	2018
-]; // TODO this should be defined in the data instead
 const defaultYear = 2018;
 
 module.exports = {
@@ -23,6 +19,5 @@ module.exports = {
 	title,
 	headline,
 	headerAction,
-	navLinks,
-	years
+	navLinks
 };

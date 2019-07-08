@@ -108,7 +108,6 @@
 </template>
 
 <script>
-import data from "~/data/data.json";
 import tinycolor from "tinycolor2";
 
 export default {
@@ -118,7 +117,7 @@ export default {
 	},
 	computed: {
 		data() {
-			return data[this.year];
+			return this.$d[this.year];
 		},
 		expenseChildren: function() {
 			return this.expenseTree.children

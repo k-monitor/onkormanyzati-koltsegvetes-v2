@@ -116,7 +116,6 @@
 </template>
 
 <script>
-import data from "~/data/data.json";
 import tinycolor from "tinycolor2";
 
 export default {
@@ -142,7 +141,7 @@ export default {
 			}
 		},
 		data() {
-			return data[this.year][this.side];
+			return this.$d[this.year][this.side];
 		},
 		node: function() {
 			return this.nodePath[this.nodePath.length - 1];

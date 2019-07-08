@@ -2,7 +2,7 @@
 	<div>
 		<NavBar
 		 :year="year"
-		 :years="$config.years"
+		 :years="Object.keys($d).sort().reverse()"
 		 @yearSelected="handleYearSelected"
 		/>
 		<MastHead href="#welcome" />
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import config from "~/data/config.js";
+import config from "~/data/config.js"; // import is needed because metaInfo below cannot access $config
 
 export default {
 	metaInfo: {
