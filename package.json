@@ -2,7 +2,7 @@
   "private": true,
   "name": "onkormanyzati-koltsegvetes",
   "version": "2.0.0",
-  "description": "Önkörmányzati költségvetés vizualizáció 2.0+",
+  "description": "Önkormányzati költségvetés vizualizáció 2.0+",
   "author": "Zsolt Jurányi <juranyi@deepdata.hu>",
   "scripts": {
     "build": "gridsome build",
