@@ -67,7 +67,8 @@ function generateEconomicTree(matrixTsv) {
 	const nodes = {};
 
 	// collecting all nodes
-	matrixTsv.split('FINANSZÍROZÁSI')[0].split('\n')
+	const parts = matrixTsv.split('FINANSZÍROZÁSI');
+	parts[0].split('\n')
 		.splice(2) // header is at least 2 rows
 		.filter(row => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
 		.forEach(row => {
@@ -77,6 +78,17 @@ function generateEconomicTree(matrixTsv) {
 			const { name, childrenIds, altId } = parseEconomicDescriptor(descriptor);
 			if (altId && altId.indexOf('-') == -1) {
 				nodes[id] = { id, altId, name, childrenIds, value };
+			}
+		});
+	(parts[1] || '').split('\n')
+		.filter(row => row.match(/^\d{2,}/))
+		.forEach(row => {
+			let [id, descriptor, value] = row.split('\t');
+			id = Number(id) + 1000; // we must make IDs differ from previous rows
+			value = Number(value.replace(/\D+/g, ''));
+			const { name, childrenIds, altId } = parseEconomicDescriptor(descriptor);
+			if (altId && altId.indexOf('-') == -1) {
+				nodes[id] = { id, altId, name, childrenIds: (childrenIds || []).map(cid => cid + 1000), value };
 			}
 		});
 
