@@ -18,7 +18,7 @@ A beüzemelés lépései:
 1. Másold be az önkormányzattól kapott XLSX fájlt az `input` mappába.
 1. A projekt mappájában futtasd le a `node scrips/prepare-data input/INPUT_FAJL.xlsx` parancsot, ez az XLSX fájlból kinyeri és megfelelő formára hozza az adatokat a vizualizáció számára. A generált adatfájlok az `src/data` mappába kerülnek.
 1. Szerkeszd a `src/data/tooltips.json` és `milestones.json` fájlokat, hogy testreszabd a vizualizáció szövegeit (részletek alább).
-1. Szerkeszd a `src/data/config.js` fájlban a változókat, hogy testreszabd a weboldal szövegeit.
+1. Szerkeszd a `src/data/config.js` fájlban a változókat, hogy testreszabd a weboldal szövegeit és beállításait (részletek alább).
 1. A projekt mappájában indítsd el a `gridsome develop` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
 1. A weboldal legenerálásához használd a `gridsome build` parancsot. A kész weboldal a `dist` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
 
@@ -186,6 +186,26 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 
 
 
-## Szövegek
+## Szövegek és beállítások
 
-Az oldalon megjelenő szövegeket (amik nem a `data.json`-ból jönnek) a `config.js` fájlban lehet szerkeszteni.
+Az oldalon megjelenő szövegeket (amik nem a `data.json`-ból jönnek) az `src/data/config.js` fájlban lehet szerkeszteni.
+
+A `config.js` fájlban ezen kívül beállítható az alapértelmezetten megjelenítendő év:
+
+```js
+const defaultYear = 2018;
+```
+
+Illetve a megjelenítendő modulok:
+
+```js
+const modules = {
+	income: false,
+	inex: false,
+	milestones: true
+};
+```
+
+- Az `income` a *Bevételek* szakaszt jelenti. Ha ez ki van kapcsolva, akkor a *Köszöntőből* indítható útmutató a *Kiadások* szakaszon mutatja be a vizualizáció elemeit. Az `income` automatikusan kikapcsol, ha a `data.json` nem tartalmaz `income` mezőt valamelyik évhez.
+- Az `inex` a *Mérleg* szakaszt, a nyitóábrát jelenti. Automatikusan kikapcsol, ha az `income` ki van kapcsolva.
+- A `milestones` a *Fejlesztések* szakaszt jelenti.
