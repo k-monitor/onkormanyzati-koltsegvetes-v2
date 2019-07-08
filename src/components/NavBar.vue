@@ -24,23 +24,53 @@
 			 id="navbarResponsive"
 			>
 				<ul class="navbar-nav ml-auto my-2 my-lg-0">
+					<li class="nav-item">
+						<a
+						 href="#welcome"
+						 class="nav-link js-scroll-trigger"
+						>{{ $config.navBar.welcome }}</a>
+					</li>
+					<li class="nav-item">
+						<a
+						 :href="'#' + ($config.modules.inex ? 'inex' : ($config.modules.income ? 'income' : 'expense'))"
+						 class="nav-link js-scroll-trigger"
+						>{{ $config.navBar.inex }}</a>
+					</li>
 					<li
 					 class="nav-item"
-					 v-for="(e, i) in $config.navBar.links"
-					 :key="i"
+					 v-if="$config.modules.milestones"
 					>
 						<a
+						 href="#milestones"
 						 class="nav-link js-scroll-trigger"
-						 :href="e.href"
-						>{{ e.text }}</a>
+						>{{ $config.navBar.milestones }}</a>
 					</li>
-					<li class="nav-item dropdown" v-if="years.length > 1">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-						 aria-haspopup="true" aria-expanded="false">
+					<li
+					 class="nav-item dropdown"
+					 v-if="years.length > 1"
+					>
+						<a
+						 class="nav-link dropdown-toggle"
+						 href="#"
+						 id="navbarDropdown"
+						 role="button"
+						 data-toggle="dropdown"
+						 aria-haspopup="true"
+						 aria-expanded="false"
+						>
 							{{ year }}
 						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" v-for="y in years" :key="y" href="javascript:void(0)" @click="$emit('yearSelected', y)">{{ y }}</a>
+						<div
+						 class="dropdown-menu"
+						 aria-labelledby="navbarDropdown"
+						>
+							<a
+							 class="dropdown-item"
+							 v-for="y in years"
+							 :key="y"
+							 href="javascript:void(0)"
+							 @click="$emit('yearSelected', y)"
+							>{{ y }}</a>
 						</div>
 					</li>
 				</ul>
@@ -51,7 +81,7 @@
 
 <script>
 export default {
-	props: ['year', 'years'],
+	props: ["year", "years"],
 	mounted() {
 		// Activate scrollspy to add active class to navbar items on scroll
 		$("body").scrollspy({

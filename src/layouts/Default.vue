@@ -11,12 +11,14 @@
 			<Inex
 			 :year="year"
 			 id="inex"
+			 v-if="$config.modules.inex"
 			/>
 			<VisualizationSection
 			 :year="year"
 			 id="income"
 			 side="income"
 			 title="Bevételek"
+			 v-if="$config.modules.income"
 			/>
 			<VisualizationSection
 			 :year="year"
@@ -25,7 +27,11 @@
 			 side="expense"
 			 title="Kiadások"
 			/>
-			<MilestoneSection id="milestones" class="pb-0" />
+			<MilestoneSection
+			 class="pb-0"
+			 id="milestones"
+			 v-if="$config.modules.milestones"
+			/>
 			<slot />
 		</div>
 		<Footer />

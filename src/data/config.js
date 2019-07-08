@@ -1,17 +1,20 @@
 // Settings
 
 const defaultYear = 2018;
+const modules = {
+	income: true,
+	inex: true,
+	milestones: true
+};
 
 // Texts
 
 const navBar = {
 	city: 'Mintaváros',
-	links: [
-		{ href: '#welcome', text: 'Köszöntő' },
-		{ href: '#inex', text: 'Költségvetés' },
-		{ href: '#milestones', text: 'Fejlesztések' }
-	]
-}
+	welcome: 'Köszöntő',
+	inex: 'Költségvetés',
+	milestones: 'Fejlesztések'
+};
 
 const header = {
 	title: `${navBar.city} költségvetése`,
@@ -61,6 +64,7 @@ module.exports = {
 	header,
 	inex,
 	milestones,
+	modules,
 	navBar,
 	vis,
 	welcome
