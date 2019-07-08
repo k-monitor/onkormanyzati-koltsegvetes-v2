@@ -2,8 +2,8 @@
 
 const defaultYear = 2018;
 const modules = {
-	income: true,
-	inex: true,
+	income: false,
+	inex: false,
 	milestones: true
 };
 

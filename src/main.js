@@ -44,4 +44,17 @@ export default function (Vue, { router, head, isClient }) {
 			return (vs + ' ' + s[i] + ' Ft').trim();
 		}
 	};
+
+	// disabling modules if there's no data
+	if (milestones.length == 0) {
+		config.modules.milestones = false;
+	}
+	Object.keys(data).forEach(year => {
+		if (!data[year].income) {
+			config.modules.income = false;
+		}
+	});
+	if (!config.modules.income) {
+		config.modules.inex = false;
+	}
 }

@@ -60,11 +60,13 @@
 </template>
 
 <script>
+import config from "~/data/config.js";
+
 export default {
 	methods: {
 		intro() {
 			setTimeout(function() {
-				introJs()
+				const intro = introJs()
 					.setOption("doneLabel", "Kilépés")
 					.setOption("nextLabel", "Tovább")
 					.setOption("prevLabel", "Vissza")
@@ -74,45 +76,6 @@ export default {
 					.setOption("showStepNumbers", false)
 					.setOption("skipLabel", "Kilépés")
 					.setOption("tooltipPosition", "left")
-					.setOptions({
-						steps: [
-							{
-								element: "#inex-wrapper",
-								intro:
-									"Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.",
-								position: "left"
-							},
-							{
-								element: "#inex-wrapper .vis .left-column .bar:nth-child(1)",
-								intro:
-									"Ha az egér egy hasáb fölé kerül, további információ jelenik meg. Próbálja ki!",
-								position: "top"
-							},
-							{
-								element: "#income ul",
-								intro:
-									"A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.",
-								position: "top"
-							},
-							{
-								element: "#income .vis > div",
-								intro:
-									"A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.",
-								position: "right"
-							},
-							{
-								element: "#income ol.breadcrumb",
-								intro:
-									"A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.",
-								position: "bottom"
-							},
-							{
-								element: "#face",
-								intro: "Kellemes böngészést!",
-								position: "left"
-							}
-						]
-					})
 					.onbeforechange(function(targetElement) {
 						console.log(targetElement);
 						$("html, body").animate(
@@ -122,8 +85,51 @@ export default {
 							1000,
 							"easeInOutExpo"
 						);
-					})
-					.start();
+					});
+
+				const steps = [];
+				if (config.modules.inex) {
+					steps.push({
+						element: "#inex-wrapper",
+						intro:
+							"Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.",
+						position: "left"
+					});
+					steps.push({
+						element: "#inex-wrapper .vis .left-column .bar:nth-child(1)",
+						intro:
+							"Ha az egér egy hasáb fölé kerül, további információ jelenik meg. Próbálja ki!",
+						position: "top"
+					});
+				}
+
+				const el = config.modules.income ? "#income" : "#expense";
+				steps.push({
+					element: el + " ul",
+					intro:
+						"A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.",
+					position: "top"
+				});
+				steps.push({
+					element: el + " .vis > div",
+					intro:
+						"A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.",
+					position: "right"
+				});
+				steps.push({
+					element: el + " ol.breadcrumb",
+					intro:
+						"A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.",
+					position: "bottom"
+				});
+
+				steps.push({
+					element: "#face",
+					intro: "Kellemes böngészést!",
+					position: "left"
+				});
+
+				intro.setOptions({ steps }).start();
 			}, 1000);
 		}
 	}
