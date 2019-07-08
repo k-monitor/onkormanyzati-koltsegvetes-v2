@@ -7,7 +7,7 @@
 			<a
 			 class="navbar-brand js-scroll-trigger"
 			 href="#page-top"
-			>{{ $config.city }}</a>
+			>{{ $config.navBar.city }}</a>
 			<button
 			 class="navbar-toggler navbar-toggler-right"
 			 type="button"
@@ -26,7 +26,7 @@
 				<ul class="navbar-nav ml-auto my-2 my-lg-0">
 					<li
 					 class="nav-item"
-					 v-for="(e, i) in $config.navLinks"
+					 v-for="(e, i) in $config.navBar.links"
 					 :key="i"
 					>
 						<a

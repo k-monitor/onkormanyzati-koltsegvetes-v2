@@ -8,28 +8,28 @@
 				<ul class="justify-content-center mb-5 nav nav-pills w-100">
 					<li class="nav-item">
 						<a
-						 class="nav-link"
-						 href="javascript:void(0)"
-						 data-toggle="tooltip"
-						 data-placement="bottom"
-						 title="Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben."
 						 :class="{ active: mode == 0 }"
+						 :title="$config.vis.econHint"
 						 @click="path = []; mode = 0"
+						 class="nav-link"
+						 data-placement="bottom"
+						 data-toggle="tooltip"
+						 href="javascript:void(0)"
 						>
-							Közgazdasági nézet
+							{{ $config.vis.econ }}
 						</a>
 					</li>
 					<li class="nav-item">
 						<a
-						 class="nav-link"
-						 href="javascript:void(0)"
-						 data-toggle="tooltip"
-						 data-placement="bottom"
-						 title="A költségvetési kiadásokat osztályozza, azok társadalmi-gazdasági cél szerinti összetételét mutatja. Az általános közszolgáltatásoktól a védelmi kiadásokig összesen 10 kategóriában tartalmazza a kerület működésének területeit."
 						 :class="{ active: mode == 1 }"
+						 :title="$config.vis.funcHint"
 						 @click="path = []; mode = 1"
+						 class="nav-link"
+						 data-placement="bottom"
+						 data-toggle="tooltip"
+						 href="javascript:void(0)"
 						>
-							Funkcionális nézet
+							{{ $config.vis.func }}
 						</a>
 					</li>
 				</ul>

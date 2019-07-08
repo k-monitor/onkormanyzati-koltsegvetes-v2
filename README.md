@@ -183,3 +183,9 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 - **name** - A kategória elnevezése.
 - **value** - Az adott node-hoz tartozó összeg.
 - **children** - Gyerek node-ok tömbje.
+
+
+
+## Szövegek
+
+Az oldalon megjelenő szövegeket (amik nem a `data.json`-ból jönnek) a `config.js` fájlban lehet szerkeszteni.

@@ -4,18 +4,23 @@
 			<div class="container">
 				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
-						<h2>TISZTELT MINTAVÁROSI POLGÁROK!</h2>
+						<h2>{{ $config.welcome.title }}</h2>
 						<hr class="divider light my-4">
 					</div>
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
-						<p>Egy önkormányzat feladatai sokrétűek, állampolgári szemmel nehezen áttekinthetőek. Mintavárosban azonban nincs takargatni valónk, ezért úgy döntöttünk, hogy a modern technika segítségével bemutatjuk Önökek településünk gazdálkodását úgy, ahogyan azt korábban csak kevesek láthatták!</p>
-						<p>A XXI. század embere joggal várhatja el egy önkormányzattól, hogy az interneten is utánanézhessen, mennyit költ a település oktatásra, egészségügyre vagy épp a parkok rendben tartására. A helyi demokráciára is igaz, kettőn áll a vásár. A tisztességes településvezetés mellé tájékozott polgárok is kellenek, akik nyomon követik a döntések ésszerűségét. A közpénzek átlátható felhasználásáért küzdő K-Monitor és a Költségvetési Felelősségi Intézet szakmai segítségével létrehozott alkalmazás, amit pillanatokon belül használatba vehet, Magyarországon elsőként arra törekszik, hogy mindenki számára könnyen befogadható és értelmezhető képet adjon az önkormányzat gazdálkodásáról.</p>
+						<p
+						 v-for="(p, i) in $config.welcome.leftParagraphs"
+						 :key="i"
+						>{{ p }}</p>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
-						<p>A weboldal testre szabható és egyszerűen feltölthető bármely település adataival. Reméljük, Mintaváros igyekezete ragadós lesz és egyre többen teszik meg ezt az egyáltalán nem megerőltető, mégis fontos lépést az átláthatóság felé.</p>
-						<p class="my-5">Kellemes böngészést kívánok,</p>
+						<p
+						 v-for="(p, i) in $config.welcome.rightParagraphs"
+						 :key="i"
+						>{{ p }}</p>
+						<p class="my-5">{{ $config.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
@@ -30,8 +35,13 @@
 								 class="signo"
 								 src="http://mintavaros.deepdata.hu/assets/img/signo.png"
 								>
-								<p class="mb-0"><em>Példa Imre,<br>
-										Mintaváros polgármestere</em></p>
+								<p class="mb-0">
+									<em>
+										{{ $config.welcome.name }},
+										<br>
+										{{ $config.welcome.role }}
+									</em>
+								</p>
 							</div>
 						</div>
 					</div>

@@ -55,7 +55,7 @@ export default {
 		bodyAttrs: {
 			id: "page-top"
 		},
-		title: config.title
+		title: config.header.title
 	},
 	data() {
 		return {

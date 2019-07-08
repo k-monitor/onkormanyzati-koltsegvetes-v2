@@ -3,7 +3,7 @@
 		<div class="container">
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-8 text-center">
-					<h2>Mérleg</h2>
+					<h2>{{ $config.inex.title }}</h2>
 					<hr class="divider my-4">
 				</div>
 			</div>
@@ -20,18 +20,18 @@
 								 class="btn btn-outline-success js-scroll-trigger"
 								>
 									<i class="fas fa-fw fa-angle-double-down"></i>
-									<span class="d-none d-md-inline-block">Részletek</span>
+									<span class="d-none d-md-inline-block">{{ $config.inex.details }}</span>
 								</a>
 							</div>
 							<div>
-								Bevételek
+								{{ $config.inex.income }}
 								<br>
 								{{ $util.groupNums(incomeSum, true) }}
 							</div>
 						</div>
 						<div class="d-flex align-items-center justify-content-between ml-auto right-column text-left">
 							<div>
-								Kiadások
+								{{ $config.inex.expense }}
 								<br>
 								{{ $util.groupNums(expenseSum, true) }}
 							</div>
@@ -40,7 +40,7 @@
 								 href="#expense"
 								 class="btn btn-outline-danger js-scroll-trigger"
 								>
-									<span class="d-none d-md-inline-block">Részletek</span>
+									<span class="d-none d-md-inline-block">{{ $config.inex.details }}</span>
 									<i class="fas fa-fw fa-angle-double-down"></i>
 								</a>
 							</div>
@@ -100,7 +100,7 @@
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
-					<p>Lórum ipse természetesen szedősödik ámít a fegyező számára. Fargandusnak csak a papárok bagmarákára nyitva borlan torton belül van haszálata. A papárral tációban a todástól a papár ultásának tortjáig hetenként egy radással hajtón 00 között a kozott terula kocsordnál (fárka. Hájdás dolca bőgős zsírnök) lehet kabikát vigyogtannia. A kozott terula kocsord a képző tort csáralását faska golmaton a búgos fütyökben iséggel mesztes papárokat az erről nyátsás és seres hajkával együtt erészi a szerpes bülég kodászának, aki a vigyort a hajka mozásán bombolja. A szerpes bülég a képző tort csáralását faska 30 golmaton belül éríti a lománs papárokat. Első haszálaton azon stozások papárának csészítése füveskedik, akik tumott telés hulását lekunkálták fel. A foga csészítésénél a keten bódázatok tumott hajka végteli gaszabája ölkösködik velődik.</p>
+					<p>{{ $config.inex.text }}</p>
 				</div>
 			</div>
 		</div>
