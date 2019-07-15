@@ -35,6 +35,7 @@
 			<slot />
 		</div>
 		<Footer />
+		<Social />
 	</div>
 </template>
 
