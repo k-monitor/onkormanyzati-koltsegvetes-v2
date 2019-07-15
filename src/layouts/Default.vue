@@ -56,12 +56,55 @@ export default {
 				rel: "stylesheet",
 				href:
 					"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css"
+			},
+			{
+				rel: "canonical",
+				href: config.url
 			}
+		],
+		title: config.seo.pageTitle,
+		meta: [
+			{
+				property: "og:site_name",
+				content: config.seo.siteName
+			},
+			{
+				property: "og:title",
+				content: config.seo.pageTitle
+			},
+			{
+				name: "description",
+				property: "og:description",
+				content: config.seo.description
+			},
+			{
+				property: "og:url",
+				content: config.url
+			},
+			{
+				property: "og:type",
+				content: "website"
+			},
+			{
+				property: "og:image",
+				content: config.seo.ogImage
+			},
+			{
+				property: "og:image:type",
+				content: config.seo.ogImageType
+			},
+			{
+				property: "og:image:height",
+				content: config.seo.ogImageHeight
+			},
+			{
+				property: "og:image:width",
+				content: config.seo.ogImageWidth
+			},
 		],
 		bodyAttrs: {
 			id: "page-top"
-		},
-		title: config.header.title
+		}
 	},
 	data() {
 		return {

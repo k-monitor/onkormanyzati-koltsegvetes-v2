@@ -1,4 +1,6 @@
+const config = require('./src/data/config');
+
 module.exports = {
-	titleTemplate: '%s',
-	plugins: []
+	plugins: [],
+	siteName: config.seo.siteName
 }

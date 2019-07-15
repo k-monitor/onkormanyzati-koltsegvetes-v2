@@ -1,4 +1,2 @@
-- modules auto disable if no data
-- seo in config
 - fix icon spaces differ
 - make images static + use g-image

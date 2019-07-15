@@ -188,9 +188,15 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 
 ## Szövegek és beállítások
 
-Az oldalon megjelenő szövegeket (amik nem a `data.json`-ból jönnek) az `src/data/config.js` fájlban lehet szerkeszteni.
+Az oldalon megjelenő szövegeket és a SEO beállításokat (amik nem a `data.json`-ból jönnek) az `src/data/config.js` fájlban lehet szerkeszteni.
 
-A `config.js` fájlban ezen kívül beállítható az alapértelmezetten megjelenítendő év:
+A `config.js` fájlban ezen kívül beállítható a kanonikus URL:
+
+```js
+const url = 'http://koko.deepdata.hu/';
+```
+
+Az alapértelmezetten megjelenítendő év:
 
 ```js
 const defaultYear = 2018;
@@ -209,3 +215,5 @@ const modules = {
 - Az `income` a *Bevételek* szakaszt jelenti. Ha ez ki van kapcsolva, akkor a *Köszöntőből* indítható útmutató a *Kiadások* szakaszon mutatja be a vizualizáció elemeit. Az `income` automatikusan kikapcsol, ha a `data.json` nem tartalmaz `income` mezőt valamelyik évhez.
 - Az `inex` a *Mérleg* szakaszt, a nyitóábrát jelenti. Automatikusan kikapcsol, ha az `income` ki van kapcsolva.
 - A `milestones` a *Fejlesztések* szakaszt jelenti.
+
+A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani. Itt lehet módosítani a színeket is.

@@ -1,5 +1,7 @@
 // Settings
 
+const url = 'http://koko.deepdata.hu/';
+const city = 'Mintaváros';
 const defaultYear = 2018;
 const modules = {
 	income: false,
@@ -9,16 +11,25 @@ const modules = {
 
 // Texts
 
+const seo = {
+	siteName: `${city}`,
+	pageTitle: 'Költségvetés',
+	description: `${city} költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.`,
+	ogImage: 'http://mintavaros.deepdata.hu/assets/img/milestone/func/1_2019.jpg',
+	ogImageType: 'image/png',
+	ogImageHeight: 531,
+	ogImageWidth: 800
+};
+
 const navBar = {
-	city: 'Mintaváros',
 	welcome: 'Köszöntő',
 	inex: 'Költségvetés',
 	milestones: 'Fejlesztések'
 };
 
 const header = {
-	title: `${navBar.city} költségvetése`,
-	headline: `Ezen az oldalon megtekintheted ${navBar.city} költségvetését és fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!`,
+	title: `${city} költségvetése`,
+	headline: `Ezen az oldalon megtekintheted ${city} költségvetését és fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!`,
 	button: 'Tovább'
 };
 
@@ -33,7 +44,7 @@ const welcome = {
 	],
 	aboveSignature: 'Kellemes böngészést kívánok,',
 	name: 'Példa Imre',
-	role: `${navBar.city} polgármestere`
+	role: `${city} polgármestere`
 };
 
 const inex = {
@@ -60,12 +71,15 @@ const milestones = {
 // ---
 
 module.exports = {
+	city,
 	defaultYear,
 	header,
 	inex,
 	milestones,
 	modules,
 	navBar,
+	seo,
+	url,
 	vis,
 	welcome
 };
