@@ -4,8 +4,8 @@ const url = 'http://koko.deepdata.hu/';
 const city = 'Mintaváros';
 const defaultYear = 2018;
 const modules = {
-	income: false,
-	inex: false,
+	income: true,
+	inex: true,
 	milestones: true
 };
 
