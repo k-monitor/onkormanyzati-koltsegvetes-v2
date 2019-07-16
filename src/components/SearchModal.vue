@@ -50,8 +50,8 @@
 						 v-for="r in results"
 						 :key="r.funcId"
 						>
-							<div>
-								<strong>{{ r.funcName }} {{ r.funcId }}</strong>
+							<div class="font-weight-bold mb-2">
+								{{ r.funcName }} {{ r.funcId }}
 							</div>
 							<div class="text-right">
 								<a
