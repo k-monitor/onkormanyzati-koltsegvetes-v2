@@ -48,7 +48,7 @@
 						 class="list-group-item"
 						 type="button"
 						 v-for="r in results"
-						 :key="r"
+						 :key="r.funcId"
 						>
 							<div>
 								<strong>{{ r.funcName }} {{ r.funcId }}</strong>
