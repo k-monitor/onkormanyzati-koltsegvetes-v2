@@ -7,7 +7,7 @@
 			<a
 			 class="navbar-brand js-scroll-trigger"
 			 href="#page-top"
-			>{{ $config.navBar.city }}</a>
+			>{{ $config.city }}</a>
 			<button
 			 class="navbar-toggler navbar-toggler-right"
 			 type="button"
