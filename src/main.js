@@ -13,6 +13,7 @@ import Social from '~/components/Social';
 import config from '~/data/config.js';
 import data from '~/data/data.json';
 import milestones from '~/data/milestones.json';
+import tags from '~/data/tags.json';
 import tooltips from '~/data/tooltips.json';
 
 export default function (Vue, { router, head, isClient }) {
@@ -31,6 +32,7 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.prototype.$config = config;
 	Vue.prototype.$d = data;
 	Vue.prototype.$milestones = milestones;
+	Vue.prototype.$tags = tags;
 	Vue.prototype.$tooltips = tooltips;
 	Vue.prototype.$util = {
 		groupNums(v, ns) {
