@@ -5,6 +5,7 @@
 		 :years="Object.keys($d).sort().reverse()"
 		 @yearSelected="handleYearSelected"
 		/>
+		<SearchModal />
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
 			<Welcome id="welcome" />

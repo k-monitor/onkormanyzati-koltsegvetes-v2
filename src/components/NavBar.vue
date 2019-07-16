@@ -73,6 +73,16 @@
 							>{{ y }}</a>
 						</div>
 					</li>
+					<li class="nav-item">
+						<a
+						 href="javascript:void(0)"
+						 class="nav-link"
+						 data-toggle="modal"
+						 data-target="#search-modal"
+						>
+							<i class="fas fa-search"></i>
+						</a>
+					</li>
 				</ul>
 			</div>
 		</div>

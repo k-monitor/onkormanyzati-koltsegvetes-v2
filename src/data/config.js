@@ -27,6 +27,11 @@ const navBar = {
 	milestones: 'Fejlesztések'
 };
 
+const search = {
+	income: 'Bevételek',
+	expense: 'Kiadások'
+};
+
 const header = {
 	title: `${city} költségvetése`,
 	headline: `Ezen az oldalon megtekintheted ${city} költségvetését és fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!`,
@@ -78,6 +83,7 @@ module.exports = {
 	milestones,
 	modules,
 	navBar,
+	search,
 	seo,
 	url,
 	vis,

@@ -1,5 +1,6 @@
 import DefaultLayout from '~/layouts/Default';
 import NavBar from '~/components/NavBar';
+import SearchModal from '~/components/SearchModal';
 import MastHead from '~/components/MastHead';
 import Welcome from '~/components/Welcome';
 import Inex from '~/components/Inex.vue';
@@ -12,6 +13,7 @@ import Social from '~/components/Social';
 
 import config from '~/data/config.js';
 import data from '~/data/data.json';
+import functions from '~/data/functions.json';
 import milestones from '~/data/milestones.json';
 import tags from '~/data/tags.json';
 import tooltips from '~/data/tooltips.json';
@@ -19,6 +21,7 @@ import tooltips from '~/data/tooltips.json';
 export default function (Vue, { router, head, isClient }) {
 	Vue.component('Layout', DefaultLayout);
 	Vue.component('NavBar', NavBar);
+	Vue.component('SearchModal',SearchModal);
 	Vue.component('MastHead', MastHead);
 	Vue.component('Welcome', Welcome);
 	Vue.component('Inex', Inex);
@@ -31,6 +34,7 @@ export default function (Vue, { router, head, isClient }) {
 
 	Vue.prototype.$config = config;
 	Vue.prototype.$d = data;
+	Vue.prototype.$functions = functions;
 	Vue.prototype.$milestones = milestones;
 	Vue.prototype.$tags = tags;
 	Vue.prototype.$tooltips = tooltips;
