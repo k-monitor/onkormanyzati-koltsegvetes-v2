@@ -1,6 +1,7 @@
 import DefaultLayout from '~/layouts/Default';
 import NavBar from '~/components/NavBar';
 import SearchModal from '~/components/SearchModal';
+import SearchModalContent from '~/components/SearchModalContent';
 import MastHead from '~/components/MastHead';
 import Welcome from '~/components/Welcome';
 import Inex from '~/components/Inex.vue';
@@ -22,6 +23,7 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('Layout', DefaultLayout);
 	Vue.component('NavBar', NavBar);
 	Vue.component('SearchModal',SearchModal);
+	Vue.component('SearchModalContent',SearchModalContent);
 	Vue.component('MastHead', MastHead);
 	Vue.component('Welcome', Welcome);
 	Vue.component('Inex', Inex);

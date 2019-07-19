@@ -102,7 +102,7 @@ export default {
 			{
 				property: "og:image:width",
 				content: config.seo.ogImageWidth
-			},
+			}
 		],
 		bodyAttrs: {
 			id: "page-top"
