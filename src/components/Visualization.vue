@@ -2,32 +2,32 @@
 	<div class="visualization">
 		<div class="row justify-content-center">
 			<div
-			 class="col-lg-8 text-center"
-			 v-if="data.econ && data.func"
+				class="col-lg-8 text-center"
+				v-if="data.econ && data.func"
 			>
 				<ul class="justify-content-center mb-5 nav nav-pills w-100">
 					<li class="nav-item">
 						<a
-						 :class="{ active: mode == 0 }"
-						 :title="$config.vis.econHint"
-						 @click="path = []; mode = 0"
-						 class="nav-link"
-						 data-placement="bottom"
-						 data-toggle="tooltip"
-						 href="javascript:void(0)"
+							:class="{ active: mode == 0 }"
+							:title="$config.vis.econHint"
+							@click="path = []; mode = 0"
+							class="nav-link"
+							data-placement="bottom"
+							data-toggle="tooltip"
+							href="javascript:void(0)"
 						>
 							{{ $config.vis.econ }}
 						</a>
 					</li>
 					<li class="nav-item">
 						<a
-						 :class="{ active: mode == 1 }"
-						 :title="$config.vis.funcHint"
-						 @click="path = []; mode = 1"
-						 class="nav-link"
-						 data-placement="bottom"
-						 data-toggle="tooltip"
-						 href="javascript:void(0)"
+							:class="{ active: mode == 1 }"
+							:title="$config.vis.funcHint"
+							@click="path = []; mode = 1"
+							class="nav-link"
+							data-placement="bottom"
+							data-toggle="tooltip"
+							href="javascript:void(0)"
 						>
 							{{ $config.vis.func }}
 						</a>
@@ -39,43 +39,43 @@
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb">
 				<li
-				 class="breadcrumb-item"
-				 v-for="(n,i) in nodePath"
-				 :key="i"
-				 :class="{ active: i == nodePath.length - 1 }"
-				 @click="up(path.length - i)"
+					class="breadcrumb-item"
+					v-for="(n,i) in nodePath"
+					:key="i"
+					:class="{ active: i == nodePath.length - 1 }"
+					@click="up(path.length - i)"
 				>{{ n.name }}</li>
 				<div class="ml-auto subtotal">{{ $util.groupNums(node.value) }}</div>
 			</ol>
 		</nav>
 
 		<div
-		 class="d-flex border-top border-bottom vis"
-		 :id="id"
-		 @mouseout="hovered=-1"
+			class="d-flex border-top border-bottom vis"
+			:id="id"
+			@mouseout="hovered=-1"
 		>
 			<div class="d-flex left-column">
 				<div
-				 class="back-bar d-flex justify-content-center"
-				 v-if="path.length > 0"
-				 @click="up()"
-				 :style="{ backgroundColor: bgColor(node,-1), color: fgColor(node,-1) }"
+					class="back-bar d-flex justify-content-center"
+					v-if="path.length > 0"
+					@click="up()"
+					:style="{ backgroundColor: bgColor(node,-1), color: fgColor(node,-1) }"
 				>
 					<i class="fas fa-fw fa-level-up-alt mx-2 my-auto"></i>
 				</div>
 				<div class="d-flex flex-column flex-grow-1">
 					<div
-					 class="bar"
-					 v-for="(n,i) in children"
-					 :key="n.id"
-					 :data-id="n.id"
-					 :data-index="i"
-					 :style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
-					 @click="down(i)"
-					 @mouseover="hovered=i"
-					 data-toggle="tooltip"
-					 data-placement="left"
-					 :title="$tooltips[n.altId] || $tooltips[n.id]"
+						class="bar"
+						v-for="(n,i) in children"
+						:key="n.id"
+						:data-id="n.id"
+						:data-index="i"
+						:style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
+						@click="down(i)"
+						@mouseover="hovered=i"
+						data-toggle="tooltip"
+						data-placement="left"
+						:title="$tooltips[n.altId] || $tooltips[n.id]"
 					>
 						<div class="text-right w-100">
 							{{ $util.groupNums(n.value) }}
@@ -86,29 +86,29 @@
 			</div>
 			<div class="middle-column curves">
 				<svg
-				 height="100%"
-				 width="100%"
+					height="100%"
+					width="100%"
 				>
 					<path
-					 class="curve"
-					 v-for="(n,i) in children"
-					 :d="curves[i]"
-					 :key="n.id"
-					 :style="{ stroke: bgColor(n,i) }"
-					 vector-effect="non-scaling-stroke"
+						class="curve"
+						v-for="(n,i) in children"
+						:d="curves[i]"
+						:key="n.id"
+						:style="{ stroke: bgColor(n,i) }"
+						vector-effect="non-scaling-stroke"
 					></path>
 				</svg>
 			</div>
 			<div class="d-flex flex-column right-column text-left">
 				<div
-				 class="label"
-				 v-for="(n,i) in children"
-				 :class="{ 'text-muted': hovered > -1 && i != hovered }"
-				 :data-id="n.id"
-				 :data-index="i"
-				 :key="n.id"
-				 @click="down(i)"
-				 @mouseover="hovered=i"
+					class="label"
+					v-for="(n,i) in children"
+					:class="{ 'text-muted': hovered > -1 && i != hovered }"
+					:data-id="n.id"
+					:data-index="i"
+					:key="n.id"
+					@click="down(i)"
+					@mouseover="hovered=i"
 				>{{ n.name }}</div>
 			</div>
 		</div>
@@ -125,7 +125,7 @@ export default {
 			curves: [],
 			hovered: -1,
 			loading: true,
-			mode: 0,
+			mode: 0, // 0 = econ, 1 = func
 			path: [],
 			resizeTimeout: null
 		};
@@ -305,6 +305,12 @@ export default {
 			self.resizeTimeout = setTimeout(function() {
 				self.updateCurves();
 			}, 100);
+		});
+
+		this.$eventBus.$on("jump", target => {
+			if (target.side == this.side) {
+				this.mode = target.side == "econ" ? 0 : 1;
+			}
 		});
 	},
 	updated: function() {
