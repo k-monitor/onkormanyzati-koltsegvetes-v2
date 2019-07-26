@@ -91,10 +91,11 @@ export default {
 		results() {
 			return this.searchTerm.length < 3
 				? []
-				: search(this.year, this.searchTerm).sort(function(a, b) {
-						return (b.value || 0) - (a.value || 0);
-				  });
-			// TODO if !$config.modules.income, remove income results!
+				: search(this.year, this.searchTerm)
+						.sort(function(a, b) {
+							return (b.value || 0) - (a.value || 0);
+						})
+						.filter(r => r.side != "income" || this.$config.modules.income);
 		}
 	},
 	methods: {
