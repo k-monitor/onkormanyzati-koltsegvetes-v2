@@ -19,6 +19,7 @@ input
 # Generated data:
 src/data/2*
 src/data/data.json
+src/data/tags.json
 src/data/lorem*
 
 # Generated docs:

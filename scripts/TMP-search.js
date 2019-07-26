@@ -27,7 +27,7 @@ function search(year, term) {
 }
 
 function searchNode(node, tags, term, path) {
-	const nodeTags = (tags[node.id] || tags[Number(node.id)] || tags[Number(node.altId)] || []);
+	const nodeTags = (tags[node.id] || tags[Number(node.id)] || tags[node.altId] || []);
 	const matchedTags = nodeTags.filter(tag => tag.includes(term));
 	let results = [];
 	if (matchedTags.length > 0) {
