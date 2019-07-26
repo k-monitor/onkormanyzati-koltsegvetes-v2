@@ -7,6 +7,13 @@
 	 role="dialog"
 	 tabindex="-1"
 	>
-		<SearchModalContent />
+		<SearchModalContent :year="year" />
 	</div>
 </template>
+
+<script>
+export default {
+	props: ["year"]
+};
+</script>
+

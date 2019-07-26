@@ -1,18 +1,18 @@
 const $data = require('../src/data/data.json');
-const $tags = //require('../src/data/tags.json');
-{
-	"expense": {
-		"func": {
-			"72111":["betegek","betegellátás","betegség","doki","doktor","egészségügy","orvos"]
-		}
-	}
-};
+const $tags = require('../src/data/tags.json');
+//{
+//	"expense": {
+//		"func": {
+//			"72111":["betegek","betegellátás","betegség","doki","doktor","egészségügy","orvos"]
+//		}
+//	}
+//};
 
-function search(year, term) {
+export default function search(year, term) {
 	let results = [];
 	['expense', 'income'].forEach(side => {
 		['econ', 'func'].forEach(type => {
-			const tree = $data[year][side][type];
+			const tree = $data[year][side][type] || {};
 			const tags = ($tags[side] || { type: {} })[type] || {};
 			const treeResults = searchNode(tree, tags, term, []).map(result => {
 				result.side = side;
@@ -27,7 +27,7 @@ function search(year, term) {
 }
 
 function searchNode(node, tags, term, path) {
-	const nodeTags = (tags[node.id] || tags[Number(node.id)] || tags[node.altId] || []);
+	const nodeTags = (tags[node.id] || tags['0' + node.id] || tags[node.altId] || []);
 	const matchedTags = nodeTags.filter(tag => tag.includes(term));
 	let results = [];
 	if (matchedTags.length > 0) {
@@ -46,5 +46,3 @@ function searchNode(node, tags, term, path) {
 	});
 	return results;
 }
-
-console.log(search(2018, 'beteg'));

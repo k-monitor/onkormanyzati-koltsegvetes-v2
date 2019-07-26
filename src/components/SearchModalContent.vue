@@ -31,33 +31,43 @@
 				</button>
 			</div>
 			<div class="modal-body">
+				<p
+				 class="text-center text-muted"
+				 v-if="results.length == 0"
+				>
+					<span v-if="searchTerm.length < 3">{{ $config.search.tooShort }}</span>
+					<span v-else>{{ $config.search.noResults }}</span>
+				</p>
 				<div class="list-group">
 					<div
-					 class="list-group-item"
-					 type="button"
+					 class="d-flex list-group-item"
 					 v-for="r in results"
-					 :key="r.funcId"
+					 :key="r.side + r.type + r.id"
 					>
-						<div class="font-weight-bold mb-2">
-							{{ r.funcName }} {{ r.funcId }}
+						<div class="flex-grow-1 font-weight-bold mb-2">
+							{{ r.name }}
+							<br>
+							<small class="text-muted">({{ $config.search[r.type] }})</small>
+							<br>
+							<span v-if="r.tags.length > 0">
+								<span
+								 class="badge badge-info font-weight-normal mr-2"
+								 v-for="t in r.tags"
+								 :key="t"
+								>#{{ t }}</span>
+								<br>
+							</span>
 						</div>
-						<div class="text-right">
+						<div>
 							<a
-							 class="mx-2 btn btn-sm btn-outline-success"
+							 class="mx-2 btn btn-sm"
+							 :class="r.side == 'income' ? 'btn-outline-success' : 'btn-outline-danger'"
 							 href="javascript:void(0)"
-							 v-if="$config.modules.income"
-							 @click="jumpToIncome(r.funcId)"
+							 @click="jump(r.side, r.type, r.id)"
 							>
 								<i class="far fa-hand-point-right"></i>
-								{{ $config.search.income }}
-							</a>
-							<a
-							 class="mx-2 btn btn-sm btn-outline-danger"
-							 href="javascript:void(0)"
-							 @click="jumpToExpense(r.funcId)"
-							>
-								<i class="far fa-fw fa-hand-point-right"></i>
-								{{ $config.search.expense }}
+								<br>
+								{{ $config.search[r.side] }}
 							</a>
 						</div>
 					</div>
@@ -68,7 +78,10 @@
 </template>
 
 <script>
+import search from "~/search.js";
+
 export default {
+	props: ["year"],
 	data() {
 		return {
 			searchTerm: ""
@@ -76,28 +89,16 @@ export default {
 	},
 	computed: {
 		results() {
-			return this.searchTerm.trim().length < 3
+			return this.searchTerm.length < 3
 				? []
-				: Object.keys(this.$tags)
-						.map(funcId => {
-							const tags = this.$tags[funcId];
-							const match = tags.filter(tag => tag.includes(this.searchTerm))
-								.length;
-							return {
-								funcId,
-								funcName: this.$functions[Number(funcId)],
-								tags,
-								match
-							};
-						})
-						.filter(r => r.match > 0)
-						.sort((a, b) => b.match - a.match)
-						.slice(0, 5);
+				: search(this.year, this.searchTerm).sort(function(a, b) {
+						return (b.value || 0) - (a.value || 0);
+				  });
+			// TODO if !$config.modules.income, remove income results!
 		}
 	},
 	methods: {
-		jumpToExpense(funcId) {},
-		jumpToIncome(funcId) {}
+		jump(side, type, id) {}
 	},
 	mounted() {
 		const self = this;
@@ -106,8 +107,6 @@ export default {
 		});
 		$("#search-modal").on("shown.bs.modal", function(e) {
 			$("#search-modal input").focus();
-			//TEST:
-			//self.searchTerm = "menza";
 		});
 	}
 };

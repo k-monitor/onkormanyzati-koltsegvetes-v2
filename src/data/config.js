@@ -28,8 +28,12 @@ const navBar = {
 };
 
 const search = {
+	tooShort: 'Túl rövid keresőkifejezés!',
+	noResults: 'Nincs találat.',
 	income: 'Bevételek',
-	expense: 'Kiadások'
+	expense: 'Kiadások',
+	econ: 'közgazdasági kategória',
+	func: 'funkcionális kategória'
 };
 
 const header = {
