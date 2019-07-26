@@ -3,15 +3,7 @@ const fg = require('fast-glob');
 const mkdirp = require('mkdirp').sync;
 const xlsx = require('xlsx');
 
-// configruation
-
-if (process.argv.length < 3) {
-	console.log('\nKérlek add meg az input fájl útvonalát! Példa:\n');
-	console.log('\t node scripts/prepare-data src/data/src/input_fajl.xslx\n');
-	return;
-}
-
-const INPUT_FILE = process.argv[2];
+const INPUT_FILE = './input/budget.xlsx';
 
 // main script
 

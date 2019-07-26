@@ -14,7 +14,7 @@ dist
 # -----------------
 
 # Input data:
-input
+input/budget.xlsx
 
 # Generated data:
 src/data/2*

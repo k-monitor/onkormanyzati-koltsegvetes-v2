@@ -15,8 +15,8 @@ A beüzemelés lépései:
 1. Telepíts Node.js-t és Yarn-t, ezek adják az alapvető környezetet a projekthez.
 1. Telepítsd a Gridsome-ot parancssorból: `yarn global add @gridsome/cli`, ez fogja legenerálni a kész weboldalt.
 1. A projekt mappájában futtasd le a `yarn install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
-1. Másold be az önkormányzattól kapott XLSX fájlt az `input` mappába.
-1. A projekt mappájában futtasd le a `node scrips/prepare-data input/INPUT_FAJL.xlsx` parancsot, ez az XLSX fájlból kinyeri és megfelelő formára hozza az adatokat a vizualizáció számára. A generált adatfájlok az `src/data` mappába kerülnek.
+1. Másold be az önkormányzattól kapott XLSX fájlt az `input` mappába, `budget.xlsx` néven.
+1. A projekt mappájában futtasd le a `node scrips/prepare` parancsot, ez az XLSX fájlból kinyeri és megfelelő formára hozza az adatokat a vizualizáció számára. A generált adatfájlok az `src/data` mappába kerülnek.
 1. Szerkeszd a `src/data/tooltips.json` és `milestones.json` fájlokat, hogy testreszabd a vizualizáció szövegeit (részletek alább).
 1. Szerkeszd a `src/data/config.js` fájlban a változókat, hogy testreszabd a weboldal szövegeit és beállításait (részletek alább).
 1. A projekt mappájában indítsd el a `gridsome develop` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
