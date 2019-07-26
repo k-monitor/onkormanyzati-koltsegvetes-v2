@@ -298,7 +298,7 @@ export default {
 	},
 	mounted: function() {
 		this.regenerateTooltips();
-		var self = this;
+		const self = this;
 		self.updateCurves();
 		window.addEventListener("resize", function() {
 			clearTimeout(self.resizeTimeout);
@@ -307,9 +307,18 @@ export default {
 			}, 100);
 		});
 
-		this.$eventBus.$on("jump", target => {
-			if (target.side == this.side) {
-				this.mode = target.side == "econ" ? 0 : 1;
+		self.$eventBus.$on("jump", target => {
+			if (target.side == self.side) {
+				self.mode = target.side == "econ" ? 0 : 1;
+				self.path = [];
+				(target.path || []).forEach(id => {
+					for (let i = 0; i < self.children.length; i++) {
+						const node = self.children[i];
+						if (node.id == id || node.altId == id) {
+							self.path.push(i);
+						}
+					}
+				});
 			}
 		});
 	},

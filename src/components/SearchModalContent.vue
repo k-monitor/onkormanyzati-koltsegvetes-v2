@@ -63,7 +63,7 @@
 								class="mx-2 btn btn-sm"
 								:class="r.side == 'income' ? 'btn-outline-success' : 'btn-outline-danger'"
 								href="javascript:void(0)"
-								@click="jump(r.side, r.type, r.id)"
+								@click="jump(r)"
 							>
 								<i class="far fa-hand-point-right"></i>
 								<br>
@@ -99,18 +99,18 @@ export default {
 		}
 	},
 	methods: {
-		jump(side, type, id) {
+		jump(result) {
 			$("#search-modal").modal("hide");
 			$("html, body").animate(
 				{
-					scrollTop: $("#" + side).offset().top - 72
+					scrollTop: $("#" + result.side).offset().top - 72
 				},
 				1000,
 				"easeInOutExpo"
 			);
 			const self = this;
 			setTimeout(function() {
-				self.$eventBus.$emit("jump", { side, type, id });
+				self.$eventBus.$emit("jump", result);
 			}, 1000);
 		}
 	},
