@@ -84,7 +84,8 @@ export default {
 	props: ["year"],
 	data() {
 		return {
-			searchTerm: ""
+			searchTerm: "",
+			savedSearchTerms: []
 		};
 	},
 	computed: {
@@ -96,6 +97,29 @@ export default {
 							return (b.value || 0) - (a.value || 0);
 						})
 						.filter(r => r.side != "income" || this.$config.modules.income);
+		}
+	},
+	watch: {
+		searchTerm(term, oldTerm) {
+			clearTimeout(window.searchTimeout);
+			const self = this;
+
+			const track = function(term) {
+				const prefix = self.savedSearchTerms.some(
+					sst => sst.indexOf(term) == 0
+				);
+				if (!prefix) {
+					self.savedSearchTerms.push(term);
+					console.log('save', term);
+				}
+			};
+			if (term.length == oldTerm.length - 1) { // immediate reaction to backspace
+				track(oldTerm);
+			} else if (term.length > 3) {
+				window.searchTimeout = setTimeout(function() {
+					track(term);
+				}, 1000);
+			}
 		}
 	},
 	methods: {
