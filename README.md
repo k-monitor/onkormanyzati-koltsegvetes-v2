@@ -16,7 +16,7 @@ A beüzemelés lépései:
 1. Telepítsd a Gridsome-ot parancssorból: `yarn global add @gridsome/cli`, ez fogja legenerálni a kész weboldalt.
 1. A projekt mappájában futtasd le a `yarn install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
 1. Másold be az önkormányzattól kapott XLSX fájlt az `input` mappába, `budget.xlsx` néven.
-1. A projekt mappájában futtasd le a `node scrips/prepare` parancsot, ez az XLSX fájlból kinyeri és megfelelő formára hozza az adatokat a vizualizáció számára. A generált adatfájlok az `src/data` mappába kerülnek.
+1. A projekt mappájában futtasd le a `node scrips/prepare` parancsot, ez az `input` mappában levő fájlokban rejlő adatokat átalakítja a vizualizációnak megfelelő formátumra. A generált adatfájlok az `src/data` mappába kerülnek, a weboldal fejlesztésekor és generálásakor innen lesznek kiolvasva.
 1. Szerkeszd a `src/data/tooltips.json` és `milestones.json` fájlokat, hogy testreszabd a vizualizáció szövegeit (részletek alább).
 1. Szerkeszd a `src/data/config.js` fájlban a változókat, hogy testreszabd a weboldal szövegeit és beállításait (részletek alább).
 1. A projekt mappájában indítsd el a `gridsome develop` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
@@ -36,24 +36,20 @@ A beüzemelés lépései:
 
 A vizualizáció az alábbi adatfájlokból dolgozik:
 
-- **input/*.xlsx** - A vizualizáció adatainak forrása.
+- **input/budget.xlsx** - A vizualizáció adatainak forrása.
+- **input/tags.xlsx** - A kereső által használt címkehalmazok.
 - **src/data/config.js** - A weboldal beállításai, szövegei.
-- **src/data/data.json (generált)** - A vizualizáció adatai.
+- **src/data/data.json (generált)** - A vizualizáció adatai előkészítve.
 - **src/data/functions.tsv** - A funkcionális kategóriák fa struktúrája.
 - **src/data/milestones.json** - A fejlesztések leírásai.
+- **src/data/tags.json (generált)** - A kereső által használt címkehalmazok előkészítve.
 - **src/data/tooltips.json** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei.
 
-A `data.json` fájl az általános KGR rendszer importjából generálható le, ami egy XLSX fájl. A konverzióhoz az alábbi parancsot kell lefuttatni:
-
-```
-node scripts/prepare-data input/INPUT_FAJL.xslx
-```
 
 
+### input/budget.xlsx
 
-### Excel fájl formátuma
-
-A munkafüzet több munkalapból állhat, melyek elnevezése a következő lehet: `ÉVSZÁM <TÍPUS>`, ahol a `<TÍPUS>` helyén `BEVÉTEL` vagy `KIADÁS` állhat.
+Az általános KGR rendszer importja. A munkafüzet több munkalapból állhat, melyek elnevezése a következő lehet: `ÉVSZÁM <TÍPUS>`, ahol a `<TÍPUS>` helyén `BEVÉTEL` vagy `KIADÁS` állhat.
 
 A munkalapoknak 2 formátumát ismeri a program. Az egyik az elmúlt évekre vonatkozik, a másik a prognózisokra. A bevételi és kiadási oldal adott éven belül azonos formátumú. Prognózisok esetében a funkcionális bontást nem tartalmazza az input.
 
@@ -83,6 +79,26 @@ Az ilyen munkalapokról hiányzik a funkcionális bontás. A formátum hasonló 
 
 - 1.-3. sor: lényegtelen
 - a közgazdasági kategóriák bontása a 4. sortól kezdődik
+
+
+
+### input/tags.xlsx
+
+A kereső funkciónak 4 címkehalmazra van szüksége:
+
+- bevételi oldal, közgazdasági bontás
+- bevételi oldal, funkcionális bontás
+- kiadási oldal, közgazdasági bontás
+- kiadási oldal, funkcionális bontás
+
+Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell megadni, az alábbi szerkezetben:
+
+- az 1. sor opcionálisan lehet fejléc
+- további sorok:
+	- 1. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
+	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
+	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál ajánlott a `B123/K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
+	- 4. oszlop tartalmazza a címkéket: vesszővel, és opcionálisan még szóközzel is elválasztott kifejezések
 
 
 
@@ -148,7 +164,7 @@ Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog
 
 ### src/data/data.json (generált)
 
-Ez a fájl tartalmazza a több éves költségvetési adatokat az alábbi struktúrában:
+Ezt a fájlt a `budget.xlsx` tartalmából generálja a `prepare-data.js` szkript. Ez a fájl tartalmazza a több éves költségvetési adatokat az alábbi struktúrában:
 
 ```json
 {
@@ -183,6 +199,27 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 - **name** - A kategória elnevezése.
 - **value** - Az adott node-hoz tartozó összeg.
 - **children** - Gyerek node-ok tömbje.
+
+
+
+### src/data/tags.json (generált)
+
+Ezt a fájlt a `tags.xlsx` tartalmából generálja a `prepare-tags.js` szkript. Ez a fájl tartalmazza a 4 címkehalmazt a 2 költségvetési oldalhoz és 2 bontáshoz.
+
+Formátuma hasonló struktúrát követ, mint a `data.json`, csak itt nincsenek évszámok, és node-ok helyett címkehalmazokat ír le.
+
+```json
+{
+	"expense": {
+		"econ": [ "címke1", "címke2", ... ],
+		"func": [ ... ]
+	},
+	"income": {
+		"econ": [ ... ],
+		"func": [ ... ]
+	}
+}
+```
 
 
 

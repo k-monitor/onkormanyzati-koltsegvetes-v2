@@ -1,6 +1,3 @@
-- docs += tags.xlsx
-- docs -= data.json format - unnecessary, we need budget.xlsx from user
-
 - prepare data:
 	- work from functions.json, remove functions.tsv
 	- do not generate intermediate JSONs, build data bundle on-the-fly
