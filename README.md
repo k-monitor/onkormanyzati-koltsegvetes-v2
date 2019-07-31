@@ -21,6 +21,7 @@ A beüzemelés lépései:
 1. Szerkeszd a `src/data/config.js` fájlban a változókat, hogy testreszabd a weboldal szövegeit és beállításait (részletek alább).
 1. A projekt mappájában indítsd el a `gridsome develop` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
 1. A weboldal legenerálásához használd a `gridsome build` parancsot. A kész weboldal a `dist` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
+1. A kereső naplózás funkciójához szükség van telepített PHP interpreterre is, valamint a következő parancs lefuttatására a hosztolt mappában: `touch search.log && sudo chown www-data:www-data search.log`. A `search.log` fájlt érdemes publikusan elérhetetlenné tenni. Ha erre a naplózó funkcióra nincs szükség, a `track-search.php` fájlt ajánlott törölni a webszerverről.
 
 
 
@@ -254,3 +255,13 @@ const modules = {
 - A `milestones` a *Fejlesztések* szakaszt jelenti.
 
 A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani. Itt lehet módosítani a színeket is.
+
+
+
+## Keresési napló
+
+Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a találatok számát. Mindezt a `search.log` fájlba menti ki, melynek formátuma TSV, oszlopai:
+
+- előfordulások száma (hányszor szerepelt az alábbi keresőkifejezés az alábbi találatszámmal)
+- keresőkifejezés
+- találatok száma

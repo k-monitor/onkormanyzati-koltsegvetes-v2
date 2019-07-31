@@ -110,12 +110,13 @@ export default {
 				);
 				if (!prefix) {
 					self.savedSearchTerms.push(term);
-					console.log('save', term);
+					const url = `/track-search.php?t=${term}&r=${search(self.year, term).length}`;
+					$.get(url);
 				}
 			};
 			if (term.length == oldTerm.length - 1) { // immediate reaction to backspace
 				track(oldTerm);
-			} else if (term.length > 3) {
+			} else if (term.length >= 3) {
 				window.searchTimeout = setTimeout(function() {
 					track(term);
 				}, 1000);

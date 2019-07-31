@@ -24,3 +24,6 @@ src/data/lorem*
 
 # Generated docs:
 README.pdf
+
+# Logs:
+static/search.log
