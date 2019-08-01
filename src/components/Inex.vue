@@ -3,21 +3,24 @@
 		<div class="container">
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-8 text-center">
-					<h2>{{ $config.inex.title }}</h2>
+					<h2>
+						{{ $config.inex.title }}
+						<small class="ml-1 text-muted">{{ year }}</small>
+					</h2>
 					<hr class="divider my-4">
 				</div>
 			</div>
 			<div class="row justify-content-center mb-5">
 				<div
-				 class="col-lg-10 text-center"
-				 id="inex-wrapper"
+					class="col-lg-10 text-center"
+					id="inex-wrapper"
 				>
 					<div class="d-flex font-weight-bold mb-2">
 						<div class="d-flex align-items-center justify-content-between left-column text-right">
 							<div>
 								<a
-								 href="#income"
-								 class="btn btn-outline-success js-scroll-trigger"
+									href="#income"
+									class="btn btn-outline-success js-scroll-trigger"
 								>
 									<i class="fas fa-fw fa-angle-double-down"></i>
 									<span class="d-none d-md-inline-block">{{ $config.inex.details }}</span>
@@ -37,8 +40,8 @@
 							</div>
 							<div>
 								<a
-								 href="#expense"
-								 class="btn btn-outline-danger js-scroll-trigger"
+									href="#expense"
+									class="btn btn-outline-danger js-scroll-trigger"
 								>
 									<span class="d-none d-md-inline-block">{{ $config.inex.details }}</span>
 									<i class="fas fa-fw fa-angle-double-down"></i>
@@ -49,19 +52,19 @@
 					<div class="d-flex border-top border-bottom mb-4 vis">
 						<div class="d-flex flex-column left-column">
 							<div
-							 v-if="incomeCorrection > 0"
-							 :style="{ flexGrow: incomeCorrection }"
+								v-if="incomeCorrection > 0"
+								:style="{ flexGrow: incomeCorrection }"
 							></div>
 							<div
-							 class="bar"
-							 v-for="(n,i) in incomeChildren"
-							 :data-id="n.id"
-							 :data-index="i"
-							 :key="year + '/' + i"
-							 :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }"
-							 data-toggle="tooltip"
-							 data-placement="left"
-							 :title="$tooltips[n.altId]"
+								class="bar"
+								v-for="(n,i) in incomeChildren"
+								:data-id="n.id"
+								:data-index="i"
+								:key="year + '/' + i"
+								:style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }"
+								data-toggle="tooltip"
+								data-placement="left"
+								:title="$tooltips[n.altId]"
 							>
 								<div class="text-left wrap-md">
 									{{ n.name }}
@@ -73,19 +76,19 @@
 						</div>
 						<div class="d-flex flex-column ml-auto right-column">
 							<div
-							 v-if="expenseCorrection > 0"
-							 :style="{ flexGrow: expenseCorrection }"
+								v-if="expenseCorrection > 0"
+								:style="{ flexGrow: expenseCorrection }"
 							></div>
 							<div
-							 class="bar"
-							 v-for="(n,i) in expenseChildren"
-							 :data-id="n.id"
-							 :data-index="i"
-							 :key="year + '/' + i"
-							 :style="{ backgroundColor: bgColor(expenseTree, n, 'firebrick'), color: fgColor(expenseTree, n, 'firebrick'), flexGrow: n.value }"
-							 data-toggle="tooltip"
-							 data-placement="right"
-							 :title="$tooltips[n.altId]"
+								class="bar"
+								v-for="(n,i) in expenseChildren"
+								:data-id="n.id"
+								:data-index="i"
+								:key="year + '/' + i"
+								:style="{ backgroundColor: bgColor(expenseTree, n, 'firebrick'), color: fgColor(expenseTree, n, 'firebrick'), flexGrow: n.value }"
+								data-toggle="tooltip"
+								data-placement="right"
+								:title="$tooltips[n.altId]"
 							>
 								<div class="mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>

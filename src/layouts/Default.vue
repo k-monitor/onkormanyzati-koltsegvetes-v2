@@ -1,37 +1,37 @@
 <template>
 	<div>
 		<NavBar
-		 :year="year"
-		 :years="Object.keys($d).sort().reverse()"
-		 @yearSelected="handleYearSelected"
+			:year="year"
+			:years="Object.keys($d).sort().reverse()"
+			@yearSelected="handleYearSelected"
 		/>
 		<SearchModal :year="year" />
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
 			<Welcome id="welcome" />
 			<Inex
-			 :year="year"
-			 id="inex"
-			 v-if="$config.modules.inex"
+				:year="year"
+				id="inex"
+				v-if="$config.modules.inex"
 			/>
 			<VisualizationSection
-			 :year="year"
-			 id="income"
-			 side="income"
-			 title="Bevételek"
-			 v-if="$config.modules.income"
+				:year="year"
+				id="income"
+				side="income"
+				title="Bevételek"
+				v-if="$config.modules.income"
 			/>
 			<VisualizationSection
-			 :year="year"
-			 class="bg-light"
-			 id="expense"
-			 side="expense"
-			 title="Kiadások"
+				:year="year"
+				class="bg-light"
+				id="expense"
+				side="expense"
+				title="Kiadások"
 			/>
 			<MilestoneSection
-			 class="pb-0"
-			 id="milestones"
-			 v-if="$config.modules.milestones"
+				class="pb-0"
+				id="milestones"
+				v-if="$config.modules.milestones"
 			/>
 			<slot />
 		</div>
