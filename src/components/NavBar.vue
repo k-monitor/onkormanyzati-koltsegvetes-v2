@@ -26,6 +26,16 @@
 				<ul class="navbar-nav ml-auto my-2 my-lg-0">
 					<li class="nav-item">
 						<a
+						 href="javascript:void(0)"
+						 class="nav-link"
+						 data-toggle="modal"
+						 data-target="#search-modal"
+						>
+							<i class="fas fa-search"></i>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a
 						 href="#welcome"
 						 class="nav-link js-scroll-trigger"
 						>{{ $config.navBar.welcome }}</a>
@@ -46,7 +56,7 @@
 						>{{ $config.navBar.milestones }}</a>
 					</li>
 					<li
-					 class="nav-item dropdown"
+					 class="nav-item dropdown highlight"
 					 v-if="years.length > 1"
 					>
 						<a
@@ -58,10 +68,10 @@
 						 aria-haspopup="true"
 						 aria-expanded="false"
 						>
-							{{ year }}
+							<span class="mr-1">{{ year }}</span>
 						</a>
 						<div
-						 class="dropdown-menu"
+						 class="dropdown-menu dropdown-menu-right"
 						 aria-labelledby="navbarDropdown"
 						>
 							<a
@@ -72,16 +82,6 @@
 							 @click="$emit('yearSelected', y)"
 							>{{ y }}</a>
 						</div>
-					</li>
-					<li class="nav-item">
-						<a
-						 href="javascript:void(0)"
-						 class="nav-link"
-						 data-toggle="modal"
-						 data-target="#search-modal"
-						>
-							<i class="fas fa-search"></i>
-						</a>
 					</li>
 				</ul>
 			</div>
@@ -192,6 +192,43 @@ export default {
 							color: $primary;
 						}
 					}
+				}
+			}
+		}
+	}
+
+	// highlight
+
+	/*&, & > div.container-fluid {
+		padding-right: 0;
+	}*/
+	.nav-item:last-child .nav-link {
+		margin-right: 1rem;
+	}
+
+	@include media-breakpoint-up(lg) {
+		.navbar-nav .nav-item.highlight {
+			.nav-link {
+				color: white !important;
+				text-decoration: underline;
+			}
+		}
+		&.navbar-scrolled {
+			.navbar-nav .nav-item.highlight {
+				$d: 1.6rem;
+				background-color: $primary;
+				margin-bottom: -$d;
+				margin-top: -$d;
+				padding: $d 0;
+				min-height: 100%;
+				position: relative;
+
+				.nav-link {
+					text-decoration: none;
+				}
+
+				&:hover {
+					background-color: darken($primary, 10%);
 				}
 			}
 		}
