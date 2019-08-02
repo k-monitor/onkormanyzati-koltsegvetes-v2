@@ -113,8 +113,8 @@ export default {
 								}
 							});
 							return r;
-						});
-						//.slice(0, 5);
+						})
+						.slice(0, 5);
 		}
 	},
 	watch: {
