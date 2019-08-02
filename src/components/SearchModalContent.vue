@@ -45,7 +45,7 @@
 						:key="r.side + r.type + r.id"
 					>
 						<div class="flex-grow-1 font-weight-bold mb-2">
-							{{ r.name }}
+							<span v-html="r.name"></span>
 							<br>
 							<small class="text-muted">({{ $config.search[r.type] }})</small>
 							<br>
@@ -60,7 +60,7 @@
 						</div>
 						<div>
 							<a
-								class="mx-2 btn btn-sm"
+								class="ml-2 btn btn-sm"
 								:class="r.side == 'income' ? 'btn-outline-success' : 'btn-outline-danger'"
 								href="javascript:void(0)"
 								@click="jump(r)"
@@ -93,10 +93,28 @@ export default {
 			return this.searchTerm.length < 3
 				? []
 				: search(this.year, this.searchTerm)
+						.filter(r => r.side != "income" || this.$config.modules.income)
 						.sort(function(a, b) {
-							return (b.value || 0) - (a.value || 0);
+							function score(r) {
+								return (r.matchesInName || 0) + (r.tags || []).length;
+							}
+							const sa = score(a);
+							const sb = score(b);
+							return sa == sb ? (b.value || 0) - (a.value || 0) : sb - sa;
 						})
-						.filter(r => r.side != "income" || this.$config.modules.income);
+						.map(r => {
+							this.searchTerm.split(" ").forEach(t => {
+								t = t.trim();
+								if (t.length >= 3) {
+									r.name = r.name.replace(
+										new RegExp(`(${t})`, "i"),
+										"<u>$1</u>"
+									);
+								}
+							});
+							return r;
+						});
+						//.slice(0, 5);
 		}
 	},
 	watch: {
@@ -110,11 +128,14 @@ export default {
 				);
 				if (!prefix) {
 					self.savedSearchTerms.push(term);
-					const url = `/track-search.php?t=${term}&r=${search(self.year, term).length}`;
+					const url = `/track-search.php?t=${term}&r=${
+						search(self.year, term).length
+					}`;
 					$.get(url);
 				}
 			};
-			if (term.length == oldTerm.length - 1) { // immediate reaction to backspace
+			if (term.length == oldTerm.length - 1) {
+				// immediate reaction to backspace
 				track(oldTerm);
 			} else if (term.length >= 3) {
 				window.searchTimeout = setTimeout(function() {
