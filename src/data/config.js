@@ -77,11 +77,19 @@ const milestones = {
 	title: 'Fejlesztések'
 };
 
+const feedback = {
+	title: 'Visszajelzés',
+	text: 'Kérjük, véleményezze a költségvetést bemutató oldalunkat, hogy még jobbá tehessük azt!',
+	action: 'Kérdőív kitöltése',
+	url: 'about:blank'
+}
+
 // ---
 
 module.exports = {
 	city,
 	defaultYear,
+	feedback,
 	header,
 	inex,
 	milestones,

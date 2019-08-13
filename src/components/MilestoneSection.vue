@@ -1,10 +1,10 @@
 <template>
-	<section class="page-section milestones bg-primary text-white">
+	<section class="page-section milestones">
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="col text-center">
 					<h2>{{ $config.milestones.title }}</h2>
-					<hr class="divider light my-4 mb-5">
+					<hr class="divider my-4 mb-5">
 				</div>
 			</div>
 			<div class="row">

@@ -83,6 +83,16 @@
 							>{{ y }}</a>
 						</div>
 					</li>
+					<li class="nav-item">
+						<a
+						 class="nav-link"
+						 data-target="#feedbackModal"
+						 data-toggle="modal"
+						 href="javascript:void(0)"
+						>
+							<i class="far fa-comment-dots"></i>
+						</a>
+					</li>
 				</ul>
 			</div>
 		</div>

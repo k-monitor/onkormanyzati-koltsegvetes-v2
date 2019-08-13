@@ -9,8 +9,10 @@ import Visualization from '~/components/Visualization';
 import VisualizationSection from '~/components/VisualizationSection';
 import Milestone from '~/components/Milestone';
 import MilestoneSection from '~/components/MilestoneSection';
+import FeedbackSection from '~/components/FeedbackSection';
 import Footer from '~/components/Footer';
 import Social from '~/components/Social';
+import FeedbackModal from '~/components/FeedbackModal';
 
 import config from '~/data/config.js';
 import data from '~/data/data.json';
@@ -32,8 +34,10 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('VisualizationSection', VisualizationSection);
 	Vue.component('Milestone', Milestone);
 	Vue.component('MilestoneSection', MilestoneSection);
+	Vue.component('FeedbackSection', FeedbackSection);
 	Vue.component('Footer', Footer);
 	Vue.component('Social', Social);
+	Vue.component('FeedbackModal', FeedbackModal);
 
 	Vue.prototype.$config = config;
 	Vue.prototype.$d = data;

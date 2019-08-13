@@ -33,10 +33,12 @@
 				id="milestones"
 				v-if="$config.modules.milestones"
 			/>
+			<FeedbackSection />
 			<slot />
 		</div>
 		<Footer />
 		<Social />
+		<FeedbackModal />
 	</div>
 </template>
 
