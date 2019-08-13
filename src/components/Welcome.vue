@@ -65,72 +65,88 @@ import config from "~/data/config.js";
 export default {
 	methods: {
 		intro() {
-			setTimeout(function() {
-				const intro = introJs()
-					.setOption("doneLabel", "Kilépés")
-					.setOption("nextLabel", "Tovább")
-					.setOption("prevLabel", "Vissza")
-					.setOption("scrollToElement", false)
-					.setOption("showBullets", false)
-					.setOption("showProgress", false)
-					.setOption("showStepNumbers", false)
-					.setOption("skipLabel", "Kilépés")
-					.setOption("tooltipPosition", "left")
-					.onbeforechange(function(targetElement) {
-						console.log(targetElement);
-						$("html, body").animate(
-							{
-								scrollTop: $(targetElement).offset().top - 160
-							},
-							1000,
-							"easeInOutExpo"
-						);
-					});
-
-				const steps = [];
-				if (config.modules.inex) {
-					steps.push({
-						element: "#inex-wrapper",
-						intro:
-							"Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.",
-						position: "left"
-					});
-					steps.push({
-						element: "#inex-wrapper .vis .left-column .bar:nth-child(1)",
-						intro:
-							"Ha az egér egy hasáb fölé kerül, további információ jelenik meg. Próbálja ki!",
-						position: "top"
-					});
-				}
-
-				const el = config.modules.income ? "#income" : "#expense";
-				steps.push({
-					element: el + " ul",
-					intro:
-						"A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.",
-					position: "top"
-				});
-				steps.push({
-					element: el + " .vis > div",
-					intro:
-						"A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.",
-					position: "right"
-				});
-				steps.push({
-					element: el + " ol.breadcrumb",
-					intro:
-						"A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.",
-					position: "bottom"
+			$("#mainNav").css("position", "absolute");
+			const intro = introJs()
+				.setOption("doneLabel", "Kilépés")
+				.setOption("nextLabel", "Tovább")
+				.setOption("prevLabel", "Vissza")
+				.setOption("scrollToElement", false)
+				.setOption("showBullets", false)
+				.setOption("showProgress", false)
+				.setOption("showStepNumbers", false)
+				.setOption("skipLabel", "Kilépés")
+				.setOption("tooltipPosition", "left")
+				.onbeforechange(function(targetElement) {
+					console.log(targetElement.className);
+					$("html, body").animate(
+						{
+							scrollTop: $(targetElement).offset().top - 160
+						},
+						1000,
+						"easeInOutExpo"
+					);
+				})
+				.onexit(function() {
+					$("#mainNav").css("position", "fixed");
 				});
 
+			const steps = [];
+			if (config.modules.inex) {
 				steps.push({
-					element: "#face",
-					intro: "Kellemes böngészést!",
+					element: "#inex-wrapper",
+					intro:
+						"Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.",
 					position: "left"
 				});
+				steps.push({
+					element: "#inex-wrapper .vis .left-column .bar:nth-child(1)",
+					intro:
+						"Ha az egér egy hasáb fölé kerül, további információ jelenik meg. Próbálja ki!",
+					position: "top"
+				});
+			}
 
-				intro.setOptions({ steps }).start();
-			}, 1000);
+			const el = config.modules.income ? "#income" : "#expense";
+			steps.push({
+				element: el + " ul",
+				intro:
+					"A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.",
+				position: "top"
+			});
+			steps.push({
+				element: el + " .vis > div",
+				intro:
+					"A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.",
+				position: "right"
+			});
+			steps.push({
+				element: el + " ol.breadcrumb",
+				intro:
+					"A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.",
+				position: "bottom"
+			});
+
+			steps.push({
+				element: "#mainNav .fa-search",
+				intro:
+					"A keresés funkcióval könnyedén megtalálhatja bármelyik kategóriát, akár a neve, akár hozzá kapcsolódó szavak (címkék) alapján.",
+				position: "bottom"
+			});
+
+			steps.push({
+				element: "#mainNav .dropdown",
+				intro:
+					"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
+				position: "bottom"
+			});
+
+			steps.push({
+				element: "#face",
+				intro: "Kellemes böngészést!",
+				position: "left"
+			});
+
+			intro.setOptions({ steps }).start();
 		}
 	}
 };

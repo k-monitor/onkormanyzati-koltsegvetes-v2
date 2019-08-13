@@ -14,7 +14,7 @@
 					</div>
 					<input
 						aria-describedby="inputGroup-sizing-lg"
-						aria-label="Sizing example input"
+						aria-label="Search"
 						class="form-control"
 						type="text"
 						v-model="searchTerm"
