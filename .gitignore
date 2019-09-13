@@ -16,6 +16,7 @@ dist
 # Generated data:
 src/data/2*
 src/data/data.json
+src/data/milestones.json
 src/data/tags.json
 src/data/tooltips.json
 src/data/lorem*

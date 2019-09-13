@@ -13,8 +13,8 @@ const output = {};
 
 tsv.split('\n').forEach(row => {
 	let [id, tooltip] = row.split('\t');
-	if (id && tooltip && id.match(/[BK]?\d+/)) {
-		id = id.trim();
+	if (id && tooltip && id.match(/[BK]?\d+( .*)?/)) {
+		id = id.split(' ')[0];
 		output[id] = tooltip.trim();
 	}
 });

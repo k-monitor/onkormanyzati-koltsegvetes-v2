@@ -38,12 +38,13 @@ A beüzemelés lépései:
 A vizualizáció az alábbi adatfájlokból dolgozik:
 
 - **input/budget.xlsx** - A vizualizáció adatainak forrása.
+- **input/milestones.xlsx** - A fejlesztések adatai.
 - **input/tags.xlsx** - A kereső által használt címkehalmazok.
 - **input/tooltips.xlsx** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei.
 - **src/data/config.js** - A weboldal beállításai, szövegei.
 - **src/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
 - **src/data/functions.tsv** - A funkcionális kategóriák fa struktúrája.
-- **src/data/milestones.json** - A fejlesztések leírásai.
+- **src/data/milestones.json (generált)** - A fejlesztések leírásai, előkészítve.
 - **src/data/tags.json (generált)** - A kereső által használt címkehalmazok, előkészítve.
 - **src/data/tooltips.json (generált)** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei, előkészítve.
 
@@ -84,6 +85,33 @@ Az ilyen munkalapokról hiányzik a funkcionális bontás. A formátum hasonló 
 
 
 
+### input/milestones.xlsx
+
+A fejlesztések szakaszban az összes adott évre vonatkozó fejlesztés listázódik. Emellett lehetőség van az egyes költségvetési kategóriákhoz pontosan egy fejlesztést rendelni.
+
+Ezeket az adatokat 2 táblával lehet leírni. A program a `milestones.xlsx` fájlt olvassa, annak első munkalapjáról a fejlesztések adatait, második munkalapjáról pedig a költségvetési kategóriák és fejlesztések kapcsolatait.
+
+Első munkalap formátuma:
+
+- az 1. sor opcionálisan lehet fejléc
+- további sorok:
+	- 1. oszlop a fejlesztés azonosítója: bármi lehet, de egyedi értékeknek kell lenniük, mert ezt fogjuk használni a második munkalapon
+	- 2. oszlop az évszám
+	- 3. oszlop a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
+	- 4. oszlop a fejlesztés megnevezése, minél rövidebb, annál jobb
+	- 5. oszlop a fejlesztés rövid leírása
+
+Második munkalap formátuma:
+
+- az 1. sor opcionálisan lehet fejléc
+- további sorok:
+	- 1. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
+	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
+	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál ajánlott a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
+	- 4. oszlop a fejlesztés azonosítója (ld. első munkalap 1. oszlopa)
+
+
+
 ### input/tags.xlsx
 
 A kereső funkciónak 4 címkehalmazra van szüksége:
@@ -99,7 +127,7 @@ Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell mega
 - további sorok:
 	- 1. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
 	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
-	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál ajánlott a `B123` vagy `aK123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
+	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál ajánlott a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
 	- 4. oszlop tartalmazza a címkéket: vesszővel, és opcionálisan még szóközzel is elválasztott kifejezések
 
 
@@ -130,31 +158,6 @@ Ha az utóbbi oszlopba olyan érték kerül, amihez nem tartozik sor, akkor az a
 107014	Támogatott lakhatás hajléktalan személyek részére	1070
 900070	Fejezeti és általános tartalékok elszámolása	9000
 ...
-```
-
-
-
-### src/data/milestones.json
-
-A *Fejlesztések* szakasz tartalmát definiálja.
-
-Formátuma JSON: egy tömb, az alábbi mezőkből álló objektumokból:
-
-- `picture`: a képfájl elérési útvonala
-- `title`: fejléc
-- `description`: szövegtörzs
-- `text`: további szövegmező, mely jelenleg a szövegtörzs alatt jelenik meg
-
-```json
-[
-	{
-		"picture": "/assets/img/milestone/0_2019.jpg",
-		"title": "Ülésezik Mintaváros képviselő-testülete",
-		"description": "A közel 12 ezer lakosú Mintaváros önkormányzata ...",
-		"text": "Mintaváros idei költségvetése"
-	},
-	...
-]
 ```
 
 
@@ -199,6 +202,50 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 
 
 
+### src/data/milestones.json (generált)
+
+Ezt a fájlt a `milestones.xlsx` tartalmából generálja a `prepare-milestones.js` szkript. Ez a fájl tartalmazza a *Fejlesztések* szakasz tartalmát.
+
+Formátuma JSON, struktúra:
+
+```json
+{
+	"milestones": {
+		"milestone_id": {
+			"year": 2018,
+			"picture": "...",
+			"title": "...",
+			"description": "..."
+		},
+		...
+	},
+	"rels": {
+		"2018": {
+			"expense": {
+				"econ": { "K123": "fejl-1", ... },
+				"func": { ... }
+			},
+			"income": {
+				"econ": { ... },
+				"func": { ... }
+			}
+		},
+		...
+	}
+}
+```
+
+A `milestones` objektumban a kulcsok a fejlesztés azonosítók, az érték pedig egy objektum az alábbi mezőkkel:
+
+- `year`: évszám (amelyikhez a fejlesztés tartozik)
+- `picture`: a képfájl elérési útvonala
+- `title`: fejléc
+- `description`: leírás
+
+A `rels` objektum évekre, oldalakra (bevétel/kiadás) és bontásokra (funkcionális/közgazdasági) tartalmazza a kategóriákhoz tartozó fejlesztéseket. A bontásokhoz tartozó objektumban a kulcsok a kategória azonosítók, az értékek a fejlesztés azonosítók.
+
+
+
 ### src/data/tags.json (generált)
 
 Ezt a fájlt a `tags.xlsx` tartalmából generálja a `prepare-tags.js` szkript. Ez a fájl tartalmazza a 4 címkehalmazt a 2 költségvetési oldalhoz és 2 bontáshoz.
@@ -222,7 +269,7 @@ Formátuma hasonló struktúrát követ, mint a `data.json`, csak itt nincsenek 
 
 ### src/data/tooltips.json (generált)
 
-A kategóriákhoz tartozó tooltip-ek szövegeit tartalmazza.
+Ezt a fájlt a `tooltips.xlsx` tartalmából generálja a `prepare-tooltips.js` szkript. Ez a fájl tartalmazza a kategóriákhoz tartozó tooltip-ek szövegeit.
 
 Formátuma JSON: egyetlen objektum, benne kulcs érték párok, ahol a kulcs a kategória alternatív azonosítója (`B1`, `B2`, `K1`, `K2`, stb.), az érték pedig a tooltip szövege.
 
