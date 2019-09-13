@@ -14,7 +14,5 @@ module.exports = function (api, options) {
 }
 ```
 
-- create 'master-tapio' branch with actual xlsx file
-
 - fix icon spaces differ
 - make images static + use g-image

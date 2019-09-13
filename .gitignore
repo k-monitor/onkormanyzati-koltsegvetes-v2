@@ -13,9 +13,6 @@ dist
 # Custom .gitignore
 # -----------------
 
-# Input data:
-input/budget.xlsx
-
 # Generated data:
 src/data/2*
 src/data/data.json
