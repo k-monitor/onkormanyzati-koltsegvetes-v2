@@ -1,5 +1,6 @@
 <template>
-	<div class="milestone d-flex align-items-end" :style="{ backgroundImage: 'url(' + milestone.picture + ')' }">
+	<div class="milestone d-flex align-items-end">
+		<div class="milestone-picture" :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"></div>
 		<h5 class="milestone-title text-center text-white w-100">{{ milestone.title }}</h5>
 		<!--<img
 		 :src="milestone.picture"
@@ -21,12 +22,21 @@ export default {
 
 <style lang="scss">
 .milestone {
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
 	cursor: pointer;
-	filter: brightness(0.8);
 	transition: all .2s ease;
+
+	.milestone-picture {
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		filter: brightness(0.8);
+		height: 100%;
+		position: absolute;
+		top: 0;
+		transition: all .2s ease;
+		width: 100%;
+		z-index: -1;
+	}
 
 	.milestone-title {
 		// https://cssgradient.io/
@@ -44,10 +54,12 @@ export default {
 	}
 
 	&:hover {
-		filter: none;
+		.milestone-picture {
+			filter: none;
+		}
 
 		.milestone-title {
-			padding: 1rem 0;
+			padding-bottom: 1rem;
 		}
 	}
 }
