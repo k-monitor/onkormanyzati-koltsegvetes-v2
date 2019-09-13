@@ -10,7 +10,7 @@
 			<div class="row">
 				<div
 					class="col-md-6 col-lg-4 p-3 milestone-col"
-					v-for="(m, i) in $milestones"
+					v-for="(m, i) in $milestones.milestones"
 					:key="i"
 				>
 					<Milestone :milestone="m" />
