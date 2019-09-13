@@ -1,7 +1,7 @@
 - prepare data:
 	- work from functions.json, remove functions.tsv
 	- do not generate intermediate JSONs, build data bundle on-the-fly
-	- convert milestones too (tags and tooltips can be fixed)
+	- convert milestones too
 	- remove from package.json scripts
 	- adjust README
 	- convert it to module and call it in beforeBuild (gridsome.server.js):

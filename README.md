@@ -39,12 +39,13 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 
 - **input/budget.xlsx** - A vizualizáció adatainak forrása.
 - **input/tags.xlsx** - A kereső által használt címkehalmazok.
+- **input/tooltips.xlsx** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei.
 - **src/data/config.js** - A weboldal beállításai, szövegei.
-- **src/data/data.json (generált)** - A vizualizáció adatai előkészítve.
+- **src/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
 - **src/data/functions.tsv** - A funkcionális kategóriák fa struktúrája.
 - **src/data/milestones.json** - A fejlesztések leírásai.
-- **src/data/tags.json (generált)** - A kereső által használt címkehalmazok előkészítve.
-- **src/data/tooltips.json** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei.
+- **src/data/tags.json (generált)** - A kereső által használt címkehalmazok, előkészítve.
+- **src/data/tooltips.json (generált)** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei, előkészítve.
 
 
 
@@ -65,7 +66,7 @@ Az ilyen munkalapokon megtalálható a mátrix, vagyis nem csak közgazdasági b
 - 3. sortól kezdve:
 	- 1. oszlop: közgazdasági kategória azonosítószáma, legalább kétjegyű, pl.: `01`
 	- 2. oszlop: közgazdasági kategória elnevezése és kiegészítő információi.
-		- A cellák végén `(B123)` vagy `(K123)` formában alternatív azonosító szerepelhet, de ezt a program nem használja.
+		- A cellák végén `(B123)` vagy `(K123)` formában alternatív azonosító szerepelhet, ezt a program pl. a tooltip-eknél használja.
 		- Az elnevezés után opcionálisan szerepelhet egy formula, mely azt mondja meg, hogy az adott sor mely más kategóriákat összegzi. Ennek a formulának zárójelben kell lennie és szóközzel kell elválasztani az elnevezéstől. A formula csak számokat és `+` jelet tartalmazhat. A nyitó zárójel után opcionálisan szerepelhet valamennyi `=` vagy `>` karakter. Intervallum jelölésére használható `.` vagy `…`, 2 `+` jel között.
 		- Példa: *"Működési célú támogatások államháztartáson belülről (=07+...+10+21+32) (B1)"*
 	- 3. oszlop: az adott közgazdasági kategóriához tartozó összeg
@@ -98,8 +99,21 @@ Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell mega
 - további sorok:
 	- 1. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
 	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
-	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál ajánlott a `B123/K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
+	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál ajánlott a `B123` vagy `aK123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
 	- 4. oszlop tartalmazza a címkéket: vesszővel, és opcionálisan még szóközzel is elválasztott kifejezések
+
+
+
+### input/tooltips.xlsx
+
+Az egyes kategóriákhoz tartozó tooltip-ek szövegét a `tooltips.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell megadni, az alábbi szerkezetben:
+
+- az 1. sor opcionálisan lehet fejléc
+- további sorok:
+	- 1. oszlop a kategória azonosító:
+		- funkcionális kategória esetén egy természetes szám
+		- közgazdasági kategória esetén a `B123` vagy `K123` alakú azonosítót kell használni
+	- 2. oszlop pedig a tooltip szövege
 
 
 
@@ -141,24 +155,6 @@ Formátuma JSON: egy tömb, az alábbi mezőkből álló objektumokból:
 	},
 	...
 ]
-```
-
-
-
-### src/data/tooltips.json
-
-A kategóriákhoz tartozó tooltip-ek szövegeit tartalmazza.
-
-Formátuma JSON: egyetlen objektum, benne kulcs érték párok, ahol a kulcs a kategória alternatív azonosítója (`B1`, `B2`, `K1`, `K2`, stb.), az érték pedig a tooltip szövege.
-
-Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog megjelenni a tooltip.
-
-```json
-{
-	"B1": "Lorem ipsum for B1",
-	"B2": "Lorem ipsum for B2",
-	...
-}
 ```
 
 
@@ -219,6 +215,24 @@ Formátuma hasonló struktúrát követ, mint a `data.json`, csak itt nincsenek 
 		"econ": [ ... ],
 		"func": [ ... ]
 	}
+}
+```
+
+
+
+### src/data/tooltips.json (generált)
+
+A kategóriákhoz tartozó tooltip-ek szövegeit tartalmazza.
+
+Formátuma JSON: egyetlen objektum, benne kulcs érték párok, ahol a kulcs a kategória alternatív azonosítója (`B1`, `B2`, `K1`, `K2`, stb.), az érték pedig a tooltip szövege.
+
+Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog megjelenni a tooltip.
+
+```json
+{
+	"B1": "Lorem ipsum for B1",
+	"B2": "Lorem ipsum for B2",
+	...
 }
 ```
 
