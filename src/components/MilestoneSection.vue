@@ -9,60 +9,13 @@
 			</div>
 			<div class="row">
 				<div
-					class="col-md-6 col-lg-4 p-3 milestone-col"
+					class="col-md-6 col-lg-4 embed-responsive embed-responsive-16by9"
 					v-for="(m, i) in $milestones.milestones"
 					:key="i"
 				>
-					<Milestone :milestone="m" />
+					<Milestone class="embed-responsive-item" :milestone="m" />
 				</div>
 			</div>
 		</div>
 	</section>
 </template>
-
-<style lang="scss">
-@import "../scss/variables";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
-
-.milestones .card-columns {
-	column-count: 1;
-
-	@include media-breakpoint-up(sm) {
-		column-count: 2;
-	}
-	@include media-breakpoint-up(lg) {
-		column-count: 3;
-	}
-	/*@include media-breakpoint-up(xl) {
-		column-count: 4;
-	}*/
-}
-
-.milestones .milestone-col {
-	background-color: $primary;
-	$ac: darken($primary, 10%);
-	color: white;
-	@include media-breakpoint-only(md) {
-		&:nth-child(4n-2),
-		&:nth-child(4n-1) {
-			background-color: $ac;
-			//color: white;
-		}
-	}
-	@include media-breakpoint-up(lg) {
-		&:nth-child(even) {
-			background-color: $ac;
-			//color: white;
-		}
-	}
-
-	.card {
-		background-color: rgba(255, 255, 255, 0.1);
-		border: none;
-		height: 100%;
-	}
-}
-</style>
-
