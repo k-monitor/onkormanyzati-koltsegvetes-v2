@@ -29,6 +29,7 @@
 				title="Kiadások"
 			/>
 			<MilestoneSection
+				:year="year"
 				class="pb-0"
 				id="milestones"
 				v-if="$config.modules.milestones"
