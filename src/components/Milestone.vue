@@ -29,6 +29,7 @@
 							>
 						</div>
 						<div class="bg-dark p-3">
+							<p class="lead text-white">{{ milestone.title }}</p>
 							<p class="m-0 text-justify text-white-75">{{ milestone.description }}</p>
 						</div>
 					</div>
