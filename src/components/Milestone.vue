@@ -1,29 +1,58 @@
 <template>
-	<div class="milestone d-flex align-items-end">
-		<div class="milestone-picture" :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"></div>
+	<div
+	 class="milestone d-flex align-items-end"
+	 data-toggle="modal"
+	 :data-target="'#' + modalId"
+	>
+		<div
+		 class="milestone-picture"
+		 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+		></div>
 		<h5 class="milestone-title text-center text-white w-100">{{ milestone.title }}</h5>
-		<!--<img
-		 :src="milestone.picture"
-		 class="card-img-top"
-		 alt="..."
+		<div
+		 class="modal fade"
+		 :id="modalId"
+		 tabindex="-1"
+		 role="dialog"
 		>
-		<div class="card-body">
-			<h5 class="card-title">{{ milestone.title }}</h5>
-			<p class="card-text small">{{ milestone.description }}</p>
-		</div>-->
+			<div
+			 class="modal-dialog modal-dialog-centered modal-xl"
+			 role="document"
+			>
+				<div class="modal-content">
+					<div class="modal-body p-0">
+						<div class="text-center">
+							<img
+							 :src="milestone.picture"
+							 alt=""
+							 style="width: 100%; max-width: 100%"
+							>
+						</div>
+						<div class="bg-dark p-3">
+							<p class="m-0 text-justify text-white-75">{{ milestone.description }}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
 <script>
 export default {
-	props: ['milestone']
-}
+	props: ["milestone"],
+	computed: {
+		modalId() {
+			return "milestone-modal-" + this.milestone.id;
+		}
+	}
+};
 </script>
 
 <style lang="scss">
 .milestone {
 	cursor: pointer;
-	transition: all .2s ease;
+	transition: all 0.2s ease;
 
 	.milestone-picture {
 		background-position: center;
@@ -33,7 +62,7 @@ export default {
 		height: 100%;
 		position: absolute;
 		top: 0;
-		transition: all .2s ease;
+		transition: all 0.2s ease;
 		width: 100%;
 		z-index: -1;
 	}
@@ -42,15 +71,19 @@ export default {
 		// https://cssgradient.io/
 		$shadow: black;
 		background: $shadow;
-		background: -moz-linear-gradient(0deg, $shadow 0%, rgba(0,0,0,0) 100%);
-		background: -webkit-linear-gradient(0deg, $shadow 0%, rgba(0,0,0,0) 100%);
-		background: linear-gradient(0deg, $shadow 0%, rgba(0,0,0,0) 100%);
+		background: -moz-linear-gradient(0deg, $shadow 0%, rgba(0, 0, 0, 0) 100%);
+		background: -webkit-linear-gradient(
+			0deg,
+			$shadow 0%,
+			rgba(0, 0, 0, 0) 100%
+		);
+		background: linear-gradient(0deg, $shadow 0%, rgba(0, 0, 0, 0) 100%);
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#000000",GradientType=1);
 
 		margin: 0;
-		padding: .5rem 0;
+		padding: 0.5rem 0;
 		text-shadow: 0px 0px 5px black;
-		transition: all .2s ease;
+		transition: all 0.2s ease;
 	}
 
 	&:hover {
