@@ -317,7 +317,9 @@ const modules = {
 - Az `inex` a *Mérleg* szakaszt, a nyitóábrát jelenti. Automatikusan kikapcsol, ha az `income` ki van kapcsolva.
 - A `milestones` a *Fejlesztések* szakaszt jelenti.
 
-A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani. Itt lehet módosítani a színeket is.
+A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani (ajánlott a `config.js`-ben az `ogImage`-et is erre a képre állítani). Itt lehet módosítani a színeket is.
+
+A lábléc logói a `static/assets/img` mappában találhatóak és a `src/components/Footer.vue` fájl hivatkozza őket.
 
 
 

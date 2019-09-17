@@ -25,7 +25,7 @@
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
 								 id="face"
-								 src="http://mintavaros.deepdata.hu/assets/img/face.png"
+								 src="assets/img/face.png"
 								 alt=""
 								 style="height: 100px;"
 								>
@@ -33,7 +33,7 @@
 							<div class="flex-grow-1 ml-5">
 								<img
 								 class="signo"
-								 src="http://mintavaros.deepdata.hu/assets/img/signo.png"
+								 src="assets/img/signo.png"
 								>
 								<p class="mb-0">
 									<em>

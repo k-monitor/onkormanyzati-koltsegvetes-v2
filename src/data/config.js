@@ -15,10 +15,10 @@ const seo = {
 	siteName: `${city}`,
 	pageTitle: 'Költségvetés',
 	description: `${city} költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.`,
-	ogImage: 'http://mintavaros.deepdata.hu/assets/img/milestone/func/1_2019.jpg',
+	ogImage: 'https://picsum.photos/id/122/2048/1536',
 	ogImageType: 'image/png',
-	ogImageHeight: 531,
-	ogImageWidth: 800
+	ogImageHeight: 1536,
+	ogImageWidth: 2048
 };
 
 const navBar = {

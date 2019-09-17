@@ -11,7 +11,7 @@
 						href="#page-top"
 					>
 						<img
-							src="http://mintavaros.deepdata.hu/assets/img/mintavaros-square-logo.png"
+							src="assets/img/logo.png"
 							alt=""
 						>
 					</a>
@@ -24,21 +24,21 @@
 						href="http://www.kfib.hu/"
 						target="_blank"
 					><img
-							src="http://mintavaros.deepdata.hu/assets/img/kfib-logo.png"
+							src="assets/img/kfib-logo.png"
 							alt=""
 						></a>
 					<a
 						href="https://k-monitor.hu/"
 						target="_blank"
 					><img
-							src="http://mintavaros.deepdata.hu/assets/img/k-monitor-logo.png"
+							src="assets/img/k-monitor-logo.png"
 							alt=""
 						></a>
 					<a
 						href="https://www.deepdata.hu/"
 						target="_blank"
 					><img
-							src="http://mintavaros.deepdata.hu/assets/img/deepdata-logo.png"
+							src="assets/img/deepdata-logo.png"
 							alt=""
 						></a>
 				</div>
