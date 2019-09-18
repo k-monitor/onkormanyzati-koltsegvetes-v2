@@ -12,7 +12,7 @@
 			</div>
 			<div class="row">
 				<div
-					class="col-md-6 col-lg-4 embed-responsive embed-responsive-16by9"
+					class="col-md-6 col-lg-4 embed-responsive embed-responsive-16by9 mx-auto"
 					v-for="(m, i) in milestones"
 					:key="m.id"
 				>

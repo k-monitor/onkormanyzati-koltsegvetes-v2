@@ -16,19 +16,18 @@
 		 role="dialog"
 		>
 			<div
-			 class="modal-dialog modal-dialog-centered modal-xl"
+			 class="modal-dialog modal-dialog-centered modal-lg"
 			 role="document"
 			>
-				<div class="modal-content">
+				<div class="modal-content bg-dark">
 					<div class="modal-body p-0">
-						<div class="text-center">
-							<img
-							 :src="milestone.picture"
-							 alt=""
-							 style="width: 100%; max-width: 100%"
-							>
+						<div class="embed-responsive embed-responsive-16by9">
+							<div
+							 class="embed-responsive-item milestone-modal-picture"
+							 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+							></div>
 						</div>
-						<div class="bg-dark p-3">
+						<div class="m-3">
 							<p class="lead text-white">{{ milestone.title }}</p>
 							<p class="m-0 text-justify text-white-75">{{ milestone.description }}</p>
 						</div>
@@ -55,10 +54,14 @@ export default {
 	cursor: pointer;
 	transition: all 0.2s ease;
 
-	.milestone-picture {
+	.milestone-picture,
+	.milestone-modal-picture {
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
+	}
+
+	.milestone-picture {
 		filter: brightness(0.8);
 		height: 100%;
 		position: absolute;
