@@ -330,7 +330,7 @@ export default {
 
 		self.$eventBus.$on("jump", target => {
 			if (target.side == self.side) {
-				self.mode = target.side == "econ" ? 0 : 1;
+				self.mode = target.type == "econ" ? 0 : 1;
 				self.path = [];
 				(target.path || []).forEach(id => {
 					for (let i = 0; i < self.children.length; i++) {
