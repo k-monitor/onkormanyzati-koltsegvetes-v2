@@ -59,6 +59,7 @@
 								class="bar"
 								v-for="(n,i) in incomeChildren"
 								:data-id="n.id"
+								:data-altid="n.altId"
 								:data-index="i"
 								:key="year + '/' + i"
 								:style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }"
@@ -83,6 +84,7 @@
 								class="bar"
 								v-for="(n,i) in expenseChildren"
 								:data-id="n.id"
+								:data-altid="n.altId"
 								:data-index="i"
 								:key="year + '/' + i"
 								:style="{ backgroundColor: bgColor(expenseTree, n, 'firebrick'), color: fgColor(expenseTree, n, 'firebrick'), flexGrow: n.value }"
@@ -147,9 +149,10 @@ export default {
 			return this.data.expense.econ;
 		},
 		incomeChildren: function() {
+			const customOrder = ['B1', 'B3', 'B4', 'B6', 'B2', 'B5', 'B7'];
 			return this.incomeTree.children
 				.sort(function(a, b) {
-					return a.altId.localeCompare(b.altId);
+					return customOrder.indexOf(a.altId) - customOrder.indexOf(b.altId);
 				})
 				.filter(function(n) {
 					return n.name.indexOf("Finanszírozási") == -1;
