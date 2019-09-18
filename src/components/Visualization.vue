@@ -8,19 +8,6 @@
 				<ul class="justify-content-center mb-5 nav nav-pills w-100">
 					<li class="nav-item">
 						<a
-						 :class="{ active: mode == 0 }"
-						 :title="$config.vis.econHint"
-						 @click="path = []; mode = 0"
-						 class="nav-link"
-						 data-placement="bottom"
-						 data-toggle="tooltip"
-						 href="javascript:void(0)"
-						>
-							{{ $config.vis.econ }}
-						</a>
-					</li>
-					<li class="nav-item">
-						<a
 						 :class="{ active: mode == 1 }"
 						 :title="$config.vis.funcHint"
 						 @click="path = []; mode = 1"
@@ -30,6 +17,19 @@
 						 href="javascript:void(0)"
 						>
 							{{ $config.vis.func }}
+						</a>
+					</li>
+					<li class="nav-item">
+						<a
+						 :class="{ active: mode == 0 }"
+						 :title="$config.vis.econHint"
+						 @click="path = []; mode = 0"
+						 class="nav-link"
+						 data-placement="bottom"
+						 data-toggle="tooltip"
+						 href="javascript:void(0)"
+						>
+							{{ $config.vis.econ }}
 						</a>
 					</li>
 				</ul>
@@ -111,7 +111,7 @@
 				>
 					<span @click="down(i)">{{ n.name }}</span>
 					<span
-					 class="btn btn-link ml-auto"
+					 class="btn btn-link milestone-button ml-auto"
 					 data-toggle="modal"
 					 :data-target="'#' + milestoneId(n)"
 					 v-if="$config.modules.milestones && milestoneId(n)"
@@ -316,6 +316,8 @@ export default {
 		}
 	},
 	mounted: function() {
+		if (this.data.func) this.mode = 1;
+
 		this.regenerateTooltips();
 		const self = this;
 		self.updateCurves();

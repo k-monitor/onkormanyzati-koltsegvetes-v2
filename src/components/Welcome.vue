@@ -66,6 +66,7 @@ export default {
 	methods: {
 		intro() {
 			$("#mainNav").css("position", "absolute");
+			$('.milestone-button').addClass('disabled');
 			const intro = introJs()
 				.setOption("doneLabel", "Kilépés")
 				.setOption("nextLabel", "Tovább")
@@ -88,6 +89,7 @@ export default {
 				})
 				.onexit(function() {
 					$("#mainNav").css("position", "fixed");
+					$('.milestone-button').removeClass('disabled');
 				});
 
 			const steps = [];
@@ -119,6 +121,17 @@ export default {
 					"A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.",
 				position: "right"
 			});
+
+			const mb = $(".milestone-button");
+			if (config.modules.milestones && mb.length > 0) {
+				steps.push({
+					element: ".milestone-button",
+					intro:
+						"Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.",
+					position: "left"
+				});
+			}
+
 			steps.push({
 				element: el + " ol.breadcrumb",
 				intro:
