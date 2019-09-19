@@ -52,10 +52,6 @@
 					<div class="d-flex border-top border-bottom mb-4 vis">
 						<div class="d-flex flex-column left-column">
 							<div
-							 v-if="incomeCorrection > 0"
-							 :style="{ flexGrow: incomeCorrection }"
-							></div>
-							<div
 							 class="bar"
 							 :class="{ small: isNodeSmall(n, incomeTree) }"
 							 v-for="(n,i) in incomeChildren"
@@ -66,7 +62,7 @@
 							 data-toggle="tooltip"
 							 data-placement="left"
 							 data-html="true"
-							 :title="(isNodeSmall(n, incomeTree) ? '<b>' + n.name + '(' + $util.groupNums(n.value, true) + ')</b>: ' : '') + $tooltips[n.altId]"
+							 :title="(isNodeSmall(n, incomeTree) ? '<b>' + n.name + '(' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.altId] || '')"
 							>
 								<div class="text-left wrap-md">
 									{{ n.name }}
@@ -81,21 +77,17 @@
 						</div>
 						<div class="d-flex flex-column right-column">
 							<div
-							 v-if="expenseCorrection > 0"
-							 :style="{ flexGrow: expenseCorrection }"
-							></div>
-							<div
 							 class="bar"
 							 :class="{ small: isNodeSmall(n, expenseTree) }"
-							 v-for="(n,i) in expenseChildren"
+							 v-for="(n,i) in grayNodes.concat(expenseChildren)"
 							 :data-id="n.id"
 							 :data-index="i"
 							 :key="year + '/' + i"
-							 :style="{ backgroundColor: bgColor(n, false), color: fgColor(n, false), flexGrow: n.value }"
+							 :style="{ backgroundColor: bgColor(n, false), color: fgColor(n, false), flexGrow: Math.abs(n.value) }"
 							 data-toggle="tooltip"
 							 data-placement="right"
 							 data-html="true"
-							 :title="(isNodeSmall(n, expenseTree) ? '<b>' + n.name + '(' + $util.groupNums(n.value, true) + ')</b>: ' : '') + $tooltips[n.altId]"
+							 :title="(isNodeSmall(n, expenseTree) ? '<b>' + n.name + '(' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.altId] || '')"
 							>
 								<div class="mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
@@ -143,9 +135,6 @@ export default {
 					return n;
 				});
 		},
-		expenseCorrection: function() {
-			return Math.max(0, this.incomeSum - this.expenseSum);
-		},
 		expenseSum: function() {
 			return this.expenseChildren
 				.map(function(node) {
@@ -157,6 +146,23 @@ export default {
 		},
 		expenseTree: function() {
 			return this.data.expense.econ;
+		},
+		grayNodes: function() {
+			const re = {
+				id: 're',
+				altId: 're',
+				gray: true,
+				name: 'Alaptevékenység szabad maradványa',
+				value: this.data.income.econ.value - this.data.expense.econ.value
+			};
+			const fb = {
+				id: 'fb',
+				altId: 'fb',
+				gray: true,
+				name: 'Alaptevékenység finanszírozási egyenlege',
+				value: re.value - (this.incomeSum - this.expenseSum)
+			}
+			return [fb, re];
 		},
 		incomeChildren: function() {
 			const customOrder = ["B1", "B3", "B4", "B6", "B2", "B5", "B7"];
@@ -173,9 +179,6 @@ export default {
 					return n;
 				});
 		},
-		incomeCorrection: function() {
-			return Math.max(0, this.expenseSum - this.incomeSum);
-		},
 		incomeSum: function() {
 			return this.incomeChildren
 				.map(function(node) {
@@ -191,7 +194,7 @@ export default {
 	},
 	methods: {
 		bgColor: function(node, isIncome) {
-			var color = isIncome ? "aquamarine" : "coral";
+			var color = node.gray ? 'gainsboro' : (isIncome ? "aquamarine" : "coral");
 			return tinycolor(color).spin(node.mukodesi ? 0 : 180);
 		},
 		fgColor: function(node, isIncome) {

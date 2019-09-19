@@ -25,8 +25,8 @@ import tooltips from '~/data/tooltips.json';
 export default function (Vue, { router, head, isClient }) {
 	Vue.component('Layout', DefaultLayout);
 	Vue.component('NavBar', NavBar);
-	Vue.component('SearchModal',SearchModal);
-	Vue.component('SearchModalContent',SearchModalContent);
+	Vue.component('SearchModal', SearchModal);
+	Vue.component('SearchModalContent', SearchModalContent);
 	Vue.component('MastHead', MastHead);
 	Vue.component('Welcome', Welcome);
 	Vue.component('Inex', Inex);
@@ -51,13 +51,15 @@ export default function (Vue, { router, head, isClient }) {
 			var s = ['', 'e', 'M', 'Mrd'];
 			var i = 0;
 			v = Number(v);
+			var neg = v < 0;
+			v = Math.abs(v);
 			while (ns && i < s.length && v > 1000) {
 				v /= 1000;
 				i++;
 			}
 			v = Math.round(v);
 			var vs = (v + '').replace(/\d(?=(?:\d{3})+(?:\.|$))/g, function ($0, i) { return $0 + ' ' });
-			return (vs + ' ' + s[i] + ' Ft').trim();
+			return (neg ? '-' : '') + (vs + ' ' + s[i] + ' Ft').trim();
 		}
 	};
 
