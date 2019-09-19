@@ -61,7 +61,7 @@
 							 :data-id="n.id"
 							 :data-index="i"
 							 :key="year + '/' + i"
-							 :style="{ backgroundColor: bgColor(incomeTree, n, 'seagreen'), color: fgColor(incomeTree, n, 'seagreen'), flexGrow: n.value }"
+							 :style="{ backgroundColor: bgColor(n, true), color: fgColor(n, true), flexGrow: n.value }"
 							 data-toggle="tooltip"
 							 data-placement="left"
 							 :title="$tooltips[n.altId]"
@@ -85,7 +85,7 @@
 							 :data-id="n.id"
 							 :data-index="i"
 							 :key="year + '/' + i"
-							 :style="{ backgroundColor: bgColor(expenseTree, n, 'firebrick'), color: fgColor(expenseTree, n, 'firebrick'), flexGrow: n.value }"
+							 :style="{ backgroundColor: bgColor(n, false), color: fgColor(n, false), flexGrow: n.value }"
 							 data-toggle="tooltip"
 							 data-placement="right"
 							 :title="$tooltips[n.altId]"
@@ -183,24 +183,12 @@ export default {
 		}
 	},
 	methods: {
-		bgColor: function(tree, node, color) {
-			//darkseagreen, indianred
-			var max = tree.children
-				.map(function(n) {
-					return n.value;
-				})
-				.reduce(function(m, v) {
-					return Math.max(m, v);
-				});
-			var alpha = (node.value / max) * 0.75 + 0.25;
-			return tinycolor(color)
-				.setAlpha(alpha)
-				.darken(node.mukodesi ? 0 : 15)
-				.spin(node.mukodesi ? 0 : 30)
-				.toRgbString();
+		bgColor: function(node, isIncome) {
+			var color = isIncome ? 'aquamarine' : 'coral';
+			return tinycolor(color).spin(node.mukodesi ? 0 : 180);
 		},
-		fgColor: function(tree, node, color) {
-			var color = tinycolor(this.bgColor(tree, node, color));
+		fgColor: function(node, isIncome) {
+			var color = tinycolor(this.bgColor(node, isIncome));
 			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
 		},
 		regenerateTooltips() {
