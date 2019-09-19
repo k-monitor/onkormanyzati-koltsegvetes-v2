@@ -76,7 +76,10 @@
 								</div>
 							</div>
 						</div>
-						<div class="d-flex flex-column ml-auto right-column">
+						<div class="d-flex flex-grow-1 align-items-center justify-content-center">
+							<i class="fas fa-arrow-right fa-4x text-muted"></i>
+						</div>
+						<div class="d-flex flex-column right-column">
 							<div
 							 v-if="expenseCorrection > 0"
 							 :style="{ flexGrow: expenseCorrection }"
@@ -243,7 +246,7 @@ export default {
 
 	.left-column,
 	.right-column {
-		width: 47.5%;
+		width: 45%;
 	}
 
 	.no-wrap {
