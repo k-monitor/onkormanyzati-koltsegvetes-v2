@@ -57,6 +57,7 @@
 							></div>
 							<div
 							 class="bar"
+							 :class="{ small: isNodeSmall(n, incomeTree) }"
 							 v-for="(n,i) in incomeChildren"
 							 :data-id="n.id"
 							 :data-index="i"
@@ -64,7 +65,8 @@
 							 :style="{ backgroundColor: bgColor(n, true), color: fgColor(n, true), flexGrow: n.value }"
 							 data-toggle="tooltip"
 							 data-placement="left"
-							 :title="$tooltips[n.altId]"
+							 data-html="true"
+							 :title="(isNodeSmall(n, incomeTree) ? '<b>' + n.name + '(' + $util.groupNums(n.value, true) + ')</b>: ' : '') + $tooltips[n.altId]"
 							>
 								<div class="text-left wrap-md">
 									{{ n.name }}
@@ -81,6 +83,7 @@
 							></div>
 							<div
 							 class="bar"
+							 :class="{ small: isNodeSmall(n, expenseTree) }"
 							 v-for="(n,i) in expenseChildren"
 							 :data-id="n.id"
 							 :data-index="i"
@@ -88,7 +91,8 @@
 							 :style="{ backgroundColor: bgColor(n, false), color: fgColor(n, false), flexGrow: n.value }"
 							 data-toggle="tooltip"
 							 data-placement="right"
-							 :title="$tooltips[n.altId]"
+							 data-html="true"
+							 :title="(isNodeSmall(n, expenseTree) ? '<b>' + n.name + '(' + $util.groupNums(n.value, true) + ')</b>: ' : '') + $tooltips[n.altId]"
 							>
 								<div class="mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
@@ -184,12 +188,22 @@ export default {
 	},
 	methods: {
 		bgColor: function(node, isIncome) {
-			var color = isIncome ? 'aquamarine' : 'coral';
+			var color = isIncome ? "aquamarine" : "coral";
 			return tinycolor(color).spin(node.mukodesi ? 0 : 180);
 		},
 		fgColor: function(node, isIncome) {
 			var color = tinycolor(this.bgColor(node, isIncome));
 			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
+		},
+		isNodeSmall: function(node, tree) {
+			var max = tree.children
+				.map(function(n) {
+					return n.value;
+				})
+				.reduce(function(m, v) {
+					return Math.max(m, v);
+				});
+			return node.value < max * 0.1;
 		},
 		regenerateTooltips() {
 			$('[data-toggle="tooltip"]').tooltip();
@@ -216,8 +230,15 @@ export default {
 		display: flex;
 		flex: 1;
 		justify-content: space-between;
-		margin-bottom: 1px;
+		border-bottom: 1px solid white;
 		padding: 0.1rem 0.5rem;
+
+		&.small {
+			padding: 0.33rem 0.5rem;
+			div {
+				display: none;
+			}
+		}
 	}
 
 	.left-column,
