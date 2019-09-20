@@ -110,14 +110,37 @@ export default {
 </script>
 
 
-<style>
+<style lang="scss">
+@import "../scss/variables";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
 #sharingbuttons {
+	bottom: 0;
 	display: flex;
-	flex-direction: column;
-	height: 100vh;
+	width: 100%;
 	justify-content: center;
 	position: fixed;
-	top: 0;
+	left: 0;
+
+	a {
+		flex-grow: 1;
+		text-align: center;
+	}
+}
+
+@include media-breakpoint-up(md) {
+	#sharingbuttons {
+		flex-direction: column;
+		height: 100vh;
+		top: 0;
+		width: auto;
+
+		a {
+			flex-grow: unset;
+		}
+	}
 }
 
 .resp-sharing-button__link,
@@ -128,14 +151,18 @@ export default {
 .resp-sharing-button__link {
 	text-decoration: none;
 	color: #fff;
-	/*margin: 0.5em;*/
 }
 
 .resp-sharing-button {
-	/*border-radius: 5px;*/
 	transition: 25ms ease-out;
-	padding: 0.5em 0.75em;
+	padding: 0.25em 0.5em;
 	font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+}
+
+@include media-breakpoint-up(md) {
+	.resp-sharing-button {
+		padding: 0.5em 0.75em;
+	}
 }
 
 .resp-sharing-button__icon svg {
