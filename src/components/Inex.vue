@@ -150,15 +150,15 @@ export default {
 		},
 		grayNodes: function() {
 			const re = {
-				id: 're',
-				altId: 're',
+				id: 'RE',
+				altId: 'RE',
 				gray: true,
 				name: 'Alaptevékenység szabad maradványa',
 				value: this.data.income.econ.value - this.data.expense.econ.value
 			};
 			const fb = {
-				id: 'fb',
-				altId: 'fb',
+				id: 'FB',
+				altId: 'FB',
 				gray: true,
 				name: 'Alaptevékenység finanszírozási egyenlege',
 				value: re.value - (this.incomeSum - this.expenseSum)
