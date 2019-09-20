@@ -126,7 +126,7 @@
 import tinycolor from "tinycolor2";
 
 export default {
-	props: ["id", "year", "side"], // side is "expense" or "income"
+	props: ["defaultMode", "id", "year", "side"], // side is "expense" or "income"
 	data() {
 		return {
 			curves: [],
@@ -316,7 +316,7 @@ export default {
 		}
 	},
 	mounted: function() {
-		if (this.data.func) this.mode = 1;
+		if (this.data.func && this.defaultMode == 1) this.mode = 1;
 
 		this.regenerateTooltips();
 		const self = this;

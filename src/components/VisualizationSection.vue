@@ -13,6 +13,7 @@
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
 					<Visualization
+						:defaultMode="side == 'expense' ? 1 : 0"
 						:id="side + '-vis'"
 						:year="year"
 						:side="side"
