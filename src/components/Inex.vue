@@ -50,6 +50,7 @@
 						</div>
 					</div>
 					<div class="d-flex border-top border-bottom mb-4 vis">
+						<div class="bg-success side"></div>
 						<div class="d-flex flex-column left-column">
 							<div
 							 class="bar"
@@ -98,6 +99,7 @@
 								</div>
 							</div>
 						</div>
+						<div class="bg-danger side"></div>
 					</div>
 				</div>
 			</div>
@@ -195,8 +197,8 @@ export default {
 	},
 	methods: {
 		bgColor: function(node, isIncome) {
-			var color = node.gray ? 'gainsboro' : (isIncome ? "aquamarine" : "coral");
-			return tinycolor(color).spin(node.mukodesi ? 0 : 180);
+			if (node.gray) return tinycolor('gainsboro');
+			return tinycolor('seagreen').spin((node.mukodesi ? 1 : 2) * 71).desaturate(30).brighten(35);
 		},
 		fgColor: function(node, isIncome) {
 			var color = tinycolor(this.bgColor(node, isIncome));
@@ -255,6 +257,10 @@ export default {
 
 	.no-wrap {
 		white-space: nowrap;
+	}
+
+	.side {
+		width: .5rem;
 	}
 
 	.vis {
