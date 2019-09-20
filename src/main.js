@@ -13,6 +13,7 @@ import FeedbackSection from '~/components/FeedbackSection';
 import Footer from '~/components/Footer';
 import Social from '~/components/Social';
 import FeedbackModal from '~/components/FeedbackModal';
+import MoreInfoModal from '~/components/MoreInfoModal';
 
 import config from '~/data/config.js';
 import data from '~/data/data.json';
@@ -38,6 +39,7 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('Footer', Footer);
 	Vue.component('Social', Social);
 	Vue.component('FeedbackModal', FeedbackModal);
+	Vue.component('MoreInfoModal', MoreInfoModal);
 
 	Vue.prototype.$config = config;
 	Vue.prototype.$d = data;

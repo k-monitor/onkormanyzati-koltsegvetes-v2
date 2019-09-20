@@ -1,94 +1,102 @@
 <template>
 	<nav
-	 class="navbar navbar-expand-lg navbar-light fixed-top py-3"
-	 id="mainNav"
+		class="navbar navbar-expand-lg navbar-light fixed-top py-3"
+		id="mainNav"
 	>
 		<div class="container">
 			<a
-			 class="navbar-brand js-scroll-trigger"
-			 href="#page-top"
+				class="navbar-brand js-scroll-trigger"
+				href="#page-top"
 			>{{ $config.city }}</a>
 			<button
-			 class="navbar-toggler navbar-toggler-right"
-			 type="button"
-			 data-toggle="collapse"
-			 data-target="#navbarResponsive"
-			 aria-controls="navbarResponsive"
-			 aria-expanded="false"
-			 aria-label="Toggle navigation"
+				class="navbar-toggler navbar-toggler-right"
+				type="button"
+				data-toggle="collapse"
+				data-target="#navbarResponsive"
+				aria-controls="navbarResponsive"
+				aria-expanded="false"
+				aria-label="Toggle navigation"
 			>
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div
-			 class="collapse navbar-collapse"
-			 id="navbarResponsive"
+				class="collapse navbar-collapse"
+				id="navbarResponsive"
 			>
 				<ul class="navbar-nav ml-auto my-2 my-lg-0">
 					<li class="nav-item">
 						<a
-						 href="javascript:void(0)"
-						 class="nav-link"
-						 data-toggle="modal"
-						 data-target="#search-modal"
+							href="javascript:void(0)"
+							class="nav-link"
+							data-toggle="modal"
+							data-target="#search-modal"
 						>
 							<i class="fas fa-search"></i>
 						</a>
 					</li>
 					<li class="nav-item">
 						<a
-						 href="#welcome"
-						 class="nav-link js-scroll-trigger"
+							href="#welcome"
+							class="nav-link js-scroll-trigger"
 						>{{ $config.navBar.welcome }}</a>
 					</li>
 					<li class="nav-item">
 						<a
-						 :href="'#' + ($config.modules.inex ? 'inex' : ($config.modules.income ? 'income' : 'expense'))"
-						 class="nav-link js-scroll-trigger"
+							:href="'#' + ($config.modules.inex ? 'inex' : ($config.modules.income ? 'income' : 'expense'))"
+							class="nav-link js-scroll-trigger"
 						>{{ $config.navBar.inex }}</a>
 					</li>
 					<li
-					 class="nav-item"
-					 v-if="$config.modules.milestones"
+						class="nav-item"
+						v-if="$config.modules.milestones"
 					>
 						<a
-						 href="#milestones"
-						 class="nav-link js-scroll-trigger"
+							href="#milestones"
+							class="nav-link js-scroll-trigger"
 						>{{ $config.navBar.milestones }}</a>
 					</li>
 					<li
-					 class="nav-item dropdown highlight"
-					 v-if="years.length > 1"
+						class="nav-item dropdown highlight"
+						v-if="years.length > 1"
 					>
 						<a
-						 class="nav-link dropdown-toggle"
-						 href="#"
-						 id="navbarDropdown"
-						 role="button"
-						 data-toggle="dropdown"
-						 aria-haspopup="true"
-						 aria-expanded="false"
+							class="nav-link dropdown-toggle"
+							href="#"
+							id="navbarDropdown"
+							role="button"
+							data-toggle="dropdown"
+							aria-haspopup="true"
+							aria-expanded="false"
 						>
 							<span class="mr-1">{{ year }}</span>
 						</a>
 						<div
-						 class="dropdown-menu dropdown-menu-right"
-						 aria-labelledby="navbarDropdown"
+							class="dropdown-menu dropdown-menu-right"
+							aria-labelledby="navbarDropdown"
 						>
 							<a
-							 class="dropdown-item"
-							 v-for="y in years"
-							 :key="y"
-							 href="javascript:void(0)"
-							 @click="$emit('yearSelected', y)"
+								class="dropdown-item"
+								v-for="y in years"
+								:key="y"
+								href="javascript:void(0)"
+								@click="$emit('yearSelected', y)"
 							>{{ y }}</a>
 						</div>
 					</li>
 					<li class="nav-item">
 						<a
-						 class="nav-link"
-						 data-target="#feedbackModal"
-						 data-toggle="modal"
-						 href="javascript:void(0)"
+							href="javascript:void(0)"
+							class="nav-link"
+							data-toggle="modal"
+							data-target="#moreInfoModal"
+						>{{ $config.navBar.moreInfo }}</a>
+					</li>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							data-target="#feedbackModal"
+							data-toggle="modal"
+							href="javascript:void(0)"
 						>
 							<i class="far fa-comment-dots"></i>
 						</a>

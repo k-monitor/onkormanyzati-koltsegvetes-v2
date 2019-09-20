@@ -40,6 +40,7 @@
 		<Footer />
 		<Social />
 		<FeedbackModal />
+		<MoreInfoModal />
 	</div>
 </template>
 

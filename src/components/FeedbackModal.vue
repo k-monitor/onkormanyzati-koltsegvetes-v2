@@ -8,7 +8,7 @@
 	 tabindex="-1"
 	>
 		<div
-		 class="modal-dialog"
+		 class="modal-dialog modal-dialog-centered"
 		 role="document"
 		>
 			<div class="modal-content">
@@ -23,7 +23,9 @@
 					 data-dismiss="modal"
 					 type="button"
 					>
-						<span aria-hidden="true">&times;</span>
+						<span aria-hidden="true">
+							<i class="far fa-times-circle"></i>
+						</span>
 					</button>
 				</div>
 				<div class="modal-body">
