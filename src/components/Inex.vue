@@ -73,7 +73,8 @@
 							</div>
 						</div>
 						<div class="d-flex flex-grow-1 align-items-center justify-content-center">
-							<i class="fas fa-arrow-right fa-4x text-muted"></i>
+							<i class="d-block d-md-none fas fa-arrow-right fa-2x text-muted"></i>
+							<i class="d-none d-md-block fas fa-arrow-right fa-4x text-muted"></i>
 						</div>
 						<div class="d-flex flex-column right-column">
 							<div
