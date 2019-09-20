@@ -21,6 +21,10 @@ const seo = {
 	ogImageWidth: 2048
 };
 
+const social = {
+	text: `${city} költségvetése`
+};
+
 const navBar = {
 	welcome: 'Köszöntő',
 	inex: 'Költségvetés',
@@ -97,6 +101,7 @@ module.exports = {
 	navBar,
 	search,
 	seo,
+	social,
 	url,
 	vis,
 	welcome

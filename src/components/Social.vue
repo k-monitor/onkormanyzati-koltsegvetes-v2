@@ -96,12 +96,12 @@ export default {
 		return {
 			fb: `https://facebook.com/sharer/sharer.php?u=${this.$config.url}`,
 			tw: `https://twitter.com/intent/tweet/?text=${
-				this.$config.header.title
+				this.$config.social.text
 			}&url=${this.$config.url}`,
 			li: `https://www.linkedin.com/shareArticle?mini=true&url=${
 				this.$config.url
-			}&title=${this.$config.header.title}&summary=&source=${this.$config.url}`,
-			ml: `mailto:?subject=${this.$config.header.title}&body=${
+			}&title=${this.$config.social.text}&summary=&source=${this.$config.url}`,
+			ml: `mailto:?subject=${this.$config.social.text}&body=${
 				this.$config.url
 			}`
 		};
