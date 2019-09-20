@@ -147,6 +147,7 @@ export default {
 	methods: {
 		jump(result) {
 			$("#search-modal").modal("hide");
+			if ($('#mainNav .show').length > 0) $('#mainNav button').click();
 			$("html, body").animate(
 				{
 					scrollTop: $("#" + result.side).offset().top - 72
