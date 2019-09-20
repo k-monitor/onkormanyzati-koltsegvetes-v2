@@ -209,7 +209,7 @@ export default {
 				.reduce(function(m, v) {
 					return Math.max(m, v);
 				});
-			return node.value < max * 0.1;
+			return Math.abs(node.value) < max * 0.1;
 		},
 		regenerateTooltips() {
 			$('[data-toggle="tooltip"]').tooltip();
