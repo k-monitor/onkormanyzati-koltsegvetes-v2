@@ -11,29 +11,29 @@
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
 						<p
-						 v-for="(p, i) in $config.welcome.leftParagraphs"
-						 :key="i"
+							v-for="(p, i) in $config.welcome.leftParagraphs"
+							:key="i"
 						>{{ p }}</p>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
 						<p
-						 v-for="(p, i) in $config.welcome.rightParagraphs"
-						 :key="i"
+							v-for="(p, i) in $config.welcome.rightParagraphs"
+							:key="i"
 						>{{ p }}</p>
 						<p class="my-5">{{ $config.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
-								 id="face"
-								 src="assets/img/face.png"
-								 alt=""
-								 style="height: 100px;"
+									id="face"
+									src="assets/img/face.png"
+									alt=""
+									style="height: 100px;"
 								>
 							</div>
 							<div class="flex-grow-1 ml-5">
 								<img
-								 class="signo"
-								 src="assets/img/signo.png"
+									class="signo"
+									src="assets/img/signo.png"
 								>
 								<p class="mb-0">
 									<em>
@@ -49,8 +49,8 @@
 				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
 						<div
-						 class="btn btn-outline-light btn-xl js-scroll-trigger"
-						 @click="intro()"
+							class="btn btn-outline-light btn-xl js-scroll-trigger"
+							@click="intro()"
 						>Kipróbálom!</div>
 					</div>
 				</div>
@@ -66,7 +66,7 @@ export default {
 	methods: {
 		intro() {
 			$("#mainNav").css("position", "absolute");
-			$('.milestone-button').addClass('disabled');
+			$(".milestone-button").addClass("disabled");
 			const intro = introJs()
 				.setOption("doneLabel", "Kilépés")
 				.setOption("nextLabel", "Tovább")
@@ -89,7 +89,7 @@ export default {
 				})
 				.onexit(function() {
 					$("#mainNav").css("position", "fixed");
-					$('.milestone-button').removeClass('disabled');
+					$(".milestone-button").removeClass("disabled");
 				});
 
 			const steps = [];
@@ -152,6 +152,15 @@ export default {
 					"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
 				position: "bottom"
 			});
+
+			if (config.modules.milestones) {
+				steps.push({
+					element: "#milestones h2",
+					intro:
+						"A Fejlesztések szakaszban a kiválasztott évhez kapcsolódó összes fejlesztés megtekinthető fotóval és rövid leírással.",
+					position: "bottom"
+				});
+			}
 
 			steps.push({
 				element: "#face",
