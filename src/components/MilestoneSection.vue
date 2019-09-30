@@ -16,7 +16,12 @@
 					v-for="(m, i) in milestones"
 					:key="m.id"
 				>
-					<Milestone class="embed-responsive-item" :milestone="m"  />
+					<Milestone
+						class="embed-responsive-item"
+						:milestone="m"
+						:nextId="milestones[(i + 1) % milestones.length].id"
+						:prevId="milestones[(milestones.length + i - 1) % milestones.length].id"
+					/>
 				</div>
 			</div>
 		</div>
@@ -28,13 +33,15 @@ export default {
 	props: ["year"],
 	computed: {
 		milestones() {
-			return Object.entries(this.$milestones.milestones).filter(e => {
-				return e[1].year == this.year;
-			}).map(e => {
-				const m = e[1];
-				m.id = e[0];
-				return m;
-			});
+			return Object.entries(this.$milestones.milestones)
+				.filter(e => {
+					return e[1].year == this.year;
+				})
+				.map(e => {
+					const m = e[1];
+					m.id = e[0];
+					return m;
+				});
 		}
 	}
 };
