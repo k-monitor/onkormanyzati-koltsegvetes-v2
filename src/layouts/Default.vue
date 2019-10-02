@@ -76,7 +76,7 @@ export default {
 			},
 			{
 				property: "og:title",
-				content: config.seo.pageTitle
+				content: config.seo.ogTitle
 			},
 			{
 				name: "description",
