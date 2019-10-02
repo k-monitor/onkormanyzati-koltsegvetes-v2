@@ -12,15 +12,15 @@
 			</div>
 			<div class="row">
 				<div
-					class="col-md-6 col-lg-4 embed-responsive embed-responsive-16by9 mx-auto"
-					v-for="(m, i) in milestones"
-					:key="m.id"
+				 class="col-md-6 col-lg-4 embed-responsive embed-responsive-16by9 mx-auto"
+				 v-for="(m, i) in milestones"
+				 :key="m.id"
 				>
 					<Milestone
-						class="embed-responsive-item"
-						:milestone="m"
-						:nextId="milestones[(i + 1) % milestones.length].id"
-						:prevId="milestones[(milestones.length + i - 1) % milestones.length].id"
+					 class="embed-responsive-item"
+					 :milestone="m"
+					 :nextId="milestones[(i + 1) % milestones.length].id"
+					 :prevId="milestones[(milestones.length + i - 1) % milestones.length].id"
 					/>
 				</div>
 			</div>
@@ -43,6 +43,16 @@ export default {
 					return m;
 				});
 		}
+	},
+	mounted() {
+		document.onkeyup = function(e) {
+			e = e || window.event;
+			if (e.keyCode == "37") {
+				$(".modal.show .prev").click();
+			} else if (e.keyCode == "39") {
+				$(".modal.show .next").click();
+			}
+		};
 	}
 };
 </script>
