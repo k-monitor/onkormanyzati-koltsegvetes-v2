@@ -27,21 +27,21 @@
 								:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 							>
 								<div
-									class="pl-3 w-25 d-flex flex-column justify-content-center"
+									class="pl-3 w-25 d-flex flex-column justify-content-center prev"
 									data-toggle="modal"
 									:data-target="'#' + modalId(prevId)"
 								>
 									<div>
-										<i class="fas fa-2x fa-angle-left text-white"></i>
+										<i class="fas fa-angle-left text-white"></i>
 									</div>
 								</div>
 								<div
-									class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center"
+									class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center next"
 									data-toggle="modal"
 									:data-target="'#' + modalId(nextId)"
 								>
 									<div class="text-right">
-										<i class="fas fa-2x fa-angle-right text-white"></i>
+										<i class="fas fa-angle-right text-white"></i>
 									</div>
 								</div>
 							</div>
@@ -69,6 +69,11 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../scss/variables";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
 .milestone {
 	cursor: pointer;
 	transition: all 0.2s ease;
@@ -111,6 +116,17 @@ export default {
 
 	.milestone-modal-picture i {
 		text-shadow: 0px 0px 5px black;
+
+		font-size: 2.5rem;
+		@include media-breakpoint-up(sm) {
+			font-size: 3rem;
+		}
+		@include media-breakpoint-up(md) {
+			font-size: 3.5rem;
+		}
+		@include media-breakpoint-up(lg) {
+			font-size: 4rem;
+		}
 	}
 
 	&:hover {
