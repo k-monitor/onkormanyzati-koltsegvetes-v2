@@ -209,6 +209,15 @@ export default {
 			];
 
 			var color = colors[this.colorIndex(node)];
+
+			if (
+				node.name.includes("Finanszírozási") ||
+				(this.path.length > 0 &&
+					this.root.children[this.path[0]].name.includes("Finanszírozási"))
+			) {
+				color = "gainsboro";
+			}
+
 			if (this.path.length > 0) {
 				var opacity = node.value / this.node.children[0].value;
 				opacity = 0.5 + opacity * 0.5;
