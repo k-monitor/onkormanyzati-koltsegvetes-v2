@@ -22,7 +22,7 @@ const seo = {
 };
 
 const social = {
-	text: `${city} költségvetése`
+	text: `[${city.toUpperCase()}] KÖLTSÉGVETÉSE`
 };
 
 const navBar = {
