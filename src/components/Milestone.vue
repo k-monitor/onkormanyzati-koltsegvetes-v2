@@ -1,14 +1,16 @@
 <template>
-	<div
-	 class="milestone d-flex align-items-end"
-	 data-toggle="modal"
-	 :data-target="'#' + modalId(milestone.id)"
-	>
+	<div class="d-flex">
 		<div
-		 class="milestone-picture"
-		 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
-		></div>
-		<h5 class="milestone-title text-center text-white w-100">{{ milestone.title }}</h5>
+		 class="milestone d-flex align-items-end w-100"
+		 data-toggle="modal"
+		 :data-target="'#' + modalId(milestone.id)"
+		>
+			<div
+			 class="milestone-picture"
+			 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+			></div>
+			<h5 class="milestone-title text-center text-white w-100">{{ milestone.title }}</h5>
+		</div>
 		<div
 		 class="modal fade"
 		 :id="modalId(milestone.id)"
@@ -28,8 +30,7 @@
 							>
 								<div
 								 class="pl-3 w-25 d-flex flex-column justify-content-center prev"
-								 data-toggle="modal"
-								 :data-target="'#' + modalId(prevId)"
+								 @click="prev()"
 								>
 									<div>
 										<i class="fas fa-angle-left text-white"></i>
@@ -37,8 +38,7 @@
 								</div>
 								<div
 								 class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center next"
-								 data-toggle="modal"
-								 :data-target="'#' + modalId(nextId)"
+								 @click="next()"
 								>
 									<div class="text-right">
 										<i class="fas fa-angle-right text-white"></i>
@@ -65,6 +65,14 @@ export default {
 	methods: {
 		modalId(milestoneId) {
 			return "milestone-modal-" + milestoneId;
+		},
+		prev() {
+			$(".modal").modal("hide");
+			$("#" + this.modalId(this.prevId)).modal("show");
+		},
+		next() {
+			$(".modal").modal("hide");
+			$("#" + this.modalId(this.nextId)).modal("show");
 		}
 	}
 };
@@ -77,16 +85,16 @@ export default {
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
+.milestone-picture,
+.milestone-modal-picture {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
 .milestone {
 	cursor: pointer;
 	transition: all 0.2s ease;
-
-	.milestone-picture,
-	.milestone-modal-picture {
-		background-position: center;
-		background-repeat: no-repeat;
-		background-size: cover;
-	}
 
 	.milestone-picture {
 		filter: brightness(0.8);
@@ -117,21 +125,6 @@ export default {
 		transition: all 0.2s ease;
 	}
 
-	.milestone-modal-picture i {
-		text-shadow: 0px 0px 5px black;
-
-		font-size: 2.5rem;
-		@include media-breakpoint-up(sm) {
-			font-size: 3rem;
-		}
-		@include media-breakpoint-up(md) {
-			font-size: 3.5rem;
-		}
-		@include media-breakpoint-up(lg) {
-			font-size: 4rem;
-		}
-	}
-
 	&:hover {
 		.milestone-picture {
 			filter: none;
@@ -140,6 +133,22 @@ export default {
 		.milestone-title {
 			padding-bottom: 1rem;
 		}
+	}
+}
+
+.milestone-modal-picture i {
+	cursor: pointer;
+	text-shadow: 0px 0px 5px black;
+
+	font-size: 2.5rem;
+	@include media-breakpoint-up(sm) {
+		font-size: 3rem;
+	}
+	@include media-breakpoint-up(md) {
+		font-size: 3.5rem;
+	}
+	@include media-breakpoint-up(lg) {
+		font-size: 4rem;
 	}
 }
 </style>
