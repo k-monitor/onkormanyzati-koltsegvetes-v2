@@ -105,7 +105,7 @@
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
-					<p>{{ $config.inex.text }}</p>
+					<VueMarkdown :source="$config.inex.text" />
 				</div>
 			</div>
 		</div>

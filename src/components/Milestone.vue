@@ -1,44 +1,44 @@
 <template>
 	<div
-		class="milestone d-flex align-items-end"
-		data-toggle="modal"
-		:data-target="'#' + modalId(milestone.id)"
+	 class="milestone d-flex align-items-end"
+	 data-toggle="modal"
+	 :data-target="'#' + modalId(milestone.id)"
 	>
 		<div
-			class="milestone-picture"
-			:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+		 class="milestone-picture"
+		 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 		></div>
 		<h5 class="milestone-title text-center text-white w-100">{{ milestone.title }}</h5>
 		<div
-			class="modal fade"
-			:id="modalId(milestone.id)"
-			tabindex="-1"
-			role="dialog"
+		 class="modal fade"
+		 :id="modalId(milestone.id)"
+		 tabindex="-1"
+		 role="dialog"
 		>
 			<div
-				class="modal-dialog modal-dialog-centered modal-lg"
-				role="document"
+			 class="modal-dialog modal-dialog-centered modal-lg"
+			 role="document"
 			>
 				<div class="modal-content bg-dark">
 					<div class="modal-body p-0">
 						<div class="embed-responsive embed-responsive-16by9">
 							<div
-								class="embed-responsive-item milestone-modal-picture d-flex"
-								:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+							 class="embed-responsive-item milestone-modal-picture d-flex"
+							 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 							>
 								<div
-									class="pl-3 w-25 d-flex flex-column justify-content-center prev"
-									data-toggle="modal"
-									:data-target="'#' + modalId(prevId)"
+								 class="pl-3 w-25 d-flex flex-column justify-content-center prev"
+								 data-toggle="modal"
+								 :data-target="'#' + modalId(prevId)"
 								>
 									<div>
 										<i class="fas fa-angle-left text-white"></i>
 									</div>
 								</div>
 								<div
-									class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center next"
-									data-toggle="modal"
-									:data-target="'#' + modalId(nextId)"
+								 class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center next"
+								 data-toggle="modal"
+								 :data-target="'#' + modalId(nextId)"
 								>
 									<div class="text-right">
 										<i class="fas fa-angle-right text-white"></i>
@@ -48,7 +48,9 @@
 						</div>
 						<div class="m-3">
 							<p class="lead text-white">{{ milestone.title }}</p>
-							<p class="m-0 text-justify text-white-75">{{ milestone.description }}</p>
+							<div class="m-0 text-justify text-white-75">
+								<VueMarkdown :source="milestone.description" />
+							</div>
 						</div>
 					</div>
 				</div>
@@ -70,6 +72,7 @@ export default {
 
 <style lang="scss">
 @import "../scss/variables";
+@import "../scss/common";
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";

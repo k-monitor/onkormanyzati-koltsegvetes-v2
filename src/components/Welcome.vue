@@ -10,30 +10,24 @@
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
-						<p
-							v-for="(p, i) in $config.welcome.leftParagraphs"
-							:key="i"
-						>{{ p }}</p>
+						<VueMarkdown :source="$config.welcome.leftBlock" />
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
-						<p
-							v-for="(p, i) in $config.welcome.rightParagraphs"
-							:key="i"
-						>{{ p }}</p>
+						<VueMarkdown :source="$config.welcome.rightBlock" />
 						<p class="my-5">{{ $config.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
-									id="face"
-									src="assets/img/face.png"
-									alt=""
-									style="height: 100px;"
+								 id="face"
+								 src="assets/img/face.png"
+								 alt=""
+								 style="height: 100px;"
 								>
 							</div>
 							<div class="flex-grow-1 ml-5">
 								<img
-									class="signo"
-									src="assets/img/signo.png"
+								 class="signo"
+								 src="assets/img/signo.png"
 								>
 								<p class="mb-0">
 									<em>
@@ -49,8 +43,8 @@
 				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
 						<div
-							class="btn btn-outline-light btn-xl js-scroll-trigger"
-							@click="intro()"
+						 class="btn btn-outline-light btn-xl js-scroll-trigger"
+						 @click="intro()"
 						>Kipróbálom!</div>
 					</div>
 				</div>
@@ -175,6 +169,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../scss/common";
 @import "../scss/introjs-modern";
 
 .signo {

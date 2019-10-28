@@ -29,11 +29,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<p
-					 class="text-justify"
-					 v-for="(p, i) in $config.moreInfo.paragraphs"
-					 :key="i"
-					>{{ p }}</p>
+					<VueMarkdown :source="$config.moreInfo.text" />
 				</div>
 				<div class="modal-footer text-right">
 					<a
