@@ -28,13 +28,13 @@
 							 class="embed-responsive-item milestone-modal-picture d-flex flex-column text-white"
 							 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 							>
-								<div class="text-right w-100 small">
+								<div class="text-right w-100 small z1">
 									<i
 									 class="far fa-times-circle fa-2x m-2"
 									 data-dismiss="modal"
 									></i>
 								</div>
-								<div class="d-flex flex-grow-1 w-100">
+								<div class="d-flex flex-grow-1 w-100 z1">
 									<div
 									 class="pl-3 w-25 d-flex flex-column justify-content-center prev"
 									 @click="prev()"
@@ -164,6 +164,10 @@ export default {
 				font-size: 4rem;
 			}
 		}
+	}
+
+	.z1 {
+		z-index: 1;
 	}
 }
 </style>
