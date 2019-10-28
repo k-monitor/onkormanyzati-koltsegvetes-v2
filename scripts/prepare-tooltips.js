@@ -6,7 +6,6 @@ const OUTPUT_FILE = './src/data/tooltips.json';
 
 const workbook = xlsx.readFile(INPUT_FILE);
 const sheetName = workbook.SheetNames[0];
-const sheet = workbook.Sheets[sheetName];
 const tsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 
 const output = {};

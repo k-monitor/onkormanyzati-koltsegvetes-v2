@@ -9,7 +9,6 @@ const workbook = xlsx.readFile(INPUT_FILE);
 
 function getSheetAsTsv(workbook, index) {
 	const sheetName = workbook.SheetNames[index];
-	const sheet = workbook.Sheets[sheetName];
 	return tsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 }
 
