@@ -25,23 +25,31 @@
 					<div class="modal-body p-0">
 						<div class="embed-responsive embed-responsive-16by9">
 							<div
-							 class="embed-responsive-item milestone-modal-picture d-flex"
+							 class="embed-responsive-item milestone-modal-picture d-flex flex-column text-white"
 							 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 							>
-								<div
-								 class="pl-3 w-25 d-flex flex-column justify-content-center prev"
-								 @click="prev()"
-								>
-									<div>
-										<i class="fas fa-angle-left text-white"></i>
-									</div>
+								<div class="text-right w-100 small">
+									<i
+									 class="far fa-times-circle fa-2x m-2"
+									 data-dismiss="modal"
+									></i>
 								</div>
-								<div
-								 class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center next"
-								 @click="next()"
-								>
-									<div class="text-right">
-										<i class="fas fa-angle-right text-white"></i>
+								<div class="d-flex flex-grow-1 w-100">
+									<div
+									 class="pl-3 w-25 d-flex flex-column justify-content-center prev"
+									 @click="prev()"
+									>
+										<div>
+											<i class="fas fa-angle-left"></i>
+										</div>
+									</div>
+									<div
+									 class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center next"
+									 @click="next()"
+									>
+										<div class="text-right">
+											<i class="fas fa-angle-right"></i>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -139,16 +147,23 @@ export default {
 .milestone-modal-picture i {
 	cursor: pointer;
 	text-shadow: 0px 0px 5px black;
+}
 
-	font-size: 2.5rem;
-	@include media-breakpoint-up(sm) {
-		font-size: 3rem;
-	}
-	@include media-breakpoint-up(md) {
-		font-size: 3.5rem;
-	}
-	@include media-breakpoint-up(lg) {
-		font-size: 4rem;
+.milestone-modal-picture {
+	.next,
+	.prev {
+		i {
+			font-size: 2.5rem;
+			@include media-breakpoint-up(sm) {
+				font-size: 3rem;
+			}
+			@include media-breakpoint-up(md) {
+				font-size: 3.5rem;
+			}
+			@include media-breakpoint-up(lg) {
+				font-size: 4rem;
+			}
+		}
 	}
 }
 </style>
