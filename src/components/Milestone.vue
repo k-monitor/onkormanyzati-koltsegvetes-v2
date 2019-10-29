@@ -1,51 +1,70 @@
 <template>
 	<div class="d-flex">
 		<div
-		 class="milestone d-flex align-items-end w-100"
-		 data-toggle="modal"
-		 :data-target="'#' + modalId(milestone.id)"
+			class="milestone d-flex align-items-end w-100"
+			data-toggle="modal"
+			:data-target="'#' + modalId(milestone.id)"
 		>
 			<div
-			 class="milestone-picture"
-			 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+				class="milestone-picture"
+				:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 			></div>
 			<h5 class="milestone-title text-center text-white w-100">{{ milestone.title }}</h5>
 		</div>
 		<div
-		 class="modal fade"
-		 :id="modalId(milestone.id)"
-		 tabindex="-1"
-		 role="dialog"
+			class="modal fade"
+			:id="modalId(milestone.id)"
+			tabindex="-1"
+			role="dialog"
 		>
 			<div
-			 class="modal-dialog modal-dialog-centered modal-lg"
-			 role="document"
+				class="modal-dialog modal-dialog-centered modal-lg"
+				role="document"
 			>
 				<div class="modal-content bg-dark">
 					<div class="modal-body p-0">
 						<div class="embed-responsive embed-responsive-16by9">
 							<div
-							 class="embed-responsive-item milestone-modal-picture d-flex flex-column text-white"
-							 :style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+								class="embed-responsive-item milestone-modal-picture d-flex flex-column text-white"
+								:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 							>
+								<div
+									class="h-100 position-absolute w-100"
+									v-if="milestone.vid && playing"
+								>
+									<video
+										:id="videoId"
+										:src="milestone.vid"
+										autoplay
+										class="h-100 w-100"
+										loop
+									></video>
+								</div>
 								<div class="text-right w-100 small z1">
 									<i
-									 class="far fa-times-circle fa-2x m-2"
-									 data-dismiss="modal"
+										class="far fa-times-circle fa-2x m-2"
+										data-dismiss="modal"
 									></i>
 								</div>
 								<div class="d-flex flex-grow-1 w-100 z1">
 									<div
-									 class="pl-3 w-25 d-flex flex-column justify-content-center prev"
-									 @click="prev()"
+										class="pl-3 w-25 d-flex flex-column justify-content-center prev"
+										@click="prev()"
 									>
 										<div>
 											<i class="fas fa-angle-left"></i>
 										</div>
 									</div>
+									<div class="d-flex flex-grow-1 play">
+										<i
+											@click="play()"
+											class="fas fa-play m-auto"
+											v-if="milestone.vid && !playing"
+										></i>
+									</div>
 									<div
-									 class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center next"
-									 @click="next()"
+										class="ml-auto pr-3 w-25 d-flex flex-column justify-content-center next"
+										@click="next()"
 									>
 										<div class="text-right">
 											<i class="fas fa-angle-right"></i>
@@ -70,9 +89,22 @@
 <script>
 export default {
 	props: ["milestone", "nextId", "prevId"],
+	data() {
+		return {
+			playing: false
+		};
+	},
+	computed: {
+		videoId() {
+			return this.modalId(this.milestone.id) + "-vid";
+		}
+	},
 	methods: {
 		modalId(milestoneId) {
 			return "milestone-modal-" + milestoneId;
+		},
+		play() {
+			this.playing = true;
 		},
 		prev() {
 			$(".modal").modal("hide");
@@ -82,6 +114,12 @@ export default {
 			$(".modal").modal("hide");
 			$("#" + this.modalId(this.nextId)).modal("show");
 		}
+	},
+	mounted() {
+		const self = this;
+		$("#" + this.modalId(this.milestone.id)).on("hide.bs.modal", function(e) {
+			self.playing = false;
+		});
 	}
 };
 </script>
@@ -151,7 +189,8 @@ export default {
 
 .milestone-modal-picture {
 	.next,
-	.prev {
+	.prev,
+	.play {
 		i {
 			font-size: 2.5rem;
 			@include media-breakpoint-up(sm) {

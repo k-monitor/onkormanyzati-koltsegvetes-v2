@@ -31,7 +31,7 @@ A beüzemelés lépései:
 - **input/** - Ebbe a mappába ajánlott helyezni az önkormányzati XLSX fájlt.
 - **scripts/** - Ebben a mappába segédszkriptek vannak.
 - **src/** - A weboldal forrásfájljai.
-- **static/** - A weboldal statikus fájljai, amik a build folyamat során érintetlenül át lesznek másolva a kimeneti mappába.
+- **static/** - A weboldal statikus fájljai, amik a build folyamat során érintetlenül át lesznek másolva a kimeneti mappába. Ezen belül lehet elhelyezni a képeket és videókat.
 
 
 
@@ -102,6 +102,7 @@ Első munkalap formátuma:
 	- 3. oszlop a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
 	- 4. oszlop a fejlesztés megnevezése, minél rövidebb, annál jobb
 	- 5. oszlop a fejlesztés rövid leírása
+	- 6. oszlop a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
 
 Második munkalap formátuma:
 
@@ -217,7 +218,8 @@ Formátuma JSON, struktúra:
 			"year": 2018,
 			"picture": "...",
 			"title": "...",
-			"description": "..."
+			"description": "...",
+			"vid": "..."
 		},
 		...
 	},
@@ -317,9 +319,9 @@ const modules = {
 - Az `inex` a *Mérleg* szakaszt, a nyitóábrát jelenti. Automatikusan kikapcsol, ha az `income` ki van kapcsolva.
 - A `milestones` a *Fejlesztések* szakaszt jelenti.
 
-A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani (ajánlott a `config.js`-ben az `ogImage`-et is erre a képre állítani). Itt lehet módosítani a színeket is.
+A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani (ajánlott a `config.js`-ben az `ogImage`-et is erre a képre állítani). A képfájlt az `src/`-n belül kell elhelyezni, NEM a `static/` mappában. Itt lehet módosítani a színeket is.
 
-A lábléc logói a `static/assets/img` mappában találhatóak és a `src/components/Footer.vue` fájl hivatkozza őket.
+A lábléc logói, valamint a fejlesztések képei és videói a `static/assets/` mappában találhatóak.
 
 
 

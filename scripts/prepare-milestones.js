@@ -18,11 +18,11 @@ const output = {
 };
 
 getSheetAsTsv(workbook, 0).split('\n').forEach(row => {
-	let [id, year, picture, title, description] = row.split('\t');
+	let [id, year, picture, title, description, vid] = row.split('\t');
 	if (id && year && picture && title && description && year.match(/\d{4}/)) {
 		id = id.trim();
 		picture = picture.trim();
-		output.milestones[id] = { year, picture, title, description };
+		output.milestones[id] = { year, picture, title, description, vid };
 	}
 });
 
