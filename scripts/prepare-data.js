@@ -124,8 +124,8 @@ function generateEconomicTree(matrixTsv) {
  * @returns {{dir: string, econFile: string, funcFile: string}} Directory name and filenames for economical and functional trees, based on worksheet name
  */
 function generateFilenames(sheetName) {
-	let [year, name] = sheetName.split(' ');
-	name = name.replace('BEVÉTEL', 'income').replace('KIADÁS', 'expense');
+	let [year, name] = sheetName.split(/[ _]/);
+	name = name.toUpperCase().replace(/BEV[EÉ]TEL/, 'income').replace(/KIAD[AÁ]S/, 'expense');
 	const dir = `src/data/${year}`;
 	const econFile = `${dir}/${name}-econ.json`;
 	const funcFile = `${dir}/${name}-func.json`;
@@ -214,7 +214,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
  * @returns {boolean} Whether the sheet name is valid for processing
  */
 function isSheetNameValid(sheetName) {
-	return sheetName.match(/^\d{4} (BEVÉTEL|KIADÁS)$/);
+	return sheetName.toUpperCase().match(/^\d{4}[ _](BEV[EÉ]TEL|KIAD[AÁ]S)$/);
 }
 
 /**
