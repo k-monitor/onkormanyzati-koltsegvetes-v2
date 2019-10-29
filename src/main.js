@@ -10,6 +10,7 @@ import Inex from '~/components/Inex.vue';
 import Visualization from '~/components/Visualization';
 import VisualizationSection from '~/components/VisualizationSection';
 import Milestone from '~/components/Milestone';
+import MilestoneModalContent from '~/components/MilestoneModalContent';
 import MilestoneSection from '~/components/MilestoneSection';
 import FeedbackSection from '~/components/FeedbackSection';
 import Footer from '~/components/Footer';
@@ -37,6 +38,7 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('Visualization', Visualization);
 	Vue.component('VisualizationSection', VisualizationSection);
 	Vue.component('Milestone', Milestone);
+	Vue.component('MilestoneModalContent', MilestoneModalContent);
 	Vue.component('MilestoneSection', MilestoneSection);
 	Vue.component('FeedbackSection', FeedbackSection);
 	Vue.component('Footer', Footer);
