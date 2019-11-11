@@ -228,11 +228,11 @@ function parseEconomicDescriptor(descriptor) {
 		altId = m[1];
 	}
 
-	if ((m = descriptor.match(/ \([>=]*([0-9+….]+)\) /))) {
+	if ((m = descriptor.match(/ \(?\(?[>=]*([0-9+….]+)\) /))) {
 		childrenIds = parseFormula(m[1]);
 	}
 
-	name = descriptor.replace(/ +\([>=+….\) \(BK0-9\-]+\)$/, '');
+	name = descriptor.replace(/ +\(?\(?[>=+….\) \(BK0-9\-]+\)$/, '');
 
 	return { altId, childrenIds, name };
 }
