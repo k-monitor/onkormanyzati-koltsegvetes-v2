@@ -89,7 +89,7 @@ function generateEconomicTree(matrixTsv) {
 		if (node.childrenIds) {
 			node.children = [];
 			node.childrenIds.forEach(cid => {
-				if (nodes[cid]) {
+				if (nodes[cid] && cid != node.id) {
 					nodes[cid].parent = node.id;
 					node.children.push(nodes[cid]);
 				}
