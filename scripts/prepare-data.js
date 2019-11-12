@@ -1,16 +1,28 @@
 const fs = require('fs');
 const fg = require('fast-glob');
 const mkdirp = require('mkdirp').sync;
+const rmrf = require('rimraf').sync;
 const xlsx = require('xlsx');
 
 const INPUT_FILE = './input/budget.xlsx';
-
+const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
 // main script
 
 (() => {
 	console.log(`Processing file: ${INPUT_FILE}`);
 	const workbook = xlsx.readFile(INPUT_FILE);
 	const funcTreeTsv = fs.readFileSync('./src/data/functions.tsv', 'utf-8');
+
+	// cleanup
+	fg.sync(INTERMEDIARY_JSON_GLOB).forEach(f => {
+		fs.unlinkSync(f);
+	});
+	fs.readdirSync('./src/data').forEach(d => {
+		const fd = './src/data/' + d;
+		if (d.match(/^2\d+$/) && fs.readdirSync(fd).length == 0) {
+			rmrf(fd);
+		}
+	});
 
 	workbook.SheetNames.forEach(sheetName => {
 		console.log(`Reading sheet: ${sheetName}`);
@@ -34,7 +46,7 @@ const INPUT_FILE = './input/budget.xlsx';
 	const OUTPUT_FILE = './src/data/data.json';
 	console.log('Building all-in-one JSON');
 	const data = {};
-	fg.sync('./src/data/2*/*.json').forEach(f => {
+	fg.sync(INTERMEDIARY_JSON_GLOB).forEach(f => {
 		const m = f.match(/.*\/(\d{4})\/(expense|income)-(econ|func)\.json$/);
 		console.log(f);
 		if (m) {
