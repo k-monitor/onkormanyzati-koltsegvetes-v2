@@ -224,15 +224,19 @@ function isSheetNameValid(sheetName) {
 function parseEconomicDescriptor(descriptor) {
 	let altId, childrenIds, name, m;
 
-	if ((m = descriptor.match(/ \(([BK0-9\-]+)\)$/))) {
+	name = descriptor;
+
+	if ((m = descriptor.match(/ \(([BK0-9\-]+)\)/))) {
+		name = name.replace(m[1], '');
 		altId = m[1];
 	}
 
-	if ((m = descriptor.match(/ \(?\(?[>=]*([0-9+….]+)\) /))) {
+	if ((m = descriptor.match(/[^§]{10} \(?\(?[>=]*([0-9+….]+)\)/))) {
+		name = name.replace(m[1], '');
 		childrenIds = parseFormula(m[1]);
 	}
 
-	name = descriptor.replace(/ +\(?\(?[>=+….\) \(BK0-9\-]+\)$/, '');
+	name = name.replace(/[()>= ]+$/, '');
 
 	return { altId, childrenIds, name };
 }
