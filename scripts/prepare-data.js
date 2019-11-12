@@ -231,7 +231,7 @@ function parseEconomicDescriptor(descriptor) {
 
 	name = descriptor;
 
-	if ((m = descriptor.match(/ \(([BK0-9\-]+)\)/))) {
+	if ((m = descriptor.match(/[^§]{10} \(([BK0-9\-]+)\)/))) {
 		name = name.replace(m[1], '');
 		altId = m[1];
 	}
