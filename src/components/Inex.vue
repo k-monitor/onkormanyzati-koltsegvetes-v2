@@ -63,7 +63,7 @@
 							 data-toggle="tooltip"
 							 data-placement="left"
 							 data-html="true"
-							 :title="(isNodeSmall(n, incomeTree) ? '<b>' + n.name + '(' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.altId] || '')"
+							 :title="(isNodeSmall(n, incomeTree) ? '<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.altId] || '')"
 							>
 								<div class="text-left wrap-md">
 									{{ n.name }}
@@ -89,7 +89,7 @@
 							 data-toggle="tooltip"
 							 data-placement="right"
 							 data-html="true"
-							 :title="(isNodeSmall(n, expenseTree) ? '<b>' + n.name + '(' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.altId] || '')"
+							 :title="(isNodeSmall(n, expenseTree) ? '<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.altId] || '')"
 							>
 								<div class="mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
