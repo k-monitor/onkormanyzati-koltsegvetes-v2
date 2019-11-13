@@ -63,7 +63,7 @@
 							 data-toggle="tooltip"
 							 data-placement="left"
 							 data-html="true"
-							 :title="(isNodeSmall(n, incomeTree) ? '<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.altId] || '')"
+							 :title="(isNodeSmall(n, incomeTree) ? '<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.id] || '')"
 							>
 								<div class="text-left wrap-md">
 									{{ n.name }}
@@ -89,7 +89,7 @@
 							 data-toggle="tooltip"
 							 data-placement="right"
 							 data-html="true"
-							 :title="(isNodeSmall(n, expenseTree) ? '<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.altId] || '')"
+							 :title="(isNodeSmall(n, expenseTree) ? '<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.id] || '')"
 							>
 								<div class="mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
@@ -127,13 +127,13 @@ export default {
 		expenseChildren: function() {
 			return this.expenseTree.children
 				.sort(function(a, b) {
-					return a.altId.localeCompare(b.altId);
+					return a.id.localeCompare(b.id);
 				})
 				.filter(function(n) {
 					return n.name.indexOf("Finanszírozási") == -1;
 				})
 				.map(function(n) {
-					const i = parseInt(n.altId[1]);
+					const i = parseInt(n.id[1]);
 					n.mukodesi = i <= 5;
 					return n;
 				});
@@ -153,14 +153,12 @@ export default {
 		grayNodes: function() {
 			const re = {
 				id: 'RE',
-				altId: 'RE',
 				gray: true,
 				name: 'Alaptevékenység szabad maradványa',
 				value: this.data.income.econ.value - this.data.expense.econ.value
 			};
 			const fb = {
 				id: 'FB',
-				altId: 'FB',
 				gray: true,
 				name: 'Alaptevékenység finanszírozási egyenlege',
 				value: re.value - (this.incomeSum - this.expenseSum)
@@ -171,13 +169,13 @@ export default {
 			const customOrder = ["B1", "B3", "B4", "B6", "B2", "B5", "B7"];
 			return this.incomeTree.children
 				.sort(function(a, b) {
-					return customOrder.indexOf(a.altId) - customOrder.indexOf(b.altId);
+					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
 				})
 				.filter(function(n) {
 					return n.name.indexOf("Finanszírozási") == -1;
 				})
 				.map(function(n) {
-					const i = parseInt(n.altId[1]);
+					const i = parseInt(n.id[1]);
 					n.mukodesi = [1, 3, 4, 6].indexOf(i) > -1;
 					return n;
 				});

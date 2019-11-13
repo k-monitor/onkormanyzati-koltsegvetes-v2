@@ -26,13 +26,12 @@ export default function search(year, term) {
 }
 
 function searchNode(node, tags, term, path) {
-	const nodeTags = (tags[node.id] || tags['0' + node.id] || tags[node.altId] || []);
+	const nodeTags = (tags[node.id] || tags['0' + node.id] || []);
 	const matchesInName = term.toLowerCase().split(' ').filter(t => t.trim().length >= 3 && (node.name||'').toLowerCase().includes(t)).length;
 	const matchedTags = nodeTags.filter(tag => tag.includes(term.toLowerCase()));
 	let results = [];
 	if (matchedTags.length > 0 || matchesInName > 0) {
 		results.push({
-			altId: node.altId,
 			id: node.id,
 			matchesInName,
 			name: node.name,

@@ -75,51 +75,62 @@ function generateEconomicTree(matrixTsv) {
 	matrixTsv.split('\n')
 		.splice(2) // header is at least 2 rows
 		.filter(row => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
-		.forEach(row => {
-			let [id, descriptor, value] = row.split('\t'); // we need only these 3 columns
-			id = Number(id);
+		.forEach((row, i) => {
+			let [_, descriptor, value] = row.split('\t'); // we need only the 2nd and 3rd column
+			let { id, name } = parseEconomicDescriptor(descriptor);
 			value = Number(value.replace(/\D+/g, ''));
-			let { name, childrenIds, altId } = parseEconomicDescriptor(descriptor);
-			if (altId && altId.match(/(B8|K9)\d*/)) {
-				id += 1000;
-				childrenIds = (childrenIds || []).map(cid => cid + 1000);
-			}
-			if (altId && altId.indexOf('-') == -1) {
-				nodes[id] = { id, altId, name, childrenIds, value };
+			if (id && id.indexOf('-') == -1) {
+				if (name.startsWith("ebből:") || nodes[id]) {
+					id = `${id}:${i}`;
+				}
+				nodes[id] = {
+					id,
+					name,
+					value
+				};
 			}
 		});
 
-	// filling relations
-	Object.values(nodes).forEach(node => {
-		if (node.childrenIds) {
-			node.children = [];
-			node.childrenIds.forEach(cid => {
-				if (nodes[cid] && cid != node.id) {
-					nodes[cid].parent = node.id;
-					node.children.push(nodes[cid]);
-				}
-			});
-			delete node.childrenIds;
+	// transforming into tree / handling "ebből:" rows
+	Object.keys(nodes).filter(id => id.includes(':')).forEach(id => {
+		const parentId = id.split(':')[0];
+		if (nodes[parentId]) {
+			nodes[parentId].children = nodes[parentId].children || [];
+			nodes[parentId].children.push(nodes[id]);
 		}
+		delete nodes[id];
 	});
 
-	// we dropped out total sum line (via altId filter) so we calculate it
-	const children = Object.values(nodes).filter(node => !node.parent);
+	// transforming into tree / connecting parents with children
+	const sortedIds = Object.keys(nodes).sort();
+	const deletableIds = [];
+	for (let i = 0; i < sortedIds.length; i++) {
+		const id = sortedIds[i];
+		if (id.length == 2) continue; // root nodes
+		let j = i - 1;
+		for (; sortedIds[j].length >= id.length; j--);
+		if (j > -1) { // found parent
+			const parentId = sortedIds[j];
+			nodes[parentId].children = nodes[parentId].children || [];
+			nodes[parentId].children.push(nodes[id]);
+			deletableIds.push(id);
+		}
+	}
+
+	// cleanup
+	Object.keys(nodes)
+		.filter(id => deletableIds.includes(id))
+		.forEach(id => delete nodes[id]);
+
+
+	// we dropped out total sum line (via id filter) so we calculate it
+	const children = Object.values(nodes);
 	const value = children.map(n => n.value).reduce((sum, v) => sum + v);
 	const root = {
 		name: 'Összesen',
 		children,
 		value
 	};
-
-	// cleaning up
-	function cleanUp(node) {
-		delete node.parent;
-		if (node.children) {
-			node.children.forEach(cleanUp);
-		}
-	}
-	cleanUp(root);
 
 	return JSON.stringify(root);
 }
@@ -224,43 +235,22 @@ function isSheetNameValid(sheetName) {
 
 /**
  * @param {string} descriptor Economical category descriptor (2nd column in matrix)
- * @returns {{altId: string, childrenIds: number[], name: string}} Components of category descriptor
+ * @returns {{id: string, name: string}} Components of category descriptor
  */
 function parseEconomicDescriptor(descriptor) {
-	let altId, childrenIds, name, m;
-
-	name = descriptor;
+	let id, m;
 
 	if ((m = descriptor.match(/[^§]{10} \(([BK0-9\-]+)\)/))) {
-		name = name.replace(m[1], '');
-		altId = m[1];
+		id = m[1];
 	}
 
+	let name = descriptor.replace(id, '');
 	if ((m = descriptor.match(/[^§]{10} \(?\(?[>=]*([0-9+….]+)\)/))) {
 		name = name.replace(m[1], '');
-		childrenIds = parseFormula(m[1]);
 	}
-
 	name = name.replace(/[()>= ]+$/, '');
 
-	return { altId, childrenIds, name };
-}
-
-/**
- * @param {string} f Formula like `01+…+04+21`
- * @returns {number[]} All the numbers referenced in the formula, e.g. `[1,2,3,4,21]`
- */
-function parseFormula(f) {
-	const ids = [];
-	f.replace(/\+[….]+\+/, ':').split('\+').forEach(el => {
-		if (el.match(/^\d+$/g)) {
-			ids.push(Number(el));
-		} else if (el.indexOf(':') > -1) {
-			const bounds = el.split(':').map(b => b.match(/^\d+$/) ? Number(b) : 0);
-			for (let i = bounds[0]; i <= bounds[1]; i++) ids.push(i);
-		}
-	});
-	return ids;
+	return { id, name };
 }
 
 /**

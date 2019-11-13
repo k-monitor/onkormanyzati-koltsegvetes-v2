@@ -54,7 +54,7 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 
 ### input/budget.xlsx
 
-Az általános KGR rendszer importja. A munkafüzet több munkalapból állhat, melyek elnevezése a következő lehet: `ÉVSZÁM <TÍPUS>`, ahol a `<TÍPUS>` helyén `BEVÉTEL` vagy `KIADÁS` állhat.
+Az általános KGR rendszer importja. A munkafüzet több munkalapból állhat, melyek elnevezése a következő alakú lehet: `ÉVSZÁM <TÍPUS>` vagy `ÉVSZÁM_<TÍPUS>`, ahol a `<TÍPUS>` helyén `BEVÉTEL`, `BEVETEL`, `KIADÁS` vagy `KIADAS` állhat (a kis- és nagybetűk nincsenek megkülönböztetve).
 
 A munkalapoknak 2 formátumát ismeri a program. Az egyik az elmúlt évekre vonatkozik, a másik a prognózisokra. A bevételi és kiadási oldal adott éven belül azonos formátumú. Prognózisok esetében a funkcionális bontást nem tartalmazza az input.
 
@@ -67,10 +67,10 @@ Az ilyen munkalapokon megtalálható a mátrix, vagyis nem csak közgazdasági b
 - 1. sor: lényegtelen
 - 2. sor: a 4. (D) oszloptól kezdve funkcionális kategóriák `<AZONOSÍTÓSZÁM> <ELNEVEZÉS>` formában. Az elnevezés lényegtelen. A programnak csak az azonosítószám kell, amit szóközzel kell elválasztani a többi adattól, pl.: *"042120 Mezőgazdasági támogatások"*.
 - 3. sortól kezdve:
-	- 1. oszlop: közgazdasági kategória azonosítószáma, legalább kétjegyű, pl.: `01`
+	- 1. oszlop: lényegtelen
 	- 2. oszlop: közgazdasági kategória elnevezése és kiegészítő információi.
-		- A cellák végén `(B123)` vagy `(K123)` formában alternatív azonosító szerepelhet, ezt a program pl. a tooltip-eknél használja.
-		- Az elnevezés után opcionálisan szerepelhet egy formula, mely azt mondja meg, hogy az adott sor mely más kategóriákat összegzi. Ennek a formulának zárójelben kell lennie és szóközzel kell elválasztani az elnevezéstől. A formula csak számokat és `+` jelet tartalmazhat. A nyitó zárójel után opcionálisan szerepelhet valamennyi `=` vagy `>` karakter. Intervallum jelölésére használható `.` vagy `…`, 2 `+` jel között.
+		- A cellákban szerepelnie kell a kategória azonosítójának, `(B123)` vagy `(K123)` formában. Ezek az azonosítók egymással hierarchiában vannak: egy `Bx` azonosító gyermekei a `Bx` prefixű, eggyel több számjegyű azonosítók, ÉS a `Bx` azonosítójú, *"ebből:"* kezdetű kategóriák. Előfordul, hogy a szintek között nem egy, hanem két számjegy különbség van.
+		- A cellában opcionálisan szerepelhet egy összegképlet, de ezt a program nem használja, és ki is fogja vágni.
 		- Példa: *"Működési célú támogatások államháztartáson belülről (=07+...+10+21+32) (B1)"*
 	- 3. oszlop: az adott közgazdasági kategóriához tartozó összeg
 	- 4. oszloptól kezdve: az adott közgazdasági (sor) és funkcionális (oszlop) kategóriához tartozó számérték.
@@ -110,7 +110,7 @@ Második munkalap formátuma:
 - további sorok:
 	- 1. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
 	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
-	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál ajánlott a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
+	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
 	- 4. oszlop a fejlesztés azonosítója (ld. első munkalap 1. oszlopa)
 
 
@@ -130,7 +130,7 @@ Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell mega
 - további sorok:
 	- 1. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
 	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
-	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál ajánlott a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
+	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
 	- 4. oszlop tartalmazza a címkéket: vesszővel, és opcionálisan még szóközzel is elválasztott kifejezések
 
 
@@ -190,15 +190,13 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 ```json
 {
 	"id": 123,
-	"altID": "X123",
 	"name": "...",
 	"value": 12345678,
 	"children": [ ... ]
 }
 ```
 
-- **id** - A kategória azonosítója, természetes szám.
-- **altId** - A közgazdasági kategóriák `B123` vagy `K123` alakú azonosítója.
+- **id** - A kategória azonosítója, funkcionális kategória esetén természetes szám, közgazdasági kategóriáknál `B123` vagy `K123` alakú azonosító.
 - **name** - A kategória elnevezése.
 - **value** - Az adott node-hoz tartozó összeg.
 - **children** - Gyerek node-ok tömbje.

@@ -5,9 +5,6 @@ let ids = {};
 function gatherIds(node) {
 	if (!node) return;
 	ids[node.id] = `Lorem ipsum for ${node.id}`;
-	if (node.altId) {
-		ids[node.altId] = `Lorem ipsum for ${node.altId}`;
-	}
 	if (node.children) {
 		node.children.forEach(gatherIds);
 	}
