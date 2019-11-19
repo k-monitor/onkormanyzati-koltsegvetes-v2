@@ -136,6 +136,8 @@ export default {
 					const i = parseInt(n.id[1]);
 					n.mukodesi = i <= 5;
 					return n;
+				}).filter(function(n) {
+					return n.value > 0;
 				});
 		},
 		expenseSum: function() {
@@ -178,6 +180,8 @@ export default {
 					const i = parseInt(n.id[1]);
 					n.mukodesi = [1, 3, 4, 6].indexOf(i) > -1;
 					return n;
+				}).filter(function(n) {
+					return n.value > 0;
 				});
 		},
 		incomeSum: function() {
