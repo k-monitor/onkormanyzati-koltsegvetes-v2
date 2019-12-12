@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div :class="['theme-' + year]">
 		<NavBar
 			:year="year"
 			:years="Object.keys($d).sort().reverse()"
