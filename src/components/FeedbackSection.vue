@@ -23,7 +23,7 @@
 
 <script>
 export default {
-	created() {
+	mounted() {
 		window.addEventListener("scroll", function() {
 			const scrollPosition = window.pageYOffset;
 			const bgParallax = document.getElementsByClassName("parallax")[0];
