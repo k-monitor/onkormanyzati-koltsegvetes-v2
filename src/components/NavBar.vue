@@ -79,11 +79,15 @@
 						>
 							<a
 								class="dropdown-item"
-								v-for="y in years"
-								:key="y"
 								href="javascript:void(0)"
+								v-for="y in years"
+								:class="['theme-' + y]"
+								:key="y"
 								@click="$emit('yearSelected', y)"
-							>{{ y }}</a>
+							>
+								<i class="fas fa-circle mr-2"></i>
+								{{ y }}
+							</a>
 						</div>
 					</li>
 					<li class="nav-item">

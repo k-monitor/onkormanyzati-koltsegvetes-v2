@@ -3,77 +3,89 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
-@mixin generateTheme($primary) {
+@mixin linkColor($primary) {
+	$link-color: $primary;
+	$link-hover-color: darken($link-color, 15%);
+	color: $link-color;
+	@include hover {
+		color: $link-hover-color;
+	}
+}
+@mixin generateTheme($primary, $year) {
 
-	a {
-		$link-color: $primary;
-		$link-hover-color: darken($link-color, 15%);
-		color: $link-color;
-		@include hover {
-			color: $link-hover-color;
+	.theme-#{$year} a:not(.dropdown-item),
+	a.theme-#{$year},
+	.btn-link {
+		@include linkColor($primary);
+	}
+
+	.theme-#{$year} {
+		.bg-primary {
+			background-color: $primary !important;
 		}
-	}
 
-	.bg-primary {
-		background-color: $primary !important;
-	}
+		.btn-primary {
+			@include button-variant($primary, $primary);
+		}
 
-	.btn-primary {
-		@include button-variant($primary, $primary);
-	}
+		.btn-outline-primary {
+			@include button-outline-variant($primary);
+		}
 
-	.btn-outline-primary {
-		@include button-outline-variant($primary);
-	}
-
-	hr.divider:not(.light) {
-		border-color: $primary;
-	}
-
-	#mainNav {
-		.navbar-nav .nav-item .nav-link {
-			&:hover,
+		.dropdown-item {
+			&.active,
 			&:active {
-				color: $primary;
-			}
-			&.active {
-				color: $primary !important;
+				@include gradient-bg($primary);
 			}
 		}
 
-		@include media-breakpoint-up(lg) {
-			&.navbar-scrolled {
-				.navbar-brand:hover {
-					color: $primary;
-				}
-				.navbar-nav .nav-item .nav-link:hover {
-					color: $primary;
-				}
-			}
+		hr.divider:not(.light) {
+			border-color: $primary;
 		}
 
-		@include media-breakpoint-up(lg) {
-			&.navbar-scrolled {
-				.navbar-nav .nav-item.highlight {
-					background-color: $primary;
-					&:hover {
-						background-color: darken($primary, 10%);
+		#mainNav {
+			.navbar-nav .nav-item .nav-link {
+				&:hover,
+				&:active {
+					color: $primary;
+				}
+				&.active {
+					color: $primary !important;
+				}
+			}
+
+			@include media-breakpoint-up(lg) {
+				&.navbar-scrolled {
+					.navbar-brand:hover {
+						color: $primary;
+					}
+					.navbar-nav .nav-item .nav-link:hover {
+						color: $primary;
+					}
+				}
+			}
+
+			@include media-breakpoint-up(lg) {
+				&.navbar-scrolled {
+					.navbar-nav .nav-item.highlight {
+						background-color: $primary;
+						&:hover {
+							background-color: darken($primary, 10%);
+						}
 					}
 				}
 			}
 		}
-	}
 
-	.nav-pills {
-		.nav-link.active,
-		.show > .nav-link {
-			background-color: $primary;
+		.nav-pills {
+			.nav-link.active,
+			.show > .nav-link {
+				background-color: $primary;
+			}
 		}
 	}
 }
 
 @each $year, $primary in $year-colors {
-	.theme-#{$year} {
-		@include generateTheme($primary);
-	}
+	@include generateTheme($primary, $year);
 }
