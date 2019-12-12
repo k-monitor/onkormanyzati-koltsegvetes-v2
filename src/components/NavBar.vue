@@ -7,7 +7,10 @@
 			<a
 				class="navbar-brand js-scroll-trigger"
 				href="#page-top"
-			>{{ $config.city }}</a>
+			>
+				<img class="mr-2" src="assets/img/logo.png" width="30" height="30" alt="">
+				{{ $config.city }}
+			</a>
 			<button
 				class="navbar-toggler navbar-toggler-right"
 				type="button"
@@ -147,6 +150,11 @@ export default {
 		font-family: $font-family-sans-serif;
 		font-weight: $font-weight-bold;
 		color: $gray-900;
+		img {
+			filter: invert(1);
+			position: relative;
+			top: -2px;
+		}
 	}
 	.navbar-nav {
 		.nav-item {
@@ -175,6 +183,9 @@ export default {
 			&:hover {
 				color: $white;
 			}
+			img {
+				filter: none;
+			}
 		}
 		.navbar-nav {
 			.nav-item {
@@ -200,6 +211,9 @@ export default {
 				color: $gray-900;
 				&:hover {
 					color: $primary;
+				}
+				img {
+					filter: invert(1);
 				}
 			}
 			.navbar-nav {
