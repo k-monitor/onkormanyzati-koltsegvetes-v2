@@ -13,7 +13,7 @@
 }
 @mixin generateTheme($primary, $year) {
 
-	.theme-#{$year} a:not(.dropdown-item),
+	.theme-#{$year} a:not(.btn):not(.dropdown-item):not(.active),
 	a.theme-#{$year},
 	.btn-link {
 		@include linkColor($primary);
