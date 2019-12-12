@@ -1,5 +1,5 @@
 <template>
-	<section class="page-section bg-primary">
+	<section class="page-section bg-primary parallax">
 		<div class="container">
 			<div class="row">
 				<div class="col">
@@ -11,15 +11,27 @@
 			<div class="row">
 				<div class="col text-center">
 					<a
-					 class="btn btn-xl btn-light"
-					 :href="$config.feedback.url"
-					 target="_blank"
+						class="btn btn-xl btn-light"
+						:href="$config.feedback.url"
+						target="_blank"
 					>{{ $config.feedback.action }}</a>
 				</div>
 			</div>
 		</div>
 	</section>
 </template>
+
+<script>
+export default {
+	created() {
+		window.addEventListener("scroll", function() {
+			const scrollPosition = window.pageYOffset;
+			const bgParallax = document.getElementsByClassName("parallax")[0];
+			bgParallax.style.backgroundPositionY = scrollPosition / -12 + "%";
+		});
+	}
+};
+</script>
 
 <style scoped>
 .page-section {
