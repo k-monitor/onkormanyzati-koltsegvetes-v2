@@ -5,8 +5,25 @@
 
 @mixin generateTheme($primary) {
 
+	a {
+		$link-color: $primary;
+		$link-hover-color: darken($link-color, 15%);
+		color: $link-color;
+		@include hover {
+			color: $link-hover-color;
+		}
+	}
+
 	.bg-primary {
 		background-color: $primary !important;
+	}
+
+	.btn-primary {
+		@include button-variant($primary, $primary);
+	}
+
+	.btn-outline-primary {
+		@include button-outline-variant($primary);
 	}
 
 	hr.divider:not(.light) {
@@ -44,6 +61,13 @@
 					}
 				}
 			}
+		}
+	}
+
+	.nav-pills {
+		.nav-link.active,
+		.show > .nav-link {
+			background-color: $primary;
 		}
 	}
 }
