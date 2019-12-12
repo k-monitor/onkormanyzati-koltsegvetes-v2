@@ -63,12 +63,12 @@
 								data-toggle="tooltip"
 								data-placement="left"
 								data-html="true"
-								:title="(isNodeSmall(n, incomeTree) ? '<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.id] || '')"
+								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || '')"
 							>
-								<div class="text-left wrap-md">
+								<div class="text-left">
 									{{ n.name }}
 								</div>
-								<div class="ml-2 no-wrap text-right">
+								<div class="value ml-2 no-wrap text-right">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
 								</div>
 							</div>
@@ -89,12 +89,12 @@
 								data-toggle="tooltip"
 								data-placement="right"
 								data-html="true"
-								:title="(isNodeSmall(n, expenseTree) ? '<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' : '') + ($tooltips[n.id] || '')"
+								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || '')"
 							>
-								<div class="mr-2 no-wrap text-left">
+								<div class="value mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
 								</div>
-								<div class="text-right wrap-md">
+								<div class="flex-grow-1 text-right">
 									{{ n.name }}
 								</div>
 							</div>
@@ -288,15 +288,13 @@ export default {
 		min-height: 400px;
 	}
 
-	.wrap-md {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
+	.value {
+		display: none;
 
 		@include media-breakpoint-up(md) {
-			overflow: unset;
-			text-overflow: unset;
-			white-space: unset;
+			:not(.small) & {
+				display: block;
+			}
 		}
 	}
 }
