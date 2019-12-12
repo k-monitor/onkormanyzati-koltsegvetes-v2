@@ -163,6 +163,7 @@ export default {
 <style lang="scss">
 @import "../scss/variables";
 @import "~bootstrap/scss/bootstrap";
+@import "../scss/theme";
 
 // Global styling for this template
 body,

@@ -1,0 +1,55 @@
+@import "../scss/variables";
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+@mixin generateTheme($primary) {
+
+	.bg-primary {
+		background-color: $primary !important;
+	}
+
+	hr.divider:not(.light) {
+		border-color: $primary;
+	}
+
+	#mainNav {
+		.navbar-nav .nav-item .nav-link {
+			&:hover,
+			&:active {
+				color: $primary;
+			}
+			&.active {
+				color: $primary !important;
+			}
+		}
+
+		@include media-breakpoint-up(lg) {
+			&.navbar-scrolled {
+				.navbar-brand:hover {
+					color: $primary;
+				}
+				.navbar-nav .nav-item .nav-link:hover {
+					color: $primary;
+				}
+			}
+		}
+
+		@include media-breakpoint-up(lg) {
+			&.navbar-scrolled {
+				.navbar-nav .nav-item.highlight {
+					background-color: $primary;
+					&:hover {
+						background-color: darken($primary, 10%);
+					}
+				}
+			}
+		}
+	}
+}
+
+@each $year, $primary in $year-colors {
+	.theme-#{$year} {
+		@include generateTheme($primary);
+	}
+}
