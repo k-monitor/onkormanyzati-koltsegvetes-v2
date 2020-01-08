@@ -21,7 +21,6 @@ import MoreInfoModal from '~/components/MoreInfoModal';
 import config from '~/data/config.js';
 import data from '~/data/data.json';
 import eventBus from '~/event-bus.js';
-import functions from '~/data/functions.json';
 import milestones from '~/data/milestones.json';
 import tags from '~/data/tags.json';
 import tooltips from '~/data/tooltips.json';
@@ -49,7 +48,6 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.prototype.$config = config;
 	Vue.prototype.$d = data;
 	Vue.prototype.$eventBus = eventBus;
-	Vue.prototype.$functions = functions;
 	Vue.prototype.$milestones = milestones;
 	Vue.prototype.$tags = tags;
 	Vue.prototype.$tooltips = tooltips;

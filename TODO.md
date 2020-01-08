@@ -1,5 +1,3 @@
-- prepare data:
-	- work from functions.json, move functions.tsv to input
-	- do not generate intermediate JSONs, build data bundle on-the-fly
+- prepare data: do not generate intermediate JSONs, build data bundle on-the-fly
 - fix icon spaces differ
 - make images static + use g-image
