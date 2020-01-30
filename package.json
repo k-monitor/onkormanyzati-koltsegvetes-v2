@@ -17,6 +17,7 @@
     "vue-markdown": "^2.2.4"
   },
   "devDependencies": {
+    "excel4node": "^1.7.2",
     "fast-glob": "^3.0.3",
     "mkdirp": "^0.5.1",
     "node-sass": "^4.12.0",
