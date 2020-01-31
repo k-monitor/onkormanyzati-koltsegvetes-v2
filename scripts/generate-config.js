@@ -1,7 +1,8 @@
+const fs = require('fs');
 const xl = require('excel4node');
 const defaultConfig = require('./default-config.json');
+require('./prepare-data'); // required for tooltips generation
 
-const BUDGET_FILE = "input/budget.xlsx";
 const OUTPUT_FILE = "input/config.xlsx";
 
 const wb = new xl.Workbook();
@@ -41,31 +42,70 @@ const inputStyle = wb.createStyle({
 	}
 });
 
-function aoaTo3colSheet(sheet, aoa) {
+function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 	aoa.forEach((r, i) => {
 		r.forEach((c, j) => {
 			const cell = sheet.cell(i + 1, j + 1);
-			if (c.toString().match(/^\d+$/)) {
+			if (typeof c === 'number') {
 				cell.number(c);
 			} else {
 				cell.string(c);
 			}
 			if (i === 0) {
 				cell.style(headerStyle);
-			} else if (j === 1) {
+			} else if (j === inputIndex) {
 				cell.style(inputStyle);
 			} else if (j === 0) {
 				cell.style(keyStyle);
 			}
 		});
 	});
-	sheet.column(1).setWidth(25);
-	sheet.column(2).setWidth(40);
-	sheet.column(3).setWidth(100);
+	sheet.column(1).setWidth(colWidths[0]);
+	sheet.column(2).setWidth(colWidths[1]);
+	sheet.column(3).setWidth(colWidths[2]);
 	sheet.row(1).freeze();
 }
 
+// config sheet
+
 const configSheet = wb.addWorksheet('config');
-aoaTo3colSheet(configSheet, defaultConfig);
+aoaTo3colSheet(configSheet, defaultConfig, 1, [25, 40, 100]);
+
+// tooltips sheet
+
+// ids[ID][Name][0..n] = Year
+let ids = {};
+function gatherIds(node, year) {
+	if (!node) return;
+	if (node.id) {
+		ids[node.id] = ids[node.id] || {};
+		ids[node.id][node.name] = ids[node.id][node.name] || [];
+		ids[node.id][node.name].push(year);
+	}
+	if (node.children) {
+		node.children.forEach(c => gatherIds(c, year));
+	}
+}
+const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
+Object.keys(data).forEach(year => {
+	Object.values(data[year]).forEach(side => {
+		Object.values(side).forEach(root => {
+			gatherIds(root, year);
+		});
+	});
+});
+let tooltipRows = [
+	['Azon.', 'Megnevezés', 'Súgószöveg'],
+	['FB', 'Alaptevékenység finanszírozási egyenlege', 'Lorem ipsum for FB'],
+	['RE', 'Alaptevékenység szabad maradványa', 'Lorem ipsum for RE']
+];
+Object.keys(ids).sort().forEach(id => {
+	const names = Object.keys(ids[id]);
+	if (names.length === 1) {
+		tooltipRows.push([id, names[0], `Lorem ipsum for ${id}`])
+	}
+});
+const tooltipsSheet = wb.addWorksheet('tooltips');
+aoaTo3colSheet(tooltipsSheet, tooltipRows, 2, [8, 50, 100]);
 
 wb.write(OUTPUT_FILE);
