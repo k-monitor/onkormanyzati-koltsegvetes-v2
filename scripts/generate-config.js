@@ -103,9 +103,16 @@ Object.keys(ids).sort().forEach(id => {
 	const names = Object.keys(ids[id]);
 	if (names.length === 1) {
 		tooltipRows.push([id, names[0], `Lorem ipsum for ${id}`])
+	} else {
+		names.forEach(name => {
+			const years = ids[id][name];
+			years.forEach(year => {
+				tooltipRows.push([`${id}/${year}`, name, `Lorem ipsum for ${id}/${year}`]);
+			});
+		});
 	}
 });
 const tooltipsSheet = wb.addWorksheet('tooltips');
-aoaTo3colSheet(tooltipsSheet, tooltipRows, 2, [8, 50, 100]);
+aoaTo3colSheet(tooltipsSheet, tooltipRows, 2, [10, 50, 100]);
 
 wb.write(OUTPUT_FILE);
