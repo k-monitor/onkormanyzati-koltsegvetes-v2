@@ -11,28 +11,11 @@ const modules = {
 	milestones: true
 };
 
-// Texts
-
 const seo = {
 	ogImage: 'https://picsum.photos/id/122/2048/1536',
 	ogImageType: 'image/png',
 	ogImageHeight: 1536,
 	ogImageWidth: 2048
-};
-
-const search = {
-	tooShort: 'Túl rövid keresőkifejezés!',
-	noResults: 'Nincs találat.',
-	income: 'Bevételek',
-	expense: 'Kiadások',
-	econ: 'közgazdasági kategória',
-	func: 'funkcionális kategória'
-};
-
-const header = {
-	title: `${city} költségvetése`,
-	headline: `Ezen az oldalon megtekintheted ${city} költségvetését és fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!`,
-	button: 'Tovább'
 };
 
 const welcome = {

@@ -21,6 +21,13 @@ const headerStyle = wb.createStyle({
 	}
 });
 
+const keyStyle = wb.createStyle({
+	font: {
+		color: '#999999',
+		italics: true
+	}
+});
+
 const inputStyle = wb.createStyle({
 	fill: {
 		bgColor: yellow,
@@ -33,57 +40,85 @@ const inputStyle = wb.createStyle({
 	}
 });
 
-const descStyle = wb.createStyle({
-	font: {
-		color: '#999999',
-		italics: true
-	}
-});
-
-
 const textsSheet = wb.addWorksheet('Szövegek');
 
 const rows = [
 	[
-		'Kulcs', 'Elnevezés', 'Érték',
+		'Kulcs', 'Érték',
 		'Magyarázat'
 	],
 	[
-		'seo.siteName', 'Honlap elnevezése', 'Mintaváros',
-		'Böngészőablak címsora: "Lap elnevezése - Honlap elnevezése", teljes hossz max. 60 karakter.'
+		'seo.siteName', 'Mintaváros',
+		'Böngészőablak címsorának 2. része. A teljes címsor max. 60 karakter lehet.'
 	],
 	[
-		'seo.pageTitle', 'Lap elnevezése', 'Költségvetés',
-		'Böngészőablak címsora: "Lap elnevezése - Honlap elnevezése", teljes hossz max. 60 karakter.'
+		'seo.pageTitle', 'Költségvetés',
+		'Böngészőablak címsorának 2. része. A teljes címsor max. 60 karakter lehet.'
 	],
 	[
-		'seo.ogTitle', 'Lap elnevezése (social)', 'MINTAVÁROS KÖLTSÉGVETÉSE',
-		'Facebook/Twitter kártya címsora.'
+		'seo.ogTitle', 'MINTAVÁROS KÖLTSÉGVETÉSE',
+		'Facebook/Twitter megosztáskor az előnézeti kártya címsora.'
 	],
 	[
-		'seo.description', 'Honlap leírása', 'Mintaváros költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.',
-		'Google találatban, Facebook/Twitter kártyában megjelenő leírás. Max. 160 karakter.'
+		'seo.description', 'Mintaváros költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.',
+		'Google találatban, ill. Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő leírás. Max. 160 karakter.'
 	],
 	[
-		'social.text', 'Poszt szövege/tárgya', 'Mintaváros költségvetése',
-		'Twitter bejegyzés szövege, LinkedIn poszt vagy email tárgya.'
+		'social.text', 'Mintaváros költségvetése',
+		'Megosztáskor a Twitter bejegyzés szövege, LinkedIn poszt vagy email tárgya.'
 	],
 	[
-		'navBar.welcome', 'Köszöntő link szövege', 'Köszöntő',
-		'A felső navigációs sávban megjelenő szöveg.'
+		'navBar.welcome', 'Köszöntő',
+		'Köszöntő szakaszra mutató link szövege a felső navigációs sávban.'
 	],
 	[
-		'navBar.inex', 'Költségvetés link szövege', 'Költségvetés',
-		'A felső navigációs sávban megjelenő szöveg.'
+		'navBar.inex', 'Költségvetés',
+		'Költségvetés szakaszra mutató link szövege a felső navigációs sávban.'
 	],
 	[
-		'navBar.milestones', 'Fejlesztések link szövege', 'Fejlesztések',
-		'A felső navigációs sávban megjelenő szöveg.'
+		'navBar.milestones', 'Fejlesztések',
+		'Fejlesztések szakaszra mutató link szövege a felső navigációs sávban.'
 	],
 	[
-		'navBar.moreInfo', 'További információ link szövege', 'A projektről',
-		'A felső navigációs sávban megjelenő szöveg.'
-	]
+		'navBar.moreInfo', 'A projektről',
+		'További információ ablakot előhívó link szövege a felső navigációs sávban.'
+	],
+	[
+		'search.tooShort', 'Túl rövid keresőkifejezés!',
+		'Kereséskor megjelenő szöveg, ha túl rövid a keresőkifejezés.'
+	],
+	[
+		'search.noResults', 'Nincs találat.',
+		'Kereséskor megjelenő szöveg, ha nincs találat.'
+	],
+	[
+		'search.income', 'Bevételek',
+		'Keresési találatban megjelenő link szövege, mely a Bevételek szakaszra mutat.'
+	],
+	[
+		'search.expense', 'Kiadások',
+		'Keresési találatban megjelenő link szövege, mely a Kiadások szakaszra mutat.'
+	],
+	[
+		'search.econ', 'közgazdasági kategória',
+		'Keresési találatban megjelenő szöveg, ha az adott találat egy közgazdasági kategória.'
+	],
+	[
+		'search.func', 'funkcionális kategória',
+		'Keresési találatban megjelenő szöveg, ha az adott találat egy funkcionális kategória.'
+	],
+	[
+		'header.title', 'Mintaváros költségvetése',
+		'Fejléc szakaszban megjelenő főcím.'
+	],
+	[
+		'header.headline', 'Ezen az oldalon megtekintheted Mintaváros költségvetését és fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!',
+		'Fejléc szakaszban megjelenő headline.'
+	],
+	[
+		'header.button', 'Tovább',
+		'Fejléc szakaszban megjelenő Tovább gomb szövege.'
+	],
 ];
 
 rows.forEach((r, i) => {
@@ -91,16 +126,16 @@ rows.forEach((r, i) => {
 		const cell = textsSheet.cell(i + 1, j + 1).string(c);
 		if (i === 0) {
 			cell.style(headerStyle);
-		} else if (j === 2) {
+		} else if (j === 1) {
 			cell.style(inputStyle);
-		} else if (j === 0 || j === 3) {
-			cell.style(descStyle);
+		} else if (j === 0) {
+			cell.style(keyStyle);
 		}
 	});
 });
-textsSheet.column(2).setWidth(25);
-textsSheet.column(3).setWidth(40);
-textsSheet.column(4).setWidth(80);
+textsSheet.column(1).setWidth(25);
+textsSheet.column(2).setWidth(40);
+textsSheet.column(3).setWidth(100);
 textsSheet.row(1).freeze();
 
 wb.write(OUTPUT_FILE);

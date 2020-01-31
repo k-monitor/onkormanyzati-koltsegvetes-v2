@@ -12,13 +12,13 @@ let configJson = {};
 tsv.split('\n').forEach((row, i) => {
 	if (i === 0) return;
 	row = row.split('\t');
-	if (row.length < 3) return;
+	if (row.length < 2) return;
 	console.log(row);
 	const keyParts = row[0].split('\.');
 	const group = keyParts[0];
 	const key = keyParts[1];
 	configJson[group] = configJson[group] || {};
-	configJson[group][key] = row[2];
+	configJson[group][key] = row[1];
 });
 
 fs.writeFileSync(OUTPUT_FILE, JSON.stringify(configJson));
