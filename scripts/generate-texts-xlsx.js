@@ -119,6 +119,33 @@ const rows = [
 		'header.button', 'Tovább',
 		'Fejléc szakaszban megjelenő Tovább gomb szövege.'
 	],
+	[
+		'welcome.title', 'TISZTELT MINTAVÁROSI POLGÁROK!',
+		'Köszöntő szakasz címsora.'
+	],
+	['welcome.leftBlock',
+		`Egy önkormányzat feladatai sokrétűek, állampolgári szemmel nehezen áttekinthetőek. Mintavárosban azonban nincs takargatni valónk, ezért úgy döntöttünk, hogy a modern technika segítségével bemutatjuk Önökek településünk gazdálkodását úgy, ahogyan azt korábban csak kevesek láthatták!
+
+A XXI. század embere joggal várhatja el egy önkormányzattól, hogy az interneten is utánanézhessen, mennyit költ a település oktatásra, egészségügyre vagy épp a parkok rendben tartására. A helyi demokráciára is igaz, kettőn áll a vásár. A tisztességes településvezetés mellé tájékozott polgárok is kellenek, akik nyomon követik a döntések ésszerűségét. A közpénzek átlátható felhasználásáért küzdő K-Monitor és a Költségvetési Felelősségi Intézet szakmai segítségével létrehozott alkalmazás, amit pillanatokon belül használatba vehet, Magyarországon elsőként arra törekszik, hogy mindenki számára könnyen befogadható és értelmezhető képet adjon az önkormányzat gazdálkodásáról.`,
+		'Köszöntő szakasz bal oldali hasábjának szövege. Markdown jelölések használhatóak (pl. formázás, linkek).'
+	],
+	[
+		'welcome.rightBlock',
+		`A weboldal testre szabható és egyszerűen feltölthető bármely település adataival. Reméljük, Mintaváros igyekezete ragadós lesz és egyre többen teszik meg ezt az egyáltalán nem megerőltető, mégis fontos lépést az átláthatóság felé.`,
+		'Köszöntő szakasz jobb oldali hasábjának szövege. Markdown jelölések használhatóak (pl. formázás, linkek).'
+	],
+	[
+		'welcome.aboveSignature', 'Kellemes böngészést kívánok,',
+		'Köszöntő szakasz aláírás feletti sorának szövege.',
+	],
+	[
+		'welcome.name', 'Példa Imre',
+		'Köszöntő szakaszt aláíró személy neve.'
+	],
+	[
+		'welcome.role', 'Mintaváros polgármestere',
+		'Köszöntő szakaszt aláíró személy tisztsége.'
+	]
 ];
 
 rows.forEach((r, i) => {

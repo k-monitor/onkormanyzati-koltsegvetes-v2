@@ -6,19 +6,18 @@ const OUTPUT_FILE = './src/data/config.json';
 
 const workbook = xlsx.readFile(INPUT_FILE);
 const sheetName = workbook.SheetNames[0];
-const tsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
+const json = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
 let configJson = {};
-tsv.split('\n').forEach((row, i) => {
-	if (i === 0) return;
-	row = row.split('\t');
-	if (row.length < 2) return;
-	console.log(row);
-	const keyParts = row[0].split('\.');
+json.forEach(row => {
+	const fullKey = row['Kulcs'];
+	const value = row['Érték'];
+	if (!fullKey || !value) return;
+	const keyParts = fullKey.split('\.');
 	const group = keyParts[0];
 	const key = keyParts[1];
 	configJson[group] = configJson[group] || {};
-	configJson[group][key] = row[1];
+	configJson[group][key] = value;
 });
 
 fs.writeFileSync(OUTPUT_FILE, JSON.stringify(configJson));
