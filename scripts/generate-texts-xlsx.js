@@ -48,6 +48,22 @@ const rows = [
 		'Magyarázat'
 	],
 	[
+		'url', 'http://koko.deepdata.hu/',
+		'A weboldal leendő URL-je. Keresőoptimalizálásnál és megosztásnál van szerepe.'
+	],
+	[
+		'modules.income', 1,
+		'Bevételek szakasz megjelenítése? (1 = Igen, 0 = Nem)'
+	],
+	[
+		'modules.inex', 1,
+		'Mérleg szakasz megjelenítése? (1 = Igen, 0 = Nem)'
+	],
+	[
+		'modules.milestones', 1,
+		'Fejlesztések szakasz megjelenítése? (1 = Igen, 0 = Nem)'
+	],
+	[
 		'defaultYear', 2018,
 		'Alapértelmezettként kiválasztott év.'
 	],
@@ -66,6 +82,22 @@ const rows = [
 	[
 		'seo.description', 'Mintaváros költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.',
 		'Google találatban, ill. Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő leírás. Max. 160 karakter.'
+	],
+	[
+		'seo.ogImage', 'https://picsum.photos/id/122/2048/1536',
+		'Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép URL-je.'
+	],
+	[
+		'seo.ogImageType', 'image/png',
+		'Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép MIME formátuma.'
+	],
+	[
+		'seo.ogImageHeight', 1536,
+		'Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép magassága (px).'
+	],
+	[
+		'seo.ogImageWidth', 2048,
+		'Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép szélessége (px).'
 	],
 	[
 		'social.text', 'Mintaváros költségvetése',
