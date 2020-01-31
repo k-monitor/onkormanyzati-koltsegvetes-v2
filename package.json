@@ -7,7 +7,9 @@
   "scripts": {
     "build": "gridsome build",
     "develop": "gridsome develop",
-    "explore": "gridsome explore"
+    "explore": "gridsome explore",
+    "new-config": "node scripts/generate-config",
+    "prepare": "node scripts/prepare"
   },
   "dependencies": {
     "babel-runtime": "^6.26.0",

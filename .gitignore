@@ -14,7 +14,7 @@ dist
 # -----------------
 
 # Generated data:
-input/texts-template.xlsx
+input/config.xlsx
 src/data/2*
 src/data/config.json
 src/data/data.json

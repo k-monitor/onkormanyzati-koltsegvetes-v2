@@ -1,7 +1,7 @@
 const xl = require('excel4node');
 
 const BUDGET_FILE = "input/budget.xlsx";
-const OUTPUT_FILE = "input/texts-template.xlsx";
+const OUTPUT_FILE = "input/config.xlsx";
 
 const wb = new xl.Workbook();
 
@@ -40,7 +40,7 @@ const inputStyle = wb.createStyle({
 	}
 });
 
-const textsSheet = wb.addWorksheet('Szövegek');
+const textsSheet = wb.addWorksheet('config');
 
 const rows = [
 	[
@@ -53,11 +53,11 @@ const rows = [
 	],
 	[
 		'modules.income', 1,
-		'Bevételek szakasz megjelenítése? (1 = Igen, 0 = Nem)'
+		'Bevételek szakasz megjelenítése? (1 = Igen, 0 = Nem) Ha ki van kapcsolva, akkor a költségvetés bemutatása a kiadásokkal indul. Automatikusan ki lesz kapcsolva, ha nincs bevételi adat.'
 	],
 	[
 		'modules.inex', 1,
-		'Mérleg szakasz megjelenítése? (1 = Igen, 0 = Nem)'
+		'Mérleg szakasz megjelenítése? (1 = Igen, 0 = Nem) Automatikusan kikapcsol, ha a "modules.income" ki van kapcsolva.'
 	],
 	[
 		'modules.milestones', 1,
