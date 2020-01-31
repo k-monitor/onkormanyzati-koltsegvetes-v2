@@ -1,6 +1,7 @@
 const fs = require('fs');
 const xl = require('excel4node');
 const defaultConfig = require('./default-config.json');
+const defaultMilestones = require('./default-milestones.json');
 require('./prepare-data'); // required for tooltips generation
 
 const OUTPUT_FILE = "input/config.xlsx";
@@ -60,9 +61,9 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 			}
 		});
 	});
-	sheet.column(1).setWidth(colWidths[0]);
-	sheet.column(2).setWidth(colWidths[1]);
-	sheet.column(3).setWidth(colWidths[2]);
+	colWidths.forEach((w, i) => {
+		sheet.column(i + 1).setWidth(w);
+	});
 	sheet.row(1).freeze();
 }
 
@@ -114,5 +115,10 @@ Object.keys(ids).sort().forEach(id => {
 });
 const tooltipsSheet = wb.addWorksheet('tooltips');
 aoaTo3colSheet(tooltipsSheet, tooltipRows, 2, [10, 50, 100]);
+
+// milestones sheet
+
+const milestonesSheet = wb.addWorksheet('milestones');
+aoaTo3colSheet(milestonesSheet, defaultMilestones, -1, [10, 5, 20, 20, 20, 80]);
 
 wb.write(OUTPUT_FILE);
