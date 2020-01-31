@@ -14,10 +14,14 @@ json.forEach(row => {
 	const value = row['Érték'];
 	if (!fullKey || !value) return;
 	const keyParts = fullKey.split('\.');
-	const group = keyParts[0];
-	const key = keyParts[1];
-	configJson[group] = configJson[group] || {};
-	configJson[group][key] = value;
+	if (keyParts.length === 1) {
+		configJson[fullKey] = value;
+	} else if (keyParts.length === 2) {
+		const group = keyParts[0];
+		const key = keyParts[1];
+		configJson[group] = configJson[group] || {};
+		configJson[group][key] = value;
+	}
 });
 
 fs.writeFileSync(OUTPUT_FILE, JSON.stringify(configJson));
