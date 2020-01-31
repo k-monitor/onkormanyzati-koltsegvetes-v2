@@ -44,7 +44,6 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 - **input/config.xlsx** - A weboldal beállításai és szövegei.
 - **input/milestones.xlsx** - A fejlesztések adatai.
 - **input/tags.xlsx** - A kereső által használt címkehalmazok.
-- **input/tooltips.xlsx** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei.
 - **src/data/config.js** - A weboldal beállításai, szövegei.
 - **src/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
 - **src/data/functions.tsv** - A funkcionális kategóriák fa struktúrája.
@@ -101,6 +100,14 @@ A "config" munkalap formátuma:
 	- 2. oszlop: testreszabható érték
 	- 3. oszlop: magyarázat
 
+A "tooltips" munkalap formátuma:
+
+- az 1. sor a fejléc, a cellák értéke nincs megkötve
+- 2. sortól kezdve kulcs-érték párok, magyarázattal:
+	- 1. oszlop: funkcionális/közgazdasági kategória azonosító
+	- 2. oszlop: funkcionális/közgazdasági kategória megnevezése
+	- 3. oszlop: testreszabható súgószöveg az adott kategóriához
+
 
 
 ### input/milestones.xlsx
@@ -148,19 +155,6 @@ Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell mega
 	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
 	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
 	- 4. oszlop tartalmazza a címkéket: vesszővel, és opcionálisan még szóközzel is elválasztott kifejezések
-
-
-
-### input/tooltips.xlsx
-
-Az egyes kategóriákhoz tartozó tooltip-ek szövegét a `tooltips.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell megadni, az alábbi szerkezetben:
-
-- az 1. sor opcionálisan lehet fejléc
-- további sorok:
-	- 1. oszlop a kategória azonosító:
-		- funkcionális kategória esetén egy természetes szám
-		- közgazdasági kategória esetén a `B123` vagy `K123` alakú azonosítót kell használni
-	- 2. oszlop pedig a tooltip szövege
 
 
 

@@ -96,18 +96,18 @@ Object.keys(data).forEach(year => {
 });
 let tooltipRows = [
 	['Azon.', 'Megnevezés', 'Súgószöveg'],
-	['FB', 'Alaptevékenység finanszírozási egyenlege', 'Lorem ipsum for FB'],
-	['RE', 'Alaptevékenység szabad maradványa', 'Lorem ipsum for RE']
+	['FB', 'Alaptevékenység finanszírozási egyenlege', 'Itt rövid leírás olvasható a kategóriáról: FB'],
+	['RE', 'Alaptevékenység szabad maradványa', 'Itt rövid leírás olvasható a kategóriáról: RE']
 ];
 Object.keys(ids).sort().forEach(id => {
 	const names = Object.keys(ids[id]);
 	if (names.length === 1) {
-		tooltipRows.push([id, names[0], `Lorem ipsum for ${id}`])
+		tooltipRows.push([id, names[0], `Itt rövid leírás olvasható a kategóriáról: ${id}`])
 	} else {
 		names.forEach(name => {
 			const years = ids[id][name];
 			years.forEach(year => {
-				tooltipRows.push([`${id}/${year}`, name, `Lorem ipsum for ${id}/${year}`]);
+				tooltipRows.push([`${id}/${year}`, name, `Itt rövid leírás olvasható a kategóriáról: ${id}/${year}`]);
 			});
 		});
 	}
