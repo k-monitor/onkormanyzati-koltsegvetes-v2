@@ -44,26 +44,45 @@ const descStyle = wb.createStyle({
 const textsSheet = wb.addWorksheet('Szövegek');
 
 const rows = [
-	['Kulcs', 'Elnevezés', 'Érték', 'Magyarázat'],
 	[
-		'siteName', 'Honlap elnevezése', 'Mintaváros',
+		'Kulcs', 'Elnevezés', 'Érték',
+		'Magyarázat'
+	],
+	[
+		'seo.siteName', 'Honlap elnevezése', 'Mintaváros',
 		'Böngészőablak címsora: "Lap elnevezése - Honlap elnevezése", teljes hossz max. 60 karakter.'
 	],
 	[
-		'pageTitle', 'Lap elnevezése', 'Költségvetés',
+		'seo.pageTitle', 'Lap elnevezése', 'Költségvetés',
 		'Böngészőablak címsora: "Lap elnevezése - Honlap elnevezése", teljes hossz max. 60 karakter.'
 	],
 	[
-		'ogTitle', 'Lap elnevezése (social)', 'MINTAVÁROS KÖLTSÉGVETÉSE',
+		'seo.ogTitle', 'Lap elnevezése (social)', 'MINTAVÁROS KÖLTSÉGVETÉSE',
 		'Facebook/Twitter kártya címsora.'
 	],
 	[
-		'description', 'Honlap leírása', 'Mintaváros költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.',
+		'seo.description', 'Honlap leírása', 'Mintaváros költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.',
 		'Google találatban, Facebook/Twitter kártyában megjelenő leírás. Max. 160 karakter.'
 	],
 	[
-		'socialText', 'Poszt szövege/tárgya', 'Mintaváros költségvetése',
+		'social.text', 'Poszt szövege/tárgya', 'Mintaváros költségvetése',
 		'Twitter bejegyzés szövege, LinkedIn poszt vagy email tárgya.'
+	],
+	[
+		'navBar.welcome', 'Köszöntő link szövege', 'Köszöntő',
+		'A felső navigációs sávban megjelenő szöveg.'
+	],
+	[
+		'navBar.inex', 'Költségvetés link szövege', 'Költségvetés',
+		'A felső navigációs sávban megjelenő szöveg.'
+	],
+	[
+		'navBar.milestones', 'Fejlesztések link szövege', 'Fejlesztések',
+		'A felső navigációs sávban megjelenő szöveg.'
+	],
+	[
+		'navBar.moreInfo', 'További információ link szövege', 'A projektről',
+		'A felső navigációs sávban megjelenő szöveg.'
 	]
 ];
 
@@ -74,7 +93,7 @@ rows.forEach((r, i) => {
 			cell.style(headerStyle);
 		} else if (j === 2) {
 			cell.style(inputStyle);
-		} else if (j === 3) {
+		} else if (j === 0 || j === 3) {
 			cell.style(descStyle);
 		}
 	});

@@ -1,3 +1,5 @@
+const configJson = require('./config.json');
+
 // Settings
 
 const url = 'http://koko.deepdata.hu/';
@@ -12,25 +14,10 @@ const modules = {
 // Texts
 
 const seo = {
-	siteName: `${city}`,
-	pageTitle: 'Költségvetés',
-	ogTitle: `[${city.toUpperCase()}] KÖLTSÉGVETÉSE`,
-	description: `${city} költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.`,
 	ogImage: 'https://picsum.photos/id/122/2048/1536',
 	ogImageType: 'image/png',
 	ogImageHeight: 1536,
 	ogImageWidth: 2048
-};
-
-const social = {
-	text: `${city} költségvetése`
-};
-
-const navBar = {
-	welcome: 'Köszöntő',
-	inex: 'Költségvetés',
-	milestones: 'Fejlesztések',
-	moreInfo: 'A projektről'
 };
 
 const search = {
@@ -99,7 +86,7 @@ const feedback = {
 
 // ---
 
-module.exports = {
+module.exports = Object.assign({
 	city,
 	defaultYear,
 	feedback,
@@ -115,4 +102,4 @@ module.exports = {
 	url,
 	vis,
 	welcome
-};
+}, configJson);
