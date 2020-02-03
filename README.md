@@ -18,7 +18,7 @@ A beüzemelés lépései:
 1. Másold be az önkormányzattól kapott XLSX fájlt az `input` mappába, `budget.xlsx` néven.
 1. Futtasd le a `yarn new-config` parancsot, ez legenerálja az `input/config.xlsx` fájlt, melynek tartalma részben függ a `budget.xlsx`-től.
 1. Töltsd ki a `config.xlsx` fájlt, ez tartalmazza a weboldal beállításait és szövegeit.
-1. **TODO: ?** ~~Ellenőrizd, hogy az alábbiakban bemutatott XLSX fájlok mind jelen vannak-e az `input` mappában, és mindegyiknek megfelelő-e a formátuma.~~
+1. Ellenőrizd, hogy az alábbiakban bemutatott XLSX fájlok mind jelen vannak-e az `input` mappában, és mindegyiknek megfelelő-e a formátuma.
 1. A projekt mappájában futtasd le a `yarn prepare` parancsot, ez az `input` mappában levő fájlokban rejlő adatokat átalakítja a vizualizációnak megfelelő formátumra. A generált adatfájlok az `src/data` mappába kerülnek, a weboldal fejlesztésekor és generálásakor innen lesznek kiolvasva.
 1. A projekt mappájában indítsd el a `gridsome develop` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
 1. A weboldal legenerálásához használd a `gridsome build` parancsot. (Ez lefuttatja a `prepare` szkriptet is.) A kész weboldal a `dist` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
@@ -42,7 +42,6 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 
 - **input/budget.xlsx** - A vizualizáció adatainak forrása.
 - **input/config.xlsx** - A weboldal beállításai és szövegei.
-- **input/milestones.xlsx** - A fejlesztések adatai.
 - **input/tags.xlsx** - A kereső által használt címkehalmazok.
 - **src/data/config.js** - A weboldal beállításai, szövegei.
 - **src/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
@@ -94,7 +93,7 @@ Ez a fájl írja le a weboldal beállításait és szövegeit.
 
 A "config" munkalap formátuma:
 
-- az 1. sor a fejléc, melynek első 2 eleme kötelezően "Kulcs" és "Érték"
+- az 1. sor a fejléc, melynek első 2 eleme kötelezően "key" és "value"
 - 2. sortól kezdve kulcs-érték párok, magyarázattal:
 	- 1. oszlop: kulcs, mely azonosítja a beállítást/szöveget a program számára
 	- 2. oszlop: testreszabható érték
@@ -104,37 +103,26 @@ A "tooltips" munkalap formátuma:
 
 - az 1. sor a fejléc, a cellák értéke nincs megkötve
 - 2. sortól kezdve kulcs-érték párok, magyarázattal:
-	- 1. oszlop: funkcionális/közgazdasági kategória azonosító
+	- 1. oszlop: funkcionális/közgazdasági kategória azonosító (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
 	- 2. oszlop: funkcionális/közgazdasági kategória megnevezése
 	- 3. oszlop: testreszabható súgószöveg az adott kategóriához
 
+A "milestones" munkalap formátuma:
 
-
-### input/milestones.xlsx
-
-A fejlesztések szakaszban az összes adott évre vonatkozó fejlesztés listázódik. Emellett lehetőség van az egyes költségvetési kategóriákhoz pontosan egy fejlesztést rendelni.
-
-Ezeket az adatokat 2 táblával lehet leírni. A program a `milestones.xlsx` fájlt olvassa, annak első munkalapjáról a fejlesztések adatait, második munkalapjáról pedig a költségvetési kategóriák és fejlesztések kapcsolatait.
-
-Első munkalap formátuma:
-
-- az 1. sor opcionálisan lehet fejléc
-- további sorok:
-	- 1. oszlop a fejlesztés azonosítója: bármi lehet, de egyedi értékeknek kell lenniük, mert ezt fogjuk használni a második munkalapon
-	- 2. oszlop az évszám
-	- 3. oszlop a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
-	- 4. oszlop a fejlesztés megnevezése, minél rövidebb, annál jobb
-	- 5. oszlop a fejlesztés rövid leírása
-	- 6. oszlop a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
-
-Második munkalap formátuma:
-
-- az 1. sor opcionálisan lehet fejléc
-- további sorok:
-	- 1. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
-	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
-	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
-	- 4. oszlop a fejlesztés azonosítója (ld. első munkalap 1. oszlopa)
+- az 1. sor a fejléc, melynek oszlopai kötelezően:
+	- "nodeId"
+	- "year"
+	- "imageFile"
+	- "videoFile"
+	- "title"
+	- "descriptionInMarkdown"
+- 2. sortól kezdve a fejlesztések adatai:
+	- 1. oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
+	- 2. oszlop: azon év, amelyhez a fejlesztés tartozik
+	- 3. oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
+	- 4. oszlop: a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
+	- 5. oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
+	- 6. oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
 
 
 
@@ -233,14 +221,8 @@ Formátuma JSON, struktúra:
 	},
 	"rels": {
 		"2018": {
-			"expense": {
-				"econ": { "K123": "fejl-1", ... },
-				"func": { ... }
-			},
-			"income": {
-				"econ": { ... },
-				"func": { ... }
-			}
+			"K123": "fejl-1",
+			...
 		},
 		...
 	}

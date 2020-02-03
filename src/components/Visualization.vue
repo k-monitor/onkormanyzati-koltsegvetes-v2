@@ -322,8 +322,7 @@ export default {
 		},
 		milestoneId: function(node) {
 			try {
-				const dict = this.$milestones.rels[this.year][this.side][this.type];
-				const mid = dict[node.id];
+				const mid = this.$milestones.rels[this.year][node.id];
 				return mid ? "milestone-modal-" + mid : null;
 			} catch (e) {
 				return null;

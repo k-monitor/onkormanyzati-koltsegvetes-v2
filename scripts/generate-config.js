@@ -54,11 +54,11 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 			}
 			if (i === 0) {
 				cell.style(headerStyle);
-			} else if (j === inputIndex) {
+			} else if (inputIndex.indexOf(j) > -1) {
 				cell.style(inputStyle);
-			} else if (j === 0) {
+			}/* else if (j === 0) {
 				cell.style(keyStyle);
-			}
+			}*/
 		});
 	});
 	colWidths.forEach((w, i) => {
@@ -70,7 +70,7 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 // config sheet
 
 const configSheet = wb.addWorksheet('config');
-aoaTo3colSheet(configSheet, defaultConfig, 1, [25, 40, 100]);
+aoaTo3colSheet(configSheet, defaultConfig, [1], [25, 40, 100]);
 
 // tooltips sheet
 
@@ -114,11 +114,11 @@ Object.keys(ids).sort().forEach(id => {
 	}
 });
 const tooltipsSheet = wb.addWorksheet('tooltips');
-aoaTo3colSheet(tooltipsSheet, tooltipRows, 2, [10, 50, 100]);
+aoaTo3colSheet(tooltipsSheet, tooltipRows, [2], [10, 50, 100]);
 
 // milestones sheet
 
 const milestonesSheet = wb.addWorksheet('milestones');
-aoaTo3colSheet(milestonesSheet, defaultMilestones, -1, [10, 5, 20, 20, 20, 80]);
+aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5], [10, 5, 20, 20, 20, 80]);
 
 wb.write(OUTPUT_FILE);

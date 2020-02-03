@@ -1,11 +1,11 @@
 [
 	[
-		"Azon.",
-		"Év",
-		"Képfájl neve",
-		"Videófájl neve",
-		"Címsor",
-		"Leírás (Markdown)"
+		"nodeId",
+		"year",
+		"imageFile",
+		"videoFile",
+		"title",
+		"descriptionInMarkdown"
 	],
 	[
 		"B8",

@@ -9,8 +9,8 @@ const json = xlsx.utils.sheet_to_json(workbook.Sheets['config']);
 
 let configJson = {};
 json.forEach(row => {
-	const fullKey = row['Kulcs'];
-	const value = row['Érték'];
+	const fullKey = row['key'];
+	const value = row['value'];
 	if (!fullKey || !value) return;
 	const keyParts = fullKey.split('\.');
 	if (keyParts.length === 1) {

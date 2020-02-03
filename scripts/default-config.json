@@ -1,8 +1,8 @@
 [
 	[
-		"Kulcs",
-		"Érték",
-		"Magyarázat"
+		"key",
+		"value",
+		"help"
 	],
 	[
 		"url",
