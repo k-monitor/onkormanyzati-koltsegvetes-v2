@@ -18,7 +18,7 @@ import Social from '~/components/Social';
 import FeedbackModal from '~/components/FeedbackModal';
 import MoreInfoModal from '~/components/MoreInfoModal';
 
-import config from '~/data/config.js';
+import config from '~/data/config.json';
 import data from '~/data/data.json';
 import eventBus from '~/event-bus.js';
 import milestones from '~/data/milestones.json';

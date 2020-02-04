@@ -75,7 +75,7 @@
 						@mouseover="hovered=i"
 						data-toggle="tooltip"
 						data-placement="left"
-						:title="$tooltips[n.id]"
+						:title="$tooltips[n.id] || $tooltips[n.id + '/' + year]"
 					>
 						<div class="text-right w-100">
 							{{ $util.groupNums(n.value) }}
@@ -322,8 +322,7 @@ export default {
 		},
 		milestoneId: function(node) {
 			try {
-				const dict = this.$milestones.rels[this.year][this.side][this.type];
-				const mid = dict[node.id];
+				const mid = this.$milestones.rels[this.year][node.id];
 				return mid ? "milestone-modal-" + mid : null;
 			} catch (e) {
 				return null;

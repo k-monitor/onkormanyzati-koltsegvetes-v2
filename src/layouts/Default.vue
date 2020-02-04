@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import config from "~/data/config.js"; // import is needed because metaInfo below cannot access $config
+import config from "~/data/config.json"; // import is needed because metaInfo below cannot access $config
 
 export default {
 	metaInfo: {

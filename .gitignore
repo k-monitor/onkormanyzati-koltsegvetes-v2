@@ -14,7 +14,9 @@ dist
 # -----------------
 
 # Generated data:
+input/config.xlsx
 src/data/2*
+src/data/config.json
 src/data/data.json
 src/data/milestones.json
 src/data/tags.json

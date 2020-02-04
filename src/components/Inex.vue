@@ -63,7 +63,7 @@
 								data-toggle="tooltip"
 								data-placement="left"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || '')"
+								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || $tooltips[n.id + '/' + year] || '')"
 							>
 								<div class="text-left">
 									{{ n.name }}
@@ -89,7 +89,7 @@
 								data-toggle="tooltip"
 								data-placement="right"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || '')"
+								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || $tooltips[n.id + '/' + year] || '')"
 							>
 								<div class="value mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
