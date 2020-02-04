@@ -3,24 +3,24 @@
 		<div class="container-fluid">
 			<div class="row justify-content-center">
 				<div class="col text-center">
-					<h2>
-						{{ $config.milestones.title }}
-						<small class="ml-1 text-muted">{{ year }}</small>
-					</h2>
+					<SectionHeading
+						:title="$config.milestones.title"
+						:year="year"
+					/>
 					<hr class="divider my-4 mb-5">
 				</div>
 			</div>
 			<div class="row">
 				<div
-				 class="col-md-6 col-lg-4 embed-responsive embed-responsive-16by9 mx-auto"
-				 v-for="(m, i) in milestones"
-				 :key="m.id"
+					class="col-md-6 col-lg-4 embed-responsive embed-responsive-16by9 mx-auto"
+					v-for="(m, i) in milestones"
+					:key="m.id"
 				>
 					<Milestone
-					 class="embed-responsive-item"
-					 :milestone="m"
-					 :nextId="milestones[(i + 1) % milestones.length].id"
-					 :prevId="milestones[(milestones.length + i - 1) % milestones.length].id"
+						class="embed-responsive-item"
+						:milestone="m"
+						:nextId="milestones[(i + 1) % milestones.length].id"
+						:prevId="milestones[(milestones.length + i - 1) % milestones.length].id"
 					/>
 				</div>
 			</div>

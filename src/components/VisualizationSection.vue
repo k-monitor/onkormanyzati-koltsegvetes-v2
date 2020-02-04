@@ -3,10 +3,10 @@
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
-					<h2>
-						{{ title }}
-						<small class="ml-1 text-muted">{{ year }}</small>
-					</h2>
+					<SectionHeading
+						:title="title"
+						:year="year"
+					/>
 					<hr class="divider my-4 mb-5">
 				</div>
 			</div>

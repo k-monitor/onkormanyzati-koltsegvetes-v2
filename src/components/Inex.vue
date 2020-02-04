@@ -3,10 +3,10 @@
 		<div class="container">
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-8 text-center">
-					<h2>
-						{{ $config.inex.title }}
-						<small class="ml-1 text-muted">{{ year }}</small>
-					</h2>
+					<SectionHeading
+						:title="$config.inex.title"
+						:year="year"
+					/>
 					<hr class="divider my-4">
 				</div>
 			</div>

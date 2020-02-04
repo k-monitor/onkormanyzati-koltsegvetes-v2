@@ -119,10 +119,12 @@ export default {
 	},
 	methods: {
 		handleYearSelected(year) {
-			this.year = year;
+			if (this.$d[year]) this.year = year;
 		}
 	},
 	mounted() {
+		this.$eventBus.$on("yearSelected", this.handleYearSelected);
+
 		// Smooth scrolling using jQuery easing
 		$('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function() {
 			if (
@@ -177,7 +179,8 @@ html {
 	color: fade-out($white, 0.25);
 }
 
-h1, h2 {
+h1,
+h2 {
 	text-transform: uppercase;
 }
 

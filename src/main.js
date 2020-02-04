@@ -1,6 +1,7 @@
 import VueMarkdown from 'vue-markdown'
 
 import DefaultLayout from '~/layouts/Default';
+import SectionHeading from '~/components/SectionHeading';
 import NavBar from '~/components/NavBar';
 import SearchModal from '~/components/SearchModal';
 import SearchModalContent from '~/components/SearchModalContent';
@@ -28,6 +29,7 @@ import tooltips from '~/data/tooltips.json';
 export default function (Vue, { router, head, isClient }) {
 	Vue.component('VueMarkdown', VueMarkdown);
 	Vue.component('Layout', DefaultLayout);
+	Vue.component('SectionHeading', SectionHeading);
 	Vue.component('NavBar', NavBar);
 	Vue.component('SearchModal', SearchModal);
 	Vue.component('SearchModalContent', SearchModalContent);
