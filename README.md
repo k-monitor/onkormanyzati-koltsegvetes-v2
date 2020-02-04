@@ -51,6 +51,21 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 - **src/data/tooltips.json (generált)** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei, előkészítve.
 
 
+### Markdown formátum
+
+Az alábbiakban bemutatott input fájlokban helyenként támogatott a Markdown formátum használata. Ez azt jelenti, hogy az egyszerű szöveghez hozzáadhatók a Markdown nyelv speciális karakterei és szerkezetei, annak érdekében, hogy a szöveg végül a honlapon formázottan jelenjen meg. A KÖKÖ által támogatott Markdown jelölések és formázások az alábbiak:
+
+Input (Markdown szöveg)                                              | Output (honlapon megjelenő formázott szöveg)
+---------------------------------------------------------------------|---------------------------------------------
+`A **második** szó félkövér lesz.`                                   | A **második** szó félkövér lesz.
+`A _második_ szó dőlt lesz.`                                         | A _második_ szó dőlt lesz.
+`Itt egy [linket](https://www.markdowntutorial.com/) helyeztünk el.` | Itt egy [linket](https://www.markdowntutorial.com/) helyeztünk el.
+<code>- Ez<br>- egy<br>- lista</code> | <ul><li>Ez</li><li>egy</li><li>lista</li></ul>
+<code>1. Ez pedig<br>1. egy számozott<br>1. lista</code> | <ol><li>Ez pedig</li><li>egy számozott</li><li>lista</li></ol>
+
+A listák esetében fontos, hogy az első listaelem előtt és az utolsó listaelem után legyen 1-1 üres sor.
+
+
 
 ### input/budget.xlsx
 
@@ -65,13 +80,13 @@ A munkalapoknak 2 formátumát ismeri a program. Az egyik az elmúlt évekre von
 Az ilyen munkalapokon megtalálható a mátrix, vagyis nem csak közgazdasági bontásban vannak az adatok, hanem funkcionális bontásban is. Elvárt formátum:
 
 - 1. sor: lényegtelen
-- 2. sor: a 4. (D) oszloptól kezdve funkcionális kategóriák `<AZONOSÍTÓSZÁM> <ELNEVEZÉS>` formában. Az elnevezés lényegtelen. A programnak csak az azonosítószám kell, amit szóközzel kell elválasztani a többi adattól, pl.: *"042120 Mezőgazdasági támogatások"*.
+- 2. sor: a 4. (D) oszloptól kezdve funkcionális kategóriák `<AZONOSÍTÓSZÁM> <ELNEVEZÉS>` formában. Az elnevezés lényegtelen. A programnak csak az azonosítószám kell, amit szóközzel kell elválasztani a többi adattól, pl.: _"042120 Mezőgazdasági támogatások"_.
 - 3. sortól kezdve:
 	- 1. oszlop: lényegtelen
 	- 2. oszlop: közgazdasági kategória elnevezése és kiegészítő információi.
-		- A cellákban szerepelnie kell a kategória azonosítójának, `(B123)` vagy `(K123)` formában. Ezek az azonosítók egymással hierarchiában vannak: egy `Bx` azonosító gyermekei a `Bx` prefixű, eggyel több számjegyű azonosítók, ÉS a `Bx` azonosítójú, *"ebből:"* kezdetű kategóriák. Előfordul, hogy a szintek között nem egy, hanem két számjegy különbség van.
+		- A cellákban szerepelnie kell a kategória azonosítójának, `(B123)` vagy `(K123)` formában. Ezek az azonosítók egymással hierarchiában vannak: egy `Bx` azonosító gyermekei a `Bx` prefixű, eggyel több számjegyű azonosítók, ÉS a `Bx` azonosítójú, _"ebből:"_ kezdetű kategóriák. Előfordul, hogy a szintek között nem egy, hanem két számjegy különbség van.
 		- A cellában opcionálisan szerepelhet egy összegképlet, de ezt a program nem használja, és ki is fogja vágni.
-		- Példa: *"Működési célú támogatások államháztartáson belülről (=07+...+10+21+32) (B1)"*
+		- Példa: _"Működési célú támogatások államháztartáson belülről (=07+...+10+21+32) (B1)"_
 	- 3. oszlop: az adott közgazdasági kategóriához tartozó összeg
 	- 4. oszloptól kezdve: az adott közgazdasági (sor) és funkcionális (oszlop) kategóriához tartozó számérték.
 	- A számértékből beolvasáskor a `,` és szóköz karakterek eltávolításra kerülnek.
@@ -89,25 +104,33 @@ Az ilyen munkalapokról hiányzik a funkcionális bontás. A formátum hasonló 
 
 ### input/config.xlsx
 
-Ez a fájl írja le a weboldal beállításait és szövegeit.
+Ez a fájl írja le a weboldal beállításait és szövegeit. A szerkeszthető oszlopokat sárgás szín jelöli.
 
-A "config" munkalap formátuma:
+Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips" munkalap csak az aktuális költségvetésben szereplő kategóriákat tartalmazza.
+
+
+
+#### A "config" munkalap formátuma:
 
 - az 1. sor a fejléc, melynek első 2 eleme kötelezően "key" és "value"
-- 2. sortól kezdve kulcs-érték párok, magyarázattal:
+- a 2. sortól kezdve kulcs-érték párok, magyarázattal:
 	- 1. oszlop: kulcs, mely azonosítja a beállítást/szöveget a program számára
-	- 2. oszlop: testreszabható érték
+	- 2. oszlop: testreszabható érték, bizonyos esetekben a Markdown formátum támogatott (ez a magyarázatban jelezve van)
 	- 3. oszlop: magyarázat
 
-A "tooltips" munkalap formátuma:
+
+
+#### A "tooltips" munkalap formátuma:
 
 - az 1. sor a fejléc, a cellák értéke nincs megkötve
-- 2. sortól kezdve kulcs-érték párok, magyarázattal:
+- a 2. sortól kezdve kulcs-érték párok, magyarázattal:
 	- 1. oszlop: funkcionális/közgazdasági kategória azonosító (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
 	- 2. oszlop: funkcionális/közgazdasági kategória megnevezése
 	- 3. oszlop: testreszabható súgószöveg az adott kategóriához
 
-A "milestones" munkalap formátuma:
+
+
+#### A "milestones" munkalap formátuma:
 
 - az 1. sor a fejléc, melynek oszlopai kötelezően:
 	- "nodeId"
@@ -116,7 +139,7 @@ A "milestones" munkalap formátuma:
 	- "videoFile"
 	- "title"
 	- "descriptionInMarkdown"
-- 2. sortól kezdve a fejlesztések adatai:
+- a 2. sortól kezdve a fejlesztések adatai:
 	- 1. oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
 	- 2. oszlop: azon év, amelyhez a fejlesztés tartozik
 	- 3. oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
@@ -210,7 +233,7 @@ Formátuma JSON, struktúra:
 ```json
 {
 	"milestones": {
-		"milestone_id": {
+		"fejl-1": {
 			"year": 2018,
 			"picture": "...",
 			"title": "...",
@@ -236,7 +259,7 @@ A `milestones` objektumban a kulcsok a fejlesztés azonosítók, az érték pedi
 - `title`: fejléc
 - `description`: leírás
 
-A `rels` objektum évekre, oldalakra (bevétel/kiadás) és bontásokra (funkcionális/közgazdasági) tartalmazza a kategóriákhoz tartozó fejlesztéseket. A bontásokhoz tartozó objektumban a kulcsok a kategória azonosítók, az értékek a fejlesztés azonosítók.
+A `rels` objektum évekre bontva tartalmazza a kategóriákhoz tartozó fejlesztéseket. A bontásokhoz tartozó objektumban a kulcsok a kategória azonosítók, az értékek a fejlesztés azonosítók.
 
 
 
