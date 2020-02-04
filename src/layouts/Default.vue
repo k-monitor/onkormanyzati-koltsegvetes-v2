@@ -177,6 +177,10 @@ html {
 	color: fade-out($white, 0.25);
 }
 
+h1, h2 {
+	text-transform: uppercase;
+}
+
 // Custom horizontal rules
 hr.divider {
 	max-width: 3.25rem;
