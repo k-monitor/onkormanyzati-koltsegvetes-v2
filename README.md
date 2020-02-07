@@ -2,7 +2,11 @@
 
 *KÖKÖ: Közérthető Költségvetés*
 
-Az oldal alapja a StartBootstrap / Creative sablon.
+Az oldal alapja a [StartBootstrap / Creative](https://github.com/BlackrockDigital/startbootstrap-creative) sablon, illetve az [önkormányzati költségvetés vizualizáció v1.x](https://github.com/k-monitor/onkormanyzati-koltsegvetes-v1).
+
+*Copyright &copy; 2020 DeepData Ltd.*
+
+---
 
 
 
