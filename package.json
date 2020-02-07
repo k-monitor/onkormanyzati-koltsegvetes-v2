@@ -14,7 +14,7 @@
   "dependencies": {
     "babel-runtime": "^6.26.0",
     "bootstrap": "^4.3.1",
-    "gridsome": "^0.6.0",
+    "gridsome": "^0.7.0",
     "tinycolor2": "^1.4.1",
     "vue-markdown": "^2.2.4"
   },
