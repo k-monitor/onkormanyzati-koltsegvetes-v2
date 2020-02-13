@@ -39,7 +39,7 @@ header.masthead {
 			#{fade-out($masthead-overlay, 0.2)} 100%
 		),
 		url($masthead-img);
-	background-position: center;
+	background-position: center bottom;
 	background-repeat: no-repeat;
 	background-attachment: scroll;
 	background-size: cover;
