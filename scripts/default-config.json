@@ -51,7 +51,7 @@
 	],
 	[
 		"seo.ogImage",
-		"https://picsum.photos/id/122/2048/1536",
+		"http://koko.deepdata.hu/assets/img/mintavaros-01.png",
 		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép URL-je."
 	],
 	[
@@ -61,12 +61,12 @@
 	],
 	[
 		"seo.ogImageHeight",
-		1536,
+		750,
 		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép magassága (px)."
 	],
 	[
 		"seo.ogImageWidth",
-		2048,
+		1200,
 		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép szélessége (px)."
 	],
 	[
