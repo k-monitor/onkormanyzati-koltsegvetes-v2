@@ -1,5 +1,5 @@
 <template>
-	<header class="masthead d-flex align-items-center">
+	<header class="masthead d-flex align-items-center" id="masthead-parallax">
 		<div class="container h-100">
 			<div class="row h-100 align-items-center justify-content-center text-center">
 				<div class="col-lg-10 align-self-end">
@@ -20,7 +20,14 @@
 
 <script>
 export default {
-	props: ["href"]
+	props: ["href"],
+	mounted() {
+		window.addEventListener("scroll", function() {
+			const scrollPosition = window.pageYOffset;
+			const bgParallax = document.getElementById("masthead-parallax");
+			bgParallax.style.backgroundPositionY = (100 - scrollPosition / 2) + "%";
+		});
+	}
 };
 </script>
 
@@ -33,16 +40,7 @@ export default {
 header.masthead {
 	padding-top: 10rem;
 	padding-bottom: calc(10rem - #{$navbar-height});
-	background: linear-gradient(
-			to bottom,
-			#{fade-out($masthead-overlay, 0.2)} 0%,
-			#{fade-out($masthead-overlay, 0.2)} 100%
-		),
-		url($masthead-img);
-	background-position: center bottom;
-	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-size: cover;
+	// background & overlay defined in _theme.scss
 	h1 {
 		font-size: 2.25rem;
 	}

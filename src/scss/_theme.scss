@@ -83,6 +83,19 @@
 				background-color: $primary;
 			}
 		}
+
+		header.masthead {
+			background: linear-gradient(
+					to bottom,
+					#{fade-out(darken($primary, 33%), 0.2)} 0%,
+					#{fade-out(darken($primary, 33%), 0.2)} 100%
+				),
+				url($masthead-img);
+			background-position: center bottom;
+			background-repeat: no-repeat;
+			background-attachment: scroll;
+			background-size: cover;
+		}
 	}
 }
 

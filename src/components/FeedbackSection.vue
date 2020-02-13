@@ -1,5 +1,5 @@
 <template>
-	<section class="page-section bg-primary parallax">
+	<section class="page-section bg-primary" id="feedback-parallax">
 		<div class="container">
 			<div class="row">
 				<div class="col">
@@ -26,7 +26,7 @@ export default {
 	mounted() {
 		window.addEventListener("scroll", function() {
 			const scrollPosition = window.pageYOffset;
-			const bgParallax = document.getElementsByClassName("parallax")[0];
+			const bgParallax = document.getElementById("feedback-parallax");
 			bgParallax.style.backgroundPositionY = scrollPosition / -12 + "%";
 		});
 	}
