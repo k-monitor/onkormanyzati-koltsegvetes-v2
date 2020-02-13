@@ -69,11 +69,21 @@ export default {
 		transition: all 0.2s ease;
 		width: 100%;
 		z-index: -1;
+
+		&::after {
+			content: "";
+			display: block;
+			height: 100%;
+			left: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+		}
 	}
 
 	.milestone-title {
 		// https://cssgradient.io/
-		$shadow: black;
+		$shadow: fade-out(black, 0.6);
 		background: $shadow;
 		background: -moz-linear-gradient(0deg, $shadow 0%, rgba(0, 0, 0, 0) 100%);
 		background: -webkit-linear-gradient(

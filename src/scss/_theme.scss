@@ -96,6 +96,10 @@
 			background-attachment: scroll;
 			background-size: cover;
 		}
+
+		.milestone .milestone-picture::after {
+			background: fade-out(darken($primary, 1%), 0.2);
+		}
 	}
 }
 
