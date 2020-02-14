@@ -212,4 +212,28 @@ hr.light {
 .page-section {
 	padding: 8rem 0;
 }
+
+// Tooltips on mobile
+
+@include media-breakpoint-down(sm) {
+	.tooltip {
+		bottom: 36px !important;
+		display: flex;
+		justify-content: center;
+		left: 0;
+		margin: auto;
+		position: fixed !important;
+		top: auto !important;
+		transform: none !important;
+		width: 100%;
+
+		.arrow {
+			display: none;
+		}
+
+		.tooltip-inner {
+			max-width: none;
+		}
+	}
+}
 </style>
