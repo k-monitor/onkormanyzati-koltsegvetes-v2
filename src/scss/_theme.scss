@@ -97,8 +97,16 @@
 			background-size: cover;
 		}
 
-		.milestone .milestone-picture::after {
-			background: fade-out(darken($primary, 1%), 0.2);
+		@if $overlay-on-milestone-card-picture == true {
+			.milestone-modal-picture::after {
+				background: fade-out(darken($primary, 1%), 0.2);
+			}
+		}
+
+		@if $overlay-on-milestone-thumbnail == true {
+			.milestone .milestone-picture::after {
+				background: fade-out(darken($primary, 1%), 0.2);
+			}
 		}
 	}
 }

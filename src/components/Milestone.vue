@@ -55,6 +55,16 @@ export default {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
+
+	&::after {
+		content: "";
+		display: block;
+		height: 100%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+	}
 }
 
 .milestone {
@@ -69,16 +79,6 @@ export default {
 		transition: all 0.2s ease;
 		width: 100%;
 		z-index: -1;
-
-		&::after {
-			content: "";
-			display: block;
-			height: 100%;
-			left: 0;
-			position: absolute;
-			top: 0;
-			width: 100%;
-		}
 	}
 
 	.milestone-title {
