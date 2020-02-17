@@ -18,16 +18,16 @@
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
-								 id="face"
-								 src="assets/img/face.png"
-								 alt=""
-								 style="height: 100px;"
+									id="face"
+									src="assets/img/face.png"
+									alt=""
+									style="height: 100px;"
 								>
 							</div>
 							<div class="flex-grow-1 ml-5">
 								<img
-								 class="signo"
-								 src="assets/img/signo.png"
+									class="signo"
+									src="assets/img/signo.png"
 								>
 								<p class="mb-0">
 									<em>
@@ -43,8 +43,8 @@
 				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
 						<div
-						 class="btn btn-outline-light btn-xl js-scroll-trigger"
-						 @click="intro()"
+							class="btn btn-outline-light btn-xl js-scroll-trigger"
+							@click="intro()"
 						>Kipróbálom!</div>
 					</div>
 				</div>
@@ -72,7 +72,9 @@ export default {
 				.setOption("skipLabel", "Kilépés")
 				.setOption("tooltipPosition", "left")
 				.onbeforechange(function(targetElement) {
-					console.log(targetElement.className);
+					if (targetElement.className.includes("fa-search")) {
+						$("#navbarResponsive").addClass("show");
+					}
 					$("html, body").animate(
 						{
 							scrollTop: $(targetElement).offset().top - 160
@@ -82,6 +84,7 @@ export default {
 					);
 				})
 				.onexit(function() {
+					$("#navbarResponsive").removeClass("show");
 					$("#mainNav").css("position", "fixed");
 					$(".milestone-button").removeClass("disabled");
 				});
