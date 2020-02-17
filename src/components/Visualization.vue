@@ -385,6 +385,7 @@ export default {
 		display: flex;
 		flex: 1;
 		margin-bottom: 1px;
+		min-height: 24px; // iOS fix
 		padding: 0.1rem 0.5rem;
 	}
 
