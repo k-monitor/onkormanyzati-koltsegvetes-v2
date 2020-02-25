@@ -283,9 +283,15 @@ export default {
 	}
 
 	.vis {
-		height: 50vh;
 		font-size: 90%;
+		height: 75vh;
+		line-height: 1.15;
 		min-height: 400px;
+
+		@include media-breakpoint-up(md) {
+			height: 50vh;
+			line-height: inherit;
+		}
 	}
 
 	.value {
