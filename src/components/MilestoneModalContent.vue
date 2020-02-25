@@ -79,11 +79,17 @@ export default {
 		},
 		prev() {
 			$(".modal").modal("hide");
-			$("#" + this.prevModalId).modal("show");
+			const self = this;
+			setTimeout(function() {
+				$("#" + self.prevModalId).modal("show");
+			}, 325);
 		},
 		next() {
 			$(".modal").modal("hide");
-			$("#" + this.nextModalId).modal("show");
+			const self = this;
+			setTimeout(function() {
+				$("#" + self.nextModalId).modal("show");
+			}, 325);
 		}
 	},
 	mounted() {
