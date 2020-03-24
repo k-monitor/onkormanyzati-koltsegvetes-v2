@@ -3,6 +3,7 @@
   "name": "onkormanyzati-koltsegvetes",
   "version": "2.0.0",
   "description": "Önkormányzati költségvetés vizualizáció 2.0+",
+  "license": "GPL-3.0",
   "author": "Zsolt Jurányi <juranyi@deepdata.hu>",
   "scripts": {
     "build": "gridsome build",
