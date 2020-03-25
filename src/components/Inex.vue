@@ -64,6 +64,7 @@
 								data-placement="left"
 								data-html="true"
 								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || $tooltips[n.id + '/' + year] || '')"
+								oncontextmenu="return false;"
 							>
 								<div class="text-left">
 									{{ n.name }}
@@ -90,6 +91,7 @@
 								data-placement="right"
 								data-html="true"
 								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || $tooltips[n.id + '/' + year] || '')"
+								oncontextmenu="return false;"
 							>
 								<div class="value mr-2 no-wrap text-left">
 									<strong>{{ $util.groupNums(n.value, true) }}</strong>
@@ -261,6 +263,7 @@ export default {
 		justify-content: space-between;
 		border-bottom: 1px solid white;
 		padding: 0.1rem 0.5rem;
+		user-select: none;
 
 		&.small {
 			padding: 0.33rem 0.5rem;

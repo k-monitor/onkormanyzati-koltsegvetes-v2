@@ -76,6 +76,7 @@
 						data-toggle="tooltip"
 						data-placement="left"
 						:title="$tooltips[n.id] || $tooltips[n.id + '/' + year]"
+						oncontextmenu="return false;"
 					>
 						<div class="text-right w-100">
 							{{ $util.groupNums(n.value) }}
@@ -108,6 +109,7 @@
 					:data-index="i"
 					:key="n.id"
 					@mouseover="hovered=i"
+					oncontextmenu="return false;"
 				>
 					<span @click="down(i)">{{ n.name }}</span>
 					<span
@@ -387,6 +389,7 @@ export default {
 		margin-bottom: 1px;
 		min-height: 24px; // iOS fix
 		padding: 0.1rem 0.5rem;
+		user-select: none;
 	}
 
 	.back-bar {
