@@ -79,7 +79,8 @@
 						oncontextmenu="return false;"
 					>
 						<div class="text-right w-100">
-							{{ $util.groupNums(n.value) }}
+							<span class="d-inline d-sm-none">{{ $util.groupNums(n.value, true) }}</span>
+							<span class="d-none d-sm-inline">{{ $util.groupNums(n.value) }}</span>
 							<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
 						</div>
 					</div>
@@ -241,7 +242,7 @@ export default {
 		},
 		colorIndex: function(node) {
 			function norm(id) {
-				return (id + '').replace(/\D+/, '');
+				return (id + "").replace(/\D+/, "");
 			}
 
 			var id = node.id;
@@ -372,13 +373,26 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 .visualization {
-	.left-column,
+	.left-column {
+		width: 35%;
+	}
+	.middle-column {
+		width: 5%;
+	}
 	.right-column {
-		width: 45%;
+		width: 60%;
 	}
 
-	.middle-column {
-		width: 10%;
+	@include media-breakpoint-up(md) {
+		.left-column {
+			width: 45%;
+		}
+		.middle-column {
+			width: 10%;
+		}
+		.right-column {
+			width: 45%;
+		}
 	}
 
 	.bar,
@@ -388,7 +402,10 @@ export default {
 		flex: 1;
 		margin-bottom: 1px;
 		min-height: 24px; // iOS fix
-		padding: 0.1rem 0.5rem;
+		padding: 0.1rem;
+		@include media-breakpoint-up(md) {
+			padding: 0.1rem 0.5rem;
+		}
 		user-select: none;
 	}
 
@@ -432,7 +449,7 @@ export default {
 	}
 
 	.vis {
-		height: 50vh;
+		height: 75vh;
 		font-size: 90%;
 		min-height: 400px;
 
