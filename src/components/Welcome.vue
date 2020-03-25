@@ -100,7 +100,7 @@ export default {
 				steps.push({
 					element: "#inex-wrapper .vis .left-column .bar:nth-child(1)",
 					intro:
-						"Ha az egér egy hasáb fölé kerül, további információ jelenik meg. Próbálja ki!",
+						"Ha az egér egy hasáb fölé kerül (vagy mobilon hosszan rajta tartja az ujját), további információ jelenik meg. Próbálja ki!",
 					position: "top"
 				});
 			}
