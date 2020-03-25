@@ -102,6 +102,7 @@
 						<div class="bg-danger side"></div>
 					</div>
 				</div>
+				<p class="d-md-none font-italic p-3 small text-center text-muted">Érintőképernyős eszközökön a kategória leírások megjelenítéséhez tartsa az ujját a hasábon egy kis ideig.</p>
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
