@@ -7,6 +7,7 @@
 		>
 			<div
 				class="milestone-picture"
+				:class="{ overlay: milestone.overlay }"
 				:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 			></div>
 			<h5 class="milestone-title text-center text-white w-100">{{ milestone.title }}</h5>
@@ -56,7 +57,7 @@ export default {
 	background-repeat: no-repeat;
 	background-size: cover;
 
-	&::after {
+	&.overlay::after {
 		content: "";
 		display: block;
 		height: 100%;
