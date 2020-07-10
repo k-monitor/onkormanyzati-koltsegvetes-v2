@@ -71,7 +71,7 @@
 						:data-id="n.id"
 						:data-index="i"
 						:style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
-						@click="down(i)"
+						@click="down(n, i)"
 						@mouseover="hovered=i"
 						data-toggle="tooltip"
 						data-placement="left"
@@ -112,7 +112,7 @@
 					@mouseover="hovered=i"
 					oncontextmenu="return false;"
 				>
-					<span @click="down(i)">{{ n.name }}</span>
+					<span @click="down(n, i)">{{ n.name }}</span>
 					<span
 						class="btn btn-link milestone-button ml-auto"
 						data-toggle="modal"
@@ -160,9 +160,10 @@ export default {
 			var r = this.root;
 			var np = [r];
 			for (var p = 0; p < this.path.length; p++) {
-				var i = this.path[p];
-				if (r.children[i] && r.children[i].children.length > 0) {
-					r = r.children[i];
+				var id = this.path[p];
+				var c = r.children.filter(n => n.id == id)[0]
+				if (c && c.children.length > 0) {
+					r = c;
 					np.push(r);
 				} else {
 					break;
@@ -191,8 +192,10 @@ export default {
 			});
 		},
 		year: function(y) {
-			if (!this.data.func) this.mode = 0;
-			this.path = []; // go to the top, bc path contains indices, and they're different between years (due to sorting)
+			if (!this.data.func && this.mode != 0) {
+				this.mode = 0;
+				this.path = [];
+			}
 		}
 	},
 	methods: {
@@ -215,14 +218,14 @@ export default {
 
 			if (
 				node.name.includes("Finanszírozási") ||
-				(this.path.length > 0 &&
-					this.root.children[this.path[0]].name.includes("Finanszírozási"))
+				(this.nodePath.length > 1 &&
+					this.nodePath[1].name.includes("Finanszírozási"))
 			) {
 				color = "gainsboro";
 			}
 
-			if (this.path.length > 0) {
-				var opacity = node.value / this.node.children[0].value;
+			if (this.nodePath.length > 1) {
+				var opacity = node.value / this.nodePath[1].value;
 				opacity = 0.5 + opacity * 0.5;
 
 				color = tinycolor(color);
@@ -246,8 +249,8 @@ export default {
 			}
 
 			var id = node.id;
-			if (this.path.length > 0) {
-				id = this.root.children[this.path[0]].id;
+			if (this.nodePath.length > 1) {
+				id = this.nodePath[1].id;
 			}
 
 			id = norm(id);
@@ -293,13 +296,10 @@ export default {
 				return "";
 			}
 		},
-		down: function(index) {
+		down: function(node, index) {
 			$(".tooltip").remove();
-			if (
-				this.children[index].children &&
-				this.children[index].children.length > 0
-			) {
-				this.path.push(index);
+			if (node.children && node.children.length > 0) {
+				this.path.push(node.id);
 			}
 		},
 		up: function(n) {
@@ -353,7 +353,7 @@ export default {
 					for (let i = 0; i < self.children.length; i++) {
 						const node = self.children[i];
 						if (node.id == id) {
-							self.path.push(i);
+							self.path.push(id);
 						}
 					}
 				});
