@@ -6,7 +6,7 @@
 	],
 	[
 		"url",
-		"http://koko.deepdata.hu/",
+		"https://kozertheto.k-monitor.hu/",
 		"A weboldal leendő URL-je. Keresőoptimalizálásnál és megosztásnál van szerepe."
 	],
 	[
@@ -51,7 +51,7 @@
 	],
 	[
 		"seo.ogImage",
-		"http://koko.deepdata.hu/assets/img/mintavaros-01.png",
+		"https://kozertheto.k-monitor.hu/assets/img/mintavaros-01.png",
 		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép URL-je."
 	],
 	[
