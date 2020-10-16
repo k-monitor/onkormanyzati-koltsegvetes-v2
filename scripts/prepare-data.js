@@ -244,11 +244,11 @@ function parseEconomicDescriptor(descriptor) {
 		id = m[1];
 	}
 
-	let name = descriptor.replace(id, '');
-	if ((m = descriptor.match(/[^§]{10} \(?\(?[>=]*([0-9+….]+)\)/))) {
+	let name = descriptor.replace(`(${id})`, '');
+	if ((m = descriptor.match(/[^§]{10} \(?\(?([>=]*[0-9+….]+)\)/))) {
 		name = name.replace(m[1], '');
 	}
-	name = name.replace(/[()>= ]+$/, '');
+	name = name.replace(/\(\)+ *$/, '').replace(/\(+$/, '').trim();
 
 	return { id, name };
 }
