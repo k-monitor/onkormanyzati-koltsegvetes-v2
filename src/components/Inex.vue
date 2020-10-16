@@ -127,125 +127,127 @@ export default {
 		data() {
 			return this.$d[this.year];
 		},
-		expenseChildren: function() {
+		expenseChildren: function () {
 			return this.expenseTree.children
-				.sort(function(a, b) {
+				.sort(function (a, b) {
 					return a.id.localeCompare(b.id);
 				})
-				.filter(function(n) {
+				.filter(function (n) {
 					return n.name.indexOf("Finanszírozási") == -1;
 				})
-				.map(function(n) {
+				.map(function (n) {
 					const i = parseInt(n.id[1]);
 					n.mukodesi = i <= 5;
 					return n;
 				})
-				.filter(function(n) {
+				.filter(function (n) {
 					return n.value > 0;
 				});
 		},
-		expenseSum: function() {
+		expenseSum: function () {
 			return this.expenseChildren
-				.map(function(node) {
+				.map(function (node) {
 					return node.value;
 				})
-				.reduce(function(sum, value) {
+				.reduce(function (sum, value) {
 					return sum + value;
 				}, 0);
 		},
-		expenseTree: function() {
+		expenseTree: function () {
 			return this.data.expense.econ;
 		},
-		grayFB: function() {
+		grayFB: function () {
 			return {
 				id: "FB",
 				gray: true,
 				name: "Alaptevékenység finanszírozási egyenlege",
-				value: this.grayRE.value - (this.incomeSum - this.expenseSum)
+				value: this.grayRE.value - (this.incomeSum - this.expenseSum),
 			};
 		},
-		grayRE: function() {
+		grayRE: function () {
 			return {
 				id: "RE",
 				gray: true,
 				name: "Alaptevékenység szabad maradványa",
-				value: this.data.income.econ.value - this.data.expense.econ.value
+				value: this.data.income.econ.value - this.data.expense.econ.value,
 			};
 		},
-		expenseGrayNodes: function() {
+		expenseGrayNodes: function () {
 			const r = [];
 			if (this.grayFB.value < 0) {
 				r.push(this.grayFB);
 			}
-			r.push(this.grayRE);
+			if (this.grayRE.value > 0) {
+				r.push(this.grayRE);
+			}
 			return r;
 		},
-		incomeGrayNodes: function() {
+		incomeGrayNodes: function () {
 			return this.grayFB.value > 0 ? [this.grayFB] : [];
 		},
-		incomeChildren: function() {
+		incomeChildren: function () {
 			const customOrder = ["B1", "B3", "B4", "B6", "B2", "B5", "B7"];
 			return this.incomeTree.children
-				.sort(function(a, b) {
+				.sort(function (a, b) {
 					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
 				})
-				.filter(function(n) {
+				.filter(function (n) {
 					return n.name.indexOf("Finanszírozási") == -1;
 				})
-				.map(function(n) {
+				.map(function (n) {
 					const i = parseInt(n.id[1]);
 					n.mukodesi = [1, 3, 4, 6].indexOf(i) > -1;
 					return n;
 				})
-				.filter(function(n) {
+				.filter(function (n) {
 					return n.value > 0;
 				});
 		},
-		incomeSum: function() {
+		incomeSum: function () {
 			return this.incomeChildren
-				.map(function(node) {
+				.map(function (node) {
 					return node.value;
 				})
-				.reduce(function(sum, value) {
+				.reduce(function (sum, value) {
 					return sum + value;
 				}, 0);
 		},
-		incomeTree: function() {
+		incomeTree: function () {
 			return this.data.income.econ;
-		}
+		},
 	},
 	methods: {
-		bgColor: function(node, isIncome) {
+		bgColor: function (node, isIncome) {
 			if (node.gray) return tinycolor("gainsboro");
 			return tinycolor("seagreen")
 				.spin((node.mukodesi ? 1 : 2) * 71)
 				.desaturate(30)
 				.brighten(35);
 		},
-		fgColor: function(node, isIncome) {
+		fgColor: function (node, isIncome) {
 			var color = tinycolor(this.bgColor(node, isIncome));
 			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
 		},
-		isNodeSmall: function(node, tree) {
+		isNodeSmall: function (node, tree) {
 			var max = tree.children
-				.map(function(n) {
+				.map(function (n) {
 					return n.value;
 				})
-				.reduce(function(m, v) {
+				.reduce(function (m, v) {
 					return Math.max(m, v);
 				});
 			return Math.abs(node.value) < max * 0.1;
 		},
 		regenerateTooltips() {
 			$('[data-toggle="tooltip"]').tooltip();
-		}
+		},
 	},
 	mounted() {
 		this.regenerateTooltips();
 	},
 	updated() {
 		this.regenerateTooltips();
-	}
+	},
 };
 </script>
 
