@@ -125,7 +125,7 @@ function generateEconomicTree(matrixTsv) {
 
 	// we dropped out total sum line (via id filter) so we calculate it
 	const children = Object.values(nodes);
-	const value = children.map(n => n.value).reduce((sum, v) => sum + v);
+	const value = children.map(n => n.value).reduce((sum, v) => sum + v, 0);
 	const root = {
 		name: 'Összesen',
 		children,
