@@ -30,6 +30,3 @@ static/search.log
 
 # Copied downloads:
 static/budget.xlsx
-
-# Deploy script
-UPLOAD.sh
