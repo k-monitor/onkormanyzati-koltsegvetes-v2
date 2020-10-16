@@ -151,7 +151,7 @@ export default {
 				})
 				.reduce(function(sum, value) {
 					return sum + value;
-				});
+				}, 0);
 		},
 		expenseTree: function() {
 			return this.data.expense.econ;
@@ -208,7 +208,7 @@ export default {
 				})
 				.reduce(function(sum, value) {
 					return sum + value;
-				});
+				}, 0);
 		},
 		incomeTree: function() {
 			return this.data.income.econ;
