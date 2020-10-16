@@ -240,7 +240,7 @@ function isSheetNameValid(sheetName) {
 function parseEconomicDescriptor(descriptor) {
 	let id, m;
 
-	if ((m = descriptor.match(/[^§]{10} \(([BK0-9\-]+)\)/))) {
+	if ((m = descriptor.match(/[^§]{10} \(([BK][0-9\-]+)\)/))) {
 		id = m[1];
 	}
 
