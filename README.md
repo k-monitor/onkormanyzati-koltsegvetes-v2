@@ -83,16 +83,16 @@ A munkalapoknak 2 formátumát ismeri a program. Az egyik az elmúlt évekre von
 
 Az ilyen munkalapokon megtalálható a mátrix, vagyis nem csak közgazdasági bontásban vannak az adatok, hanem funkcionális bontásban is. Elvárt formátum:
 
-- 1. sor: lényegtelen
-- 2. sor: a 4. (D) oszloptól kezdve funkcionális kategóriák `<AZONOSÍTÓSZÁM> <ELNEVEZÉS>` formában. Az elnevezés lényegtelen. A programnak csak az azonosítószám kell, amit szóközzel kell elválasztani a többi adattól, pl.: _"042120 Mezőgazdasági támogatások"_.
-- 3. sortól kezdve:
-	- 1. oszlop: lényegtelen
-	- 2. oszlop: közgazdasági kategória elnevezése és kiegészítő információi.
+- 1\. sor: lényegtelen
+- 2\. sor: a 4. (D) oszloptól kezdve funkcionális kategóriák `<AZONOSÍTÓSZÁM> <ELNEVEZÉS>` formában. Az elnevezés lényegtelen. A programnak csak az azonosítószám kell, amit szóközzel kell elválasztani a többi adattól, pl.: _"042120 Mezőgazdasági támogatások"_.
+- 3\. sortól kezdve:
+	- 1\. oszlop: egy legalább kétjegyű számot kell tartalmaznia ahhoz, hogy a program az adott sort adatsornak vegye és feldolgozza, noha e cella értéke nem lesz másra használva (így kézileg hozzáadott soroknál megadható akár `99` is).
+	- 2\. oszlop: közgazdasági kategória elnevezése és kiegészítő információi.
 		- A cellákban szerepelnie kell a kategória azonosítójának, `(B123)` vagy `(K123)` formában. Ezek az azonosítók egymással hierarchiában vannak: egy `Bx` azonosító gyermekei a `Bx` prefixű, eggyel több számjegyű azonosítók, ÉS a `Bx` azonosítójú, _"ebből:"_ kezdetű kategóriák. Előfordul, hogy a szintek között nem egy, hanem két számjegy különbség van.
 		- A cellában opcionálisan szerepelhet egy összegképlet, de ezt a program nem használja, és ki is fogja vágni.
 		- Példa: _"Működési célú támogatások államháztartáson belülről (=07+...+10+21+32) (B1)"_
-	- 3. oszlop: az adott közgazdasági kategóriához tartozó összeg
-	- 4. oszloptól kezdve: az adott közgazdasági (sor) és funkcionális (oszlop) kategóriához tartozó számérték.
+	- 3\. oszlop: az adott közgazdasági kategóriához tartozó összeg
+	- 4\. oszloptól kezdve: az adott közgazdasági (sor) és funkcionális (oszlop) kategóriához tartozó számérték.
 	- A számértékből beolvasáskor a `,` és szóköz karakterek eltávolításra kerülnek.
 
 
@@ -118,9 +118,9 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips" munkalap csak a
 
 - az 1. sor a fejléc, melynek első 2 eleme kötelezően "key" és "value"
 - a 2. sortól kezdve kulcs-érték párok, magyarázattal:
-	- 1. oszlop: kulcs, mely azonosítja a beállítást/szöveget a program számára
-	- 2. oszlop: testreszabható érték, bizonyos esetekben a Markdown formátum támogatott (ez a magyarázatban jelezve van)
-	- 3. oszlop: magyarázat
+	- 1\. oszlop: kulcs, mely azonosítja a beállítást/szöveget a program számára
+	- 2\. oszlop: testreszabható érték, bizonyos esetekben a Markdown formátum támogatott (ez a magyarázatban jelezve van)
+	- 3\. oszlop: magyarázat
 
 
 
@@ -128,9 +128,9 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips" munkalap csak a
 
 - az 1. sor a fejléc, a cellák értéke nincs megkötve
 - a 2. sortól kezdve kulcs-érték párok, magyarázattal:
-	- 1. oszlop: funkcionális/közgazdasági kategória azonosító (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
-	- 2. oszlop: funkcionális/közgazdasági kategória megnevezése
-	- 3. oszlop: testreszabható súgószöveg az adott kategóriához
+	- 1\. oszlop: funkcionális/közgazdasági kategória azonosító (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
+	- 2\. oszlop: funkcionális/közgazdasági kategória megnevezése
+	- 3\. oszlop: testreszabható súgószöveg az adott kategóriához
 
 
 
@@ -144,12 +144,12 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips" munkalap csak a
 	- "title"
 	- "descriptionInMarkdown"
 - a 2. sortól kezdve a fejlesztések adatai:
-	- 1. oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
-	- 2. oszlop: azon év, amelyhez a fejlesztés tartozik
-	- 3. oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
-	- 4. oszlop: a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
-	- 5. oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
-	- 6. oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
+	- 1\. oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
+	- 2\. oszlop: azon év, amelyhez a fejlesztés tartozik
+	- 3\. oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
+	- 4\. oszlop: a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
+	- 5\. oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
+	- 6\. oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
 
 
 
@@ -166,10 +166,10 @@ Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell mega
 
 - az 1. sor opcionálisan lehet fejléc
 - további sorok:
-	- 1. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
-	- 2. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
-	- 3. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
-	- 4. oszlop tartalmazza a címkéket: vesszővel, és opcionálisan még szóközzel is elválasztott kifejezések
+	- 1\. oszlop az oldalt jelöli: `expense` (kiadás) vagy `income` (bevétel)
+	- 2\. oszlop a bontást jelöli: `econ` (közgazdasági) vagy `func` (funkcionális)
+	- 3\. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
+	- 4\. oszlop tartalmazza a címkéket: vesszővel, és opcionálisan még szóközzel is elválasztott kifejezések
 
 
 
