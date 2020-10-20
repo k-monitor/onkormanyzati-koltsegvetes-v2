@@ -82,6 +82,7 @@
 							<span class="d-inline d-sm-none">{{ $util.groupNums(n.value, true) }}</span>
 							<span class="d-none d-sm-inline">{{ $util.groupNums(n.value) }}</span>
 							<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
+							<i class="fas fa-fw fa-level-down-alt ml-1" v-if="n.children && n.children.length"></i>
 						</div>
 					</div>
 				</div>
