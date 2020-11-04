@@ -73,7 +73,7 @@ A listák esetében fontos, hogy az első listaelem előtt és az utolsó listae
 
 ### input/budget.xlsx
 
-Az általános KGR rendszer importja. A munkafüzet több munkalapból állhat, melyek elnevezése a következő alakú lehet: `ÉVSZÁM <TÍPUS>` vagy `ÉVSZÁM_<TÍPUS>`, ahol a `<TÍPUS>` helyén `BEVÉTEL`, `BEVETEL`, `KIADÁS` vagy `KIADAS` állhat (a kis- és nagybetűk nincsenek megkülönböztetve).
+Az általános KGR rendszer importja. A munkafüzet több munkalapból állhat, melyek elnevezése a következő alakú lehet: `ÉVSZÁM <TÍPUS>` vagy `ÉVSZÁM_<TÍPUS>`, ahol a `<TÍPUS>` helyén `BEVÉTEL`, `BEVETEL`, `KIADÁS` vagy `KIADAS` állhat (a kis- és nagybetűk nincsenek megkülönböztetve). Az `ÉVSZÁM` tetszőleges szöveg lehet, nem csak számjegyek.
 
 A munkalapoknak 2 formátumát ismeri a program. Az egyik az elmúlt évekre vonatkozik, a másik a prognózisokra. A bevételi és kiadási oldal adott éven belül azonos formátumú. Prognózisok esetében a funkcionális bontást nem tartalmazza az input.
 

@@ -1,4 +1,3 @@
 - move md2pdf (md-to-pdf?) into gridsome.server.js build phase
-- prepare data: do not generate intermediate JSONs, build data bundle on-the-fly
 - fix icon spaces differ
 - make images static + use g-image

@@ -1,6 +1,5 @@
 const fs = require('fs');
 const fg = require('fast-glob');
-const mkdirp = require('mkdirp').sync;
 const rmrf = require('rimraf').sync;
 const xlsx = require('xlsx');
 
@@ -24,41 +23,30 @@ const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
 		}
 	});
 
+	const data = {};
+
 	workbook.SheetNames.forEach(sheetName => {
 		console.log(`Reading sheet: ${sheetName}`);
 		const matrixTsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 
 		const parsedSheetName = parseSheetName(sheetName);
 		if (parsedSheetName) {
-			const { dir, econFile, funcFile } = generateFilenames(parsedSheetName);
-			mkdirp(dir);
+			const { year, side } = parsedSheetName;
+
+			data[year] = data[year] || {};
+			data[year][side] = data[year][side] || {};
 
 			console.log('Generating economic tree');
-			writeToFile(generateEconomicTree(matrixTsv), econFile);
+			data[year][side]['econ'] = generateEconomicTree(matrixTsv);
 
 			console.log('Generating functional tree');
-			writeToFile(generateFunctionalTree(matrixTsv, funcTreeTsv), funcFile);
-
+			data[year][side]['func'] = generateFunctionalTree(matrixTsv, funcTreeTsv);
 		} else {
 			console.log('Invalid sheet name!');
 		}
 	});
 
 	const OUTPUT_FILE = './src/data/data.json';
-	console.log('Building all-in-one JSON');
-	const data = {};
-	fg.sync(INTERMEDIARY_JSON_GLOB).forEach(f => {
-		const m = f.match(/.*\/(\d{4})\/(expense|income)-(econ|func)\.json$/);
-		console.log(f);
-		if (m) {
-			const year = m[1];
-			const inex = m[2];
-			const tree = m[3];
-			data[year] = data[year] || {};
-			data[year][inex] = data[year][inex] || {};
-			data[year][inex][tree] = JSON.parse(fs.readFileSync(f, 'utf-8'));
-		}
-	});
 	writeToFile(JSON.stringify(data), OUTPUT_FILE);
 })();
 
@@ -133,19 +121,7 @@ function generateEconomicTree(matrixTsv) {
 		value
 	};
 
-	return JSON.stringify(root);
-}
-
-/**
- * @param {{year: string, side: string}} parsedSheetName Parsed worksheet name
- * @returns {{dir: string, econFile: string, funcFile: string}} Directory name and filenames for economical and functional trees, based on worksheet name
- */
-function generateFilenames(parsedSheetName) {
-	const { year, side } = parsedSheetName;
-	const dir = `src/data/${year}`;
-	const econFile = `${dir}/${side}-econ.json`;
-	const funcFile = `${dir}/${side}-func.json`;
-	return { dir, econFile, funcFile };
+	return root;
 }
 
 /**
@@ -218,7 +194,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		}
 		cleanUp(root);
 
-		return JSON.stringify(root);
+		return root;
 	} else {
 		console.log('No functional data found.');
 		return null;
