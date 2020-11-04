@@ -28,8 +28,9 @@ const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
 		console.log(`Reading sheet: ${sheetName}`);
 		const matrixTsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 
-		if (isSheetNameValid(sheetName)) {
-			const { dir, econFile, funcFile } = generateFilenames(sheetName);
+		const parsedSheetName = parseSheetName(sheetName);
+		if (parsedSheetName) {
+			const { dir, econFile, funcFile } = generateFilenames(parsedSheetName);
 			mkdirp(dir);
 
 			console.log('Generating economic tree');
@@ -136,15 +137,14 @@ function generateEconomicTree(matrixTsv) {
 }
 
 /**
- * @param {string} sheetName Worksheet name
+ * @param {{year: string, side: string}} parsedSheetName Parsed worksheet name
  * @returns {{dir: string, econFile: string, funcFile: string}} Directory name and filenames for economical and functional trees, based on worksheet name
  */
-function generateFilenames(sheetName) {
-	let [year, name] = sheetName.split(/[ _]/);
-	name = name.toUpperCase().replace(/BEV[EÉ]TEL/, 'income').replace(/KIAD[AÁ]S/, 'expense');
+function generateFilenames(parsedSheetName) {
+	const { year, side } = parsedSheetName;
 	const dir = `src/data/${year}`;
-	const econFile = `${dir}/${name}-econ.json`;
-	const funcFile = `${dir}/${name}-func.json`;
+	const econFile = `${dir}/${side}-econ.json`;
+	const funcFile = `${dir}/${side}-func.json`;
 	return { dir, econFile, funcFile };
 }
 
@@ -226,14 +226,6 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 }
 
 /**
- * @param {string} sheetName Worksheet name
- * @returns {boolean} Whether the sheet name is valid for processing
- */
-function isSheetNameValid(sheetName) {
-	return sheetName.toUpperCase().match(/^\d{4}[ _](BEV[EÉ]TEL|KIAD[AÁ]S)$/);
-}
-
-/**
  * @param {string} descriptor Economical category descriptor (2nd column in matrix)
  * @returns {{id: string, name: string}} Components of category descriptor
  */
@@ -267,6 +259,26 @@ function parseFunctionalTreeDescriptor(tsv) {
 		nodes[id] = { id, name, parent };
 	});
 	return nodes;
+}
+
+/**
+ * @param {string} sheetName Worksheet name
+ * @return {{year: string, side: string}} Year and side where side can be one of 'income' or 'expense'
+ */
+function parseSheetName(sheetName) {
+	/*
+		2020_kiadas
+		2020 KIADÁS
+		2020 MÓDOSÍTOTT BEVÉTEL
+	*/
+	sheetName = sheetName.replace(/BEV[EÉ]TEL$/i, 'income').replace(/KIAD[AÁ]S$/i, 'expense');
+
+	const sideMatch = sheetName.match(/[ _](income|expense)$/);
+	if (!sideMatch) return null;
+
+	const side = sideMatch[1];
+	const year = sheetName.substring(0, sideMatch.index)
+	return { year, side }
 }
 
 /**
