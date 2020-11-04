@@ -81,7 +81,7 @@
 								class="dropdown-item"
 								href="javascript:void(0)"
 								v-for="y in years"
-								:class="['theme-' + y]"
+								:class="['theme-' + Object.keys($d).sort().indexOf(y)]"
 								:key="y"
 								@click="$emit('yearSelected', y)"
 							>
