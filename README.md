@@ -110,7 +110,7 @@ Az ilyen munkalapokról hiányzik a funkcionális bontás. A formátum hasonló 
 
 Ez a fájl írja le a weboldal beállításait és szövegeit. A szerkeszthető oszlopokat sárgás szín jelöli.
 
-Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips" munkalap csak az aktuális költségvetésben szereplő kategóriákat tartalmazza.
+Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munkalapok az aktuális költségvetésben szereplő kategóriákat tartalmazzák.
 
 
 
@@ -124,7 +124,7 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips" munkalap csak a
 
 
 
-#### A "tooltips" munkalap formátuma:
+#### A "tooltips <ÉVSZÁM>" munkalapok formátuma:
 
 - az 1. sor a fejléc, a cellák értéke nincs megkötve
 - a 2. sortól kezdve kulcs-érték párok, magyarázattal:
@@ -290,16 +290,22 @@ Formátuma hasonló struktúrát követ, mint a `data.json`, csak itt nincsenek 
 
 ### src/data/tooltips.json (generált)
 
-Ezt a fájlt a `tooltips.xlsx` tartalmából generálja a `prepare-tooltips.js` szkript. Ez a fájl tartalmazza a kategóriákhoz tartozó tooltip-ek szövegeit.
+Ezt a fájlt a `config.xlsx`-ben levő `tooltips <ÉVSZÁM>` munkalapokból generálja a `prepare-tooltips.js` szkript. Ez a fájl tartalmazza a kategóriákhoz tartozó tooltip-ek szövegeit, évekre bontva.
 
-Formátuma JSON: egyetlen objektum, benne kulcs érték párok, ahol a kulcs a kategória alternatív azonosítója (`B1`, `B2`, `K1`, `K2`, stb.), az érték pedig a tooltip szövege.
+Formátuma JSON: egyetlen objektum, benne év, ill. kategória azonosító (`B1`, `B2`, `K1`, `K2`, stb.) kulcsokhoz rendelve a tooltip szövegek.
 
 Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog megjelenni a tooltip.
 
 ```json
 {
-	"B1": "Lorem ipsum for B1",
-	"B2": "Lorem ipsum for B2",
+	"2020": {
+		"B1": "Lorem ipsum for B1",
+		"B2": "Lorem ipsum for B2",
+		...
+	},
+	"2020 MÓDOSÍTOTT": {
+		...
+	},
 	...
 }
 ```
@@ -310,7 +316,7 @@ Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog
 
 Az oldalon megjelenő szövegeket és a SEO beállításokat (amik nem a `data.json`-ból jönnek) az `input/config.xlsx` fájlban lehet szerkeszteni, mely tartalmazza az egyes mezők magyarázatait is.
 
-A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani (ajánlott a `config.js`-ben az `ogImage`-et is erre a képre állítani). A képfájlt az `src/`-n belül kell elhelyezni, NEM a `static/` mappában. Itt lehet módosítani a színeket is.
+A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani (ajánlott a `config.xlsx`-ben az `seo.ogImage`-et is erre a képre állítani). A képfájlt az `src/`-n belül kell elhelyezni, NEM a `static/` mappában. Itt lehet módosítani a színeket is.
 
 A lábléc logói, valamint a fejlesztések képei és videói a `static/assets/` mappában találhatóak.
 
