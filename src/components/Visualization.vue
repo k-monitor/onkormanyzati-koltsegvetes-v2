@@ -75,7 +75,7 @@
 						@mouseover="hovered=i"
 						data-toggle="tooltip"
 						data-placement="left"
-						:title="$tooltips[n.id] || $tooltips[n.id + '/' + year]"
+						:title="$tooltips[year][n.id]"
 						oncontextmenu="return false;"
 					>
 						<div class="text-right w-100">

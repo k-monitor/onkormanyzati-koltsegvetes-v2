@@ -63,7 +63,7 @@
 								data-toggle="tooltip"
 								data-placement="left"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || $tooltips[n.id + '/' + year] || '')"
+								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[year][n.id] || '')"
 								oncontextmenu="return false;"
 							>
 								<div class="text-left">
@@ -90,7 +90,7 @@
 								data-toggle="tooltip"
 								data-placement="right"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[n.id] || $tooltips[n.id + '/' + year] || '')"
+								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[year][n.id] || '')"
 								oncontextmenu="return false;"
 							>
 								<div class="value mr-2 no-wrap text-left">
