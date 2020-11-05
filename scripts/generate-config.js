@@ -72,49 +72,43 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 const configSheet = wb.addWorksheet('config');
 aoaTo3colSheet(configSheet, defaultConfig, [1], [25, 40, 100]);
 
-// tooltips sheet
+// tooltips sheets
 
 // ids[ID][Name][0..n] = Year
-let ids = {};
-function gatherIds(node, year) {
+
+function gatherIds(ids, node) {
 	if (!node) return;
 	if (node.id) {
-		ids[node.id] = ids[node.id] || {};
-		ids[node.id][node.name] = ids[node.id][node.name] || [];
-		ids[node.id][node.name].push(year);
+		ids[node.id] = node.name;
 	}
 	if (node.children) {
-		node.children.forEach(c => gatherIds(c, year));
+		node.children.forEach(c => gatherIds(ids, c));
 	}
 }
+
 const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
 Object.keys(data).forEach(year => {
-	Object.values(data[year]).forEach(side => {
-		Object.values(side).forEach(root => {
-			gatherIds(root, year);
+	const ids = {};
+	Object.values(data[year]).forEach(sideObj => {
+		Object.values(sideObj).forEach(treeRoot => {
+			gatherIds(ids, treeRoot);
 		});
 	});
+
+	let tooltipRows = [
+		['Azon.', 'Megnevezés', 'Súgószöveg'],
+		['FB', 'Alaptevékenység finanszírozási egyenlege', 'Itt rövid leírás olvasható a kategóriáról: FB'],
+		['RE', 'Alaptevékenység szabad maradványa', 'Itt rövid leírás olvasható a kategóriáról: RE']
+	];
+
+	Object.keys(ids).sort().forEach(id => {
+		const name = ids[id];
+		tooltipRows.push([id, name, `Itt rövid leírás olvasható a kategóriáról: ${id}`]);
+	});
+
+	const tooltipsSheet = wb.addWorksheet('tooltips ' + year);
+	aoaTo3colSheet(tooltipsSheet, tooltipRows, [2], [10, 50, 100]);
 });
-let tooltipRows = [
-	['Azon.', 'Megnevezés', 'Súgószöveg'],
-	['FB', 'Alaptevékenység finanszírozási egyenlege', 'Itt rövid leírás olvasható a kategóriáról: FB'],
-	['RE', 'Alaptevékenység szabad maradványa', 'Itt rövid leírás olvasható a kategóriáról: RE']
-];
-Object.keys(ids).sort().forEach(id => {
-	const names = Object.keys(ids[id]);
-	if (names.length === 1) {
-		tooltipRows.push([id, names[0], `Itt rövid leírás olvasható a kategóriáról: ${id}`])
-	} else {
-		names.forEach(name => {
-			const years = ids[id][name];
-			years.forEach(year => {
-				tooltipRows.push([`${id}/${year}`, name, `Itt rövid leírás olvasható a kategóriáról: ${id}/${year}`]);
-			});
-		});
-	}
-});
-const tooltipsSheet = wb.addWorksheet('tooltips');
-aoaTo3colSheet(tooltipsSheet, tooltipRows, [2], [10, 50, 100]);
 
 // milestones sheet
 
