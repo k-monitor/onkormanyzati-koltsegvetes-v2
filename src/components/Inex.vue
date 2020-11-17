@@ -16,37 +16,28 @@
 					id="inex-wrapper"
 				>
 					<div class="d-flex font-weight-bold mb-2">
-						<div class="d-flex align-items-center justify-content-between left-column text-right">
-							<div>
-								<a
-									href="#income"
-									class="btn btn-outline-success js-scroll-trigger"
-								>
-									<i class="fas fa-fw fa-angle-double-down"></i>
-									<span class="d-none d-md-inline-block">{{ $config.vis.income }}</span>
-								</a>
-							</div>
-							<div>
-								{{ $config.inex.income }}
-								<br>
-								{{ $util.groupNums(incomeSum, true) }}
-							</div>
+						<div>
+							<a
+								href="#income"
+								class="btn btn-outline-success js-scroll-trigger"
+							>
+								<i class="fas fa-fw fa-angle-double-down"></i>
+								<span class="d-none d-md-inline-block">{{ $config.vis.income }}</span>
+							</a>
 						</div>
-						<div class="d-flex align-items-center justify-content-between ml-auto right-column text-left">
-							<div>
-								{{ $config.inex.expense }}
-								<br>
-								{{ $util.groupNums(expenseSum, true) }}
-							</div>
-							<div>
-								<a
-									href="#expense"
-									class="btn btn-outline-danger js-scroll-trigger"
-								>
-									<span class="d-none d-md-inline-block">{{ $config.vis.expense }}</span>
-									<i class="fas fa-fw fa-angle-double-down"></i>
-								</a>
-							</div>
+						<div class="mx-auto">
+							<span>{{ $config.inex.subtitle }}</span>
+							<br>
+							<span>{{ $util.groupNums(Math.max(incomeTree.value, expenseTree.value), true) }}</span>
+						</div>
+						<div>
+							<a
+								href="#expense"
+								class="btn btn-outline-danger js-scroll-trigger"
+							>
+								<span class="d-none d-md-inline-block">{{ $config.vis.expense }}</span>
+								<i class="fas fa-fw fa-angle-double-down"></i>
+							</a>
 						</div>
 					</div>
 					<div class="d-flex border-top border-bottom mb-4 vis">

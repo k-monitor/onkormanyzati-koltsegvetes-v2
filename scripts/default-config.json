@@ -190,6 +190,11 @@
 		"Mérleg szakasz címsora."
 	],
 	[
+		"inex.subtitle",
+		"Mintaváros idei költségvetése:",
+		"Mérleg ábra fejléce."
+	],
+	[
 		"inex.income",
 		"Költségvetési bevétel",
 		"Bevételi oldal fejléc szövege a Mérleg szakaszban."
