@@ -23,7 +23,7 @@
 									class="btn btn-outline-success js-scroll-trigger"
 								>
 									<i class="fas fa-fw fa-angle-double-down"></i>
-									<span class="d-none d-md-inline-block">{{ $config.inex.details }}</span>
+									<span class="d-none d-md-inline-block">{{ $config.vis.income }}</span>
 								</a>
 							</div>
 							<div>
@@ -43,7 +43,7 @@
 									href="#expense"
 									class="btn btn-outline-danger js-scroll-trigger"
 								>
-									<span class="d-none d-md-inline-block">{{ $config.inex.details }}</span>
+									<span class="d-none d-md-inline-block">{{ $config.vis.expense }}</span>
 									<i class="fas fa-fw fa-angle-double-down"></i>
 								</a>
 							</div>
