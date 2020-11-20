@@ -119,9 +119,21 @@ export default {
 			return this.$d[this.year];
 		},
 		expenseChildren: function () {
+			const customOrder = [
+				"K1",
+				"K2",
+				"K3",
+				"K4",
+				"K5",
+				"FH1",
+				"FH2",
+				"K6",
+				"K7",
+				"K8",
+			];
 			return this.expenseTree.children
 				.sort(function (a, b) {
-					return a.id.localeCompare(b.id);
+					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
 				})
 				.filter(function (n) {
 					return n.name.indexOf("Finanszírozási") == -1;
@@ -148,7 +160,17 @@ export default {
 			return this.data.expense.econ;
 		},
 		incomeChildren: function () {
-			const customOrder = ["B1", "B3", "B4", "B6", "B2", "B5", "B7"];
+			const customOrder = [
+				"B1",
+				"B3",
+				"B4",
+				"B6",
+				"FT1",
+				"FT2",
+				"B2",
+				"B5",
+				"B7",
+			];
 			return this.incomeTree.children
 				.sort(function (a, b) {
 					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
@@ -180,8 +202,9 @@ export default {
 	},
 	methods: {
 		bgColor: function (node, isIncome) {
-			if (node.gray) return tinycolor("gainsboro");
-			return tinycolor("seagreen")
+			const c = tinycolor("seagreen");
+			if (node.id.startsWith("F")) return c.lighten(42);
+			return c
 				.spin((node.mukodesi ? 1 : 2) * 71)
 				.desaturate(30)
 				.brighten(35);
