@@ -46,7 +46,7 @@
 							<div
 								class="bar"
 								:class="{ small: isNodeSmall(n, incomeTree) }"
-								v-for="(n,i) in incomeGrayNodes.concat(incomeChildren)"
+								v-for="(n,i) in incomeChildren"
 								:data-id="n.id"
 								:data-index="i"
 								:key="year + '/' + i"
@@ -73,7 +73,7 @@
 							<div
 								class="bar"
 								:class="{ small: isNodeSmall(n, expenseTree) }"
-								v-for="(n,i) in expenseGrayNodes.concat(expenseChildren)"
+								v-for="(n,i) in expenseChildren"
 								:data-id="n.id"
 								:data-index="i"
 								:key="year + '/' + i"
@@ -132,7 +132,7 @@ export default {
 					return n;
 				})
 				.filter(function (n) {
-					return n.value > 0;
+					return Math.abs(n.value) > 0;
 				});
 		},
 		expenseSum: function () {
@@ -146,35 +146,6 @@ export default {
 		},
 		expenseTree: function () {
 			return this.data.expense.econ;
-		},
-		grayFB: function () {
-			return {
-				id: "FB",
-				gray: true,
-				name: "Alaptevékenység finanszírozási egyenlege",
-				value: this.grayRE.value - (this.incomeSum - this.expenseSum),
-			};
-		},
-		grayRE: function () {
-			return {
-				id: "RE",
-				gray: true,
-				name: "Alaptevékenység szabad maradványa",
-				value: this.data.income.econ.value - this.data.expense.econ.value,
-			};
-		},
-		expenseGrayNodes: function () {
-			const r = [];
-			if (this.grayFB.value < 0) {
-				r.push(this.grayFB);
-			}
-			if (this.grayRE.value > 0) {
-				r.push(this.grayRE);
-			}
-			return r;
-		},
-		incomeGrayNodes: function () {
-			return this.grayFB.value > 0 ? [this.grayFB] : [];
 		},
 		incomeChildren: function () {
 			const customOrder = ["B1", "B3", "B4", "B6", "B2", "B5", "B7"];
