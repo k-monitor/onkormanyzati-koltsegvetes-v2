@@ -67,7 +67,7 @@ function generateEconomicTree(matrixTsv) {
 		.forEach((row, i) => {
 			let [_, descriptor, value] = row.split('\t'); // we need only the 2nd and 3rd column
 			let { id, name } = parseEconomicDescriptor(descriptor);
-			value = Number(value.replace(/\D+/g, ''));
+			value = Number(value.replace(/[^0-9\-]+/g, ''));
 			if (id && id.indexOf('-') == -1) {
 				if (name.startsWith("ebből:") || nodes[id]) {
 					id = `${id}:${i}`;
@@ -95,7 +95,7 @@ function generateEconomicTree(matrixTsv) {
 	const deletableIds = [];
 	for (let i = 0; i < sortedIds.length; i++) {
 		const id = sortedIds[i];
-		if (id.length == 2) continue; // root nodes
+		if (id.length == 2 || id.startsWith('F')) continue; // root nodes, incl. FH1, FH2, FT1, FT2
 		let j = i - 1;
 		for (; sortedIds[j].length >= id.length; j--);
 		if (j > -1) { // found parent
@@ -208,7 +208,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 function parseEconomicDescriptor(descriptor) {
 	let id, m;
 
-	if ((m = descriptor.match(/ \(([BK][0-9\-]+)\)/))) {
+	if ((m = descriptor.match(/ \(((B|K|FH|FT)[0-9\-]+)\)/))) {
 		id = m[1];
 	}
 

@@ -16,37 +16,28 @@
 					id="inex-wrapper"
 				>
 					<div class="d-flex font-weight-bold mb-2">
-						<div class="d-flex align-items-center justify-content-between left-column text-right">
-							<div>
-								<a
-									href="#income"
-									class="btn btn-outline-success js-scroll-trigger"
-								>
-									<i class="fas fa-fw fa-angle-double-down"></i>
-									<span class="d-none d-md-inline-block">{{ $config.inex.details }}</span>
-								</a>
-							</div>
-							<div>
-								{{ $config.inex.income }}
-								<br>
-								{{ $util.groupNums(incomeSum, true) }}
-							</div>
+						<div>
+							<a
+								href="#income"
+								class="btn btn-outline-success js-scroll-trigger"
+							>
+								<i class="fas fa-fw fa-angle-double-down"></i>
+								<span class="d-none d-md-inline-block">{{ $config.vis.income }}</span>
+							</a>
 						</div>
-						<div class="d-flex align-items-center justify-content-between ml-auto right-column text-left">
-							<div>
-								{{ $config.inex.expense }}
-								<br>
-								{{ $util.groupNums(expenseSum, true) }}
-							</div>
-							<div>
-								<a
-									href="#expense"
-									class="btn btn-outline-danger js-scroll-trigger"
-								>
-									<span class="d-none d-md-inline-block">{{ $config.inex.details }}</span>
-									<i class="fas fa-fw fa-angle-double-down"></i>
-								</a>
-							</div>
+						<div class="mx-auto">
+							<span>{{ $config.inex.subtitle }}</span>
+							<br>
+							<span>{{ $util.groupNums(Math.max(incomeTree.value, expenseTree.value), true) }}</span>
+						</div>
+						<div>
+							<a
+								href="#expense"
+								class="btn btn-outline-danger js-scroll-trigger"
+							>
+								<span class="d-none d-md-inline-block">{{ $config.vis.expense }}</span>
+								<i class="fas fa-fw fa-angle-double-down"></i>
+							</a>
 						</div>
 					</div>
 					<div class="d-flex border-top border-bottom mb-4 vis">
@@ -55,7 +46,7 @@
 							<div
 								class="bar"
 								:class="{ small: isNodeSmall(n, incomeTree) }"
-								v-for="(n,i) in incomeGrayNodes.concat(incomeChildren)"
+								v-for="(n,i) in incomeChildren"
 								:data-id="n.id"
 								:data-index="i"
 								:key="year + '/' + i"
@@ -82,7 +73,7 @@
 							<div
 								class="bar"
 								:class="{ small: isNodeSmall(n, expenseTree) }"
-								v-for="(n,i) in expenseGrayNodes.concat(expenseChildren)"
+								v-for="(n,i) in expenseChildren"
 								:data-id="n.id"
 								:data-index="i"
 								:key="year + '/' + i"
@@ -128,9 +119,21 @@ export default {
 			return this.$d[this.year];
 		},
 		expenseChildren: function () {
+			const customOrder = [
+				"K1",
+				"K2",
+				"K3",
+				"K4",
+				"K5",
+				"FH1",
+				"FH2",
+				"K6",
+				"K7",
+				"K8",
+			];
 			return this.expenseTree.children
 				.sort(function (a, b) {
-					return a.id.localeCompare(b.id);
+					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
 				})
 				.filter(function (n) {
 					return n.name.indexOf("Finanszírozási") == -1;
@@ -141,7 +144,7 @@ export default {
 					return n;
 				})
 				.filter(function (n) {
-					return n.value > 0;
+					return Math.abs(n.value) > 0;
 				});
 		},
 		expenseSum: function () {
@@ -156,37 +159,18 @@ export default {
 		expenseTree: function () {
 			return this.data.expense.econ;
 		},
-		grayFB: function () {
-			return {
-				id: "FB",
-				gray: true,
-				name: "Alaptevékenység finanszírozási egyenlege",
-				value: this.grayRE.value - (this.incomeSum - this.expenseSum),
-			};
-		},
-		grayRE: function () {
-			return {
-				id: "RE",
-				gray: true,
-				name: "Alaptevékenység szabad maradványa",
-				value: this.data.income.econ.value - this.data.expense.econ.value,
-			};
-		},
-		expenseGrayNodes: function () {
-			const r = [];
-			if (this.grayFB.value < 0) {
-				r.push(this.grayFB);
-			}
-			if (this.grayRE.value > 0) {
-				r.push(this.grayRE);
-			}
-			return r;
-		},
-		incomeGrayNodes: function () {
-			return this.grayFB.value > 0 ? [this.grayFB] : [];
-		},
 		incomeChildren: function () {
-			const customOrder = ["B1", "B3", "B4", "B6", "B2", "B5", "B7"];
+			const customOrder = [
+				"B1",
+				"B3",
+				"B4",
+				"B6",
+				"FT1",
+				"FT2",
+				"B2",
+				"B5",
+				"B7",
+			];
 			return this.incomeTree.children
 				.sort(function (a, b) {
 					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
@@ -218,8 +202,9 @@ export default {
 	},
 	methods: {
 		bgColor: function (node, isIncome) {
-			if (node.gray) return tinycolor("gainsboro");
-			return tinycolor("seagreen")
+			const c = tinycolor("seagreen");
+			if (node.id.startsWith("F")) return c.lighten(42);
+			return c
 				.spin((node.mukodesi ? 1 : 2) * 71)
 				.desaturate(30)
 				.brighten(35);
