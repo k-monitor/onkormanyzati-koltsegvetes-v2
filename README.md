@@ -89,6 +89,7 @@ Az ilyen munkalapokon megtalálható a mátrix, vagyis nem csak közgazdasági b
 	- 1\. oszlop: egy legalább kétjegyű számot kell tartalmaznia ahhoz, hogy a program az adott sort adatsornak vegye és feldolgozza, noha e cella értéke nem lesz másra használva (így kézileg hozzáadott soroknál megadható akár `99` is).
 	- 2\. oszlop: közgazdasági kategória elnevezése és kiegészítő információi.
 		- A cellákban szerepelnie kell a kategória azonosítójának, `(B123)` vagy `(K123)` formában. Ezek az azonosítók egymással hierarchiában vannak: egy `Bx` azonosító gyermekei a `Bx` prefixű, eggyel több számjegyű azonosítók, ÉS a `Bx` azonosítójú, _"ebből:"_ kezdetű kategóriák. Előfordul, hogy a szintek között nem egy, hanem két számjegy különbség van.
+		- Az azonosítóknál az `FH` és `FT` prefix is engedélyezett, melyek 1 számjegyes szintje a Mérleg ábrán fog megjelenni, középen, zöld színnel.
 		- A cellában opcionálisan szerepelhet egy összegképlet, de ezt a program nem használja, és ki is fogja vágni.
 		- Példa: _"Működési célú támogatások államháztartáson belülről (=07+...+10+21+32) (B1)"_
 	- 3\. oszlop: az adott közgazdasági kategóriához tartozó összeg
