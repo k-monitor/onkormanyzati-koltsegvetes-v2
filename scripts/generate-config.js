@@ -97,8 +97,6 @@ Object.keys(data).forEach(year => {
 
 	let tooltipRows = [
 		['Azon.', 'Megnevezés', 'Súgószöveg'],
-		['FB', 'Alaptevékenység finanszírozási egyenlege', 'Itt rövid leírás olvasható a kategóriáról: FB'],
-		['RE', 'Alaptevékenység szabad maradványa', 'Itt rövid leírás olvasható a kategóriáról: RE']
 	];
 
 	Object.keys(ids).sort().forEach(id => {
