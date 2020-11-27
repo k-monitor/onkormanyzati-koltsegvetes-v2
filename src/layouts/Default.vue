@@ -18,7 +18,7 @@
 				:year="year"
 				id="income"
 				side="income"
-				title="Bevételek"
+				:title="$config.vis.income"
 				v-if="$config.modules.income"
 			/>
 			<VisualizationSection
@@ -26,7 +26,7 @@
 				class="bg-light"
 				id="expense"
 				side="expense"
-				title="Kiadások"
+				:title="$config.vis.expense"
 			/>
 			<MilestoneSection
 				:year="year"
