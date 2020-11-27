@@ -18,6 +18,7 @@
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
+									class="rounded-circle"
 									id="face"
 									src="assets/img/face.png"
 									alt=""
