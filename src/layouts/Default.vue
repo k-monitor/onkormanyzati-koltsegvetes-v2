@@ -8,7 +8,10 @@
 		<SearchModal :year="year" />
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
-			<Welcome id="welcome" />
+			<Welcome
+				:year="year"
+				id="welcome"
+			/>
 			<Inex
 				:year="year"
 				id="inex"
@@ -50,83 +53,85 @@ import config from "~/data/config.json"; // import is needed because metaInfo be
 export default {
 	metaInfo: {
 		htmlAttrs: {
-			lang: "hu"
+			lang: "hu",
 		},
 		link: [
 			{
 				rel: "stylesheet",
 				href:
-					"https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext"
+					"https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext",
 			},
 			{
 				rel: "stylesheet",
 				href:
-					"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css"
+					"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css",
 			},
 			{
 				rel: "canonical",
-				href: config.url
-			}
+				href: config.url,
+			},
 		],
 		title: config.seo.pageTitle,
 		meta: [
 			{
 				property: "og:site_name",
-				content: config.seo.siteName
+				content: config.seo.siteName,
 			},
 			{
 				property: "og:title",
-				content: config.seo.ogTitle
+				content: config.seo.ogTitle,
 			},
 			{
 				name: "description",
 				property: "og:description",
-				content: config.seo.description
+				content: config.seo.description,
 			},
 			{
 				property: "og:url",
-				content: config.url
+				content: config.url,
 			},
 			{
 				property: "og:type",
-				content: "website"
+				content: "website",
 			},
 			{
 				property: "og:image",
-				content: config.seo.ogImage
+				content: config.seo.ogImage,
 			},
 			{
 				property: "og:image:type",
-				content: config.seo.ogImageType
+				content: config.seo.ogImageType,
 			},
 			{
 				property: "og:image:height",
-				content: config.seo.ogImageHeight
+				content: config.seo.ogImageHeight,
 			},
 			{
 				property: "og:image:width",
-				content: config.seo.ogImageWidth
-			}
+				content: config.seo.ogImageWidth,
+			},
 		],
 		bodyAttrs: {
-			id: "page-top"
-		}
+			id: "page-top",
+		},
 	},
 	data() {
 		return {
-			year: this.$d[config.defaultYear] ? config.defaultYear : Object.keys(this.$d)[0]
+			year: this.$d[config.defaultYear]
+				? config.defaultYear
+				: Object.keys(this.$d)[0],
 		};
 	},
 	methods: {
 		handleYearSelected(year) {
 			if (this.$d[year]) this.year = year;
-		}
+		},
 	},
 	mounted() {
 		this.$eventBus.$on("yearSelected", this.handleYearSelected);
 
 		// Smooth scrolling using jQuery easing
-		$('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function() {
+		$('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
 			if (
 				location.pathname.replace(/^\//, "") ==
 					this.pathname.replace(/^\//, "") &&
@@ -139,7 +144,7 @@ export default {
 				if (target.length) {
 					$("html, body").animate(
 						{
-							scrollTop: target.offset().top - 72
+							scrollTop: target.offset().top - 72,
 						},
 						1000,
 						"easeInOutExpo"
@@ -150,15 +155,15 @@ export default {
 		});
 
 		// Closes responsive menu when a scroll trigger link is clicked
-		$(".js-scroll-trigger").click(function() {
+		$(".js-scroll-trigger").click(function () {
 			$(".navbar-collapse").collapse("hide");
 		});
 
 		// Remove focus
-		$(".js-scroll-trigger").click(function() {
+		$(".js-scroll-trigger").click(function () {
 			$(this).blur();
 		});
-	}
+	},
 };
 </script>
 

@@ -58,6 +58,7 @@
 import config from "~/data/config.json";
 
 export default {
+	props: ["year"],
 	methods: {
 		intro() {
 			$("#mainNav").css("position", "absolute");
@@ -72,19 +73,19 @@ export default {
 				.setOption("showStepNumbers", false)
 				.setOption("skipLabel", "Kilépés")
 				.setOption("tooltipPosition", "left")
-				.onbeforechange(function(targetElement) {
+				.onbeforechange(function (targetElement) {
 					if (targetElement.className.includes("fa-search")) {
 						$("#navbarResponsive").addClass("show");
 					}
 					$("html, body").animate(
 						{
-							scrollTop: $(targetElement).offset().top - 160
+							scrollTop: $(targetElement).offset().top - 160,
 						},
 						1000,
 						"easeInOutExpo"
 					);
 				})
-				.onexit(function() {
+				.onexit(function () {
 					$("#navbarResponsive").removeClass("show");
 					$("#mainNav").css("position", "fixed");
 					$(".milestone-button").removeClass("disabled");
@@ -96,28 +97,30 @@ export default {
 					element: "#inex-wrapper",
 					intro:
 						"Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.",
-					position: "left"
+					position: "left",
 				});
 				steps.push({
 					element: "#inex-wrapper .vis .left-column .bar:nth-child(1)",
 					intro:
 						"Ha az egér egy hasáb fölé kerül (vagy mobilon hosszan rajta tartja az ujját), további információ jelenik meg. Próbálja ki!",
-					position: "top"
+					position: "top",
 				});
 			}
 
 			const el = config.modules.income ? "#income" : "#expense";
-			steps.push({
-				element: el + " ul",
-				intro:
-					"A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.",
-				position: "top"
-			});
+			if (this.$d[this.year][el.substring(1)].func) {
+				steps.push({
+					element: el + " ul",
+					intro:
+						"A részletes bevételi és kiadási adatokat kétféle bontásban jelenítjük meg.",
+					position: "top",
+				});
+			}
 			steps.push({
 				element: el + " .vis > div",
 				intro:
 					"A hasábokra kattintva beléphet az adott kategóriába, a bal oldali függőleges sávval pedig vissza tud lépni.",
-				position: "right"
+				position: "right",
 			});
 
 			const mb = $(".milestone-button");
@@ -126,7 +129,7 @@ export default {
 					element: ".milestone-button",
 					intro:
 						"Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.",
-					position: "left"
+					position: "left",
 				});
 			}
 
@@ -134,21 +137,21 @@ export default {
 				element: el + " ol.breadcrumb",
 				intro:
 					"A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.",
-				position: "bottom"
+				position: "bottom",
 			});
 
 			steps.push({
 				element: "#mainNav .fa-search",
 				intro:
 					"A keresés funkcióval könnyedén megtalálhatja bármelyik kategóriát, akár a neve, akár hozzá kapcsolódó szavak (címkék) alapján.",
-				position: "bottom"
+				position: "bottom",
 			});
 
 			steps.push({
 				element: "#mainNav .dropdown",
 				intro:
 					"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
-				position: "bottom"
+				position: "bottom",
 			});
 
 			if (config.modules.milestones) {
@@ -156,19 +159,19 @@ export default {
 					element: "#milestones h2",
 					intro:
 						"A Fejlesztések szakaszban a kiválasztott évhez kapcsolódó összes fejlesztés megtekinthető fotóval és rövid leírással.",
-					position: "bottom"
+					position: "bottom",
 				});
 			}
 
 			steps.push({
 				element: "#face",
 				intro: "Kellemes böngészést!",
-				position: "left"
+				position: "left",
 			});
 
 			intro.setOptions({ steps }).start();
-		}
-	}
+		},
+	},
 };
 </script>
 
