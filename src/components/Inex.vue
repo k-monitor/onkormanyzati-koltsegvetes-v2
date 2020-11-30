@@ -28,7 +28,7 @@
 						<div class="mx-auto">
 							<span>{{ $config.inex.subtitle }}</span>
 							<br>
-							<span>{{ $util.groupNums(Math.max(incomeTree.value, expenseTree.value), true) }}</span>
+							<span>{{ $util.groupNums(Math.max(incomeSum, expenseSum), true) }}</span>
 						</div>
 						<div>
 							<a

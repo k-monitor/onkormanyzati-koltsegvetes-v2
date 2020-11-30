@@ -82,7 +82,10 @@
 							<span class="d-inline d-sm-none">{{ $util.groupNums(n.value, true) }}</span>
 							<span class="d-none d-sm-inline">{{ $util.groupNums(n.value) }}</span>
 							<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
-							<i class="fas fa-fw fa-level-down-alt ml-1" v-if="n.children && n.children.length"></i>
+							<i
+								class="fas fa-fw fa-level-down-alt ml-1"
+								v-if="n.children && n.children.length"
+							></i>
 						</div>
 					</div>
 				</div>
@@ -138,15 +141,19 @@ export default {
 			loading: true,
 			mode: 0, // 0 = econ, 1 = func
 			path: [],
-			resizeTimeout: null
+			resizeTimeout: null,
 		};
 	},
 	computed: {
-		children: function() {
+		children: function () {
 			try {
-				return this.node.children.sort(function(a, b) {
-					return b.value - a.value;
-				});
+				return this.node.children
+					.filter(function (node) {
+						return !String(node.id).startsWith("F");
+					})
+					.sort(function (a, b) {
+						return b.value - a.value;
+					});
 			} catch (e) {
 				return [];
 			}
@@ -154,15 +161,15 @@ export default {
 		data() {
 			return this.$d[this.year][this.side];
 		},
-		node: function() {
+		node: function () {
 			return this.nodePath[this.nodePath.length - 1];
 		},
-		nodePath: function() {
+		nodePath: function () {
 			var r = this.root;
 			var np = [r];
 			for (var p = 0; p < this.path.length; p++) {
 				var id = this.path[p];
-				var c = r.children.filter(n => n.id == id)[0]
+				var c = r.children.filter((n) => n.id == id)[0];
 				if (c && c.children.length > 0) {
 					r = c;
 					np.push(r);
@@ -172,35 +179,35 @@ export default {
 			}
 			return np;
 		},
-		root: function() {
+		root: function () {
 			return (
 				(this.mode % 2 == 0 ? this.data.econ : this.data.func) || {
 					name: "",
 					value: 0,
-					children: []
+					children: [],
 				}
 			);
 		},
-		type: function() {
+		type: function () {
 			return this.mode % 2 == 0 ? "econ" : "func";
-		}
+		},
 	},
 	watch: {
-		node: function() {
+		node: function () {
 			$(".nav-pills .nav-link").blur();
-			this.$nextTick(function() {
+			this.$nextTick(function () {
 				this.updateCurves();
 			});
 		},
-		year: function(y) {
+		year: function (y) {
 			if (!this.data.func && this.mode != 0) {
 				this.mode = 0;
 				this.path = [];
 			}
-		}
+		},
 	},
 	methods: {
-		bgColor: function(node, index) {
+		bgColor: function (node, index) {
 			var colors = [
 				"#f7981d" /* 01 Általános közszolgáltatások */,
 				"#5c628f" /* 02 Védelem */,
@@ -212,7 +219,7 @@ export default {
 				"#70ac45" /* 08 Szabadidő, sport, kultúra, vallás */,
 				"#4971b6" /* 09 Oktatás */,
 				"#bb208a" /* 10 Szociális védelem */,
-				"#ef538c" /* 9000 Technikai funkciókódok */
+				"#ef538c" /* 9000 Technikai funkciókódok */,
 			];
 
 			var color = colors[this.colorIndex(node)];
@@ -222,7 +229,7 @@ export default {
 				(this.nodePath.length > 1 &&
 					this.nodePath[1].name.includes("Finanszírozási"))
 			) {
-				color = "gainsboro";
+				color = tinycolor("seagreen").lighten(42); // just like in Inex
 			}
 
 			if (this.nodePath.length > 1) {
@@ -240,11 +247,11 @@ export default {
 			}
 			return color;
 		},
-		fgColor: function(node, index) {
+		fgColor: function (node, index) {
 			var color = tinycolor(this.bgColor(node, index));
 			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
 		},
-		colorIndex: function(node) {
+		colorIndex: function (node) {
 			function norm(id) {
 				return (id + "").replace(/\D+/, "");
 			}
@@ -256,10 +263,10 @@ export default {
 
 			id = norm(id);
 			var ids = this.root.children
-				.map(function(c) {
+				.map(function (c) {
 					return norm(c.id);
 				})
-				.sort(function(a, b) {
+				.sort(function (a, b) {
 					return Number(a) - Number(b);
 				});
 			return ids.indexOf(id);
@@ -297,60 +304,60 @@ export default {
 				return "";
 			}
 		},
-		down: function(node, index) {
+		down: function (node, index) {
 			$(".tooltip").remove();
 			if (node.children && node.children.length > 0) {
 				this.path.push(node.id);
 			}
 		},
-		up: function(n) {
+		up: function (n) {
 			n = Math.max(n || 1, 0);
 			while (n > 0) {
 				this.path.pop();
 				n--;
 			}
 		},
-		updateCurves: function() {
+		updateCurves: function () {
 			var svg = $("#" + this.id + " .curves svg");
 			var svgHeight = $(svg).outerHeight();
 			var svgWidth = $(svg).outerWidth();
 			$(svg).attr("viewBox", [0, 0, svgWidth, svgHeight].join(" "));
 
 			var self = this;
-			this.curves = this.children.map(function(n, i) {
+			this.curves = this.children.map(function (n, i) {
 				return self.curve(self.id, n, i);
 			});
 		},
 		regenerateTooltips() {
 			$('[data-toggle="tooltip"]').tooltip();
 		},
-		milestoneId: function(node) {
+		milestoneId: function (node) {
 			try {
 				const mid = this.$milestones.rels[this.year][node.id];
 				return mid ? "milestone-modal-" + mid : null;
 			} catch (e) {
 				return null;
 			}
-		}
+		},
 	},
-	mounted: function() {
+	mounted: function () {
 		if (this.data.func && this.defaultMode == 1) this.mode = 1;
 
 		this.regenerateTooltips();
 		const self = this;
 		self.updateCurves();
-		window.addEventListener("resize", function() {
+		window.addEventListener("resize", function () {
 			clearTimeout(self.resizeTimeout);
-			self.resizeTimeout = setTimeout(function() {
+			self.resizeTimeout = setTimeout(function () {
 				self.updateCurves();
 			}, 100);
 		});
 
-		self.$eventBus.$on("jump", target => {
+		self.$eventBus.$on("jump", (target) => {
 			if (target.side == self.side) {
 				self.mode = target.type == "econ" ? 0 : 1;
 				self.path = [];
-				(target.path || []).forEach(id => {
+				(target.path || []).forEach((id) => {
 					for (let i = 0; i < self.children.length; i++) {
 						const node = self.children[i];
 						if (node.id == id) {
@@ -361,9 +368,9 @@ export default {
 			}
 		});
 	},
-	updated: function() {
+	updated: function () {
 		this.regenerateTooltips();
-	}
+	},
 };
 </script>
 
