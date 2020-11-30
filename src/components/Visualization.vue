@@ -229,7 +229,7 @@ export default {
 				(this.nodePath.length > 1 &&
 					this.nodePath[1].name.includes("Finanszírozási"))
 			) {
-				color = "gainsboro";
+				color = tinycolor("seagreen").lighten(42); // just like in Inex
 			}
 
 			if (this.nodePath.length > 1) {
