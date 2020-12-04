@@ -207,6 +207,7 @@ export default {
 			this.$nextTick(function () {
 				this.updateCurves();
 			});
+			$("html, body").animate({ scrollTop: $(this.$el).offset().top - 75 });
 		},
 		year: function (y) {
 			if (!this.data.func && this.mode != 0) {
