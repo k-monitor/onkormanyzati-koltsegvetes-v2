@@ -88,6 +88,14 @@
 								v-if="n.children && n.children.length"
 							></i>
 						</div>
+						<div class="d-flex d-sm-none">
+							<div
+								class="btn btn-link bg-light milestone-button ml-2 mr-1"
+								data-toggle="modal"
+								:data-target="'#' + milestoneId(n)"
+								v-if="$config.modules.milestones && milestoneId(n)"
+							><i class="fas fa-camera"></i></div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -474,7 +482,6 @@ export default {
 			min-height: 400px;
 		}
 		font-size: 90%;
-
 
 		& > div {
 			height: 100%;
