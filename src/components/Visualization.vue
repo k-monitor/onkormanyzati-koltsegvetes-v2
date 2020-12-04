@@ -90,11 +90,18 @@
 						</div>
 						<div class="d-flex d-sm-none">
 							<div
-								class="btn btn-link bg-light milestone-button ml-2 mr-1"
+								class="btn btn-link bg-light milestone-button ml-3 mr-1 px-2"
 								data-toggle="modal"
 								:data-target="'#' + milestoneId(n)"
 								v-if="$config.modules.milestones && milestoneId(n)"
-							><i class="fas fa-camera"></i></div>
+							><i class="fas fa-fw fa-camera"></i></div>
+							<div
+								class="btn btn-link ml-3 mr-1 px-2"
+								:style="{ color: fgColor(n,i) }"
+								v-else-if="$tooltips[year][n.id]"
+							>
+								<sub class="fas fa-fw fa-info"></sub>
+							</div>
 						</div>
 					</div>
 				</div>
