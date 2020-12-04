@@ -79,9 +79,10 @@
 						oncontextmenu="return false;"
 					>
 						<div class="text-right w-100">
-							<span class="d-inline d-sm-none">{{ $util.groupNums(n.value, true) }}</span>
+							<span class="d-inline d-sm-none font-weight-bold">{{ $util.groupNums(n.value, true) }}</span>
 							<span class="d-none d-sm-inline">{{ $util.groupNums(n.value) }}</span>
 							<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
+							<span class="d-sm-none"><br>{{ n.name }}</span>
 							<i
 								class="fas fa-fw fa-level-down-alt ml-1"
 								v-if="n.children && n.children.length"
@@ -90,7 +91,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="middle-column curves">
+			<div class="d-none d-sm-block middle-column curves">
 				<svg
 					height="100%"
 					width="100%"
@@ -105,7 +106,7 @@
 					></path>
 				</svg>
 			</div>
-			<div class="d-flex flex-column right-column text-left">
+			<div class="d-none d-sm-flex flex-column right-column text-left">
 				<div
 					class="label"
 					v-for="(n,i) in children"
@@ -383,6 +384,10 @@ export default {
 .visualization {
 	.left-column {
 		width: 35%;
+
+		@include media-breakpoint-down(xs) {
+			width: 100%;
+		}
 	}
 	.middle-column {
 		width: 5%;
@@ -410,7 +415,10 @@ export default {
 		flex: 1;
 		margin-bottom: 1px;
 		min-height: 24px; // iOS fix
-		padding: 0.1rem;
+		padding: 0.25rem 0.25rem;
+		@include media-breakpoint-up(sm) {
+			padding: 0.1rem;
+		}
 		@include media-breakpoint-up(md) {
 			padding: 0.1rem 0.5rem;
 		}
@@ -424,6 +432,10 @@ export default {
 		&:hover {
 			opacity: 0.8;
 		}
+	}
+
+	.breadcrumb-item {
+		text-align: left;
 	}
 
 	.breadcrumb-item.active,
@@ -457,9 +469,12 @@ export default {
 	}
 
 	.vis {
-		height: 75vh;
+		@include media-breakpoint-up(sm) {
+			height: 75vh;
+			min-height: 400px;
+		}
 		font-size: 90%;
-		min-height: 400px;
+
 
 		& > div {
 			height: 100%;
