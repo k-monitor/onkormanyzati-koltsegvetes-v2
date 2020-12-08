@@ -58,7 +58,7 @@
 				<div
 					class="back-bar d-flex justify-content-center"
 					v-if="path.length > 0"
-					@click="up()"
+					@click="up();autoScroll()"
 					:style="{ backgroundColor: bgColor(node,-1), color: fgColor(node,-1) }"
 				>
 					<i class="fas fa-fw fa-level-up-alt mx-2 my-auto"></i>
@@ -71,7 +71,7 @@
 						:data-id="n.id"
 						:data-index="i"
 						:style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
-						@click="down(n, i)"
+						@click="down(n, i);autoScroll()"
 						@mouseover="hovered=i"
 						data-toggle="tooltip"
 						data-placement="left"
@@ -132,7 +132,7 @@
 					@mouseover="hovered=i"
 					oncontextmenu="return false;"
 				>
-					<span @click="down(n, i)">{{ n.name }}</span>
+					<span @click="down(n, i);autoScroll()">{{ n.name }}</span>
 					<span
 						class="btn btn-link milestone-button ml-auto"
 						data-toggle="modal"
@@ -214,7 +214,7 @@ export default {
 			this.$nextTick(function () {
 				this.updateCurves();
 			});
-			$("html, body").animate({ scrollTop: $(this.$el).offset().top - 75 });
+
 		},
 		year: function (y) {
 			if (!this.data.func && this.mode != 0) {
@@ -224,6 +224,9 @@ export default {
 		},
 	},
 	methods: {
+		autoScroll: function () {
+			$("html, body").animate({ scrollTop: $(this.$el).offset().top - 75 });
+		},
 		bgColor: function (node, index) {
 			var colors = [
 				"#f7981d" /* 01 Általános közszolgáltatások */,
