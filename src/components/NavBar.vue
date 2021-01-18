@@ -8,7 +8,7 @@
 				class="navbar-brand js-scroll-trigger"
 				href="#page-top"
 			>
-				<img class="mr-2" src="assets/img/logo.png" width="30" height="30" alt="">
+				<img class="mr-2" src="assets/img/logo.png" width="54" height="30" alt="">
 				{{ $config.city }}
 			</a>
 			<button
@@ -155,7 +155,7 @@ export default {
 		font-weight: $font-weight-bold;
 		color: $gray-900;
 		img {
-			filter: invert(1);
+			//filter: invert(1);
 			position: relative;
 			top: -2px;
 		}
@@ -217,7 +217,7 @@ export default {
 					color: $primary;
 				}
 				img {
-					filter: invert(1);
+					//filter: invert(1);
 				}
 			}
 			.navbar-nav {
