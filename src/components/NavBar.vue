@@ -8,7 +8,7 @@
 				class="navbar-brand js-scroll-trigger"
 				href="#page-top"
 			>
-				<img class="mr-2" src="assets/img/logo.png" width="54" height="30" alt="">
+				<img class="mr-2" src="assets/img/logo.png" width="135" height="75" alt="">
 				{{ $config.city }}
 			</a>
 			<button
@@ -146,6 +146,11 @@ export default {
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
+@mixin shrinkedLogo() {
+	height: 30px;
+	width: 54px;
+}
+
 #mainNav {
 	box-shadow: $box-shadow;
 	background-color: $white;
@@ -155,15 +160,15 @@ export default {
 		font-weight: $font-weight-bold;
 		color: $gray-900;
 		img {
-			//filter: invert(1);
 			position: relative;
+			transition: all .2s;
 			top: -2px;
 		}
 	}
 	.navbar-nav {
 		.nav-item {
 			.nav-link {
-				color: $gray-600;
+				color: $gray-900;
 				font-family: $font-family-sans-serif;
 				font-weight: $font-weight-bold;
 				font-size: 0.9rem;
@@ -181,24 +186,10 @@ export default {
 	@include media-breakpoint-up(lg) {
 		// Base styling for the navbar - screen sizes greater than the large breakpoint
 		box-shadow: none;
-		background-color: transparent;
-		.navbar-brand {
-			color: fade-out($white, 0.3);
-			&:hover {
-				color: $white;
-			}
-			img {
-				filter: none;
-			}
-		}
 		.navbar-nav {
 			.nav-item {
 				.nav-link {
-					color: fade-out($white, 0.3);
 					padding: 0 1rem;
-					&:hover {
-						color: $white;
-					}
 				}
 				&:last-child {
 					.nav-link {
@@ -209,25 +200,12 @@ export default {
 		}
 		// Navbar styling applied when the page is scrolled
 		&.navbar-scrolled {
-			box-shadow: $box-shadow;
-			background-color: $white;
 			.navbar-brand {
-				color: $gray-900;
 				&:hover {
 					color: $primary;
 				}
 				img {
-					//filter: invert(1);
-				}
-			}
-			.navbar-nav {
-				.nav-item {
-					.nav-link {
-						color: $gray-900;
-						&:hover {
-							color: $primary;
-						}
-					}
+					@include shrinkedLogo();
 				}
 			}
 		}
@@ -235,9 +213,6 @@ export default {
 
 	// highlight
 
-	/*&, & > div.container-fluid {
-		padding-right: 0;
-	}*/
 	.nav-item:last-child .nav-link {
 		margin-right: 1rem;
 	}
@@ -245,7 +220,6 @@ export default {
 	@include media-breakpoint-up(lg) {
 		.navbar-nav .nav-item.highlight {
 			.nav-link {
-				color: white !important;
 				text-decoration: underline;
 			}
 		}
@@ -260,6 +234,7 @@ export default {
 				position: relative;
 
 				.nav-link {
+					color: white !important;
 					text-decoration: none;
 				}
 
