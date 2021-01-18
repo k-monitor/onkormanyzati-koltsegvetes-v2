@@ -21,6 +21,7 @@
 				:year="year"
 				id="income"
 				side="income"
+				:text="$config.vis.incomeText"
 				:title="$config.vis.income"
 				v-if="$config.modules.income"
 			/>
@@ -29,6 +30,7 @@
 				class="bg-light"
 				id="expense"
 				side="expense"
+				:text="$config.vis.expenseText"
 				:title="$config.vis.expense"
 			/>
 			<MilestoneSection
