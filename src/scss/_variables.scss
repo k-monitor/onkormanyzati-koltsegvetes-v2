@@ -6,7 +6,7 @@ $font-family-sans-serif: "Roboto Condensed", -apple-system, BlinkMacSystemFont, 
 $font-family-base: $font-family-sans-serif !default;
 $headings-font-family: $font-family-sans-serif !default;
 
-$primary: royalblue; // default year theme color
+$primary: #008EF0; // default year theme color
 $danger: firebrick;
 $success: seagreen;
 
@@ -15,8 +15,9 @@ $success: seagreen;
 $masthead-img: '../mintavaros-02.svg';
 $navbar-height: 72px;
 $year-colors: // themes
-  royalblue,
-  brown
+  #008EF0,
+  #DE990A,
+  #36791A
 ;
 $overlay-on-milestone-card-picture: true;
 $overlay-on-milestone-thumbnail: true;
