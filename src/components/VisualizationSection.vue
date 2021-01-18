@@ -21,13 +21,18 @@
 				</div>
 				<p class="d-md-none font-italic p-3 small text-center text-muted">Érintőképernyős eszközökön a kategória leírások megjelenítéséhez tartsa az ujját a hasábon egy kis ideig.</p>
 			</div>
+			<div class="row justify-content-center mt-5" v-if="text">
+				<div class="col-lg-8 text-center">
+					<VueMarkdown :source="text" />
+				</div>
+			</div>
 		</div>
 	</section>
 </template>
 
 <script>
 export default {
-	props: ["year", "side", "title"]
+	props: ["year", "side", "text", "title"]
 };
 </script>
 
