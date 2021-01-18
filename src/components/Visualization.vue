@@ -1,32 +1,33 @@
 <template>
 	<div class="visualization">
 		<div class="row justify-content-center">
-			<div
-				class="col-lg-8 text-center"
-				v-if="data.econ && data.func"
-			>
+			<div class="col-lg-8 text-center">
 				<ul class="justify-content-center mb-5 nav nav-pills w-100">
-					<li class="nav-item">
+					<li
+						class="nav-item"
+						data-placement="bottom"
+						data-toggle="tooltip"
+						:title="$config.vis.funcHint"
+					>
 						<a
-							:class="{ active: mode == 1 }"
-							:title="$config.vis.funcHint"
+							:class="{ active: mode == 1, disabled: !data.func }"
 							@click="path = []; mode = 1"
 							class="nav-link"
-							data-placement="bottom"
-							data-toggle="tooltip"
 							href="javascript:void(0)"
 						>
 							{{ $config.vis.func }}
 						</a>
 					</li>
-					<li class="nav-item">
+					<li
+						class="nav-item"
+						data-placement="bottom"
+						data-toggle="tooltip"
+						:title="$config.vis.econHint"
+					>
 						<a
 							:class="{ active: mode == 0 }"
-							:title="$config.vis.econHint"
 							@click="path = []; mode = 0"
 							class="nav-link"
-							data-placement="bottom"
-							data-toggle="tooltip"
 							href="javascript:void(0)"
 						>
 							{{ $config.vis.econ }}
@@ -214,7 +215,6 @@ export default {
 			this.$nextTick(function () {
 				this.updateCurves();
 			});
-
 		},
 		year: function (y) {
 			if (!this.data.func && this.mode != 0) {
