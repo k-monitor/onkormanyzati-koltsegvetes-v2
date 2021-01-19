@@ -1,17 +1,17 @@
 <template>
-	<footer class="bg-dark py-5 text-white-75">
+	<footer class="py-5">
 		<div class="container">
 			<div class="row">
 				<div
-					class="col-sm-6 col-lg-4"
+					class="col-sm-6 col-lg-4 mb-5 text-center"
 					id="city-logo"
 				>
 					<a
-						class="js-scroll-trigger"
-						href="#page-top"
+						href="http://www.gyongyos.hu/"
+						target="_blank"
 					>
 						<img
-							src="assets/img/logo.png"
+							src="assets/img/logo-big.jpg"
 							alt=""
 						>
 					</a>
@@ -73,17 +73,17 @@
 	</footer>
 </template>
 
-<style>
-#license a {
-	color: white !important;
-}
-
-#city-logo img {
-	max-height: 64px;
+<style lang="scss">
+#logos a {
+	opacity: .75;
+	&:hover {
+		opacity: 1;
+	}
 }
 
 #logos img {
 	display: inline-block;
+	filter: invert(1);
 	margin: 0 1rem 1rem 0;
 	max-height: 32px;
 }
