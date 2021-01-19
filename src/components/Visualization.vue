@@ -166,7 +166,8 @@ export default {
 			try {
 				return this.node.children
 					.filter(function (node) {
-						return !String(node.id).startsWith("F");
+						return !String(node.id).startsWith("F")
+							&& !String(node.id).startsWith("I");
 					})
 					.sort(function (a, b) {
 						return b.value - a.value;

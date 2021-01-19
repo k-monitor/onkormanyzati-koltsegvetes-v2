@@ -130,6 +130,8 @@ export default {
 				"K6",
 				"K7",
 				"K8",
+				"IK1",
+				"IK2",
 			];
 			return this.expenseTree.children
 				.sort(function (a, b) {
@@ -148,7 +150,10 @@ export default {
 				});
 		},
 		expenseSum: function () {
-			return this.expenseChildren
+			return this.expenseTree.children
+				.filter(function (n) {
+					return n.value > 0 && !n.id.startsWith("F");
+				})
 				.map(function (node) {
 					return node.value;
 				})
@@ -170,6 +175,8 @@ export default {
 				"B2",
 				"B5",
 				"B7",
+				"IB1",
+				"IB2",
 			];
 			return this.incomeTree.children
 				.sort(function (a, b) {
@@ -188,7 +195,10 @@ export default {
 				});
 		},
 		incomeSum: function () {
-			return this.incomeChildren
+			return this.incomeTree.children
+				.filter(function (n) {
+					return n.value > 0 && !n.id.startsWith("F");
+				})
 				.map(function (node) {
 					return node.value;
 				})
@@ -204,6 +214,7 @@ export default {
 		bgColor: function (node, isIncome) {
 			const c = tinycolor("seagreen");
 			if (node.id.startsWith("F")) return c.lighten(42);
+			if (node.id.startsWith("I")) return c.lighten(48).desaturate(100);
 			return c
 				.spin((node.mukodesi ? 1 : 2) * 71)
 				.desaturate(30)
@@ -280,7 +291,7 @@ export default {
 		font-size: 90%;
 		height: 75vh;
 		line-height: 1.15;
-		min-height: 400px;
+		min-height: 500px;
 
 		@include media-breakpoint-up(md) {
 			height: 50vh;

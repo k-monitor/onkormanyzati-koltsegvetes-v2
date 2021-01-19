@@ -95,7 +95,7 @@ function generateEconomicTree(matrixTsv) {
 	const deletableIds = [];
 	for (let i = 0; i < sortedIds.length; i++) {
 		const id = sortedIds[i];
-		if (id.length == 2 || id.startsWith('F')) continue; // root nodes, incl. FH1, FH2, FT1, FT2
+		if (id.length == 2 || id.startsWith('F') || id.startsWith('I')) continue; // root nodes, incl. FHx, FTx, IBx, IKx
 		let j = i - 1;
 		for (; sortedIds[j].length >= id.length; j--);
 		if (j > -1) { // found parent
@@ -115,7 +115,7 @@ function generateEconomicTree(matrixTsv) {
 	// we dropped out total sum line (via id filter) so we calculate it
 	const children = Object.values(nodes);
 	const value = children
-		.filter(n => !n.id.startsWith('F')) // skipping FH1, FH2, FT1, FT2
+		.filter(n => !n.id.startsWith('F') && !n.id.startsWith('I')) // skipping FHx, FTx, IBx, IKx
 		.map(n => n.value)
 		.reduce((sum, v) => sum + v, 0);
 	const root = {
@@ -211,7 +211,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 function parseEconomicDescriptor(descriptor) {
 	let id, m;
 
-	if ((m = descriptor.match(/ \(((B|K|FH|FT)[0-9\-]+)\)/))) {
+	if ((m = descriptor.match(/ \(((B|K|FH|FT|IB|IK)[0-9\-]+)\)/))) {
 		id = m[1];
 	}
 
