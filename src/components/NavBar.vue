@@ -185,7 +185,6 @@ export default {
 	}
 	@include media-breakpoint-up(lg) {
 		// Base styling for the navbar - screen sizes greater than the large breakpoint
-		box-shadow: none;
 		.navbar-nav {
 			.nav-item {
 				.nav-link {
