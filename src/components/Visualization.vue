@@ -236,7 +236,7 @@ export default {
 				"#254478" /* 04 Gazdasági ügyek */,
 				"#d32027" /* 05 Környezetvédelem */,
 				"#5c9ad2" /* 06 Lakásépítés és kommunális létesítménye */,
-				"#e5960a" /* 07 Egészségügy */,
+				"#cf7017" /* 07 Egészségügy */,
 				"#70ac45" /* 08 Szabadidő, sport, kultúra, vallás */,
 				"#4971b6" /* 09 Oktatás */,
 				"#bb208a" /* 10 Szociális védelem */,
