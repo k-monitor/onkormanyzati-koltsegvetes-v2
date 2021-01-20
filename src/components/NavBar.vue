@@ -8,7 +8,7 @@
 				class="navbar-brand js-scroll-trigger"
 				href="#page-top"
 			>
-				<img class="mr-2" src="assets/img/logo.png" width="135" height="75" alt="">
+				<img class="mr-2" src="assets/img/logo.png" width="54" height="30" alt="">
 				{{ $config.city }}
 			</a>
 			<button
@@ -146,9 +146,9 @@ export default {
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
-@mixin shrinkedLogo() {
-	height: 30px;
-	width: 54px;
+@mixin enlargedLogo() {
+	height: 75px;
+	width: 135px;
 }
 
 #mainNav {
@@ -199,13 +199,13 @@ export default {
 			}
 		}
 		// Navbar styling applied when the page is scrolled
+		&:not(.navbar-scrolled) .navbar-brand img {
+			@include enlargedLogo();
+		}
 		&.navbar-scrolled {
 			.navbar-brand {
 				&:hover {
 					color: $primary;
-				}
-				img {
-					@include shrinkedLogo();
 				}
 			}
 		}
