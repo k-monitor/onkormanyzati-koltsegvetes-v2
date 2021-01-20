@@ -146,6 +146,11 @@ export default {
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
+@mixin enlargedLogo() {
+	height: 75px;
+	width: 75px;
+}
+
 #mainNav {
 	box-shadow: $box-shadow;
 	background-color: $white;
@@ -157,6 +162,7 @@ export default {
 		img {
 			filter: invert(1);
 			position: relative;
+			transition: all .2s;
 			top: -2px;
 		}
 	}
@@ -208,6 +214,9 @@ export default {
 			}
 		}
 		// Navbar styling applied when the page is scrolled
+		&:not(.navbar-scrolled) .navbar-brand img {
+			@include enlargedLogo();
+		}
 		&.navbar-scrolled {
 			box-shadow: $box-shadow;
 			background-color: $white;

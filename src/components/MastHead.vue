@@ -1,6 +1,6 @@
 <template>
 	<header class="masthead d-flex align-items-center" id="masthead-parallax">
-		<div class="container h-100">
+		<div class="container h-100 pt-5">
 			<div class="row h-100 align-items-center justify-content-center text-center">
 				<div class="col-lg-10 align-self-end">
 					<h1 class="text-white font-weight-bold">{{ $config.header.title }}</h1>

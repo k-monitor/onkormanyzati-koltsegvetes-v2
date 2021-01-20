@@ -79,7 +79,7 @@
 }
 
 #city-logo img {
-	max-height: 64px;
+	max-height: 100px;
 }
 
 #logos img {
