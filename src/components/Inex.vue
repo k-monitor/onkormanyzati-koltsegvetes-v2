@@ -254,6 +254,19 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 #inex {
+	/* hack for grey bars to appear with same heights */
+	.bar[data-id="IB1"],
+	.bar[data-id="IK1"] {
+		flex-grow: 0 !important;
+		min-height: 65px;
+	}
+	.bar[data-id="IB2"],
+	.bar[data-id="IK2"] {
+		flex-grow: 0 !important;
+		min-height: 26px;
+	}
+
+
 	.bar {
 		align-items: center;
 		display: flex;
