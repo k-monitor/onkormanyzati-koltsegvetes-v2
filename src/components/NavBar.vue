@@ -9,7 +9,7 @@
 				href="#page-top"
 			>
 				<img class="mr-2" src="assets/img/logo.png" width="54" height="30" alt="">
-				{{ $config.city }}
+				<span class="text-uppercase">{{ $config.city }}</span>
 			</a>
 			<button
 				class="navbar-toggler navbar-toggler-right"
@@ -147,8 +147,8 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 @mixin enlargedLogo() {
-	height: 75px;
-	width: 135px;
+	height: 75px * 0.85;
+	width: 135px * 0.85;
 }
 
 #mainNav {
@@ -156,9 +156,10 @@ export default {
 	background-color: $white;
 	transition: background-color 0.2s ease;
 	.navbar-brand {
-		font-family: $font-family-sans-serif;
+		font-family: $fontin;
 		font-weight: $font-weight-bold;
-		color: $gray-900;
+		color: $secondary;
+		letter-spacing: 1.5px;
 		img {
 			position: relative;
 			transition: all .2s;
@@ -198,14 +199,10 @@ export default {
 			}
 		}
 		// Navbar styling applied when the page is scrolled
-		&:not(.navbar-scrolled) .navbar-brand img {
-			@include enlargedLogo();
-		}
-		&.navbar-scrolled {
-			.navbar-brand {
-				&:hover {
-					color: $primary;
-				}
+		&:not(.navbar-scrolled) .navbar-brand {
+			font-size: 1.5rem;
+		 	img {
+				@include enlargedLogo();
 			}
 		}
 	}

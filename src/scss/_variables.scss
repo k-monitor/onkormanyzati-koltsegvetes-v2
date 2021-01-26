@@ -1,12 +1,27 @@
 // Definitions
 
+$fontin: 'Fontin-Sans-Regular';
+@font-face {
+  font-family: $fontin;
+  src:
+    url('/assets/fonts/Fontin-Sans-Regular.ttf.woff') format('woff'),
+    url('/assets/fonts/Fontin-Sans-Regular.ttf.svg#Fontin-Sans-Regular') format('svg'),
+    url('/assets/fonts/Fontin-Sans-Regular.ttf.eot'),
+    url('/assets/fonts/Fontin-Sans-Regular.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 // Bootstrap overrides
 
 $font-family-sans-serif: "Roboto Condensed", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", 'Noto Color Emoji' !default;
 $font-family-base: $font-family-sans-serif !default;
-$headings-font-family: $font-family-sans-serif !default;
+//$headings-font-family: $font-family-sans-serif !default;
+$headings-font-family: $fontin;
 
 $primary: #008EF0; // default year theme color
+$secondary: #1D3E6F; // Gyöngyös blue
 $danger: firebrick;
 $success: seagreen;
 
