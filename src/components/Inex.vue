@@ -266,7 +266,6 @@ export default {
 		min-height: 26px;
 	}
 
-
 	.bar {
 		align-items: center;
 		display: flex;
