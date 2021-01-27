@@ -17,8 +17,7 @@ $fontin: 'Fontin-Sans-Regular';
 
 $font-family-sans-serif: "Roboto Condensed", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", 'Noto Color Emoji' !default;
 $font-family-base: $font-family-sans-serif !default;
-//$headings-font-family: $font-family-sans-serif !default;
-$headings-font-family: $fontin;
+$headings-font-family: $font-family-sans-serif !default;
 
 $primary: #008EF0; // default year theme color
 $secondary: #1D3E6F; // Gyöngyös blue
