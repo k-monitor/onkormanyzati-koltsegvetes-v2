@@ -258,12 +258,12 @@ export default {
 	.bar[data-id="IB1"],
 	.bar[data-id="IK1"] {
 		flex-grow: 0 !important;
-		min-height: 65px;
+		min-height: 65px !important;
 	}
 	.bar[data-id="IB2"],
 	.bar[data-id="IK2"] {
 		flex-grow: 0 !important;
-		min-height: 26px;
+		min-height: 26px !important;
 	}
 
 	.bar {
@@ -277,6 +277,16 @@ export default {
 			padding: 0.1rem 0.5rem;
 		}
 		user-select: none;
+
+		&:not(.small) {
+			min-height: 64px;
+			@include media-breakpoint-up(md) {
+				min-height: 48px;
+			}
+			@include media-breakpoint-up(lg) {
+				min-height: 24px;
+			}
+		}
 
 		&.small {
 			padding: 0.33rem 0.5rem;
@@ -303,7 +313,11 @@ export default {
 		font-size: 90%;
 		height: 75vh;
 		line-height: 1.15;
-		min-height: 500px;
+		min-height: 600px;
+
+		@include media-breakpoint-down(xs) {
+			min-height: 750px;
+		}
 
 		@include media-breakpoint-up(md) {
 			height: 50vh;

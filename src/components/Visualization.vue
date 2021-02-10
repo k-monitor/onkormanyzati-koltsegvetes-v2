@@ -434,15 +434,18 @@ export default {
 		display: flex;
 		flex: 1;
 		margin-bottom: 1px;
-		min-height: 24px; // iOS fix
+		min-height: 64px; // iOS fix
 		padding: 0.25rem 0.25rem;
+		user-select: none;
+
 		@include media-breakpoint-up(sm) {
+			min-height: 48px;
 			padding: 0.1rem;
 		}
 		@include media-breakpoint-up(md) {
+			min-height: 24px;
 			padding: 0.1rem 0.5rem;
 		}
-		user-select: none;
 	}
 
 	.back-bar {
@@ -489,9 +492,10 @@ export default {
 	}
 
 	.vis {
+		height: 700px;
 		@include media-breakpoint-up(sm) {
 			height: 75vh;
-			min-height: 400px;
+			min-height: 500px;
 		}
 		font-size: 90%;
 
