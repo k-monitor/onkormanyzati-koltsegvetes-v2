@@ -82,4 +82,10 @@ export default function (Vue, { router, head, isClient }) {
 	if (!config.modules.income) {
 		config.modules.inex = false;
 	}
+
+	// fixing default year on the fly
+	const years = Object.keys(data);
+	if (!years.includes(config.defaultYear)) {
+		config.defaultYear = years[0];
+	}
 }
