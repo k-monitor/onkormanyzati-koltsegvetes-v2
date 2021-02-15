@@ -119,9 +119,7 @@ export default {
 	},
 	data() {
 		return {
-			year: this.$d[config.defaultYear]
-				? config.defaultYear
-				: Object.keys(this.$d)[0],
+			year: config.defaultYear
 		};
 	},
 	methods: {
