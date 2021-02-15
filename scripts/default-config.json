@@ -26,7 +26,7 @@
 	],
 	[
 		"defaultYear",
-		2018,
+		2020,
 		"Alapértelmezettként kiválasztott év."
 	],
 	[
@@ -205,9 +205,19 @@
 		"Bevételek szakasz címsora."
 	],
 	[
+		"vis.incomeText",
+		"",
+		"Bevétel ábra alatti szöveg (opcionális)."
+	],
+	[
 		"vis.expense",
 		"Kiadások",
 		"Kiadások szakasz címsora."
+	],
+	[
+		"vis.expenseText",
+		"",
+		"Kiadás ábra alatti szöveg (opcionális)."
 	],
 	[
 		"vis.econ",
