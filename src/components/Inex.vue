@@ -176,7 +176,7 @@ export default {
 					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
 				})
 				.filter(function (n) {
-					return n.name.indexOf("Finanszírozási") == -1;
+					return n.name.indexOf("Finanszírozási") == -1 || n.id.startsWith('F');
 				})
 				.map(function (n) {
 					const i = parseInt(n.id[1]);
