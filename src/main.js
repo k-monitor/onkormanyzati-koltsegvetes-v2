@@ -85,6 +85,7 @@ export default function (Vue, { router, head, isClient }) {
 
 	// fixing default year on the fly
 	const years = Object.keys(data);
+	config.defaultYear = String(config.defaultYear)
 	if (!years.includes(config.defaultYear)) {
 		config.defaultYear = years[0];
 	}
