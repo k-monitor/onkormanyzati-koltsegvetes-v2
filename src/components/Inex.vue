@@ -162,13 +162,13 @@ export default {
 		incomeChildren: function () {
 			const customOrder = [
 				"B1",
+				"B2",
 				"B3",
 				"B4",
-				"B6",
 				"FT1",
 				"FT2",
-				"B2",
 				"B5",
+				"B6",
 				"B7",
 			];
 			return this.incomeTree.children
@@ -180,7 +180,7 @@ export default {
 				})
 				.map(function (n) {
 					const i = parseInt(n.id[1]);
-					n.mukodesi = [1, 3, 4, 6].indexOf(i) > -1;
+					n.mukodesi = [1, 2, 3, 4].indexOf(i) > -1;
 					return n;
 				})
 				.filter(function (n) {
