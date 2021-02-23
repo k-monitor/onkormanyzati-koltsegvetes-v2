@@ -20,7 +20,7 @@
 								<img
 									class="rounded-circle"
 									id="face"
-									src="assets/img/face.png"
+									src="assets/img/face.jpg"
 									alt=""
 									style="height: 100px;"
 								>
