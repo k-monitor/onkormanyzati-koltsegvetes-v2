@@ -11,7 +11,7 @@
 						href="#page-top"
 					>
 						<img
-							src="assets/img/logo.png"
+							src="assets/img/logo-big.png"
 							alt=""
 						>
 					</a>
@@ -79,7 +79,7 @@
 }
 
 #city-logo img {
-	max-height: 100px;
+	max-height: 150px;
 }
 
 #logos img {
