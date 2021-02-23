@@ -156,7 +156,7 @@ export default {
 	background-color: $white;
 	transition: background-color 0.2s ease;
 	.navbar-brand {
-		font-family: $font-family-sans-serif;
+		font-family: $headings-font-family;
 		font-weight: $font-weight-bold;
 		color: $gray-900;
 		img {
