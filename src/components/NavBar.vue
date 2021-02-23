@@ -8,7 +8,7 @@
 				class="navbar-brand js-scroll-trigger"
 				href="#page-top"
 			>
-				<img class="mr-2" src="assets/img/logo.png" width="30" height="30" alt="">
+				<img class="mr-2" src="assets/img/logo.png" width="25" height="30" alt="">
 				{{ $config.city }}
 			</a>
 			<button
@@ -147,8 +147,8 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 @mixin enlargedLogo() {
-	height: 75px;
-	width: 75px;
+	height: 60px;
+	width: 50px;
 }
 
 #mainNav {
@@ -158,9 +158,8 @@ export default {
 	.navbar-brand {
 		font-family: $headings-font-family;
 		font-weight: $font-weight-bold;
-		color: $gray-900;
+		color: $primary;
 		img {
-			filter: invert(1);
 			position: relative;
 			transition: all .2s;
 			top: -2px;
@@ -190,9 +189,7 @@ export default {
 		background-color: transparent;
 		.navbar-brand {
 			color: fade-out($white, 0.3);
-			&:hover {
-				color: $white;
-			}
+			color: $primary;
 			img {
 				filter: none;
 			}
@@ -220,15 +217,6 @@ export default {
 		&.navbar-scrolled {
 			box-shadow: $box-shadow;
 			background-color: $white;
-			.navbar-brand {
-				color: $gray-900;
-				&:hover {
-					color: $primary;
-				}
-				img {
-					filter: invert(1);
-				}
-			}
 			.navbar-nav {
 				.nav-item {
 					.nav-link {

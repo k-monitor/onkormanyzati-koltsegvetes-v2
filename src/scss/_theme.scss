@@ -56,9 +56,6 @@
 
 			@include media-breakpoint-up(lg) {
 				&.navbar-scrolled {
-					.navbar-brand:hover {
-						color: $primary;
-					}
 					.navbar-nav .nav-item .nav-link:hover {
 						color: $primary;
 					}
