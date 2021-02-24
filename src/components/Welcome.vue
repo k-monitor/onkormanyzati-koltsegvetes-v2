@@ -26,11 +26,7 @@
 								>
 							</div>
 							<div class="flex-grow-1 ml-5">
-								<img
-									class="signo"
-									src="assets/img/signo.png"
-								>
-								<p class="mb-0">
+								<p class="mt-4 mb-0">
 									<em>
 										{{ $config.welcome.name }},
 										<br>
