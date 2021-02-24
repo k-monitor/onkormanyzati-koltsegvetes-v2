@@ -124,9 +124,9 @@ export default {
 				"K2",
 				"K3",
 				"K4",
-				"K5",
 				"FH1",
 				"FH2",
+				"K5",
 				"K6",
 				"K7",
 				"K8",
@@ -140,7 +140,7 @@ export default {
 				})
 				.map(function (n) {
 					const i = parseInt(n.id[1]);
-					n.mukodesi = i <= 5;
+					n.mukodesi = i <= 4;
 					return n;
 				})
 				.filter(function (n) {
