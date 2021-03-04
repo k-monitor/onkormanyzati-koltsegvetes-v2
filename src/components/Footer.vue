@@ -21,13 +21,6 @@
 					id="logos"
 				>
 					<a
-						href="http://www.kfib.hu/"
-						target="_blank"
-					><img
-							src="assets/img/kfib-logo.png"
-							alt=""
-						></a>
-					<a
 						href="https://k-monitor.hu/"
 						target="_blank"
 					><img
