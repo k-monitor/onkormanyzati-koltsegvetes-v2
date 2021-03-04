@@ -6,10 +6,7 @@
 					class="col-sm-6 col-lg-4"
 					id="city-logo"
 				>
-					<a
-						class="js-scroll-trigger"
-						href="#page-top"
-					>
+					<a href="https://www.terezvaros.hu/">
 						<img
 							src="assets/img/logo-big.png"
 							alt=""
