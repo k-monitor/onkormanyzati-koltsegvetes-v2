@@ -1,5 +1,5 @@
 <template>
-	<footer class="bg-dark py-5 text-white-75">
+	<footer class="py-5">
 		<div class="container">
 			<div class="row">
 				<div
@@ -63,9 +63,12 @@
 	</footer>
 </template>
 
-<style>
-#license a {
-	color: white !important;
+<style lang="scss">
+#logos a {
+	opacity: .75;
+	&:hover {
+		opacity: 1;
+	}
 }
 
 #city-logo img {
@@ -74,6 +77,7 @@
 
 #logos img {
 	display: inline-block;
+	filter: invert(1);
 	margin: 0 1rem 1rem 0;
 	max-height: 32px;
 }
