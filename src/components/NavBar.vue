@@ -168,7 +168,7 @@ export default {
 	.navbar-nav {
 		.nav-item {
 			.nav-link {
-				color: $gray-600;
+				color: $gray-900;
 				font-family: $font-family-sans-serif;
 				font-weight: $font-weight-bold;
 				font-size: 0.9rem;
@@ -184,24 +184,10 @@ export default {
 		}
 	}
 	@include media-breakpoint-up(lg) {
-		// Base styling for the navbar - screen sizes greater than the large breakpoint
-		box-shadow: none;
-		background-color: transparent;
-		.navbar-brand {
-			color: fade-out($white, 0.3);
-			color: $primary;
-			img {
-				filter: none;
-			}
-		}
 		.navbar-nav {
 			.nav-item {
 				.nav-link {
-					color: fade-out($white, 0.3);
 					padding: 0 1rem;
-					&:hover {
-						color: $white;
-					}
 				}
 				&:last-child {
 					.nav-link {
@@ -213,20 +199,6 @@ export default {
 		// Navbar styling applied when the page is scrolled
 		&:not(.navbar-scrolled) .navbar-brand img {
 			@include enlargedLogo();
-		}
-		&.navbar-scrolled {
-			box-shadow: $box-shadow;
-			background-color: $white;
-			.navbar-nav {
-				.nav-item {
-					.nav-link {
-						color: $gray-900;
-						&:hover {
-							color: $primary;
-						}
-					}
-				}
-			}
 		}
 	}
 
@@ -242,7 +214,6 @@ export default {
 	@include media-breakpoint-up(lg) {
 		.navbar-nav .nav-item.highlight {
 			.nav-link {
-				color: white !important;
 				text-decoration: underline;
 			}
 		}
@@ -257,6 +228,7 @@ export default {
 				position: relative;
 
 				.nav-link {
+					color: white !important;
 					text-decoration: none;
 				}
 
