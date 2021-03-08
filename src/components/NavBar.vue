@@ -51,7 +51,7 @@
 					</li>
 					<li
 						class="nav-item"
-						v-if="$config.modules.milestones"
+						v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0"
 					>
 						<a
 							href="#milestones"

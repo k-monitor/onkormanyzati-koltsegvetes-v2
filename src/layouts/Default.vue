@@ -37,7 +37,7 @@
 				:year="year"
 				class="pb-0"
 				id="milestones"
-				v-if="$config.modules.milestones"
+				v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0"
 			/>
 			<FeedbackSection />
 			<slot />
