@@ -54,7 +54,7 @@
 								data-toggle="tooltip"
 								data-placement="left"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[year][n.id] || '')"
+								:title="tooltip(n)"
 								oncontextmenu="return false;"
 							>
 								<div class="text-left">
@@ -81,7 +81,7 @@
 								data-toggle="tooltip"
 								data-placement="right"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[year][n.id] || '')"
+								:title="tooltip(n)"
 								oncontextmenu="return false;"
 							>
 								<div class="value mr-2 no-wrap text-left">
@@ -176,7 +176,7 @@ export default {
 					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
 				})
 				.filter(function (n) {
-					return n.name.indexOf("Finanszírozási") == -1 || n.id.startsWith('F');
+					return n.name.indexOf("Finanszírozási") == -1 || n.id.startsWith("F");
 				})
 				.map(function (n) {
 					const i = parseInt(n.id[1]);
@@ -225,6 +225,18 @@ export default {
 		},
 		regenerateTooltips() {
 			$('[data-toggle="tooltip"]').tooltip();
+		},
+		tooltip(n) {
+			let t = this.$tooltips[this.year][n.id] || "";
+			t = t.charAt(0).toLowerCase() + t.slice(1);
+			return (
+				"<b>" +
+				n.name +
+				" (" +
+				this.$util.groupNums(n.value, true) +
+				")</b>: " +
+				t
+			);
 		},
 	},
 	mounted() {
