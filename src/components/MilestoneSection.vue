@@ -12,12 +12,11 @@
 			</div>
 			<div class="row">
 				<div
-					class="col-md-6 col-lg-4 embed-responsive embed-responsive-16by9 mx-auto"
+					class="col-md-6 col-lg-4 mx-auto px-0"
 					v-for="(m, i) in milestones"
 					:key="m.id"
 				>
 					<Milestone
-						class="embed-responsive-item"
 						:milestone="m"
 						:nextId="milestones[(i + 1) % milestones.length].id"
 						:prevId="milestones[(milestones.length + i - 1) % milestones.length].id"

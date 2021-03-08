@@ -1,16 +1,18 @@
 <template>
-	<div class="d-flex">
+	<div>
 		<div
-			class="milestone d-flex align-items-end w-100"
+			class="milestone d-flex flex-column align-items-end w-100"
 			data-toggle="modal"
 			:data-target="'#' + modalId(milestone.id)"
 		>
-			<div
-				class="milestone-picture"
-				:class="{ overlay: milestone.overlay }"
-				:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
-			></div>
-			<h5 class="milestone-title text-center text-white w-100">{{ milestone.title }}</h5>
+			<div class="embed-responsive embed-responsive-16by9">
+				<div
+					class="embed-responsive-item milestone-picture"
+					:class="{ overlay: milestone.overlay }"
+					:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+				></div>
+			</div>
+			<h5 class="bg-white milestone-title px-2 text-center w-100">{{ milestone.title }}</h5>
 		</div>
 		<div
 			class="modal fade"
@@ -33,14 +35,14 @@ export default {
 	props: ["milestone", "nextId", "prevId"],
 	data() {
 		return {
-			playing: false
+			playing: false,
 		};
 	},
 	methods: {
 		modalId(milestoneId) {
 			return "milestone-modal-" + milestoneId;
-		}
-	}
+		},
+	},
 };
 </script>
 
@@ -74,40 +76,19 @@ export default {
 
 	.milestone-picture {
 		filter: brightness(0.8);
-		height: 100%;
-		position: absolute;
-		top: 0;
 		transition: all 0.2s ease;
-		width: 100%;
 		z-index: -1;
 	}
 
 	.milestone-title {
-		// https://cssgradient.io/
-		$shadow: fade-out(black, 0.6);
-		background: $shadow;
-		background: -moz-linear-gradient(0deg, $shadow 0%, rgba(0, 0, 0, 0) 100%);
-		background: -webkit-linear-gradient(
-			0deg,
-			$shadow 0%,
-			rgba(0, 0, 0, 0) 100%
-		);
-		background: linear-gradient(0deg, $shadow 0%, rgba(0, 0, 0, 0) 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#000000",GradientType=1);
-
 		margin: 0;
-		padding: 0.5rem 0;
-		text-shadow: 0px 0px 5px black;
+		padding: 0.5rem 0 1rem;
 		transition: all 0.2s ease;
 	}
 
 	&:hover {
 		.milestone-picture {
 			filter: none;
-		}
-
-		.milestone-title {
-			padding-bottom: 1rem;
 		}
 	}
 }
