@@ -164,9 +164,9 @@ export default {
 				"B1",
 				"B2",
 				"B3",
-				"B4",
 				"FT1",
 				"FT2",
+				"B4",
 				"B5",
 				"B6",
 				"B7",
@@ -180,7 +180,7 @@ export default {
 				})
 				.map(function (n) {
 					const i = parseInt(n.id[1]);
-					n.mukodesi = [1, 2, 3, 4].indexOf(i) > -1;
+					n.mukodesi = [1, 2, 3].indexOf(i) > -1;
 					return n;
 				})
 				.filter(function (n) {
