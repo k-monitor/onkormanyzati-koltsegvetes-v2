@@ -22,7 +22,7 @@
 						<p class="lead"><a
 								href="https://www.facebook.com/terezvaros.hu"
 								target="_blank"
-							><i class="fab fa-fw fa-facebook mr-2"></i>facebook.com/terezvaros.hu</a></p>
+							><i class="fab fa-fw fa-facebook mr-2"></i>fb.com/terezvaros.hu</a></p>
 						<p class="lead"><a href="mailto:sajto@terezvaros.hu"><i class="fas fa-fw fa-envelope mr-2"></i>sajto@terezvaros.hu</a></p>
 					</div>
 				</div>
