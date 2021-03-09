@@ -10,7 +10,7 @@
 					<hr class="divider my-4 mb-5">
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mb-5">
 				<div
 					class="col-md-6 col-lg-4 mx-auto px-0"
 					v-for="(m, i) in milestones"
