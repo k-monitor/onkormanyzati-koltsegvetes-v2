@@ -15,19 +15,36 @@
 						</a>
 					</div>
 					<div class="ml-4 mt-3">
-						<p class="lead"><a
+						<p class="lead">
+							<a
 								href="https://www.terezvaros.hu/"
 								target="_blank"
-							><i class="fas fa-fw fa-globe-europe mr-2"></i>terezvaros.hu</a></p>
+							>
+								<i class="fas fa-fw fa-globe-europe mr-2"></i>
+								<span class="d-none d-sm-inline">terezvaros.hu</span>
+							</a>
+						</p>
 						<p class="lead"><a
 								href="https://www.facebook.com/terezvaros.hu"
 								target="_blank"
-							><i class="fab fa-fw fa-facebook mr-2"></i>fb.com/terezvaros.hu</a></p>
-						<p class="lead"><a href="mailto:sajto@terezvaros.hu"><i class="fas fa-fw fa-envelope mr-2"></i>sajto@terezvaros.hu</a></p>
+							>
+								<i class="fab fa-fw fa-facebook mr-2"></i>
+								<span class="d-none d-sm-inline">facebook.com/terezvaros.hu</span>
+							</a>
+						</p>
+						<p class="lead">
+							<a href="mailto:sajto@terezvaros.hu">
+								<i class="fas fa-fw fa-envelope mr-2"></i>
+								<span class="d-none d-sm-inline">sajto@terezvaros.hu</span>
+							</a>
+						</p>
 					</div>
 				</div>
 				<div class="col mt-5 mt-lg-0">
-					<div class="mb-3" id="logos">
+					<div
+						class="mb-3"
+						id="logos"
+					>
 						<a
 							href="https://k-monitor.hu/"
 							target="_blank"
