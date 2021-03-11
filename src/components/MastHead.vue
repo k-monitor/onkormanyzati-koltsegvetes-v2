@@ -1,5 +1,5 @@
 <template>
-	<header class="masthead d-flex align-items-center" id="masthead-parallax">
+	<header class="masthead d-flex align-items-center position-relative" id="masthead-parallax">
 		<div class="container h-100 pt-5">
 			<div class="row h-100 align-items-center justify-content-center text-center">
 				<div class="col-lg-10 align-self-end">
@@ -15,6 +15,7 @@
 				</div>
 			</div>
 		</div>
+		<div class="position-absolute pr-2 small text-white-75" style="bottom: 0; right: 0;">Fejléckép forrása: <a class="text-white" href="http://indafoto.hu/bree88/image/13537907-2a1ee3d6" target="_blank">http://indafoto.hu/bree88/image/13537907-2a1ee3d6</a></div>
 	</header>
 </template>
 
