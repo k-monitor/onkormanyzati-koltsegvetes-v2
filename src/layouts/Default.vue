@@ -43,7 +43,7 @@
 			<slot />
 		</div>
 		<Footer />
-		<Social />
+		<!--<Social />-->
 		<FeedbackModal />
 		<MoreInfoModal />
 	</div>
