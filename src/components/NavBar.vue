@@ -8,7 +8,7 @@
 				class="navbar-brand js-scroll-trigger"
 				href="#page-top"
 			>
-				<img class="mr-2" src="assets/img/logo.png" width="25" height="30" alt="">
+				<img class="mr-2" src="assets/img/logo.png" width="30" height="30" alt="">
 				{{ $config.city }}
 			</a>
 			<button
@@ -147,7 +147,7 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 @mixin enlargedLogo() {
-	height: 60px;
+	height: 50px;
 	width: 50px;
 }
 

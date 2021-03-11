@@ -7,9 +7,9 @@
 					id="city-logo"
 				>
 					<div class="mr-5">
-						<a href="https://www.terezvaros.hu/">
+						<a href="https://kecsup.hu/">
 							<img
-								src="assets/img/logo-big.png"
+								src="assets/img/logo-150.png"
 								alt=""
 							>
 						</a>
@@ -17,25 +17,25 @@
 					<div class="ml-4 mt-3">
 						<p class="lead">
 							<a
-								href="https://www.terezvaros.hu/"
+								href="https://kecsup.hu/"
 								target="_blank"
 							>
 								<i class="fas fa-fw fa-globe-europe mr-2"></i>
-								<span class="d-none d-sm-inline">terezvaros.hu</span>
+								<span class="d-none d-sm-inline">kecsup.hu</span>
 							</a>
 						</p>
 						<p class="lead"><a
-								href="https://www.facebook.com/terezvaros.hu"
+								href="https://www.facebook.com/kecsuphirek"
 								target="_blank"
 							>
 								<i class="fab fa-fw fa-facebook mr-2"></i>
-								<span class="d-none d-sm-inline">facebook.com/terezvaros.hu</span>
+								<span class="d-none d-sm-inline">facebook.com/kecsuphirek</span>
 							</a>
 						</p>
 						<p class="lead">
-							<a href="mailto:sajto@terezvaros.hu">
+							<a href="mailto:szerkesztoseg@kecsup.hu">
 								<i class="fas fa-fw fa-envelope mr-2"></i>
-								<span class="d-none d-sm-inline">sajto@terezvaros.hu</span>
+								<span class="d-none d-sm-inline">szerkesztoseg@kecsup.hu</span>
 							</a>
 						</p>
 					</div>
