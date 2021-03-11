@@ -37,7 +37,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row justify-content-center mb-5">
+				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
 						<div
 							class="btn btn-outline-light btn-xl js-scroll-trigger"
