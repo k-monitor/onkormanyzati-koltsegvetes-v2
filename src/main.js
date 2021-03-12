@@ -65,7 +65,7 @@ export default function (Vue, { router, head, isClient }) {
 				i++;
 			}
 			v = Math.round(v * 10) / 10;
-			var vs = (v + '').replace(/\d(?=(?:\d{3})+(?:\.|$))/g, function ($0, i) { return $0 + ' ' });
+			var vs = (v + '').replace(/\./g, ',').replace(/\d(?=(?:\d{3})+(?:,|$))/g, function ($0, i) { return $0 + ' ' });
 			return (neg ? '-' : '') + (vs + ' ' + s[i] + ' Ft').trim();
 		}
 	};
