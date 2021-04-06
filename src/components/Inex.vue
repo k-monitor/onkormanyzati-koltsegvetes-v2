@@ -284,7 +284,7 @@ export default {
 				min-height: 48px;
 			}
 			@include media-breakpoint-up(lg) {
-				min-height: 24px;
+				min-height: 48px;
 			}
 		}
 
