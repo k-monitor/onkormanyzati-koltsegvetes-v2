@@ -28,7 +28,7 @@
 							<div class="flex-grow-1 ml-5">
 								<p class="mt-4 mb-0">
 									<em>
-										{{ $config.welcome.name }},
+										{{ $config.welcome.name }}
 										<br>
 										{{ $config.welcome.role }}
 									</em>
