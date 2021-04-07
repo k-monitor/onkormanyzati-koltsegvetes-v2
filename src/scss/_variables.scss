@@ -4,9 +4,8 @@
 
 $font-family-sans-serif: "Roboto Condensed", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", 'Noto Color Emoji';
 $font-family-base: $font-family-sans-serif;
-$headings-font-family: "Titillium Web";
 
-$primary: #f04e3e; // default year theme color
+$primary: #008037; // default year theme color
 $danger: firebrick;
 $success: seagreen;
 
@@ -15,8 +14,9 @@ $success: seagreen;
 $masthead-img: '/assets/img/cover.jpg';
 $navbar-height: 72px;
 $year-colors: // themes
-  #f04e3e,
-  #6f3c6e
+  #008037,
+  #cdb400,
 ;
+
 $overlay-on-milestone-card-picture: true;
 $overlay-on-milestone-thumbnail: true;
