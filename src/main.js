@@ -54,20 +54,20 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.prototype.$tags = tags;
 	Vue.prototype.$tooltips = tooltips;
 	Vue.prototype.$util = {
-		groupNums(v, ns) {
-			var s = ['', 'e', 'M', 'Mrd'];
+		groupNums(v, ns, suffixes) {
+			suffixes = suffixes || ['', 'e', 'M', 'Mrd'];
 			var i = 0;
 			v = Number(v);
 			var neg = v < 0;
 			v = Math.abs(v);
-			while (ns && i < s.length && v > 1000) {
+			while (ns && i < suffixes.length - 1 && v > 1000) {
 				v /= 1000;
 				i++;
 			}
 			v = Math.round(v * 10) / 10;
 			if (ns) v = v.toFixed(1)
 			var vs = (v + '').replace(/\./g, ',').replace(/\d(?=(?:\d{3})+(?:,|$))/g, function ($0, i) { return $0 + ' ' });
-			return (neg ? '-' : '') + (vs + ' ' + s[i] + ' Ft').trim();
+			return (neg ? '-' : '') + (vs + ' ' + suffixes[i] + ' Ft').trim();
 		}
 	};
 
