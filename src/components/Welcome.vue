@@ -143,12 +143,14 @@ export default {
 				position: "bottom",
 			});
 
-			steps.push({
-				element: "#mainNav .dropdown",
-				intro:
-					"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
-				position: "bottom",
-			});
+			if (Object.keys(this.$d).length > 1) {
+				steps.push({
+					element: "#mainNav .dropdown",
+					intro:
+						"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
+					position: "bottom",
+				});
+			}
 
 			if (config.modules.milestones) {
 				steps.push({
