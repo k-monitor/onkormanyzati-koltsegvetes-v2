@@ -61,6 +61,7 @@ export default {
 			$(".milestone-button").addClass("disabled");
 			const intro = introJs()
 				.setOption("doneLabel", "Kilépés")
+				.setOption("hideNext", true)
 				.setOption("nextLabel", "Tovább")
 				.setOption("prevLabel", "Vissza")
 				.setOption("scrollToElement", false)
