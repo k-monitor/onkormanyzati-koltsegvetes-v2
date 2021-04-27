@@ -6,9 +6,15 @@
 		<div class="container">
 			<a
 				class="navbar-brand js-scroll-trigger"
-				href="#page-top"
+				href="/#page-top"
 			>
-				<img class="mr-2" src="assets/img/logo.png" width="44" height="30" alt="">
+				<img
+					class="mr-2"
+					src="assets/img/logo.png"
+					width="44"
+					height="30"
+					alt=""
+				>
 				{{ $config.city }}
 			</a>
 			<button
@@ -26,7 +32,10 @@
 				class="collapse navbar-collapse"
 				id="navbarResponsive"
 			>
-				<ul class="navbar-nav ml-auto my-2 my-lg-0">
+				<ul
+					class="navbar-nav ml-auto my-2 my-lg-0"
+					v-if="!subpageMode"
+				>
 					<li class="nav-item">
 						<a
 							href="javascript:void(0)"
@@ -100,12 +109,31 @@
 					</li>
 					<li class="nav-item">
 						<a
+							href="/quiz"
+							class="nav-link"
+						>Kvíz</a>
+					</li>
+					<li class="nav-item">
+						<a
 							class="nav-link"
 							data-target="#feedbackModal"
 							data-toggle="modal"
 							href="javascript:void(0)"
 						>
 							<i class="far fa-comment-dots"></i>
+						</a>
+					</li>
+				</ul>
+				<ul
+					class="navbar-nav ml-auto my-2 my-lg-0"
+					v-else
+				>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							href="/"
+						>
+							Vissza a költségetésre
 						</a>
 					</li>
 				</ul>
@@ -116,16 +144,16 @@
 
 <script>
 export default {
-	props: ["year", "years"],
+	props: ["subpageMode", "year", "years"],
 	mounted() {
 		// Activate scrollspy to add active class to navbar items on scroll
 		$("body").scrollspy({
 			target: "#mainNav",
-			offset: 75
+			offset: 75,
 		});
 
 		// Collapse Navbar
-		var navbarCollapse = function() {
+		var navbarCollapse = function () {
 			if ($("#mainNav").offset().top > 100) {
 				$("#mainNav").addClass("navbar-scrolled");
 			} else {
@@ -136,7 +164,7 @@ export default {
 		navbarCollapse();
 		// Collapse the navbar when page is scrolled
 		$(window).scroll(navbarCollapse);
-	}
+	},
 };
 </script>
 
@@ -161,7 +189,7 @@ export default {
 		color: $primary;
 		img {
 			position: relative;
-			transition: all .2s;
+			transition: all 0.2s;
 			top: -2px;
 		}
 	}
