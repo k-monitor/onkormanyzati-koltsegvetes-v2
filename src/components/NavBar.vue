@@ -10,7 +10,7 @@
 			>
 				<img
 					class="mr-2"
-					src="assets/img/logo.png"
+					src="/assets/img/logo.png"
 					width="44"
 					height="30"
 					alt=""
