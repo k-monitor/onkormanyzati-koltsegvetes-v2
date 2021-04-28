@@ -2,9 +2,20 @@
 <html ${htmlAttrs}>
 
 <head>
-	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css'/>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous" />
+	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css' />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+		integrity="sha256-UzFD2WYH2U1dQpKDjjZK72VtPeWP50NoJjd26rnAdUI=" crossorigin="anonymous" />
 	${head}
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-48757283-41"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'UA-48757283-41');
+	</script>
 </head>
 
 <body ${bodyAttrs}>
