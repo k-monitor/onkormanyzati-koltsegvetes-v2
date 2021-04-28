@@ -104,7 +104,7 @@ export default {
 				property: "og:image",
 				content: config.seo.ogImage,
 			},
-			{
+			/*{
 				property: "og:image:type",
 				content: config.seo.ogImageType,
 			},
@@ -115,7 +115,7 @@ export default {
 			{
 				property: "og:image:width",
 				content: config.seo.ogImageWidth,
-			},
+			},*/
 		],
 		bodyAttrs: {
 			id: "page-top",
