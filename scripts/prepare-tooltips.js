@@ -18,6 +18,7 @@ workbook.SheetNames.filter(name => name.startsWith('tooltips ')).forEach(tooltip
 	tsv.split('\n').forEach((row, i) => {
 		if (i === 0) return;
 		let [id, _, tooltip] = row.split('\t');
+		if (tooltip === '#N/A') tooltip = false;
 		if (id && tooltip) {
 			output[year] = output[year] || {};
 			output[year][id] = tooltip.trim();
