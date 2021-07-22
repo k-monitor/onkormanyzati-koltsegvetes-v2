@@ -241,9 +241,10 @@ export default {
 				"#4971b6" /* 09 Oktatás */,
 				"#bb208a" /* 10 Szociális védelem */,
 				"#ef538c" /* 9000 Technikai funkciókódok */,
+				"#661df7"
 			];
 
-			var color = colors[this.colorIndex(node)];
+			var color = colors[this.colorIndex(node) % colors.length];
 
 			if (
 				node.name.includes("Finanszírozási") ||
