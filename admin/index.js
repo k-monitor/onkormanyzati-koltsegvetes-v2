@@ -20,6 +20,11 @@ app.post('/budget', (req, res) => {
 	res.end()
 })
 
+app.post('/config', (req, res) => {
+	fs.writeFileSync('input/config.xlsx', req.files.config.data)
+	res.end()
+})
+
 app.listen(CONFIG.PORT, () => {
 	console.log(`Started admin on port ${CONFIG.PORT}`)
 })
