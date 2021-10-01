@@ -69,12 +69,12 @@
 								dokumentációban írtakat.</p>
 						</div>
 						<div class="card-footer d-flex">
-							<a class="btn btn-outline-secondary ms-auto" href="input/budget.xlsx" target="_blank">
-								<i class="fas fa-fw fa-download me-2"></i>
+							<a class="btn btn-secondary ms-auto" href="input/budget.xlsx" target="_blank">
+								<i class="fas fa-fw fa-download me-1"></i>
 								Letöltés
 							</a>
 							<button class="btn btn-primary ms-3" @click="browseBudget">
-								<i class="fas fa-fw fa-upload me-2"></i>
+								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
 							</button>
 							<input name="budget" ref="budgetFile" style="display:none" type="file"
@@ -90,16 +90,20 @@
 								felülírva vele. Excel 2007-O365 (<code>*.xlsx</code>) fájlt kell feltölteni, melynek
 								szerkezete követi a
 								dokumentációban írtakat.</p>
-							<p>Új konfiguráció generálásakor a meglévő felülíródik, minden kézzel beírt érték törlődik.
+							<p>Új konfiguráció generálásakor a meglévő felülíródik: minden kézzel beírt érték törlődik, és új tooltip munkalapok jönnek létre a <code>budget.xlsx</code>-nek megfelelően.
 							</p>
 						</div>
 						<div class="card-footer d-flex">
-							<a class="btn btn-outline-secondary ms-auto" href="input/config.xlsx" target="_blank">
-								<i class="fas fa-fw fa-download me-2"></i>
+							<button class="btn btn-danger" @click="newConfig">
+								<i class="fas fa-fw fa-cog me-1"></i>
+								Új konfig
+							</button>
+							<a class="btn btn-secondary ms-auto" href="input/config.xlsx" target="_blank">
+								<i class="fas fa-fw fa-download me-1"></i>
 								Letöltés
 							</a>
 							<button class="btn btn-primary ms-3" @click="browseConfig">
-								<i class="fas fa-fw fa-upload me-2"></i>
+								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
 							</button>
 							<input name="config" ref="configFile" style="display:none" type="file"
@@ -139,14 +143,25 @@
 				browseConfig() {
 					this.$refs.configFile.click()
 				},
+				async newConfig() {
+					if (!confirm('Biztosan felülírod az aktuális konfigot egy új, üres konfiggal?')) return
+					this.loading = 'Új konfig generálása...'
+					try {
+						await fetch('/newConfig', { method: 'POST' })
+					} catch {
+						alert('Nem sikerült! :C')
+					} finally {
+						this.loading = false
+					}
+				},
 				async upload(endpoint, field, ref) {
-					this.loading = true
+					this.loading = 'Feltöltés...'
 					const body = new FormData();
 					body.append(field, ref.files[0])
 					try {
 						await fetch(endpoint, { method: 'POST', body })
 					} catch {
-						alert('Nem sikerült feltölteni! :C')
+						alert('Nem sikerült! :C')
 					} finally {
 						this.loading = false
 					}

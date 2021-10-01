@@ -1,7 +1,8 @@
+const { exec } = require("child_process")
 const fs = require('fs')
 require('dotenv').config()
 const express = require('express')
-const fileUpload = require('express-fileupload');
+const fileUpload = require('express-fileupload')
 
 const CONFIG = {
 	PORT: process.env.ADMIN_PORT || 8081,
@@ -24,6 +25,16 @@ app.post('/budget', (req, res) => {
 app.post('/config', (req, res) => {
 	fs.writeFileSync('input/config.xlsx', req.files.config.data)
 	res.end()
+})
+
+app.post('/newConfig', (req, res) => {
+	exec("node scripts/generate-config", (error, stdout, stderr) => {
+		if (error) {
+			console.error('ERROR', error.message)
+			console.error(stderr)
+		}
+		res.sendStatus(error ? 500 : 200)
+	})
 })
 
 app.get('/publicUrl', (req, res) => {
