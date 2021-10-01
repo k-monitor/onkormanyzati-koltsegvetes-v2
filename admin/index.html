@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>KÖKÖ Admin</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+		integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/fontawesome.min.css"
+		integrity="sha512-8jdwayz5n8F2cnW26l9vpV6+yGOcRAqz6HTu+DQ3FtVIAts2gTdlFZOGpYhvBMXkWEgxPN3Y22UWyZXuDowNLA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		#app {
+			min-height: 100vh;
+		}
+
+		#left-pane {
+			height: 100vh;
+			overflow-y: auto;
+		}
+
+		[aria-expanded="false"] .fa-angle-up {
+			display: none;
+		}
+
+		[aria-expanded="true"] .fa-angle-down {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app" class="container-fluid d-flex flex-column">
+		<div class="row flex-grow-1">
+			<div class="col-md-5 col-lg-4 px-0" id="left-pane">
+				<nav class="navbar navbar-expand navbar-light bg-light border-bottom shadow-sm mb-4">
+					<div class="container-fluid">
+						<a class="navbar-brand" href="#"><strong>KÖKÖ</strong> Admin</a>
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+							data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+							aria-expanded="false" aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+						<div class="collapse navbar-collapse" id="navbarSupportedContent">
+							<ul class="navbar-nav ms-auto d-md-none">
+								<a class="btn btn-success" :href="publicUrl">
+									KÖKÖ
+									<i class="fas fa-external-link-alt ms-1"></i>
+								</a>
+							</ul>
+						</div>
+					</div>
+				</nav>
+				<div class="px-3">
+					<div class="card shadow-sm">
+						<h5 class="card-header d-flex align-items-center" data-bs-toggle="collapse"
+							data-bs-target="#budgetCollapse" aria-expanded="false">
+							Költségvetés
+							<i class="fas fa-angle-down ms-auto"></i>
+							<i class="fas fa-angle-up ms-auto"></i>
+						</h5>
+						<div class="card-body collapse" id="budgetCollapse">
+							<div class="d-flex">
+								<div class="me-3">
+									<input id="budgetFile" name="budget" ref="budgetFile" style="display:none"
+										type="file" @change="uploadBudget" />
+									<button class="btn btn-lg btn-primary" @click="browseBudget">
+										<i class="fas fa-fw fa-upload"></i>
+									</button>
+								</div>
+								<div>
+									<p>Új költségvetés feltöltése, a meglévő felülírásával.</p>
+									<p>A fájlnév mindegy, át lesz nevezve a szerveren <code>budget.xlsx</code>-re.</p>
+									<p>
+										A feltöltött fájnak Excel 2007-O365 (<code>*.xlsx</code>) formátumúnak kell
+										lennie
+										és a szerkezetének követnie kell a dokumentációban (<i class="fas fa-book"></i>)
+										leírtakat.
+									</p>
+								</div>
+							</div>
+							<hr class="my-3">
+							<div class="d-flex">
+								<div class="me-3">
+									<a class="btn btn-lg btn-outline-secondary" href="input/budget.xlsx"
+										target="_blank">
+										<i class="fas fa-fw fa-download"></i>
+									</a>
+								</div>
+								<div>Aktuális <code>budget.xlsx</code> fájl letöltése.</div>
+							</div>
+							<hr class="my-3">
+							<div class="d-flex">
+								<div class="me-3">
+									<a class="btn btn-lg btn-outline-secondary"
+										href="https://kozertheto.k-monitor.hu/README.pdf" target="_blank">
+										<i class="fas fa-fw fa-book"></i>
+									</a>
+								</div>
+								<div>KÖKÖ dokumentáció, benne a <code>budget.xlsx</code> elvárt formátuma.</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="border-start col d-none d-md-block px-0">
+				<iframe class="h-100 w-100" :src="publicUrl" frameborder="0"></iframe>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.14/vue.min.js"
+		integrity="sha512-XdUZ5nrNkVySQBnnM5vzDqHai823Spoq1W3pJoQwomQja+o4Nw0Ew1ppxo5bhF2vMug6sfibhKWcNJsG8Vj9tg=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script>
+		const app = new Vue({
+			el: '#app',
+			data: {
+				budgetFile: null,
+				publicUrl: 'https://kozertheto.k-monitor.hu/'
+			},
+			methods: {
+				browseBudget() {
+					this.$refs.budgetFile.click()
+				},
+				async uploadBudget() {
+					const body = new FormData();
+					body.append('budget', this.$refs.budgetFile.files[0])
+					try {
+						await fetch('/budget', { method: 'POST', body })
+					} catch {
+						alert('Nem sikerült feltölteni! :C')
+					}
+				}
+			}
+		})
+	</script>
+</body>
+
+</html>
