@@ -22,6 +22,16 @@ app.post('/budget', (req, res) => {
 	res.end()
 })
 
+app.post('/buildSite', (req, res) => {
+	exec("npm run build", (error, stdout, stderr) => {
+		if (error) {
+			console.error('ERROR', error.message)
+			console.error(stderr)
+		}
+		res.sendStatus(error ? 500 : 200)
+	})
+})
+
 app.post('/config', (req, res) => {
 	fs.writeFileSync('input/config.xlsx', req.files.config.data)
 	res.end()

@@ -58,7 +58,7 @@
 		</nav>
 
 		<main class="container py-5" :class="{loading}">
-			<div class="row row-cols-1 row-cols-md-2 g-4">
+			<div class="row row-cols-1 row-cols-md-2 g-5">
 				<div class="col">
 					<div class="card h-100 shadow-sm">
 						<h5 class="card-header d-flex align-items-center">Költségvetés</h5>
@@ -111,6 +111,20 @@
 						</div>
 					</div>
 				</div>
+				<div class="col">
+					<div class="card h-100 shadow-sm">
+						<h5 class="card-header d-flex align-items-center">Site</h5>
+						<div class="card-body">
+							<p>A KÖKÖ site-ot a költségvetés, konfiguráció, vagy képek módosítása után le kell generálni. Ez a folyamat akár 1-2 percig is tarthat.</p>
+						</div>
+						<div class="card-footer d-flex">
+							<button class="btn btn-success ms-auto" @click="buildSite">
+								<i class="fas fa-fw fa-cog me-1"></i>
+								Generálás
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</main>
 		<div id="loading"
@@ -142,6 +156,16 @@
 				},
 				browseConfig() {
 					this.$refs.configFile.click()
+				},
+				async buildSite() {
+					this.loading = 'Weboldal generálása...'
+					try {
+						await fetch('/buildSite', { method: 'POST' })
+					} catch {
+						alert('Nem sikerült! :C')
+					} finally {
+						this.loading = false
+					}
 				},
 				async newConfig() {
 					if (!confirm('Biztosan felülírod az aktuális konfigot egy új, üres konfiggal?')) return
