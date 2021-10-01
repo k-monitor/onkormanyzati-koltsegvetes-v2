@@ -7,6 +7,7 @@ const CONFIG = {
 	PORT: process.env.ADMIN_PORT || 8081,
 	USER: process.env.ADMIN_USER || 'admin',
 	PASS: process.env.ADMIN_PASS || 'admin',
+	PUBLIC_URL: process.env.PUBLIC_URL,
 }
 
 const app = express()
@@ -23,6 +24,10 @@ app.post('/budget', (req, res) => {
 app.post('/config', (req, res) => {
 	fs.writeFileSync('input/config.xlsx', req.files.config.data)
 	res.end()
+})
+
+app.get('/publicUrl', (req, res) => {
+	res.send(CONFIG.PUBLIC_URL)
 })
 
 app.listen(CONFIG.PORT, () => {
