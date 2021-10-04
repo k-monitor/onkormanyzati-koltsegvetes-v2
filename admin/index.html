@@ -115,11 +115,11 @@
 								<i class="fas fa-fw fa-download me-1"></i>
 								Letöltés
 							</a>
-							<button class="btn btn-success" @click="browseBudget">
+							<label class="btn btn-success">
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
-							</button>
-							<input ref="budgetFile" style="display:none" type="file" @change="uploadBudget" />
+								<input style="display:none" type="file" @change="uploadBudget" />
+							</label>
 						</div>
 					</div>
 
@@ -142,11 +142,11 @@
 								<i class="fas fa-fw fa-download me-1"></i>
 								Letöltés
 							</a>
-							<button class="btn btn-success" @click="browseConfig">
+							<label class="btn btn-success">
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
-							</button>
-							<input ref="configFile" style="display:none" type="file" @change="uploadConfig" />
+								<input style="display:none" type="file" @change="uploadConfig" />
+							</label>
 						</div>
 					</div>
 
@@ -176,7 +176,6 @@
 												<input style="display:none" type="file"
 													@change="uploadLogo($event, f.name)" />
 											</label>
-
 										</div>
 									</div>
 								</div>
@@ -213,11 +212,11 @@
 							</div>
 						</div>
 						<div class="card-footer text-center">
-							<button class="btn btn-success" @click="browseMs">
+							<label class="btn btn-success">
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
-							</button>
-							<input ref="msFile" style="display:none" type="file" multiple @change="uploadMs" />
+								<input style="display:none" type="file" multiple @change="uploadMs" />
+							</label>
 						</div>
 					</div>
 
@@ -278,15 +277,6 @@
 				publicUrl: null
 			},
 			methods: {
-				browseBudget() {
-					this.$refs.budgetFile.click()
-				},
-				browseConfig() {
-					this.$refs.configFile.click()
-				},
-				browseMs() {
-					this.$refs.msFile.click()
-				},
 				async buildSite() {
 					try {
 						this.loading = 'Weboldal generálása...'
@@ -340,18 +330,18 @@
 						this.loading = false
 					}
 				},
-				uploadBudget() {
-					this.upload('budget', 'budget', this.$refs.budgetFile)
+				uploadBudget(e) {
+					this.upload('budget', 'budget', e.target)
 				},
-				uploadConfig() {
-					this.upload('config', 'config', this.$refs.configFile)
+				uploadConfig(e) {
+					this.upload('config', 'config', e.target)
 				},
 				async uploadLogo(e, f) {
 					await this.upload('logo', f, e.target)
 					this.r = Math.random() // update logo on UI ;)
 				},
-				async uploadMs() {
-					await this.upload('ms', 'ms', this.$refs.msFile)
+				async uploadMs(e) {
+					await this.upload('ms', 'ms', e.target)
 					this.updateMs()
 				}
 			},
@@ -363,7 +353,6 @@
 				this.loading = false
 
 				// TODO ONLY FOR DEV:
-				console.log(this.$refs)
 				document.querySelectorAll('.nav-link')[3].click()
 			}
 		})
