@@ -51,6 +51,35 @@ app.get('/publicUrl', (req, res) => {
 	res.send(CONFIG.PUBLIC_URL)
 })
 
+app.get('/zip/code', (req, res) => {
+	generateAndDownloadFile(
+		'zip -r koko-code.zip input scripts src static LICENSE README.* *.js* *.lock',
+		'koko-code.zip',
+		res
+	)
+})
+
+app.get('/zip/site', (req, res) => {
+	generateAndDownloadFile(
+		'zip -r koko-site.zip dist',
+		'koko-site.zip',
+		res
+	)
+})
+
 app.listen(CONFIG.PORT, () => {
 	console.log(`Started admin on port ${CONFIG.PORT}`)
 })
+
+function generateAndDownloadFile(command, filename, res) {
+	exec(command, (error, stdout, stderr) => {
+		if (error) {
+			console.error('ERROR', error.message)
+			console.error(stderr)
+		} else {
+			res.download(filename, error => {
+				fs.unlinkSync(filename)
+			})
+		}
+	})
+}
