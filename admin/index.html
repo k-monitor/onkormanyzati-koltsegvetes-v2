@@ -89,6 +89,10 @@
 								type="button" role="tab" aria-controls="config" aria-selected="false">Konfig</span>
 						</li>
 						<li class="nav-item" role="presentation">
+							<span class="nav-link" id="logos-tab" data-bs-toggle="tab" data-bs-target="#logos"
+								type="button" role="tab" aria-controls="logos" aria-selected="false">Logók</span>
+						</li>
+						<li class="nav-item" role="presentation">
 							<span class="nav-link" id="ms-tab" data-bs-toggle="tab" data-bs-target="#ms" type="button"
 								role="tab" aria-controls="ms" aria-selected="false">Milestone képek</span>
 						</li>
@@ -115,7 +119,7 @@
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
 							</button>
-							<input name="budget" ref="budgetFile" style="display:none" type="file"
+							<input ref="budgetFile" style="display:none" type="file"
 								@change="uploadBudget" />
 						</div>
 					</div>
@@ -143,8 +147,39 @@
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
 							</button>
-							<input name="config" ref="configFile" style="display:none" type="file"
+							<input ref="configFile" style="display:none" type="file"
 								@change="uploadConfig" />
+						</div>
+					</div>
+
+					<div class="tab-pane fade" id="logos" role="tabpanel" aria-labelledby="logos-tab">
+						<div class="card-body">
+							<p>A feltöltött fájlok neve mindegy, azonban a formátum kötött. A Facebook bélyegképet
+								JPG-ben, a többit PNG-ben kell feltölteni.</p>
+							<p>A Facebook bélyegkép ajánlott méreteiről <a
+									href="https://developers.facebook.com/docs/sharing/webmasters/images/"
+									target="_blank">itt</a> lehet olvasni. A bélyegkép cserélése és a site
+								újragenerálása után a Facebook szervereit is frissíteni kell, ez <a
+									href="https://developers.facebook.com/tools/debug/" target="_blank">itt</a> tehető
+								meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.</p>
+							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mt-4">
+								<div class="col" v-for="f in logos">
+									<div class="card shadow-sm">
+										<div class="ratio ratio-16x9">
+											<a class="card-img-top bg-light d-flex align-items-center justify-content-center thumb"
+												:style="{ backgroundImage: 'url(assets/img/' + f.name + ')' }"
+												:href="'assets/img/' + f.name" target="_blank">
+											</a>
+										</div>
+										<div class="card-footer d-flex align-items-center px-1">
+											<div class="flex-grow-1 text-truncate">{{ f.text }}</div>
+											<button class="btn btn-sm btn-success">
+												<i class="fas fa-fw fa-upload"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -154,13 +189,16 @@
 								írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes fájlnevekkel
 								dolgozni. A konfigban a fájlnevet pontosan kell megadni, mappanevet nem kell eléírni.
 							</p>
+							<p>A képeket ajánlott feltöltés előtt 1200x768 pixelre kicsinyíteni, JPG formátumba menteni,
+								és <a href="https://www.tinyjpg.com/" target="_blank">TinyJPG</a> segítségével
+								optimalizálni.</p>
 							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mt-4">
 								<div class="col" v-for="f in ms">
 									<div class="card shadow-sm">
 										<div class="ratio ratio-16x9">
 											<a class="card-img-top bg-light d-flex align-items-center justify-content-center thumb"
-												:style="{ backgroundImage: 'url(ms/' + f + ')' }" :href="'ms/' + f"
-												target="_blank">
+												:style="{ backgroundImage: 'url(assets/ms/' + f + ')' }"
+												:href="'assets/ms/' + f" target="_blank">
 											</a>
 										</div>
 										<div class="card-footer d-flex align-items-center px-1">
@@ -178,7 +216,7 @@
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
 							</button>
-							<input name="ms" ref="msFile" style="display:none" type="file" multiple
+							<input ref="msFile" style="display:none" type="file" multiple
 								@change="uploadMs" />
 						</div>
 					</div>
@@ -232,6 +270,9 @@
 			el: '#app',
 			data: {
 				loading: false,
+				logos: [
+					{ name: 'ogimage.jpg', text: 'Facebook bélyegkép' },
+				],
 				ms: [],
 				publicUrl: null
 			},
@@ -317,7 +358,7 @@
 				this.loading = false
 
 				// TODO ONLY FOR DEV:
-				//document.querySelectorAll('.nav-link')[3].click()
+				document.querySelectorAll('.nav-link')[3].click()
 			}
 		})
 	</script>

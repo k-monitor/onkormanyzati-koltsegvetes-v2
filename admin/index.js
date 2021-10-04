@@ -21,7 +21,7 @@ app.use(basicAuth({ users, challenge: true }))
 app.use(fileUpload())
 app.use(express.static('admin'))
 app.use('/input', express.static('input'))
-app.use('/ms', express.static('static/assets/ms'))
+app.use('/assets', express.static('static/assets'))
 
 app.post('/budget', (req, res) => {
 	fs.writeFileSync('input/budget.xlsx', req.files.budget.data)
@@ -68,9 +68,13 @@ app.delete('/ms/:f', (req, res) => {
 })
 
 app.post('/ms', (req, res) => {
-	req.files.ms.forEach(f => {
+	if (!req.files.ms.forEach) {
+		req.files.ms = [req.files.ms]
+	}
+	for (let i = 0; i < req.files.ms.length; i++) {
+		const f = req.files.ms[i];
 		fs.writeFileSync('static/assets/ms/' + f.name, f.data)
-	})
+	}
 	res.end()
 })
 
