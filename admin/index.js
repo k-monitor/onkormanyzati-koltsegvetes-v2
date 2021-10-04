@@ -57,6 +57,18 @@ app.post('/config', (req, res) => {
 	res.end()
 })
 
+app.post('/logo', (req, res) => {
+	const logos = [
+		'ogimage.jpg',
+	]
+	for (let i = 0; i < logos.length; i++) {
+		const logo = logos[i]
+		const f = req.files[logo]
+		fs.writeFileSync('static/assets/img/' + logo, f.data)
+	}
+	res.end()
+})
+
 app.get('/ms', (req, res) => {
 	res.json(fs.readdirSync('static/assets/ms'))
 })

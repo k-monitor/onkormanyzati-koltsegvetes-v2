@@ -119,8 +119,7 @@
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
 							</button>
-							<input ref="budgetFile" style="display:none" type="file"
-								@change="uploadBudget" />
+							<input ref="budgetFile" style="display:none" type="file" @change="uploadBudget" />
 						</div>
 					</div>
 
@@ -147,8 +146,7 @@
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
 							</button>
-							<input ref="configFile" style="display:none" type="file"
-								@change="uploadConfig" />
+							<input ref="configFile" style="display:none" type="file" @change="uploadConfig" />
 						</div>
 					</div>
 
@@ -167,15 +165,18 @@
 									<div class="card shadow-sm">
 										<div class="ratio ratio-16x9">
 											<a class="card-img-top bg-light d-flex align-items-center justify-content-center thumb"
-												:style="{ backgroundImage: 'url(assets/img/' + f.name + ')' }"
+												:style="{ backgroundImage: 'url(assets/img/' + f.name + '#' + r + ')' }"
 												:href="'assets/img/' + f.name" target="_blank">
 											</a>
 										</div>
 										<div class="card-footer d-flex align-items-center px-1">
 											<div class="flex-grow-1 text-truncate">{{ f.text }}</div>
-											<button class="btn btn-sm btn-success">
+											<label class="btn btn-sm btn-success" __click="browseLogo(f.name)">
 												<i class="fas fa-fw fa-upload"></i>
-											</button>
+												<input style="display:none" type="file"
+													@change="uploadLogo($event, f.name)" />
+											</label>
+
 										</div>
 									</div>
 								</div>
@@ -216,8 +217,7 @@
 								<i class="fas fa-fw fa-upload me-1"></i>
 								Feltöltés
 							</button>
-							<input ref="msFile" style="display:none" type="file" multiple
-								@change="uploadMs" />
+							<input ref="msFile" style="display:none" type="file" multiple @change="uploadMs" />
 						</div>
 					</div>
 
@@ -269,6 +269,7 @@
 		const app = new Vue({
 			el: '#app',
 			data: {
+				r: Math.random(),
 				loading: false,
 				logos: [
 					{ name: 'ogimage.jpg', text: 'Facebook bélyegkép' },
@@ -345,6 +346,10 @@
 				uploadConfig() {
 					this.upload('config', 'config', this.$refs.configFile)
 				},
+				async uploadLogo(e, f) {
+					await this.upload('logo', f, e.target)
+					this.r = Math.random() // update logo on UI ;)
+				},
 				async uploadMs() {
 					await this.upload('ms', 'ms', this.$refs.msFile)
 					this.updateMs()
@@ -358,6 +363,7 @@
 				this.loading = false
 
 				// TODO ONLY FOR DEV:
+				console.log(this.$refs)
 				document.querySelectorAll('.nav-link')[3].click()
 			}
 		})
