@@ -55,21 +55,6 @@
 		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép URL-je."
 	],
 	[
-		"seo.ogImageType",
-		"image/png",
-		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép MIME formátuma."
-	],
-	[
-		"seo.ogImageHeight",
-		750,
-		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép magassága (px)."
-	],
-	[
-		"seo.ogImageWidth",
-		1200,
-		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép szélessége (px)."
-	],
-	[
 		"social.text",
 		"Mintaváros költségvetése",
 		"Megosztáskor a Twitter bejegyzés szövege, LinkedIn poszt vagy email tárgya."

@@ -100,18 +100,6 @@ export default {
 				property: "og:image",
 				content: config.seo.ogImage,
 			},
-			{
-				property: "og:image:type",
-				content: config.seo.ogImageType,
-			},
-			{
-				property: "og:image:height",
-				content: config.seo.ogImageHeight,
-			},
-			{
-				property: "og:image:width",
-				content: config.seo.ogImageWidth,
-			},
 		],
 		bodyAttrs: {
 			id: "page-top",
