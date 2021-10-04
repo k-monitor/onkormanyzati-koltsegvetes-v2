@@ -89,8 +89,8 @@
 								type="button" role="tab" aria-controls="config" aria-selected="false">Konfig</span>
 						</li>
 						<li class="nav-item" role="presentation">
-							<span class="nav-link" id="pics-tab" data-bs-toggle="tab" data-bs-target="#pics"
-								type="button" role="tab" aria-controls="pics" aria-selected="false">Képek</span>
+							<span class="nav-link" id="ms-tab" data-bs-toggle="tab" data-bs-target="#ms" type="button"
+								role="tab" aria-controls="ms" aria-selected="false">Milestone képek</span>
 						</li>
 						<li class="nav-item" role="presentation">
 							<span class="nav-link" id="site-tab" data-bs-toggle="tab" data-bs-target="#site"
@@ -148,17 +148,18 @@
 						</div>
 					</div>
 
-					<div class="tab-pane fade show active" id="pics" role="tabpanel" aria-labelledby="pics-tab">
+					<div class="tab-pane fade show active" id="ms" role="tabpanel" aria-labelledby="ms-tab">
 						<div class="card-body">
-							<h5>Milestone képek/videók</h5>
-
-							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3">
+							<p>A feltöltött fájlok eredeti neve megmarad, a szerveren levő azonos nevű fájl felül lesz
+								írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes fájlnevekkel
+								dolgozni. A konfigban a fájlnevet pontosan kell megadni, mappanevet nem kell eléírni.
+							</p>
+							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mt-4">
 								<div class="col" v-for="f in ms">
 									<div class="card shadow-sm">
 										<div class="ratio ratio-16x9">
 											<a class="card-img-top bg-light d-flex align-items-center justify-content-center thumb"
-												:style="{ backgroundImage: 'url(ms/' + f + ')' }"
-												:href="'ms/' + f"
+												:style="{ backgroundImage: 'url(ms/' + f + ')' }" :href="'ms/' + f"
 												target="_blank">
 											</a>
 										</div>
@@ -171,6 +172,14 @@
 									</div>
 								</div>
 							</div>
+						</div>
+						<div class="card-footer text-center">
+							<button class="btn btn-success" @click="browseMs">
+								<i class="fas fa-fw fa-upload me-1"></i>
+								Feltöltés
+							</button>
+							<input name="ms" ref="msFile" style="display:none" type="file" multiple
+								@change="uploadMs" />
 						</div>
 					</div>
 
@@ -223,7 +232,6 @@
 			el: '#app',
 			data: {
 				loading: false,
-				budgetFile: null,
 				ms: [],
 				publicUrl: null
 			},
@@ -233,6 +241,9 @@
 				},
 				browseConfig() {
 					this.$refs.configFile.click()
+				},
+				browseMs() {
+					this.$refs.msFile.click()
 				},
 				async buildSite() {
 					this.loading = 'Weboldal generálása...'
@@ -273,8 +284,10 @@
 				},
 				async upload(endpoint, field, ref) {
 					this.loading = 'Feltöltés...'
-					const body = new FormData();
-					body.append(field, ref.files[0])
+					const body = new FormData()
+					for (let i = 0; i < ref.files.length; i++) {
+						body.append(field, ref.files[i])
+					}
 					try {
 						await fetch(endpoint, { method: 'POST', body })
 					} catch {
@@ -289,6 +302,10 @@
 				uploadConfig() {
 					this.upload('config', 'config', this.$refs.configFile)
 				},
+				async uploadMs() {
+					await this.upload('ms', 'ms', this.$refs.msFile)
+					this.updateMs()
+				}
 			},
 			async mounted() {
 				this.loading = true

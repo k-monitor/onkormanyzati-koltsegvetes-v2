@@ -48,6 +48,13 @@ app.delete('/ms/:f', (req, res) => {
 	res.end()
 })
 
+app.post('/ms', (req, res) => {
+	req.files.ms.forEach(f => {
+		fs.writeFileSync('static/assets/ms/' + f.name, f.data)
+	})
+	res.end()
+})
+
 app.post('/newConfig', (req, res) => {
 	exec("node scripts/generate-config", (error, stdout, stderr) => {
 		if (error) {
