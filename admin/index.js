@@ -16,6 +16,7 @@ app.use(fileUpload())
 
 app.use(express.static('admin'))
 app.use('/input', express.static('input'))
+app.use('/ms', express.static('static/assets/ms'))
 
 app.post('/budget', (req, res) => {
 	fs.writeFileSync('input/budget.xlsx', req.files.budget.data)
@@ -34,6 +35,16 @@ app.post('/buildSite', (req, res) => {
 
 app.post('/config', (req, res) => {
 	fs.writeFileSync('input/config.xlsx', req.files.config.data)
+	res.end()
+})
+
+app.get('/ms', (req, res) => {
+	res.json(fs.readdirSync('static/assets/ms'))
+})
+
+app.delete('/ms/:f', (req, res) => {
+	const fn = 'static/assets/ms/' + req.params.f
+	if (fs.existsSync(fn)) fs.unlinkSync(fn)
 	res.end()
 })
 
