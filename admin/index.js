@@ -3,6 +3,7 @@ const fs = require('fs')
 require('dotenv').config()
 const express = require('express')
 const fileUpload = require('express-fileupload')
+const basicAuth = require('express-basic-auth')
 
 const CONFIG = {
 	PORT: process.env.ADMIN_PORT || 8081,
@@ -12,9 +13,12 @@ const CONFIG = {
 	DEPLOY_CMD: (process.env.DEPLOY_CMD || '').trim(),
 }
 
-const app = express()
-app.use(fileUpload())
+const users = {}
+users[CONFIG.USER] = CONFIG.PASS
 
+const app = express()
+app.use(basicAuth({ users, challenge: true }))
+app.use(fileUpload())
 app.use(express.static('admin'))
 app.use('/input', express.static('input'))
 app.use('/ms', express.static('static/assets/ms'))
