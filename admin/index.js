@@ -9,6 +9,7 @@ const CONFIG = {
 	USER: process.env.ADMIN_USER || 'admin',
 	PASS: process.env.ADMIN_PASS || 'admin',
 	PUBLIC_URL: process.env.PUBLIC_URL,
+	DEPLOY_CMD: (process.env.DEPLOY_CMD || '').trim(),
 }
 
 const app = express()
@@ -31,6 +32,20 @@ app.post('/buildSite', (req, res) => {
 		}
 		res.sendStatus(error ? 500 : 200)
 	})
+})
+
+app.post('/deploySite', (req, res) => {
+	if (CONFIG.DEPLOY_CMD) {
+		exec(CONFIG.DEPLOY_CMD, (error, stdout, stderr) => {
+			if (error) {
+				console.error('ERROR', error.message)
+				console.error(stderr)
+			}
+			res.sendStatus(error ? 500 : 200)
+		})
+	} else {
+		res.end()
+	}
 })
 
 app.post('/config', (req, res) => {

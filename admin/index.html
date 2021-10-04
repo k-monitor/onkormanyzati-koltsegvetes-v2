@@ -246,9 +246,11 @@
 					this.$refs.msFile.click()
 				},
 				async buildSite() {
-					this.loading = 'Weboldal generálása...'
 					try {
+						this.loading = 'Weboldal generálása...'
 						await fetch('buildSite', { method: 'POST' })
+						this.loading = 'Weboldal publikálása...'
+						await fetch('deploySite', { method: 'POST' })
 					} catch {
 						alert('Nem sikerült! :C')
 					} finally {
@@ -315,7 +317,7 @@
 				this.loading = false
 
 				// TODO ONLY FOR DEV:
-				document.querySelectorAll('.nav-link')[3].click()
+				//document.querySelectorAll('.nav-link')[3].click()
 			}
 		})
 	</script>
