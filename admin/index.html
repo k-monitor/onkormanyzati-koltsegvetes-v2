@@ -58,7 +58,7 @@
 		</nav>
 
 		<main class="container py-5" :class="{loading}">
-			<div class="row row-cols-1 row-cols-md-2 g-5">
+			<div class="row row-cols-1 row-cols-lg-2 g-3">
 				<div class="col">
 					<div class="card h-100 shadow-sm">
 						<h5 class="card-header d-flex align-items-center">Költségvetés</h5>
@@ -86,7 +86,8 @@
 					<div class="card h-100 shadow-sm">
 						<h5 class="card-header d-flex align-items-center">Konfiguráció</h5>
 						<div class="card-body">
-							<p>Új konfiguráció generálásakor a meglévő felülíródik: minden kézzel beírt érték törlődik, és új tooltip munkalapok jönnek létre a <code>budget.xlsx</code>-nek megfelelően.
+							<p>Új konfiguráció generálásakor a meglévő felülíródik: minden kézzel beírt érték törlődik,
+								és új tooltip munkalapok jönnek létre a <code>budget.xlsx</code>-nek megfelelően.
 							</p>
 							<p>Feltöltéskor a fájl neve mindegy, a szerveren levő <code>config.xlsx</code> fájl lesz
 								felülírva vele. Excel 2007-O365 (<code>*.xlsx</code>) fájlt kell feltölteni, melynek
@@ -115,7 +116,13 @@
 					<div class="card h-100 shadow-sm">
 						<h5 class="card-header d-flex align-items-center">Site</h5>
 						<div class="card-body">
-							<p>A KÖKÖ site-ot a költségvetés, konfiguráció, vagy képek módosítása után le kell generálni. Ez a folyamat akár 1-2 percig is tarthat.</p>
+							<p>A KÖKÖ site-ot a költségvetés, konfiguráció, vagy képek módosítása után le kell
+								generálni. Ez a folyamat akár 1-2 percig is tarthat.</p>
+							<p>Generálás után a site fájljai letölthetőek ZIP-ben. Ez egy <code>dist</code> mappát fog tartalmazni,
+								ezt lehet webszerveren hosztolni. Fontos, hogy a site végleges URL-jét (és az OG image
+								URL-t is) a konfigban előzetesen be kell állítani!</p>
+							<p>Lehetőség van a forráskód letöltésére is, a generált ZIP fájl tartalmazza a feltöltött
+								fájlokat és a használati útmutatót is.</p>
 						</div>
 						<div class="card-footer d-flex">
 							<a class="btn btn-secondary" href="zip/code" target="_blank">
