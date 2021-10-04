@@ -98,7 +98,7 @@ export default {
 			},
 			{
 				property: "og:image",
-				content: config.seo.ogImage,
+				content: config.url + 'assets/img/ogimage.jpg',
 			},
 		],
 		bodyAttrs: {
