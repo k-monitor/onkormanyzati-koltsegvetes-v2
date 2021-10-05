@@ -11,7 +11,7 @@
 						href="#page-top"
 					>
 						<img
-							src="assets/img/logo.png"
+							src="assets/img/logo-footer.png"
 							alt=""
 						>
 					</a>
