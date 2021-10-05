@@ -357,7 +357,7 @@
 			},
 			async mounted() {
 				this.loading = true
-				const r = await fetch('/publicUrl')
+				const r = await fetch('publicUrl')
 				this.publicUrl = await r.text()
 				await this.updateMs()
 				this.loading = false
