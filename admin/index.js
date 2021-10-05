@@ -60,6 +60,9 @@ app.post('/config', (req, res) => {
 app.post('/logo', (req, res) => {
 	const logos = [
 		'cover.jpg',
+		'face.png',
+		'logo.png',
+		'logo-footer.png',
 		'ogimage.jpg',
 		'signo.png',
 	]

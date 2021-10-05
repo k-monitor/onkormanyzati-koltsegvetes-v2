@@ -160,7 +160,7 @@
 								frissíteni kell, ez <a href="https://developers.facebook.com/tools/debug/"
 									target="_blank">itt</a> tehető
 								meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.</p>
-							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-4">
+							<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 mt-4">
 								<div class="col" v-for="f in logos">
 									<div class="card shadow-sm">
 										<div class="ratio ratio-16x9">
@@ -193,7 +193,8 @@
 								írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes fájlnevekkel
 								dolgozni. A konfigban a fájlnevet pontosan kell megadni, mappanevet nem kell eléírni.
 							</p>
-							<p>A képeket ajánlott feltöltés előtt 1200 pixel szélesre kicsinyíteni arányosan, JPG formátumba menteni,
+							<p>A képeket ajánlott feltöltés előtt 1200 pixel szélesre kicsinyíteni arányosan, JPG
+								formátumba menteni,
 								és <a href="https://www.tinyjpg.com/" target="_blank">TinyJPG</a> segítségével
 								optimalizálni.</p>
 							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mt-4">
@@ -275,8 +276,11 @@
 				r: Math.random(),
 				loading: false,
 				logos: [
+					{ name: 'logo.png', text: 'Város logó (fent)', format: 'PNG, max. 300x300 (négyzet!)' },
 					{ name: 'cover.jpg', text: 'Fejléc', format: 'JPG, max. 1920x1080' },
+					{ name: 'face.png', text: 'Polgárm. arckép', format: 'PNG, max. 250x250 (négyzet!)' },
 					{ name: 'signo.png', text: 'Aláírás', format: 'PNG, max. 500x200' },
+					{ name: 'logo-footer.png', text: 'Város logó (lábléc)', format: 'PNG, max. 500x500' },
 					{ name: 'ogimage.jpg', text: 'Facebook bélyegkép', format: 'JPG, <a href="https://developers.facebook.com/docs/sharing/webmasters/images/" target="_blank">méretek</a>' },
 				],
 				ms: [],
