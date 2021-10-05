@@ -152,25 +152,29 @@
 
 					<div class="tab-pane fade" id="logos" role="tabpanel" aria-labelledby="logos-tab">
 						<div class="card-body">
-							<p>A feltöltött fájlok neve mindegy, azonban a formátum kötött. A Facebook bélyegképet
-								JPG-ben, a többit PNG-ben kell feltölteni.</p>
-							<p>A Facebook bélyegkép ajánlott méreteiről <a
-									href="https://developers.facebook.com/docs/sharing/webmasters/images/"
-									target="_blank">itt</a> lehet olvasni. A bélyegkép cserélése és a site
-								újragenerálása után a Facebook szervereit is frissíteni kell, ez <a
-									href="https://developers.facebook.com/tools/debug/" target="_blank">itt</a> tehető
+							<p>A feltöltött fájlok neve mindegy, azonban a formátum kötött. A képeket feltöltés
+								előtt az ajánlott méretre kell alakítani, megfelelő formátumba menteni, és <a
+									href="https://www.tinyjpg.com/" target="_blank">TinyJPG</a> segítségével
+								optimalizálni.</p>
+							<p>A Facebook bélyegkép cserélése és a site újragenerálása után a Facebook szervereit is
+								frissíteni kell, ez <a href="https://developers.facebook.com/tools/debug/"
+									target="_blank">itt</a> tehető
 								meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.</p>
-							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mt-4">
+							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-4">
 								<div class="col" v-for="f in logos">
 									<div class="card shadow-sm">
 										<div class="ratio ratio-16x9">
-											<a class="card-img-top bg-light d-flex align-items-center justify-content-center thumb"
+											<a class="card-img-top bg-secondary d-flex align-items-center justify-content-center thumb"
 												:style="{ backgroundImage: 'url(assets/img/' + f.name + '#' + r + ')' }"
 												:href="'assets/img/' + f.name" target="_blank">
 											</a>
 										</div>
 										<div class="card-footer d-flex align-items-center px-1">
-											<div class="flex-grow-1 text-truncate">{{ f.text }}</div>
+											<div class="flex-grow-1 text-truncate">
+												{{ f.text }}
+												<br>
+												<small v-html="f.format"></small>
+											</div>
 											<label class="btn btn-sm btn-success" __click="browseLogo(f.name)">
 												<i class="fas fa-fw fa-upload"></i>
 												<input style="display:none" type="file"
@@ -189,7 +193,7 @@
 								írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes fájlnevekkel
 								dolgozni. A konfigban a fájlnevet pontosan kell megadni, mappanevet nem kell eléírni.
 							</p>
-							<p>A képeket ajánlott feltöltés előtt 1200x768 pixelre kicsinyíteni, JPG formátumba menteni,
+							<p>A képeket ajánlott feltöltés előtt 1200 pixel szélesre kicsinyíteni arányosan, JPG formátumba menteni,
 								és <a href="https://www.tinyjpg.com/" target="_blank">TinyJPG</a> segítségével
 								optimalizálni.</p>
 							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mt-4">
@@ -271,7 +275,9 @@
 				r: Math.random(),
 				loading: false,
 				logos: [
-					{ name: 'ogimage.jpg', text: 'Facebook bélyegkép' },
+					{ name: 'cover.jpg', text: 'Fejléc', format: 'JPG, max. 1920x1080' },
+					{ name: 'signo.png', text: 'Aláírás', format: 'PNG, max. 500x200' },
+					{ name: 'ogimage.jpg', text: 'Facebook bélyegkép', format: 'JPG, <a href="https://developers.facebook.com/docs/sharing/webmasters/images/" target="_blank">méretek</a>' },
 				],
 				ms: [],
 				publicUrl: null

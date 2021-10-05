@@ -59,7 +59,9 @@ app.post('/config', (req, res) => {
 
 app.post('/logo', (req, res) => {
 	const logos = [
+		'cover.jpg',
 		'ogimage.jpg',
+		'signo.png',
 	]
 	for (let i = 0; i < logos.length; i++) {
 		const logo = logos[i]
