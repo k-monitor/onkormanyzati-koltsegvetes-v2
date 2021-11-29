@@ -202,12 +202,7 @@ export default {
 	},
 	methods: {
 		bgColor: function (node, isIncome) {
-			const c = tinycolor("seagreen");
-			if (node.id.startsWith("F")) return c.lighten(42);
-			return c
-				.spin((node.mukodesi ? 1 : 2) * 71)
-				.desaturate(30)
-				.brighten(35);
+			return tinycolor(isIncome ? 'seagreen' : 'firebrick').desaturate(30).brighten(45);
 		},
 		fgColor: function (node, isIncome) {
 			var color = tinycolor(this.bgColor(node, isIncome));
