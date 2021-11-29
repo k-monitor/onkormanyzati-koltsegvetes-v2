@@ -12,6 +12,7 @@
 				:year="year"
 				id="welcome"
 			/>
+			<PublicationSection />
 			<Inex
 				:year="year"
 				id="inex"
