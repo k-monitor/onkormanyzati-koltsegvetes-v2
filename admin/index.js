@@ -63,6 +63,7 @@ app.post('/logo', (req, res) => {
 		'face.png',
 		'logo.png',
 		'logo-footer.png',
+		'pub.jpg',
 		'ogimage.jpg',
 	]
 	for (let i = 0; i < logos.length; i++) {
