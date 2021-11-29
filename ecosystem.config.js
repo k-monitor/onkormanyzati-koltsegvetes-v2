@@ -1,7 +1,7 @@
 module.exports = {
 	apps: [
 		{
-			name: 'koko-admin',
+			name: 'koko-promo',
 			script: 'admin/index.js',
 		}
 	],
