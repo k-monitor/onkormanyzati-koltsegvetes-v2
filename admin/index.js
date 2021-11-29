@@ -64,7 +64,6 @@ app.post('/logo', (req, res) => {
 		'logo.png',
 		'logo-footer.png',
 		'ogimage.jpg',
-		'signo.png',
 	]
 	for (let i = 0; i < logos.length; i++) {
 		const logo = logos[i]
