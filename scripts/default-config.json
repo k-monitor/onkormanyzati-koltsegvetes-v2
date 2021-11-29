@@ -243,5 +243,15 @@
 		"feedback.url",
 		"about:blank",
 		"Visszajelző űrlap URL-je."
+	],
+	[
+		"pub.lead",
+		"",
+		"Kiadvány szakasz szövege"
+	],
+	[
+		"pub.url",
+		"about:blank",
+		"Kiadvány szakasz gombja erre az URL-re linkel."
 	]
 ]
