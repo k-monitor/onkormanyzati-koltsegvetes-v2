@@ -69,7 +69,7 @@ app.post('/logo', (req, res) => {
 	for (let i = 0; i < logos.length; i++) {
 		const logo = logos[i]
 		const f = req.files[logo]
-		fs.writeFileSync('static/assets/img/' + logo, f.data)
+		if (f) fs.writeFileSync('static/assets/img/' + logo, f.data)
 	}
 	res.end()
 })
