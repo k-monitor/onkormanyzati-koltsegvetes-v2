@@ -60,7 +60,7 @@ export default function (Vue, { router, head, isClient }) {
 			v = Number(v);
 			var neg = v < 0;
 			v = Math.abs(v);
-			while (ns && i < s.length && v > 1000) {
+			while (ns && i < s.length - 1 && v > 1000) {
 				v /= 1000;
 				i++;
 			}
