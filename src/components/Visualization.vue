@@ -45,7 +45,7 @@
 					:class="{ active: i == nodePath.length - 1 }"
 					@click="up(path.length - i)"
 				>{{ n.name }}</li>
-				<div class="ml-auto subtotal">{{ $util.groupNums(node.value) }}</div>
+				<div class="ml-auto subtotal">{{ $util.groupNums(node.value, true) }}</div>
 			</ol>
 		</nav>
 
@@ -80,7 +80,7 @@
 					>
 						<div class="text-right w-100">
 							<span class="d-inline d-sm-none font-weight-bold">{{ $util.groupNums(n.value, true) }}</span>
-							<span class="d-none d-sm-inline">{{ $util.groupNums(n.value) }}</span>
+							<span class="d-none d-sm-inline">{{ $util.groupNums(n.value, true) }}</span>
 							<span class="d-none d-md-inline ml-1">({{ Math.round(n.value/node.value*100) }}%)</span>
 							<span class="d-sm-none"><br>{{ n.name }}</span>
 							<i
