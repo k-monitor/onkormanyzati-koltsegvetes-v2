@@ -99,7 +99,7 @@ export default {
 			},
 			{
 				property: "og:image",
-				content: config.url + 'assets/img/ogimage.jpg',
+				content: config.url + 'assets/img/ogimage.jpg?' + Math.random(),
 			},
 		],
 		bodyAttrs: {
