@@ -10,10 +10,10 @@
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
-						<VueMarkdown :source="$config.welcome.leftBlock" />
+						<VueMarkdown :source="$config.welcome.leftBlock" :anchorAttributes="{ target: '_blank' }" />
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
-						<VueMarkdown :source="$config.welcome.rightBlock" />
+						<VueMarkdown :source="$config.welcome.rightBlock" :anchorAttributes="{ target: '_blank' }" />
 						<p class="my-5">{{ $config.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">

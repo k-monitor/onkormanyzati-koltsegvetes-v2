@@ -29,7 +29,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<VueMarkdown :source="$config.moreInfo.text" />
+					<VueMarkdown :source="$config.moreInfo.text" :anchorAttributes="{ target: '_blank' }" />
 				</div>
 				<div class="modal-footer text-right">
 					<a
