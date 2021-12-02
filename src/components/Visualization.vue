@@ -436,6 +436,7 @@ export default {
 		min-height: 64px; // iOS fix
 		padding: 0.25rem 0.25rem;
 		@include media-breakpoint-up(sm) {
+			min-height: 24px;
 			padding: 0.1rem;
 		}
 		@include media-breakpoint-up(md) {
