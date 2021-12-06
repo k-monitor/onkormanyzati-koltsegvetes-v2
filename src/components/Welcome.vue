@@ -120,10 +120,10 @@ export default {
 				position: "right",
 			});
 
-			const mb = $(".milestone-button");
+			const mb = $(".milestone-button:visible");
 			if (config.modules.milestones && mb.length > 0) {
 				steps.push({
-					element: ".milestone-button",
+					element: mb[0],
 					intro:
 						"Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.",
 					position: "left",
