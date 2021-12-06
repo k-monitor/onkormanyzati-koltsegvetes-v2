@@ -1,4 +1,5 @@
 import VueMarkdown from 'vue-markdown'
+import slugify from 'slugify';
 
 import DefaultLayout from '~/layouts/Default';
 import SectionHeading from '~/components/SectionHeading';
@@ -69,7 +70,8 @@ export default function (Vue, { router, head, isClient }) {
 			v = Math.round(v * 10) / 10;
 			var vs = (v + '').replace(/\./g, ',').replace(/\d(?=(?:\d{3})+(?:,|$))/g, function ($0, i) { return $0 + ' ' });
 			return (neg ? '-' : '') + (vs + ' ' + s[i] + ' Ft').trim();
-		}
+		},
+		slugify,
 	};
 
 	// disabling modules if there's no data

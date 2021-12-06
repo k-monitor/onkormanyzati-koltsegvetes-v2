@@ -24,6 +24,7 @@
     "express-fileupload": "^1.2.1",
     "gridsome": "^0.7.0",
     "gridsome-plugin-gtm": "^0.1.1",
+    "slugify": "^1.6.3",
     "tinycolor2": "^1.4.1",
     "vue-markdown": "^2.2.4"
   },

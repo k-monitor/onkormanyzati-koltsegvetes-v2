@@ -6,7 +6,6 @@ $font-family-sans-serif: "Roboto Condensed", -apple-system, BlinkMacSystemFont, 
 $font-family-base: $font-family-sans-serif !default;
 $headings-font-family: $font-family-sans-serif !default;
 
-$primary: royalblue; // default year theme color
 $danger: firebrick;
 $success: seagreen;
 
@@ -14,9 +13,6 @@ $success: seagreen;
 
 $masthead-img: '/assets/img/cover.jpg';
 $navbar-height: 72px;
-$year-colors: // themes
-  royalblue,
-  brown
-;
 $overlay-on-milestone-card-picture: true;
 $overlay-on-milestone-thumbnail: true;
+$year-colors: ();
