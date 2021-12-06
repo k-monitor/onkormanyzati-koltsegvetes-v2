@@ -285,6 +285,16 @@
 		"E-mail cím"
 	],
 	[
+		"iframe.title",
+		"",
+		"Iframe-es oldal elnevezése"
+	],
+	[
+		"iframe.url",
+		"",
+		"Iframe-es oldalban beágyazott URL"
+	],
+	[
 		"ga.id",
 		"",
 		"Google Analytics azonosító (UA-XXXXXXXXX-X)"

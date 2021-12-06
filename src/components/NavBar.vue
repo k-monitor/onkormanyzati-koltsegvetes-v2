@@ -32,7 +32,10 @@
 				class="collapse navbar-collapse"
 				id="navbarResponsive"
 			>
-				<ul class="navbar-nav ml-auto my-2 my-lg-0">
+				<ul
+					v-if="!subpageMode"
+					class="navbar-nav ml-auto my-2 my-lg-0"
+				>
 					<li class="nav-item">
 						<a
 							href="javascript:void(0)"
@@ -105,6 +108,15 @@
 						>{{ $config.navBar.moreInfo }}</a>
 					</li>
 					<li
+						v-if="$config.iframe.title && $config.iframe.url"
+						class="nav-item"
+					>
+						<a
+							:href="`/${$util.slugify($config.iframe.title).toLowerCase()}`"
+							class="nav-link"
+						>{{ $config.iframe.title }}</a>
+					</li>
+					<li
 						v-if="$config.modules.feedback"
 						class="nav-item"
 					>
@@ -118,6 +130,19 @@
 						</a>
 					</li>
 				</ul>
+				<ul
+					class="navbar-nav ml-auto my-2 my-lg-0"
+					v-else
+				>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							href="/"
+						>
+							Vissza a költségetésre
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</nav>
@@ -125,7 +150,7 @@
 
 <script>
 export default {
-	props: ["year", "years"],
+	props: ["subpageMode", "year", "years"],
 	mounted() {
 		// Activate scrollspy to add active class to navbar items on scroll
 		$("body").scrollspy({
