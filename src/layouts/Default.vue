@@ -12,6 +12,7 @@
 				:year="year"
 				id="welcome"
 			/>
+			<PublicationSection />
 			<Inex
 				:year="year"
 				id="inex"
@@ -37,13 +38,13 @@
 				:year="year"
 				class="pb-0"
 				id="milestones"
-				v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0"
+				v-if="$config.modules.milestones"
 			/>
 			<FeedbackSection v-if="$config.modules.feedback" />
 			<slot />
 		</div>
 		<Footer />
-		<Social v-if="$config.modules.social" />
+		<Social />
 		<FeedbackModal />
 		<MoreInfoModal />
 	</div>
@@ -60,11 +61,13 @@ export default {
 		link: [
 			{
 				rel: "stylesheet",
-				href: "https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext",
+				href:
+					"https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext",
 			},
 			{
 				rel: "stylesheet",
-				href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css",
+				href:
+					"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css",
 			},
 			{
 				rel: "canonical",
@@ -96,7 +99,7 @@ export default {
 			},
 			{
 				property: "og:image",
-				content: config.url + "assets/img/ogimage.jpg",
+				content: config.url + 'assets/img/ogimage.jpg',
 			},
 		],
 		bodyAttrs: {
@@ -105,7 +108,7 @@ export default {
 	},
 	data() {
 		return {
-			year: config.defaultYear,
+			year: config.defaultYear
 		};
 	},
 	methods: {
@@ -201,7 +204,7 @@ hr.light {
 
 // Page section padding
 .page-section {
-	padding: 3rem 0;
+	padding: 8rem 0;
 }
 
 // Tooltips on mobile
