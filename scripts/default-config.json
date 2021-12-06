@@ -25,6 +25,11 @@
 		"Fejlesztések szakasz megjelenítése? (1 = Igen, 0 = Nem)"
 	],
 	[
+		"modules.feedback",
+		1,
+		"Visszajelzés szakasz/gomb megjelenítése? (1 = Igen, 0 = Nem)"
+	],
+	[
 		"modules.social",
 		1,
 		"Legyenek megosztás gombok? (1 = Igen, 0 = Nem)"
