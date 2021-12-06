@@ -43,7 +43,7 @@
 			<slot />
 		</div>
 		<Footer />
-		<Social />
+		<Social v-if="$config.modules.social" />
 		<FeedbackModal />
 		<MoreInfoModal />
 	</div>

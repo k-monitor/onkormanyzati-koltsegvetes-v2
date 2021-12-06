@@ -25,6 +25,11 @@
 		"Fejlesztések szakasz megjelenítése? (1 = Igen, 0 = Nem)"
 	],
 	[
+		"modules.social",
+		1,
+		"Legyenek megosztás gombok? (1 = Igen, 0 = Nem)"
+	],
+	[
 		"defaultYear",
 		2020,
 		"Alapértelmezettként kiválasztott év."
