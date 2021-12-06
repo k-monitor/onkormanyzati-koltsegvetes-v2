@@ -18,15 +18,24 @@
 						</a>
 					</div>
 					<div class="ml-4 mt-3" id="contacts">
-						<p class="lead"><a
-								href="https://k-monitor.hu/"
+						<p v-if="$config.footer.url" class="lead">
+							<i class="fas fa-fw fa-globe-europe mr-2"></i>
+							<a
+								:href="$config.footer.url"
 								target="_blank"
-							><i class="fas fa-fw fa-globe-europe mr-2"></i>k-monitor.hu</a></p>
-						<p class="lead"><a
-								href="https://www.facebook.com/Kmonitor/"
+							>{{ $config.footer.url.replace(/^.*?\/\/|\/.*$|www\./g, '') }}</a>
+						</p>
+						<p v-if="$config.footer.fb" class="lead">
+							<i class="fab fa-fw fa-facebook mr-2"></i>
+							<a
+								:href="`https://www.facebook.com/${$config.footer.fb}/`"
 								target="_blank"
-							><i class="fab fa-fw fa-facebook mr-2"></i>fb.com/Kmonitor</a></p>
-						<p class="lead"><a href="mailto:info@k-monitor.hu"><i class="fas fa-fw fa-envelope mr-2"></i>info@k-monitor.hu</a></p>
+							>@{{ $config.footer.fb }}</a>
+						</p>
+						<p v-if="$config.footer.email" class="lead">
+							<i class="fas fa-fw fa-envelope mr-2"></i>
+							<a :href="`mailto:${$config.footer.email}`">{{ $config.footer.email }}</a>
+						</p>
 					</div>
 				</div>
 				<div class="col mt-5 mt-lg-0">

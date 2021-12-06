@@ -245,6 +245,21 @@
 		"Visszajelző űrlap URL-je."
 	],
 	[
+		"footer.url",
+		"https://k-monitor.hu/",
+		"Weboldal címe"
+	],
+	[
+		"footer.fb",
+		"Kmonitor",
+		"Facebook oldal azonosítója"
+	],
+	[
+		"footer.email",
+		"info@k-monitor.hu",
+		"E-mail cím"
+	],
+	[
 		"ga.id",
 		"",
 		"Google Analytics azonosító (UA-XXXXXXXXX-X)"
