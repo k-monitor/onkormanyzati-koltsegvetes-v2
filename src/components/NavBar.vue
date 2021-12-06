@@ -8,7 +8,13 @@
 				class="navbar-brand js-scroll-trigger"
 				href="#page-top"
 			>
-				<img class="mr-2" src="assets/img/logo.png" width="30" height="30" alt="">
+				<img
+					class="mr-2"
+					src="/assets/img/logo.png"
+					width="30"
+					height="30"
+					alt=""
+				>
 				{{ $config.city }}
 			</a>
 			<button
@@ -51,7 +57,7 @@
 					</li>
 					<li
 						class="nav-item"
-						v-if="$config.modules.milestones"
+						v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0"
 					>
 						<a
 							href="#milestones"
@@ -98,7 +104,10 @@
 							data-target="#moreInfoModal"
 						>{{ $config.navBar.moreInfo }}</a>
 					</li>
-					<li class="nav-item">
+					<li
+						v-if="$config.modules.feedback"
+						class="nav-item"
+					>
 						<a
 							class="nav-link"
 							data-target="#feedbackModal"
@@ -121,11 +130,11 @@ export default {
 		// Activate scrollspy to add active class to navbar items on scroll
 		$("body").scrollspy({
 			target: "#mainNav",
-			offset: 75
+			offset: 75,
 		});
 
 		// Collapse Navbar
-		var navbarCollapse = function() {
+		var navbarCollapse = function () {
 			if ($("#mainNav").offset().top > 100) {
 				$("#mainNav").addClass("navbar-scrolled");
 			} else {
@@ -136,7 +145,7 @@ export default {
 		navbarCollapse();
 		// Collapse the navbar when page is scrolled
 		$(window).scroll(navbarCollapse);
-	}
+	},
 };
 </script>
 
@@ -162,7 +171,7 @@ export default {
 		img {
 			filter: invert(1);
 			position: relative;
-			transition: all .2s;
+			transition: all 0.2s;
 			top: -2px;
 		}
 	}

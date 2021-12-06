@@ -10,10 +10,10 @@
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
-						<VueMarkdown :source="$config.welcome.leftBlock" />
+						<VueMarkdown :source="$config.welcome.leftBlock" :anchorAttributes="{ target: '_blank' }" />
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
-						<VueMarkdown :source="$config.welcome.rightBlock" />
+						<VueMarkdown :source="$config.welcome.rightBlock" :anchorAttributes="{ target: '_blank' }" />
 						<p class="my-5">{{ $config.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
@@ -28,7 +28,7 @@
 							<div class="flex-grow-1 ml-5">
 								<p class="mt-4 mb-0">
 									<em>
-										{{ $config.welcome.name }},
+										{{ $config.welcome.name }}
 										<br>
 										{{ $config.welcome.role }}
 									</em>
@@ -37,7 +37,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row justify-content-center mb-5">
+				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
 						<div
 							class="btn btn-outline-light btn-xl js-scroll-trigger"
@@ -61,6 +61,7 @@ export default {
 			$(".milestone-button").addClass("disabled");
 			const intro = introJs()
 				.setOption("doneLabel", "Kilépés")
+				.setOption("hideNext", true)
 				.setOption("nextLabel", "Tovább")
 				.setOption("prevLabel", "Vissza")
 				.setOption("scrollToElement", false)
@@ -119,10 +120,10 @@ export default {
 				position: "right",
 			});
 
-			const mb = $(".milestone-button");
+			const mb = $(".milestone-button:visible");
 			if (config.modules.milestones && mb.length > 0) {
 				steps.push({
-					element: ".milestone-button",
+					element: mb[0],
 					intro:
 						"Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.",
 					position: "left",
@@ -143,12 +144,14 @@ export default {
 				position: "bottom",
 			});
 
-			steps.push({
-				element: "#mainNav .dropdown",
-				intro:
-					"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
-				position: "bottom",
-			});
+			if (Object.keys(this.$d).length > 1) {
+				steps.push({
+					element: "#mainNav .dropdown",
+					intro:
+						"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
+					position: "bottom",
+				});
+			}
 
 			if (config.modules.milestones) {
 				steps.push({

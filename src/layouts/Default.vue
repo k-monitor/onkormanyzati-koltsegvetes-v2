@@ -12,6 +12,7 @@
 				:year="year"
 				id="welcome"
 			/>
+			<PublicationSection v-if="$config.modules.pub" />
 			<Inex
 				:year="year"
 				id="inex"
@@ -39,7 +40,7 @@
 				id="milestones"
 				v-if="$config.modules.milestones"
 			/>
-			<FeedbackSection />
+			<FeedbackSection v-if="$config.modules.feedback" />
 			<slot />
 		</div>
 		<Footer />

@@ -175,7 +175,7 @@
 												<br>
 												<small v-html="f.format"></small>
 											</div>
-											<label class="btn btn-sm btn-success" __click="browseLogo(f.name)">
+											<label class="btn btn-sm btn-success">
 												<i class="fas fa-fw fa-upload"></i>
 												<input style="display:none" type="file"
 													@change="uploadLogo($event, f.name)" />
@@ -278,6 +278,7 @@
 					{ name: 'logo.png', text: 'Város logó (fent)', format: 'PNG, max. 300x300 (négyzet!)' },
 					{ name: 'cover.jpg', text: 'Fejléc', format: 'JPG, max. 1920x1080' },
 					{ name: 'face.png', text: 'Polgárm. arckép', format: 'PNG, max. 250x250 (négyzet!)' },
+					{ name: 'pub.jpg', text: 'Kiadvány borítója', format: 'JPG, max. 500x500 (arány mindegy)' },
 					{ name: 'logo-footer.png', text: 'Város logó (lábléc)', format: 'PNG, max. 500x500' },
 					{ name: 'ogimage.jpg', text: 'Facebook bélyegkép', format: 'JPG, <a href="https://developers.facebook.com/docs/sharing/webmasters/images/" target="_blank">méretek</a>' },
 				],

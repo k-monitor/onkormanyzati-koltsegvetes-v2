@@ -23,7 +23,7 @@
 			</div>
 			<div class="row justify-content-center mt-5" v-if="text">
 				<div class="col-lg-8 text-center">
-					<VueMarkdown :source="text" />
+					<VueMarkdown :source="text" :anchorAttributes="{ target: '_blank' }" />
 				</div>
 			</div>
 		</div>

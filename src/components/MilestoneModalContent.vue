@@ -57,7 +57,7 @@
 				<div class="m-3">
 					<p class="lead text-white">{{ milestone.title }}</p>
 					<div class="m-0 text-justify text-white-75">
-						<VueMarkdown :source="milestone.description" />
+						<VueMarkdown :source="milestone.description" :anchorAttributes="{ target: '_blank' }" />
 					</div>
 				</div>
 			</div>

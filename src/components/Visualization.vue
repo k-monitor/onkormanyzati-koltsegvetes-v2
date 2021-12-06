@@ -51,7 +51,7 @@
 
 		<div
 			class="d-flex border-top border-bottom vis"
-			:id="id"
+			ref="vis"
 			@mouseout="hovered=-1"
 		>
 			<div class="d-flex left-column">
@@ -81,7 +81,7 @@
 						<div class="text-right w-100">
 							<span class="d-inline d-sm-none font-weight-bold">{{ $util.groupNums(n.value, true) }}</span>
 							<span class="d-none d-sm-inline">{{ $util.groupNums(n.value) }}</span>
-							<span class="d-none d-md-inline">({{ Math.round(n.value/node.value*100) }}%)</span>
+							<span class="d-none d-md-inline ml-1">({{ Math.round(n.value/node.value*100) }}%)</span>
 							<span class="d-sm-none"><br>{{ n.name }}</span>
 							<i
 								class="fas fa-fw fa-level-down-alt ml-1"
@@ -121,7 +121,7 @@
 					></path>
 				</svg>
 			</div>
-			<div class="d-none d-sm-flex flex-column right-column text-left">
+			<div class="d-none d-sm-flex flex-column justify-content-around right-column text-left">
 				<div
 					class="label"
 					v-for="(n,i) in children"
@@ -149,7 +149,7 @@
 import tinycolor from "tinycolor2";
 
 export default {
-	props: ["defaultMode", "id", "year", "side"], // side is "expense" or "income"
+	props: ["defaultMode", "year", "side"], // side is "expense" or "income"
 	data() {
 		return {
 			curves: [],
@@ -291,22 +291,22 @@ export default {
 				});
 			return ids.indexOf(id);
 		},
-		curve(id, node, index) {
+		curve(index) {
 			try {
-				var bars = $("#" + id);
+				var bars = this.$refs.vis;
 				var barsTop = $(bars).offset().top;
 
-				var bar = $("#" + id + " .bar[data-index=" + index + "]");
+				var bar = $(`.bar[data-index=${index}]`, bars);
 				var barHeight = $(bar).outerHeight();
 				var barTop = $(bar).offset().top - barsTop;
 				var barMiddle = barTop + barHeight / 2;
 
-				var label = $("#" + id + " .label[data-index=" + index + "]");
+				var label = $(`.label[data-index=${index}]`, bars);
 				var labelHeight = $(label).outerHeight();
 				var labelTop = $(label).offset().top - barsTop;
 				var labelMiddle = labelTop + labelHeight / 2;
 
-				var svg = $("#" + id + " .curves svg");
+				var svg = $(".curves svg", bars);
 				var svgWidth = $(svg).outerWidth();
 
 				var x1 = 0;
@@ -338,14 +338,14 @@ export default {
 			}
 		},
 		updateCurves: function () {
-			var svg = $("#" + this.id + " .curves svg");
+			var svg = $(".curves svg", this.$refs.vis);
 			var svgHeight = $(svg).outerHeight();
 			var svgWidth = $(svg).outerWidth();
 			$(svg).attr("viewBox", [0, 0, svgWidth, svgHeight].join(" "));
 
 			var self = this;
 			this.curves = this.children.map(function (n, i) {
-				return self.curve(self.id, n, i);
+				return self.curve(i);
 			});
 		},
 		regenerateTooltips() {
@@ -431,7 +431,6 @@ export default {
 	.label {
 		align-items: center;
 		display: flex;
-		flex: 1;
 		margin-bottom: 1px;
 		min-height: 24px; // iOS fix
 		padding: 0.25rem 0.25rem;
