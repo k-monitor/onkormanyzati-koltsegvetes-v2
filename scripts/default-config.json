@@ -247,6 +247,11 @@
 	[
 		"ga.id",
 		"",
-		"Google Analytics azonosító (opcionális)"
+		"Google Analytics azonosító (UA-XXXXXXXXX-X)"
+	],
+	[
+		"gtm.id",
+		"",
+		"Google Tag Manager azonosító (GTM-XXXXXXX)"
 	]
 ]
