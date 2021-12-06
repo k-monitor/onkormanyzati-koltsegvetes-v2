@@ -121,7 +121,7 @@
 					></path>
 				</svg>
 			</div>
-			<div class="d-none d-sm-flex flex-column right-column text-left">
+			<div class="d-none d-sm-flex flex-column justify-content-around right-column text-left">
 				<div
 					class="label"
 					v-for="(n,i) in children"
@@ -431,7 +431,6 @@ export default {
 	.label {
 		align-items: center;
 		display: flex;
-		flex: 1;
 		margin-bottom: 1px;
 		min-height: 24px; // iOS fix
 		padding: 0.25rem 0.25rem;
