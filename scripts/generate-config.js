@@ -2,7 +2,9 @@ const fs = require('fs');
 const xl = require('excel4node');
 const defaultConfig = require('./default-config.json');
 const defaultMilestones = require('./default-milestones.json');
-require('./prepare-data'); // required for tooltips generation
+require('./prepare-data'); // required for theme colors & tooltips generation
+
+const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
 
 const OUTPUT_FILE = "input/config.xlsx";
 
@@ -69,8 +71,16 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 
 // config sheet
 
+const yearColors = Object.keys(data).map(year => {
+	return [
+		`theme.${year}`,
+		'royalblue',
+		`${year} évhez tartozó CSS szín`
+	];
+});
+
 const configSheet = wb.addWorksheet('config');
-aoaTo3colSheet(configSheet, defaultConfig, [1], [25, 40, 100]);
+aoaTo3colSheet(configSheet, defaultConfig.concat(yearColors), [1], [25, 40, 100]);
 
 // tooltips sheets
 
@@ -86,7 +96,7 @@ function gatherIds(ids, node) {
 	}
 }
 
-const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
+
 Object.keys(data).forEach(year => {
 	const ids = {};
 	Object.values(data[year]).forEach(sideObj => {
