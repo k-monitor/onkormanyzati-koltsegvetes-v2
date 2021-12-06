@@ -25,6 +25,11 @@
 		"Fejlesztések szakasz megjelenítése? (1 = Igen, 0 = Nem)"
 	],
 	[
+		"modules.pub",
+		1,
+		"Kiadványos szakasz megjelenítése? (1 = Igen, 0 = Nem)"
+	],
+	[
 		"modules.feedback",
 		1,
 		"Visszajelzés szakasz/gomb megjelenítése? (1 = Igen, 0 = Nem)"

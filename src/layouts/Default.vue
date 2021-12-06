@@ -12,7 +12,7 @@
 				:year="year"
 				id="welcome"
 			/>
-			<PublicationSection />
+			<PublicationSection v-if="$config.modules.pub" />
 			<Inex
 				:year="year"
 				id="inex"
