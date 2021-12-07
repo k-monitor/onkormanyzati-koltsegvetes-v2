@@ -257,7 +257,7 @@
 			<div class="modal-dialog modal-dialog-scrollable modal-xl">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Hiba</h5>
+						<h5 class="modal-title">{{ errorType }}</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
@@ -301,27 +301,33 @@
 				ms: [],
 				publicUrl: null,
 				error: null,
+				errorType: null,
 			},
 			methods: {
 				async buildSite() {
+					let r, e = '', failed = false;
 					try {
-						let r;
-
 						this.loading = 'Weboldal generálása...'
 						r = await fetch('buildSite', { method: 'POST' })
-						if (r.status !== 200) throw r
+						e += await r.text()
+						if (r.status !== 200) throw ''
 
 						this.loading = 'Weboldal publikálása...'
 						r = await fetch('deploySite', { method: 'POST' })
-						if (r.status !== 200) throw r
-					} catch (r) {
-						if (r.text) {
-							this.error = await r.text()
-							new bootstrap.Modal(document.getElementById('errorModal')).show()
-						} else {
-							console.error(r);
-						}
+						e += await r.text()
+						if (r.status !== 200) throw ''
+					} catch (error) {
+						// actual build/deploy failure
+						failed = true;
+						e += error
 					} finally {
+						console.error(e);
+						this.error = e;
+						this.errorType = failed ? 'Nem sikerült!' : 'Nem stimmelnek az adatok';
+						if (failed || e.includes('[KÖKÖ]')) {
+							// acutal failure OR invalid data (which is HTTP 200)
+							new bootstrap.Modal(document.getElementById('errorModal')).show()
+						}
 						this.loading = false
 					}
 				},
