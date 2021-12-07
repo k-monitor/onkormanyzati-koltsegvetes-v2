@@ -8,6 +8,7 @@ const { iframe } = config;
 module.exports = function (api) {
 	api.createPages(({ createPage }) => {
 		const routeName = slugify(iframe.title).toLowerCase();
+		if (!routeName) return;
 		createPage({
 			path: '/' + routeName,
 			route: {
