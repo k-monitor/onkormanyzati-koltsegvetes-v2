@@ -59,10 +59,21 @@
 <script>
 import config from "~/data/config.json";
 
+function scrollTo(targetElement) {
+	$("html, body").animate(
+		{
+			scrollTop: $(targetElement).offset().top - 160,
+		},
+		1000,
+		"easeInOutExpo"
+	);
+}
+
 export default {
 	props: ["year"],
 	methods: {
 		intro() {
+			const self = this;
 			$("#mainNav").css("position", "absolute");
 			$(".milestone-button").addClass("disabled");
 			const intro = introJs()
@@ -79,21 +90,21 @@ export default {
 				.onbeforechange(function (targetElement) {
 					const step = this._introItems[this._currentStep];
 					if (step.milestoneButtonStep) {
-						targetElement = $(".milestone-button:visible")[0];
-						targetElement.classList.add("disabled");
-						step.element = targetElement;
-						step.position = "top";
+						self.$eventBus.$emit("jump", { side: "expense", type: "econ" });
+						self.$eventBus.$emit("jump", { side: "income", type: "econ" });
+						self.$nextTick(() => {
+							targetElement = $(".milestone-button:visible")[0];
+							targetElement.classList.add("disabled", "introjs-showElement");
+							step.element = targetElement;
+							step.position = "left";
+							intro.refresh();
+							scrollTo(targetElement);
+						});
+						return;
 					} else if (targetElement.className.includes("fa-search")) {
 						$("#navbarResponsive").addClass("show");
 					}
-
-					$("html, body").animate(
-						{
-							scrollTop: $(targetElement).offset().top - 160,
-						},
-						1000,
-						"easeInOutExpo"
-					);
+					scrollTo(targetElement);
 				})
 				.onexit(function () {
 					$("#navbarResponsive").removeClass("show");
@@ -138,7 +149,6 @@ export default {
 					milestoneButtonStep: true, // see onbeforechange above
 					intro:
 						"Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.",
-					position: "left",
 				});
 			}
 
