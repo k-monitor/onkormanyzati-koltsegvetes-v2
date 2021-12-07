@@ -5,3 +5,4 @@ require('./prepare-tags');
 require('./prepare-tooltips');
 require('./prepare-downloads');
 require('./prepare-style');
+require('./validate-data');
