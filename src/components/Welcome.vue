@@ -10,10 +10,16 @@
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
-						<VueMarkdown :source="$config.welcome.leftBlock" :anchorAttributes="{ target: '_blank' }" />
+						<VueMarkdown
+							:source="$config.welcome.leftBlock"
+							:anchorAttributes="{ target: '_blank' }"
+						/>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
-						<VueMarkdown :source="$config.welcome.rightBlock" :anchorAttributes="{ target: '_blank' }" />
+						<VueMarkdown
+							:source="$config.welcome.rightBlock"
+							:anchorAttributes="{ target: '_blank' }"
+						/>
 						<p class="my-5">{{ $config.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
@@ -71,9 +77,16 @@ export default {
 				.setOption("skipLabel", "Kilépés")
 				.setOption("tooltipPosition", "left")
 				.onbeforechange(function (targetElement) {
-					if (targetElement.className.includes("fa-search")) {
+					const step = this._introItems[this._currentStep];
+					if (step.milestoneButtonStep) {
+						targetElement = $(".milestone-button:visible")[0];
+						targetElement.classList.add("disabled");
+						step.element = targetElement;
+						step.position = "top";
+					} else if (targetElement.className.includes("fa-search")) {
 						$("#navbarResponsive").addClass("show");
 					}
+
 					$("html, body").animate(
 						{
 							scrollTop: $(targetElement).offset().top - 160,
@@ -120,10 +133,9 @@ export default {
 				position: "right",
 			});
 
-			const mb = $(".milestone-button:visible");
-			if (config.modules.milestones && mb.length > 0) {
+			if (config.modules.milestones) {
 				steps.push({
-					element: mb[0],
+					milestoneButtonStep: true, // see onbeforechange above
 					intro:
 						"Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.",
 					position: "left",
