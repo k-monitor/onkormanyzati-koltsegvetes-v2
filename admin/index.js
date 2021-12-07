@@ -30,22 +30,14 @@ app.post('/budget', (req, res) => {
 
 app.post('/buildSite', (req, res) => {
 	exec("npm run build", (error, stdout, stderr) => {
-		if (error) {
-			console.error('ERROR', error.message)
-			console.error(stderr)
-		}
-		res.sendStatus(error ? 500 : 200)
+		res.status(error ? 500 : 200).send(error ? stderr : '');
 	})
 })
 
 app.post('/deploySite', (req, res) => {
 	if (CONFIG.DEPLOY_CMD) {
 		exec(CONFIG.DEPLOY_CMD, (error, stdout, stderr) => {
-			if (error) {
-				console.error('ERROR', error.message)
-				console.error(stderr)
-			}
-			res.sendStatus(error ? 500 : 200)
+			res.status(error ? 500 : 200).send(error ? stderr : '');
 		})
 	} else {
 		res.end()

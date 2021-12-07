@@ -253,6 +253,22 @@
 				</div>
 			</div>
 		</main>
+		<div id="errorModal" class="modal" tabindex="-1">
+			<div class="modal-dialog modal-dialog-scrollable modal-xl">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Hiba</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<pre>{{ error }}</pre>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div id="loading"
 			class="align-items-center d-flex flex-column h-100 justify-content-center position-absolute w-100"
 			v-if="loading">
@@ -283,17 +299,28 @@
 					{ name: 'ogimage.jpg', text: 'Facebook bélyegkép', format: 'JPG, <a href="https://developers.facebook.com/docs/sharing/webmasters/images/" target="_blank">méretek</a>' },
 				],
 				ms: [],
-				publicUrl: null
+				publicUrl: null,
+				error: null,
 			},
 			methods: {
 				async buildSite() {
 					try {
+						let r;
+
 						this.loading = 'Weboldal generálása...'
-						await fetch('buildSite', { method: 'POST' })
+						r = await fetch('buildSite', { method: 'POST' })
+						if (r.status !== 200) throw r
+
 						this.loading = 'Weboldal publikálása...'
-						await fetch('deploySite', { method: 'POST' })
-					} catch {
-						alert('Nem sikerült! :C')
+						r = await fetch('deploySite', { method: 'POST' })
+						if (r.status !== 200) throw r
+					} catch (r) {
+						if (r.text) {
+							this.error = await r.text()
+							new bootstrap.Modal(document.getElementById('errorModal')).show()
+						} else {
+							console.error(r);
+						}
 					} finally {
 						this.loading = false
 					}
