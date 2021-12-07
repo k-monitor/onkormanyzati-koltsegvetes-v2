@@ -170,9 +170,9 @@
 		"Köszöntő szakaszt aláíró személy tisztsége."
 	],
 	[
-		"moreInfo.title",
-		"A projektről",
-		"További információ ablak címsora."
+		"tutorial.K1107",
+		"",
+		"Hasábokra von. tutorial lépések így szúrhatók be. A 2. oszlopba kell írni a szöveget."
 	],
 	[
 		"pub.lead",
@@ -183,6 +183,11 @@
 		"pub.url",
 		"about:blank",
 		"Kiadvány szakasz gombja erre az URL-re linkel."
+	],
+	[
+		"moreInfo.title",
+		"A projektről",
+		"További információ ablak címsora."
 	],
 	[
 		"moreInfo.text",

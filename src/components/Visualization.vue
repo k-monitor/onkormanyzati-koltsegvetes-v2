@@ -374,6 +374,7 @@ export default {
 		});
 
 		self.$eventBus.$on("jump", (target) => {
+			console.log('ON jump', target);
 			if (target.side == self.side) {
 				self.mode = target.type == "econ" ? 0 : 1;
 				self.path = [];

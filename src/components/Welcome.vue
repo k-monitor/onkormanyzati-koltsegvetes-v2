@@ -101,6 +101,22 @@ export default {
 							scrollTo(targetElement);
 						});
 						return;
+					} else if (step.path && step.side && step.targetNode) {
+						const { path, side, targetNode } = step;
+						self.$eventBus.$emit("jump", {
+							side,
+							type: "econ",
+							path: path.split(";"),
+						});
+						self.$nextTick(() => {
+							targetElement = $(`.bar[data-id=${targetNode}]`)[0];
+							targetElement.classList.add("introjs-showElement");
+							step.element = targetElement;
+							step.position = "right";
+							intro.refresh();
+							scrollTo(targetElement);
+						});
+						return;
 					} else if (targetElement.className.includes("fa-search")) {
 						$("#navbarResponsive").addClass("show");
 					}
@@ -113,6 +129,7 @@ export default {
 				});
 
 			const steps = [];
+
 			if (config.modules.inex) {
 				steps.push({
 					element: "#inex-wrapper",
@@ -157,6 +174,30 @@ export default {
 				intro:
 					"A navigációs sáv megmutatja, hol van éppen a kategóriafában, valamint ennek segítségével vissza is tud lépni.",
 				position: "bottom",
+			});
+
+			Object.keys(self.$config.tutorial).forEach((targetNode) => {
+				const text = self.$config.tutorial[targetNode] || '';
+				if (text.trim().length === 0) return;
+				const side = targetNode[0] === "B" ? "income" : "expense";
+				let root = self.$d[self.year][side].econ;
+				const path = [];
+				for (let i = 1; i < targetNode.length - 1; i++) {
+					const needle = targetNode.substring(0, i + 1);
+					const n = (root.children || []).filter((n) => n.id === needle)[0];
+					if (n) {
+						path.push(n.id);
+						root = n;
+					}
+				}
+				if ((root.children || []).filter((n) => n.id === targetNode).length) {
+					steps.push({
+						path: path.join(";"), // introJs converts array to object, so I trick him by passing string...
+						side,
+						targetNode,
+						intro: text,
+					});
+				}
 			});
 
 			steps.push({
