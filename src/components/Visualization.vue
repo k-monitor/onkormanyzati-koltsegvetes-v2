@@ -214,7 +214,6 @@ export default {
 			this.$nextTick(function () {
 				this.updateCurves();
 			});
-
 		},
 		year: function (y) {
 			if (!this.data.func && this.mode != 0) {
@@ -228,68 +227,25 @@ export default {
 			$("html, body").animate({ scrollTop: $(this.$el).offset().top - 75 });
 		},
 		bgColor: function (node, index) {
-			var colors = [
-				"#f7981d" /* 01 Általános közszolgáltatások */,
-				"#5c628f" /* 02 Védelem */,
-				"#ee2a7b" /* 03 Közrend és közbiztonság */,
-				"#254478" /* 04 Gazdasági ügyek */,
-				"#d32027" /* 05 Környezetvédelem */,
-				"#5c9ad2" /* 06 Lakásépítés és kommunális létesítménye */,
-				"#cf7017" /* 07 Egészségügy */,
-				"#70ac45" /* 08 Szabadidő, sport, kultúra, vallás */,
-				"#4971b6" /* 09 Oktatás */,
-				"#bb208a" /* 10 Szociális védelem */,
-				"#ef538c" /* 9000 Technikai funkciókódok */,
-			];
+			const id = this.nodePath.length > 1
+				? this.nodePath[1].id
+				: node.id;
 
-			var color = colors[this.colorIndex(node)];
-
-			if (
-				node.name.includes("Finanszírozási") ||
-				(this.nodePath.length > 1 &&
-					this.nodePath[1].name.includes("Finanszírozási"))
-			) {
-				color = tinycolor("seagreen").lighten(42); // just like in Inex
-			}
-
+			const defaultColor = "#6c757d";
+			const colors = this.$config.color || {};
+			const color = tinycolor(colors[id] || defaultColor);
 			if (this.nodePath.length > 1) {
-				var opacity = node.value / this.nodePath[1].value;
-				opacity = 0.5 + opacity * 0.5;
-
-				color = tinycolor(color);
+				const opacity = 0.5 + 0.5 * (node.value / this.nodePath[1].value);
 				color.setAlpha(opacity);
-				color = color.toRgbString();
 			}
 			if (this.hovered > -1 && index != this.hovered && index > -1) {
-				color = tinycolor(color);
 				color.setAlpha(color.getAlpha() * 0.5);
-				color = color.toRgbString();
 			}
-			return color;
+			return color.toRgbString();
 		},
 		fgColor: function (node, index) {
 			var color = tinycolor(this.bgColor(node, index));
 			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
-		},
-		colorIndex: function (node) {
-			function norm(id) {
-				return (id + "").replace(/\D+/, "");
-			}
-
-			var id = node.id;
-			if (this.nodePath.length > 1) {
-				id = this.nodePath[1].id;
-			}
-
-			id = norm(id);
-			var ids = this.root.children
-				.map(function (c) {
-					return norm(c.id);
-				})
-				.sort(function (a, b) {
-					return Number(a) - Number(b);
-				});
-			return ids.indexOf(id);
 		},
 		curve(index) {
 			try {
@@ -374,7 +330,7 @@ export default {
 		});
 
 		self.$eventBus.$on("jump", (target) => {
-			console.log('ON jump', target);
+			console.log("ON jump", target);
 			if (target.side == self.side) {
 				self.mode = target.type == "econ" ? 0 : 1;
 				self.path = [];
