@@ -146,12 +146,7 @@ export default {
 				.map(
 					(id) => this.expenseTree.children.filter((n) => n.id === id.trim())[0]
 				)
-				.filter((n) => n && n.id && n.value && Math.abs(n.value) > 0)
-				.map((n) => {
-					const i = parseInt(n.id[1]);
-					n.mukodesi = i <= 5;
-					return n;
-				});
+				.filter((n) => n && n.id && n.value && Math.abs(n.value) > 0);
 		},
 		expenseSum: function () {
 			return this.expenseChildren
@@ -171,12 +166,7 @@ export default {
 				.map(
 					(id) => this.incomeTree.children.filter((n) => n.id === id.trim())[0]
 				)
-				.filter((n) => n && n.id && n.value && n.value > 0)
-				.map((n) => {
-					const i = parseInt(n.id[1]);
-					n.mukodesi = [1, 2, 3, 4].indexOf(i) > -1;
-					return n;
-				});
+				.filter((n) => n && n.id && n.value && n.value > 0);
 		},
 		incomeSum: function () {
 			return this.incomeChildren
@@ -193,12 +183,8 @@ export default {
 	},
 	methods: {
 		bgColor: function (node, isIncome) {
-			const c = tinycolor("seagreen");
-			if (node.id.startsWith("F")) return c.lighten(42);
-			return c
-				.spin((node.mukodesi ? 1 : 2) * 71)
-				.desaturate(30)
-				.brighten(35);
+			const defaultColor = isIncome ? '#bde2cd' : '#ffb5b5';
+			return this.$config.inex[node.id] || defaultColor;
 		},
 		fgColor: function (node, isIncome) {
 			var color = tinycolor(this.bgColor(node, isIncome));
