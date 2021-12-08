@@ -433,7 +433,7 @@ export default {
 		align-items: center;
 		display: flex;
 		margin-bottom: 1px;
-		min-height: 24px; // iOS fix
+		min-height: 64px; // iOS fix
 		padding: 0.25rem 0.25rem;
 		@include media-breakpoint-up(sm) {
 			padding: 0.1rem;
