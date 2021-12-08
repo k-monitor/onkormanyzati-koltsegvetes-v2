@@ -71,16 +71,28 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 
 // config sheet
 
-const yearColors = Object.keys(data).map(year => {
-	return [
-		`theme.${year}`,
-		'royalblue',
-		`${year} évhez tartozó CSS szín`
-	];
+const yearColors = Object.keys(data).map(year => ([
+	`theme.${year}`,
+	'royalblue',
+	`${year} évhez tartozó CSS szín`
+]));
+
+const topLevelIds = {};
+Object.keys(data).forEach(year => {
+	['expense', 'income'].forEach(side => {
+		data[year][side].econ.children.forEach(n => topLevelIds[n.id] = true);
+	});
 });
+const inexColors = Object.keys(topLevelIds).sort().map(id => ([
+	`inex.${id}`,
+	'',
+	`${id} hasábhoz tartozó CSS szín a Mérleg ábrán`
+]));
 
 const configSheet = wb.addWorksheet('config');
-aoaTo3colSheet(configSheet, defaultConfig.concat(yearColors), [1], [25, 40, 100]);
+aoaTo3colSheet(configSheet,
+	defaultConfig.concat(yearColors).concat(inexColors),
+	[1], [25, 40, 100]);
 
 // tooltips sheets
 
