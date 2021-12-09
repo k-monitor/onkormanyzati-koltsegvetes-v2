@@ -318,5 +318,20 @@
 		"gtm.id",
 		"",
 		"Google Tag Manager azonosító (GTM-XXXXXXX)"
+	],
+	[
+		"font.base",
+		"",
+		"Alap betűtípus neve (alapértelmezetthez hagyd üresen - Roboto Condensed)"
+	],
+	[
+		"font.headings",
+		"",
+		"Fejlécek betűtípusának neve (font.base használatához hagyd üresen)"
+	],
+	[
+		"font.vis",
+		"",
+		"Ábrák betűtípusának neve (font.base használatához hagyd üresen)"
 	]
 ]

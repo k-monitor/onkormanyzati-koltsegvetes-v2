@@ -358,6 +358,8 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 .visualization {
+	font-family: $vis-font-family;
+
 	.left-column {
 		width: 35%;
 

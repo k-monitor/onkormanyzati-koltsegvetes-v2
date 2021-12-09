@@ -4,7 +4,20 @@ const slugify = require('slugify');
 const config = JSON.parse(fs.readFileSync('src/data/config.json', { encoding: 'utf8' }));
 const data = JSON.parse(fs.readFileSync('src/data/data.json', { encoding: 'utf8' }));
 
-const { defaultYear, theme } = config; // theme: { year: color, ... }
+const { defaultYear, font, theme } = config;
+
+const fontKeys = {
+	base: '$font-family-base',
+	headings: '$headings-font-family',
+	vis: '$vis-font-family'
+};
+const $fonts = Object.keys(fontKeys).map(configKey => {
+	const fontFamily = ((font || {})[configKey] || '').trim();
+	const scssVar = fontKeys[configKey];
+	return fontFamily.length ? `${scssVar}: "${fontFamily}";\n` : '';
+}).join('');
+
+// theme: { year: color, ... }
 const defaultColor = theme[defaultYear] || '#0d6efd'; // fallback to BS $primary
 const years = Object.keys(data);
 
@@ -14,7 +27,11 @@ const mapEntries = years.map(y => {
 	return `"${slugifiedYear}":${color}`
 }).join(',\n');
 
-const map = `$year-colors:(\n${mapEntries}\n);`;
-const $primary = theme[defaultYear] ? `$primary: ${defaultColor};` : '';
+const $yearColors = `$year-colors:(\n${mapEntries}\n);\n`;
+const $primary = theme[defaultYear] ? `$primary: ${defaultColor};\n` : '';
 
-fs.writeFileSync('src/scss/_generated.scss', `${map}\n${$primary}`);
+fs.writeFileSync('src/scss/_generated.scss', [
+	$fonts,
+	$primary,
+	$yearColors
+].join('\n'));
