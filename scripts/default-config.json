@@ -177,7 +177,7 @@
 	[
 		"pub.lead",
 		"Lórum ipse - mint apacska - kató bosszúkás zerc, ahol tűsölő magyat, szelés, ciga, irség és más fekes zölék szervelít. Bord gális iheges nem házta a zsujdot izálnia, és kaszakrács lett.",
-		"Kiadvány szakasz szövege"
+		"Kiadvány szakasz szövege."
 	],
 	[
 		"pub.url",
@@ -207,12 +207,12 @@
 	[
 		"inex.expenseNodes",
 		"K1,K2,K3,K4,K5,FH1,FH2,K6,K7,K8",
-		"Mérleg ábra kiadási oldalán szereplő hasábok azonosítói vesszővel elv."
+		"Mérleg ábra kiadási oldalán szereplő hasábok azonosítói vesszővel elválasztva."
 	],
 	[
 		"inex.incomeNodes",
 		"K1,K2,K3,K4,K5,FH1,FH2,K6,K7,K8",
-		"Mérleg ábra bevételi oldalán szereplő hasábok azonosítói vesszővel elv."
+		"Mérleg ábra bevételi oldalán szereplő hasábok azonosítói vesszővel elválasztva."
 	],
 	[
 		"inex.text",
@@ -287,51 +287,56 @@
 	[
 		"footer.url",
 		"https://k-monitor.hu/",
-		"Weboldal címe"
+		"Kontakt weboldal címe."
 	],
 	[
 		"footer.fb",
 		"Kmonitor",
-		"Facebook oldal azonosítója"
+		"Kontakt Facebook oldal azonosítója."
 	],
 	[
 		"footer.email",
 		"info@k-monitor.hu",
-		"E-mail cím"
+		"Kontakt e-mail cím."
 	],
 	[
 		"iframe.title",
 		"",
-		"Iframe-es oldal elnevezése"
+		"Iframe-es oldal elnevezése."
 	],
 	[
 		"iframe.url",
 		"",
-		"Iframe-es oldalban beágyazott URL"
+		"Iframe-es oldalban beágyazott URL."
 	],
 	[
 		"ga.id",
 		"",
-		"Google Analytics azonosító (UA-XXXXXXXXX-X)"
+		"Google Analytics azonosító (UA-XXXXXXXXX-X)."
 	],
 	[
 		"gtm.id",
 		"",
-		"Google Tag Manager azonosító (GTM-XXXXXXX)"
+		"Google Tag Manager azonosító (GTM-XXXXXXX)."
+	],
+	[
+		"font.imports",
+		"",
+		"Webfonto(ka)t importáló CSS kód, pl: `@import url('https://...');`, lehet több ilyen a cellában."
 	],
 	[
 		"font.base",
 		"",
-		"Alap betűtípus neve (alapértelmezetthez hagyd üresen - Roboto Condensed)"
+		"Alap betűtípus neve, alapértelmezetthez (Roboto Condensed) hagyd üresen."
 	],
 	[
 		"font.headings",
 		"",
-		"Fejlécek betűtípusának neve (font.base használatához hagyd üresen)"
+		"Fejlécek betűtípusának neve, font.base használatához hagyd üresen."
 	],
 	[
 		"font.vis",
 		"",
-		"Ábrák betűtípusának neve (font.base használatához hagyd üresen)"
+		"Ábrák betűtípusának neve, font.base használatához hagyd üresen."
 	]
 ]

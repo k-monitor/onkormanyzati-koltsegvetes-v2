@@ -31,6 +31,7 @@ const $yearColors = `$year-colors:(\n${mapEntries}\n);\n`;
 const $primary = theme[defaultYear] ? `$primary: ${defaultColor};\n` : '';
 
 fs.writeFileSync('src/scss/_generated.scss', [
+	font.imports,
 	$fonts,
 	$primary,
 	$yearColors
