@@ -317,7 +317,7 @@ Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog
 
 Az oldalon megjelenő szövegeket és a SEO beállításokat (amik nem a `data.json`-ból jönnek) az `input/config.xlsx` fájlban lehet szerkeszteni, mely tartalmazza az egyes mezők magyarázatait is.
 
-A képeket (favicon, logók, fejlesztések képei, stb.) az admin felület segítségével lehet egyszerűen cserélni. Az admin felületet az `npm run admin` paranccsal lehet indítani és alapértelmezésként a http://localhost:8081/ címen lesz elérhető.
+A képeket (favicon, logók, fejlesztések képei, stb.) az admin felület segítségével lehet egyszerűen cserélni. Az admin felületet az `npm run admin` paranccsal lehet indítani és alapértelmezésként a http://localhost:8081/ címen lesz elérhető, "admin" felhasználónévvel és "admin" jelszóval.
 
 
 ## Keresési napló
