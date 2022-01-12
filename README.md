@@ -327,3 +327,63 @@ Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a ta
 - előfordulások száma (hányszor szerepelt az alábbi keresőkifejezés az alábbi találatszámmal)
 - keresőkifejezés
 - találatok száma
+
+
+## Admin felület beüzemelése
+
+Magának a költségvetés site-nak a beüzemelése ezekből a fázisokból áll (ez van fentebb részletesebben):
+
+1. A forráskódban cserélni/módosítani kell az Excel és képfájlokat.
+2. Le kell generálni a site-ot a forráskódból (`npm run build`).
+3. Ezután a `dist` mappában egy statikus weboldal fájljai lesznek, ezt lehet egy webszerverrel (pl. Apache, Nginx) hosztolni.
+
+Az admin modul eme 3 lépés megkönnyítésére szolgál. Ez egy webalkalmazás, ami a forráskód mappájában fut, így le tudja cserélni a fájlokat, és meg tudja hívni az `npm run build` parancsot. Mindezen műveletekhez pedig egy webes felületet biztosít.
+
+Admin beüzemelés lépései részletesen:
+
+1. Telepíts Node.js-t és Yarn-t, ezek adják az alapvető környezetet a projekthez.
+2. A projekt mappájában futtasd le a `yarn install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
+3. Készíts másolatot az `.env.example` fájlról `.env` néven.
+4. Szerkeszd az `.env` fájlt, hogy beállítsd az admin felületet:
+	- `ADMIN_PORT=8081` - a port száma, amin a webes felület elérhető lesz
+	- `ADMIN_USER=admin` - ezzel a felhasználónévvel lehet majd elérni az admin felületet
+	- `ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
+	- `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
+	- `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
+5. Az admin felület az `npm run admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
+
+Ahhoz, hogy az admin felület publikusan is elérhető legyen, az alábbiakra van szükség:
+
+1. Állíts be egy domain nevet (pl. admin.pelda.koltsegvetes.hu) úgy, hogy arra a szerverre mutasson, ahol az admin fut.
+2. Telepíts és indíts el egy webszervert (pl. Apache vagy Nginx) ugyanazon a gépen.
+3. Állítsd be a webszervert úgy, hogy kiszolgálja az 1. pontban beállított domain nevet, és proxy-zza a kéréseket az admin felület portjára.
+
+Apache példa konfig:
+
+```
+<VirtualHost *:80>
+        ServerAdmin elek@teszt.hu
+        ServerName admin.pelda.koltsegvetes.hu
+        ProxyPass / http://localhost:8081/
+        ProxyPassReverse / http://localhost:8081/
+</VirtualHost>
+```
+
+Nginx példa konfig:
+
+```
+server {
+    listen          80;
+    server_name     admin.pelda.koltsegvetes.hu;
+    location / {
+        proxy_redirect                      off;
+        proxy_set_header Host               $host;
+        proxy_set_header X-Real-IP          $remote_addr;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+        proxy_read_timeout          1m;
+        proxy_connect_timeout       1m;
+        proxy_pass                          http://127.0.0.1:8081;
+    }
+}
+```
