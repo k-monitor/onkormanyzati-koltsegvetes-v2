@@ -153,6 +153,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		maxRow.split('\t').forEach((col, i) => {
 			if (i > 2) {
 				const id = header[i];
+				if (!nodes[id]) console.log('NO NODE', id);
 				nodes[id].value = Number(col.replace(/\D+/g, ''));
 			}
 		});
@@ -230,7 +231,7 @@ function parseEconomicDescriptor(descriptor) {
  */
 function parseFunctionalTreeDescriptor(tsv) {
 	const nodes = {};
-	tsv.split('\n').forEach(row => {
+	tsv.trim().split('\n').forEach(row => {
 		let [id, name, parent] = row.split('\t');
 		id = Number(id);
 		parent = Number('0' + parent.replace(/\D+/g, ''));

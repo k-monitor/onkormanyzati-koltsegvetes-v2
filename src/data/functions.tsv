@@ -18,6 +18,7 @@
 205	Városfejlesztés	2
 20501	Közterületek fejlesztése	205
 20502	Szemünk Fénye Program	205
+20503	Kadafalvi Óvoda bővítése	205
 206	Közműépítés	2
 20601	ISPA projekt fenntartási időszak kiadásai	206
 20602	Lakossági önerős beruházás (víziközmű, szennyvíz, közműfejlesztés támogatása)	206
@@ -86,6 +87,8 @@
 406	Önkormányzati épületek felújításával kapcsolatos pályázatok	4
 40601	Modern Városok Program támogatása, Városháza felújítás	406
 40602	Önkormányzati épületek energetikai korszerűsítése Kecskeméten	406
+40603	Kecskemét szegregált területeinek integrált szociális városrehabilitációja /TOP/	406
+40604	Bérlakás építési program	406
 407	Városfejlesztéssel, lakhatással kapcsolatos pályázatok	4
 40701	Rudolf-kert építészeti és közterületi fejlesztése /TOP/	407
 40702	Épület- és területfejlesztés a Rudolf-laktanyában /TOP/	407
@@ -145,6 +148,7 @@
 711	Választókerületi támogatási program	7
 712	Városi díjak és díszdiplomák	7
 713	Városi Támogatási Program /Civil szervezetek támogatása	7
+714	Önkormányzati közlemények, hirdetmény	7
 8	Adósságszolgálat, tartalékok	0
 801	Vis maior tartalék	8
 802	Intézményi kiadások tartaléka	8
