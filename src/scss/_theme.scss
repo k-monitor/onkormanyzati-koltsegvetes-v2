@@ -108,7 +108,6 @@
 	}
 }
 
-@each $primary in $year-colors {
-	$year: index($year-colors, $primary) - 1;
+@each $year, $primary in $year-colors {
 	@include generateTheme($primary, $year);
 }

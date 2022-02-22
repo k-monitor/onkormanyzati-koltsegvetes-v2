@@ -1,5 +1,5 @@
 <template>
-	<div :class="['theme-' + Object.keys($d).sort().indexOf(year)]">
+	<div :class="'theme-' + $util.slugify(year)">
 		<NavBar
 			:year="year"
 			:years="Object.keys($d).sort().reverse()"
@@ -12,6 +12,7 @@
 				:year="year"
 				id="welcome"
 			/>
+			<PublicationSection v-if="$config.modules.pub" />
 			<Inex
 				:year="year"
 				id="inex"
@@ -39,11 +40,11 @@
 				id="milestones"
 				v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0"
 			/>
-			<FeedbackSection />
+			<FeedbackSection v-if="$config.modules.feedback" />
 			<slot />
 		</div>
 		<Footer />
-		<Social />
+		<Social v-if="$config.modules.social" />
 		<FeedbackModal />
 		<MoreInfoModal />
 	</div>
@@ -64,13 +65,11 @@ export default {
 			},
 			{
 				rel: "stylesheet",
-				href:
-					"https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext",
+				href: "https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext",
 			},
 			{
 				rel: "stylesheet",
-				href:
-					"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css",
+				href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css",
 			},
 			{
 				rel: "canonical",
@@ -102,11 +101,7 @@ export default {
 			},
 			{
 				property: "og:image",
-				content: config.seo.ogImage,
-			},
-			{
-				property: "og:image:type",
-				content: config.seo.ogImageType,
+				content: config.url + "assets/img/ogimage.jpg",
 			},
 		],
 		bodyAttrs: {

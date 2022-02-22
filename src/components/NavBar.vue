@@ -11,7 +11,7 @@
 				<img
 					class="mr-2"
 					src="/assets/img/logo.png"
-					width="44"
+					width="30"
 					height="30"
 					alt=""
 				>
@@ -33,8 +33,8 @@
 				id="navbarResponsive"
 			>
 				<ul
-					class="navbar-nav ml-auto my-2 my-lg-0"
 					v-if="!subpageMode"
+					class="navbar-nav ml-auto my-2 my-lg-0"
 				>
 					<li class="nav-item">
 						<a
@@ -90,7 +90,7 @@
 								class="dropdown-item"
 								href="javascript:void(0)"
 								v-for="y in years"
-								:class="['theme-' + Object.keys($d).sort().indexOf(y)]"
+								:class="['theme-' + $util.slugify(y)]"
 								:key="y"
 								@click="$emit('yearSelected', y)"
 							>
@@ -107,7 +107,19 @@
 							data-target="#moreInfoModal"
 						>{{ $config.navBar.moreInfo }}</a>
 					</li>
-					<li class="nav-item">
+					<li
+						v-if="$config.iframe.title && $config.iframe.url"
+						class="nav-item"
+					>
+						<a
+							:href="`/${$util.slugify($config.iframe.title).toLowerCase()}`"
+							class="nav-link"
+						>{{ $config.iframe.title }}</a>
+					</li>
+					<li
+						v-if="$config.modules.feedback"
+						class="nav-item"
+					>
 						<a
 							href="/quiz"
 							class="nav-link"

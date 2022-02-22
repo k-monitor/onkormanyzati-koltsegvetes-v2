@@ -18,11 +18,11 @@ json.forEach((row, id) => {
 	if (year && String(year).match(/\d{4}/) && title && descriptionInMarkdown) {
 		output.milestones[id] = {
 			year,
-			picture: imageFile || 'assets/img/fejlesztesek-01.svg',
+			picture: 'assets/ms/' + (imageFile || 'fejlesztesek-01.svg'),
 			overlay: imageFile ? false : true,
 			title,
 			description: descriptionInMarkdown,
-			vid: videoFile
+			vid: videoFile ? 'assets/ms/' + videoFile : null,
 		};
 		output.rels[year] = output.rels[year] || {};
 		if (nodeId) {
