@@ -181,7 +181,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		function sumNode(node) {
 			if (node.children) {
 				node.value = node.children
-					.map(n => sumNode(n))
+					//.map(n => sumNode(n)) // turning off recursive step, so we only sum for the root node, lower node values come from budget
 					.reduce((sum, node) => sum + (node.value || 0), 0);
 			}
 			return node;
