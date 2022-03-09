@@ -14,7 +14,8 @@ $success: seagreen;
 $masthead-img: '/assets/img/cover.jpg';
 $navbar-height: 72px;
 $year-colors: // themes
-  $primary
+  $primary,
+  darken($primary, 0.02%) // because lists are sets...
 ;
 $overlay-on-milestone-card-picture: true;
 $overlay-on-milestone-thumbnail: true;
