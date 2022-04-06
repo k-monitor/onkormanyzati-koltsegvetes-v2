@@ -12,7 +12,7 @@
 			</div>
 			<div class="row mb-5">
 				<div
-					class="col-md-6 col-lg-4 mx-auto px-0"
+					class="col-md-6 col-lg-4 mx-auto px-1"
 					v-for="(m, i) in milestones"
 					:key="m.id"
 				>
@@ -33,18 +33,18 @@ export default {
 	computed: {
 		milestones() {
 			return Object.entries(this.$milestones.milestones)
-				.filter(e => {
+				.filter((e) => {
 					return e[1].year == this.year;
 				})
-				.map(e => {
+				.map((e) => {
 					const m = e[1];
 					m.id = e[0];
 					return m;
 				});
-		}
+		},
 	},
 	mounted() {
-		document.onkeyup = function(e) {
+		document.onkeyup = function (e) {
 			e = e || window.event;
 			if (e.keyCode == "37") {
 				$(".modal.show .prev").click();
@@ -52,6 +52,6 @@ export default {
 				$(".modal.show .next").click();
 			}
 		};
-	}
+	},
 };
 </script>
