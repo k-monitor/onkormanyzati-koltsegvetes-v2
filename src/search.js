@@ -28,11 +28,13 @@ export default function search(year, term) {
 		if (m.year == year) {
 			const text = m.title + '|' + m.description;
 			const matchesInName = term.toLowerCase().split(' ').filter(t => t.trim().length >= 3 && text.toLowerCase().includes(t)).length;
+			const matchedTags = (m.tags || []).filter(tag => tag.includes(term.toLowerCase()));
 			results.push({
 				id: milestoneId,
 				matchesInName,
 				name: m.title || '',
 				side: 'milestones',
+				tags: matchedTags,
 				type: 'milestone',
 			});
 		}
