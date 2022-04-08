@@ -1,4 +1,5 @@
 const $data = require('../src/data/data.json');
+const $milestones = require('../src/data/milestones.json').milestones;
 const $tags = require('../src/data/tags.json');
 //{
 //	"expense": {
@@ -22,12 +23,26 @@ export default function search(year, term) {
 			results = results.concat(treeResults);
 		});
 	});
+	Object.keys($milestones).forEach(milestoneId => {
+		const m = $milestones[milestoneId];
+		if (m.year == year) {
+			const text = m.title + '|' + m.description;
+			const matchesInName = term.toLowerCase().split(' ').filter(t => t.trim().length >= 3 && text.toLowerCase().includes(t)).length;
+			results.push({
+				id: milestoneId,
+				matchesInName,
+				name: m.title || '',
+				side: 'milestones',
+				type: 'milestone',
+			});
+		}
+	});
 	return results;
 }
 
 function searchNode(node, tags, term, path) {
 	const nodeTags = (tags[node.id] || tags['0' + node.id] || []);
-	const matchesInName = term.toLowerCase().split(' ').filter(t => t.trim().length >= 3 && (node.name||'').toLowerCase().includes(t)).length;
+	const matchesInName = term.toLowerCase().split(' ').filter(t => t.trim().length >= 3 && (node.name || '').toLowerCase().includes(t)).length;
 	const matchedTags = nodeTags.filter(tag => tag.includes(term.toLowerCase()));
 	let results = [];
 	if (matchedTags.length > 0 || matchesInName > 0) {

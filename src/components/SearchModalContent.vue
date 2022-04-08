@@ -49,7 +49,7 @@
 							<br>
 							<small class="text-muted">({{ $config.search[r.type] }})</small>
 							<br>
-							<span v-if="r.tags.length > 0">
+							<span v-if="(r.tags || '').length > 0">
 								<span
 									class="badge badge-info font-weight-normal mr-2"
 									v-for="t in r.tags"
@@ -61,7 +61,7 @@
 						<div>
 							<a
 								class="ml-2 btn btn-sm"
-								:class="r.side == 'income' ? 'btn-outline-success' : 'btn-outline-danger'"
+								:class="r.side == 'milestones' ? 'btn-outline-info' : (r.side == 'income' ? 'btn-outline-success' : 'btn-outline-danger')"
 								href="javascript:void(0)"
 								@click="jump(r)"
 							>
@@ -85,7 +85,7 @@ export default {
 	data() {
 		return {
 			searchTerm: "",
-			savedSearchTerms: []
+			savedSearchTerms: [],
 		};
 	},
 	computed: {
@@ -93,8 +93,8 @@ export default {
 			return this.searchTerm.length < 3
 				? []
 				: search(this.year, this.searchTerm)
-						.filter(r => r.side != "income" || this.$config.modules.income)
-						.sort(function(a, b) {
+						.filter((r) => r.side != "income" || this.$config.modules.income)
+						.sort(function (a, b) {
 							function score(r) {
 								return (r.matchesInName || 0) + (r.tags || []).length;
 							}
@@ -102,8 +102,8 @@ export default {
 							const sb = score(b);
 							return sa == sb ? (b.value || 0) - (a.value || 0) : sb - sa;
 						})
-						.map(r => {
-							this.searchTerm.split(" ").forEach(t => {
+						.map((r) => {
+							this.searchTerm.split(" ").forEach((t) => {
 								t = t.trim();
 								if (t.length >= 3) {
 									r.name = r.name.replace(
@@ -115,16 +115,16 @@ export default {
 							return r;
 						})
 						.slice(0, 5);
-		}
+		},
 	},
 	watch: {
 		searchTerm(term, oldTerm) {
 			clearTimeout(window.searchTimeout);
 			const self = this;
 
-			const track = function(term) {
+			const track = function (term) {
 				const prefix = self.savedSearchTerms.some(
-					sst => sst.indexOf(term) == 0
+					(sst) => sst.indexOf(term) == 0
 				);
 				if (!prefix) {
 					self.savedSearchTerms.push(term);
@@ -138,38 +138,44 @@ export default {
 				// immediate reaction to backspace
 				track(oldTerm);
 			} else if (term.length >= 3) {
-				window.searchTimeout = setTimeout(function() {
+				window.searchTimeout = setTimeout(function () {
 					track(term);
 				}, 1000);
 			}
-		}
+		},
 	},
 	methods: {
 		jump(result) {
 			$("#search-modal").modal("hide");
-			if ($('#mainNav .show').length > 0) $('#mainNav button').click();
+			if ($("#mainNav .show").length > 0) $("#mainNav button").click();
 			$("html, body").animate(
 				{
-					scrollTop: $("#" + result.side).offset().top - 72
+					scrollTop: $("#" + result.side).offset().top - 72,
 				},
 				1000,
 				"easeInOutExpo"
 			);
 			const self = this;
-			setTimeout(function() {
-				self.$eventBus.$emit("jump", result);
+			setTimeout(function () {
+				console.log(result);
+				if (result.side === "milestones") {
+					console.log("opening modal");
+					$("#milestone-modal-" + result.id).modal("show");
+				} else {
+					self.$eventBus.$emit("jump", result);
+				}
 			}, 1000);
-		}
+		},
 	},
 	mounted() {
 		const self = this;
-		$("#search-modal").on("show.bs.modal", function(e) {
+		$("#search-modal").on("show.bs.modal", function (e) {
 			self.searchTerm = "";
 		});
-		$("#search-modal").on("shown.bs.modal", function(e) {
+		$("#search-modal").on("shown.bs.modal", function (e) {
 			$("#search-modal input").focus();
 		});
-	}
+	},
 };
 </script>
 

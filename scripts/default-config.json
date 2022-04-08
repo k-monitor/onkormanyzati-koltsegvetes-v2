@@ -115,6 +115,11 @@
 		"Keresési találatban megjelenő link szövege, mely a Kiadások szakaszra mutat."
 	],
 	[
+		"search.milestones",
+		"Fejlesztések",
+		"Keresési találatban megjelenő link szövege, mely a Fejlesztések szakaszra mutat."
+	],
+	[
 		"search.econ",
 		"közgazdasági kategória",
 		"Keresési találatban megjelenő szöveg, ha az adott találat egy közgazdasági kategória."
@@ -123,6 +128,11 @@
 		"search.func",
 		"funkcionális kategória",
 		"Keresési találatban megjelenő szöveg, ha az adott találat egy funkcionális kategória."
+	],
+	[
+		"search.milestone",
+		"fejlesztés",
+		"Keresési találatban megjelenő szöveg, ha az adott találat egy fejlesztés."
 	],
 	[
 		"header.title",
