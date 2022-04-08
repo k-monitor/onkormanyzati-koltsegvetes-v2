@@ -49,7 +49,7 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 - **input/tags.xlsx** - A kereső által használt címkehalmazok.
 - **src/data/config.js** - A weboldal beállításai, szövegei.
 - **src/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
-- **src/data/functions.tsv** - A funkcionális kategóriák fa struktúrája.
+- **src/data/functions.tsv (generált)** - A funkcionális kategóriák fa struktúrája.
 - **src/data/milestones.json (generált)** - A fejlesztések leírásai, előkészítve.
 - **src/data/tags.json (generált)** - A kereső által használt címkehalmazok, előkészítve.
 - **src/data/tooltips.json (generált)** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei, előkészítve.
@@ -154,6 +154,21 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
 
 
 
+#### A "functions munkalap formátuma:
+
+A funkcionális kategóriák fa struktúráját írja le.
+
+- az 1. sor a fejléc, melynek oszlopai kötelezően:
+	- "id"
+	- "name"
+	- "parent"
+- a 2. sortól kezdve a funkcionális kategóriák definíciói
+	- 1\. oszlop: a kategória azonosítója, egész szám
+	- 2\. oszlop: a kategória megnevezése
+	- 3\. oszlop: a szülő kategória azonosítója, egész szám. Ha nem létező definiált kategóriára mutat, akkor az aktuális kategória a gyökérbe kerül.
+
+
+
 ### input/tags.xlsx
 
 A kereső funkciónak 4 címkehalmazra van szüksége:
@@ -174,20 +189,9 @@ Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell mega
 
 
 
-### src/data/functions.tsv
+### src/data/functions.tsv (generált)
 
-A funkcionális kategóriák fa struktúráját írja le.
-
-Formátuma TSV, oszlopai: kategória azonosító, címke, szülő kategória azonosító.
-
-Ha az utóbbi oszlopba olyan érték kerül, amihez nem tartozik sor, akkor az adott kategória a gyökérben lesz látható.
-
-```tsv
-107054	Családsegítés	1070
-107014	Támogatott lakhatás hajléktalan személyek részére	1070
-900070	Fejezeti és általános tartalékok elszámolása	9000
-...
-```
+Tartalma a config.xlsx "functions" munkalappal ekvivalens, fejléc sor nélkül.
 
 
 

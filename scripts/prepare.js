@@ -1,3 +1,4 @@
+require('./prepare-functions');
 require('./prepare-config');
 require('./prepare-data');
 require('./prepare-milestones');

@@ -2,6 +2,7 @@ const fs = require('fs');
 const xl = require('excel4node');
 const defaultConfig = require('./default-config.json');
 const defaultMilestones = require('./default-milestones.json');
+require('./prepare-functions'); // required by prepare-data
 require('./prepare-data'); // required for theme colors & tooltips generation
 
 const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
@@ -148,8 +149,8 @@ aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5], [10, 5, 2
 const tsv = fs.readFileSync('./scripts/default-functions.tsv', {
 	encoding: 'utf8'
 });
-const header = ['Azon.', 'Funkcionális kategória', 'Szülő azon.'];
-const aoa = tsv.split('\n').map(line => line.split('\t'));
+const header = ['id', 'name', 'parent'];
+const aoa = tsv.split('\n').map(line => line.trim().split('\t'));
 const functionsSheet = wb.addWorksheet('functions');
 aoaTo3colSheet(functionsSheet, [header, ...aoa], [], [20, 100, 20]);
 
