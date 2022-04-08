@@ -145,7 +145,7 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
 	- "title"
 	- "descriptionInMarkdown"
 - a 2. sortól kezdve a fejlesztések adatai:
-	- 1\. oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
+	- 1\. oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító). Több azonosító is megadható, vesszővel elválasztva. Opcionális.
 	- 2\. oszlop: azon év, amelyhez a fejlesztés tartozik
 	- 3\. oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
 	- 4\. oszlop: a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson

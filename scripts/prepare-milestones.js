@@ -15,6 +15,7 @@ const output = {
 json.forEach((row, id) => {
 	id = 'M' + id;
 	let { nodeId, year, imageFile, videoFile, title, descriptionInMarkdown } = row;
+	const nodeIds = nodeId;
 	if (year && String(year).match(/\d{4}/) && title && descriptionInMarkdown) {
 		output.milestones[id] = {
 			year,
@@ -25,8 +26,10 @@ json.forEach((row, id) => {
 			vid: videoFile ? 'assets/ms/' + videoFile : null,
 		};
 		output.rels[year] = output.rels[year] || {};
-		if (nodeId) {
-			output.rels[year][nodeId] = id;
+		if (nodeIds) {
+			nodeIds.split(',').map(id => id.trim()).forEach(nodeId => {
+				output.rels[year][nodeId] = id;
+			});
 		}
 	}
 });
