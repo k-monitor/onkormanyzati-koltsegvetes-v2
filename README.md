@@ -137,20 +137,22 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
 
 #### A "milestones" munkalap formátuma:
 
-- az 1. sor a fejléc, melynek oszlopai kötelezően:
+- az 1. sor a fejléc, melynek oszlopai kötelezően (a sorrend mindegy):
 	- "nodeId"
 	- "year"
 	- "imageFile"
 	- "videoFile"
 	- "title"
 	- "descriptionInMarkdown"
+	- "tags"
 - a 2. sortól kezdve a fejlesztések adatai:
-	- 1\. oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító). Több azonosító is megadható, vesszővel elválasztva. Opcionális.
-	- 2\. oszlop: azon év, amelyhez a fejlesztés tartozik
-	- 3\. oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
-	- 4\. oszlop: a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
-	- 5\. oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
-	- 6\. oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
+	- "nodeId" oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító). Több azonosító is megadható, vesszővel elválasztva. Opcionális.
+	- "year" oszlop: azon év, amelyhez a fejlesztés tartozik
+	- "imageFile" oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
+	- "videoFile" oszlop: a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
+	- "title" oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
+	- "descriptionInMarkdown" oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
+	- "tags" oszlop: a fejlesztés címkéi, vesszővel elválasztva
 
 
 
@@ -158,14 +160,14 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
 
 A funkcionális kategóriák fa struktúráját írja le.
 
-- az 1. sor a fejléc, melynek oszlopai kötelezően:
+- az 1. sor a fejléc, melynek oszlopai kötelezően (a sorrend mindegy):
 	- "id"
 	- "name"
 	- "parent"
 - a 2. sortól kezdve a funkcionális kategóriák definíciói
-	- 1\. oszlop: a kategória azonosítója, egész szám
-	- 2\. oszlop: a kategória megnevezése
-	- 3\. oszlop: a szülő kategória azonosítója, egész szám. Ha nem létező definiált kategóriára mutat, akkor az aktuális kategória a gyökérbe kerül.
+	- "id" oszlop: a kategória azonosítója, egész szám
+	- "name" oszlop: a kategória megnevezése
+	- "parent" oszlop: a szülő kategória azonosítója, egész szám. Ha nem létező definiált kategóriára mutat, akkor az aktuális kategória a gyökérbe kerül.
 
 
 
