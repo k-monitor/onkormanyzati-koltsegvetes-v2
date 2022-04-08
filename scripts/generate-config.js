@@ -97,9 +97,9 @@ const visColors = Object.keys(topLevelIds).sort().map(id => ([
 const configSheet = wb.addWorksheet('config');
 aoaTo3colSheet(configSheet,
 	defaultConfig
-	.concat(yearColors)
-	.concat(inexColors)
-	.concat(visColors),
+		.concat(yearColors)
+		.concat(inexColors)
+		.concat(visColors),
 	[1], [25, 40, 100]);
 
 // tooltips sheets
@@ -142,5 +142,15 @@ Object.keys(data).forEach(year => {
 
 const milestonesSheet = wb.addWorksheet('milestones');
 aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5], [10, 5, 20, 20, 20, 80]);
+
+// functions sheet
+
+const tsv = fs.readFileSync('./scripts/default-functions.tsv', {
+	encoding: 'utf8'
+});
+const header = ['Azon.', 'Funkcionális kategória', 'Szülő azon.'];
+const aoa = tsv.split('\n').map(line => line.split('\t'));
+const functionsSheet = wb.addWorksheet('functions');
+aoaTo3colSheet(functionsSheet, [header, ...aoa], [], [20, 100, 20]);
 
 wb.write(OUTPUT_FILE);
