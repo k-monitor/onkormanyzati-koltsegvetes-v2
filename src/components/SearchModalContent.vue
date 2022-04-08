@@ -157,10 +157,8 @@ export default {
 			);
 			const self = this;
 			setTimeout(function () {
-				console.log(result);
 				if (result.side === "milestones") {
-					console.log("opening modal");
-					$("#milestone-modal-" + result.id).modal("show");
+					self.$eventBus.$emit("ms", result.id);
 				} else {
 					self.$eventBus.$emit("jump", result);
 				}

@@ -91,8 +91,7 @@
 						<div class="d-flex d-sm-none">
 							<div
 								class="btn btn-link bg-light milestone-button ml-3 mr-1 px-2"
-								data-toggle="modal"
-								:data-target="'#' + milestoneId(n)"
+								@click="$eventBus.$emit('ms', milestoneId(n))"
 								v-if="$config.modules.milestones && milestoneId(n)"
 							><i class="fas fa-fw fa-camera"></i></div>
 							<div
@@ -135,8 +134,7 @@
 					<span @click="down(n, i);autoScroll()">{{ n.name }}</span>
 					<span
 						class="btn btn-link milestone-button ml-auto"
-						data-toggle="modal"
-						:data-target="'#' + milestoneId(n)"
+						@click="$eventBus.$emit('ms', milestoneId(n))"
 						v-if="$config.modules.milestones && milestoneId(n)"
 					><i class="fas fa-camera"></i></span>
 				</div>
@@ -227,9 +225,7 @@ export default {
 			$("html, body").animate({ scrollTop: $(this.$el).offset().top - 75 });
 		},
 		bgColor: function (node, index) {
-			const id = this.nodePath.length > 1
-				? this.nodePath[1].id
-				: node.id;
+			const id = this.nodePath.length > 1 ? this.nodePath[1].id : node.id;
 
 			const defaultColor = "#6c757d";
 			const colors = this.$config.color || {};
@@ -310,7 +306,7 @@ export default {
 		milestoneId: function (node) {
 			try {
 				const mid = this.$milestones.rels[this.year][node.id];
-				return mid ? "milestone-modal-" + mid : null;
+				return mid ? mid : null;
 			} catch (e) {
 				return null;
 			}
