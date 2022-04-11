@@ -53,6 +53,7 @@ function searchNode(node, tags, term, path) {
 	if (matchedTags.length > 0 || matchesInName > 0 || matchedId) {
 		results.push({
 			id: node.id,
+			matchedId,
 			matchesInName,
 			name: node.name,
 			path,

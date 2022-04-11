@@ -96,6 +96,7 @@ export default {
 						.filter((r) => r.side != "income" || this.$config.modules.income)
 						.sort(function (a, b) {
 							function score(r) {
+								if (r.matchedId) return 1000;
 								return (r.matchesInName || 0) + (r.tags || []).length;
 							}
 							const sa = score(a);
