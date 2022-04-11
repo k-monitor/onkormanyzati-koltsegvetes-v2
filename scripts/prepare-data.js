@@ -231,6 +231,7 @@ function parseEconomicDescriptor(descriptor) {
 function parseFunctionalTreeDescriptor(tsv) {
 	const nodes = {};
 	tsv.split('\n').forEach(row => {
+		if (!row.trim().length) return;
 		let [id, name, parent] = row.split('\t');
 		id = Number(id);
 		parent = Number('0' + parent.replace(/\D+/g, ''));
