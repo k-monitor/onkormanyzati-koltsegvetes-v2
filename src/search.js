@@ -29,14 +29,16 @@ export default function search(year, term) {
 			const text = m.title + '|' + m.description;
 			const matchesInName = term.toLowerCase().split(' ').filter(t => t.trim().length >= 3 && text.toLowerCase().includes(t)).length;
 			const matchedTags = (m.tags || []).filter(tag => tag.includes(term.toLowerCase()));
-			results.push({
-				id: milestoneId,
-				matchesInName,
-				name: m.title || '',
-				side: 'milestones',
-				tags: matchedTags,
-				type: 'milestone',
-			});
+			if (matchedTags.length > 0 || matchesInName > 0) {
+				results.push({
+					id: milestoneId,
+					matchesInName,
+					name: m.title || '',
+					side: 'milestones',
+					tags: matchedTags,
+					type: 'milestone',
+				});
+			}
 		}
 	});
 	return results;
