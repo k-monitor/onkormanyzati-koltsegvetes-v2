@@ -48,8 +48,9 @@ function searchNode(node, tags, term, path) {
 	const nodeTags = (tags[node.id] || tags['0' + node.id] || []);
 	const matchesInName = term.toLowerCase().split(' ').filter(t => t.trim().length >= 3 && (node.name || '').toLowerCase().includes(t)).length;
 	const matchedTags = nodeTags.filter(tag => tag.includes(term.toLowerCase()));
+	const matchedId = String(node.id || '').toLowerCase() == term.toLowerCase();
 	let results = [];
-	if (matchedTags.length > 0 || matchesInName > 0) {
+	if (matchedTags.length > 0 || matchesInName > 0 || matchedId) {
 		results.push({
 			id: node.id,
 			matchesInName,
