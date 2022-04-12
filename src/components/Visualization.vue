@@ -338,6 +338,7 @@ export default {
 						}
 					}
 				});
+				self.$nextTick(() => self.autoScroll());
 			}
 		});
 	},
