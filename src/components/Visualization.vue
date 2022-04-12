@@ -333,7 +333,7 @@ export default {
 				(target.path || []).forEach((id) => {
 					for (let i = 0; i < self.children.length; i++) {
 						const node = self.children[i];
-						if (node.id == id) {
+						if (node.id == id && node.children && node.children.length > 0) {
 							self.path.push(id);
 						}
 					}
