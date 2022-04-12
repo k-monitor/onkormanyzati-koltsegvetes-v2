@@ -63,13 +63,11 @@
 						/>
 
 					</div>
-					<div
-						v-for="n in nodes"
-						:key="n.id"
-						class="d-flex"
-					>
+					<div class="d-flex flex-wrap">
 						<button
-							class="btn btn-sm btn-primary mb-2 mr-2"
+							v-for="n in nodes"
+							:key="n.id"
+							class="btn btn-sm btn-primary mb-3 mb-md-2 mr-2 col-12 col-md-auto"
 							@click="jump(n)"
 						>
 							<i class="far fa-hand-point-right mr-2"></i>
