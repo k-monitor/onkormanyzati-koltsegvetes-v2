@@ -56,7 +56,7 @@ function searchNode(node, tags, term, path) {
 			matchedId,
 			matchesInName,
 			name: node.name,
-			path,
+			path: path.concat(node.id),
 			tags: matchedTags,
 			value: node.value,
 		});
