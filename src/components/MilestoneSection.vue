@@ -33,7 +33,7 @@
 			</div>
 			<div class="row mb-5">
 				<div
-					class="col-md-6 col-lg-4 mx-auto px-0"
+					class="col-md-6 col-lg-4 mx-auto px-1"
 					:class="{ 'd-none': tag && !(m.tags || []).includes(tag) }"
 					v-for="(m, i) in filteredMilestones"
 					:key="m.id"
