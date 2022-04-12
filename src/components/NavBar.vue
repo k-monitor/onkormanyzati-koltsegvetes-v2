@@ -181,8 +181,8 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 @mixin enlargedLogo() {
-	height: 75px;
-	width: 75px;
+	height: 48px;
+	width: 48px;
 }
 
 #mainNav {
@@ -192,9 +192,9 @@ export default {
 	.navbar-brand {
 		font-family: $font-family-sans-serif;
 		font-weight: $font-weight-bold;
-		color: $gray-900;
+		color: $primary; // $gray-900;
 		img {
-			filter: invert(1);
+			// filter: invert(1);
 			position: relative;
 			transition: all 0.2s;
 			top: -2px;
@@ -221,11 +221,11 @@ export default {
 	@include media-breakpoint-up(lg) {
 		// Base styling for the navbar - screen sizes greater than the large breakpoint
 		box-shadow: none;
-		background-color: transparent;
+		// background-color: transparent;
 		.navbar-brand {
-			color: fade-out($white, 0.3);
+			color: $primary; // fade-out($white, 0.3);
 			&:hover {
-				color: $white;
+				color: $primary; // $white;
 			}
 			img {
 				filter: none;
@@ -234,10 +234,10 @@ export default {
 		.navbar-nav {
 			.nav-item {
 				.nav-link {
-					color: fade-out($white, 0.3);
+					color: $gray-900; // fade-out($white, 0.3);
 					padding: 0 1rem;
 					&:hover {
-						color: $white;
+						color: $primary; // $white;
 					}
 				}
 				&:last-child {
@@ -255,12 +255,12 @@ export default {
 			box-shadow: $box-shadow;
 			background-color: $white;
 			.navbar-brand {
-				color: $gray-900;
+				color: $primary; // $gray-900;
 				&:hover {
 					color: $primary;
 				}
 				img {
-					filter: invert(1);
+					// filter: invert(1);
 				}
 			}
 			.navbar-nav {
@@ -288,7 +288,7 @@ export default {
 	@include media-breakpoint-up(lg) {
 		.navbar-nav .nav-item.highlight {
 			.nav-link {
-				color: white !important;
+				color: $gray-900 !important; // white !important;
 				text-decoration: underline;
 			}
 		}
@@ -303,6 +303,7 @@ export default {
 				position: relative;
 
 				.nav-link {
+					color: $white !important;
 					text-decoration: none;
 				}
 
