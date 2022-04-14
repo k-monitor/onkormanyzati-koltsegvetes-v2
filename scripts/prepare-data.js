@@ -153,6 +153,11 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		maxRow.split('\t').forEach((col, i) => {
 			if (i > 2 && i < header.length) {
 				const id = header[i];
+				if (!id) return;
+				if (!nodes[id]) {
+					console.log('[KÖKÖ]', 'Budget-ben szereplő ID hiányzik a funkcionális fából:', id);
+					return;
+				}
 				nodes[id].value = Number(col.replace(/\D+/g, ''));
 			}
 		});
