@@ -151,7 +151,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 
 		// collecting total values for nodes
 		maxRow.split('\t').forEach((col, i) => {
-			if (i > 2) {
+			if (i > 2 && i < header.length) {
 				const id = header[i];
 				nodes[id].value = Number(col.replace(/\D+/g, ''));
 			}

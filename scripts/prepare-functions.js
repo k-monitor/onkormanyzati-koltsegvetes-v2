@@ -10,7 +10,9 @@ const json = xlsx.utils.sheet_to_json(workbook.Sheets['functions']);
 let tsv = '';
 if (json.length) {
 	json.forEach(row => {
-		tsv += `${row.id}\t${row.name}\t${row.parent.trim()}\n`
+		const id = Number(row.id);
+		const parent = Number(row.parent);
+		tsv += `${id}\t${row.name}\t${parent}\n`
 	});
 } else { // for older configs, use defaults
 	tsv = fs.readFileSync('./scripts/default-functions.tsv', { encoding: 'utf8' });
