@@ -192,7 +192,6 @@ export default {
 	.navbar-brand {
 		font-family: $font-family-sans-serif;
 		font-weight: $font-weight-bold;
-		color: $primary; // $gray-900;
 		img {
 			// filter: invert(1);
 			position: relative;
@@ -223,10 +222,6 @@ export default {
 		box-shadow: none;
 		// background-color: transparent;
 		.navbar-brand {
-			color: $primary; // fade-out($white, 0.3);
-			&:hover {
-				color: $primary; // $white;
-			}
 			img {
 				filter: none;
 			}
@@ -255,10 +250,6 @@ export default {
 			box-shadow: $box-shadow;
 			background-color: $white;
 			.navbar-brand {
-				color: $primary; // $gray-900;
-				&:hover {
-					color: $primary;
-				}
 				img {
 					// filter: invert(1);
 				}
