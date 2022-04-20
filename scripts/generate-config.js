@@ -7,12 +7,20 @@ require('./prepare-data'); // required for theme colors & tooltips generation
 
 const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
 
+const GENERATED_FUNCTIONS = './src/data/functions.tsv';
+const DEFAULT_FUNCTIONS = './scripts/default-functions.tsv';
+const FUNCTIONS_TO_USE = fs.existsSync(GENERATED_FUNCTIONS) ? GENERATED_FUNCTIONS : DEFAULT_FUNCTIONS;
+const FUNCTIONS_TSV = fs.readFileSync(FUNCTIONS_TO_USE, { encoding: 'utf8' });
+const FUNCTIONS_AOA = FUNCTIONS_TSV
+	.trim()
+	.split('\n')
+	.filter(line => line.length)
+	.map(line => line.trim().split('\t'));
 const OUTPUT_FILE = "input/config.xlsx";
-
-const wb = new xl.Workbook();
-
 const blue = '#00396C';
 const yellow = '#FFE7A4';
+
+const wb = new xl.Workbook();
 
 const headerStyle = wb.createStyle({
 	fill: {
@@ -24,13 +32,6 @@ const headerStyle = wb.createStyle({
 	font: {
 		bold: true,
 		color: '#FFFFFF'
-	}
-});
-
-const keyStyle = wb.createStyle({
-	font: {
-		color: '#999999',
-		italics: true
 	}
 });
 
@@ -59,9 +60,7 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 				cell.style(headerStyle);
 			} else if (inputIndex.indexOf(j) > -1) {
 				cell.style(inputStyle);
-			}/* else if (j === 0) {
-				cell.style(keyStyle);
-			}*/
+			}
 		});
 	});
 	colWidths.forEach((w, i) => {
@@ -120,6 +119,11 @@ function gatherIds(ids, node) {
 
 Object.keys(data).forEach(year => {
 	const ids = {};
+	FUNCTIONS_AOA.forEach(r => {
+		const id = r[0];
+		const name = r[1];
+		ids[id] = name;
+	});
 	Object.values(data[year]).forEach(sideObj => {
 		Object.values(sideObj).forEach(treeRoot => {
 			gatherIds(ids, treeRoot);
@@ -146,13 +150,8 @@ aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5], [10, 5, 2
 
 // functions sheet
 
-const GENERATED_FUNCTIONS = './src/data/functions.tsv';
-const DEFAULT_FUNCTIONS = './scripts/default-functions.tsv';
-const tsvName = fs.existsSync(GENERATED_FUNCTIONS) ? GENERATED_FUNCTIONS : DEFAULT_FUNCTIONS;
-const tsv = fs.readFileSync(tsvName, { encoding: 'utf8' });
 const header = ['id', 'name', 'parent'];
-const aoa = tsv.split('\n').map(line => line.trim().split('\t'));
 const functionsSheet = wb.addWorksheet('functions');
-aoaTo3colSheet(functionsSheet, [header, ...aoa], [], [20, 100, 20]);
+aoaTo3colSheet(functionsSheet, [header, ...FUNCTIONS_AOA], [], [20, 100, 20]);
 
 wb.write(OUTPUT_FILE);
