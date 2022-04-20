@@ -146,9 +146,10 @@ aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5], [10, 5, 2
 
 // functions sheet
 
-const tsv = fs.readFileSync('./scripts/default-functions.tsv', {
-	encoding: 'utf8'
-});
+const GENERATED_FUNCTIONS = './src/data/functions.tsv';
+const DEFAULT_FUNCTIONS = './scripts/default-functions.tsv';
+const tsvName = fs.existsSync(GENERATED_FUNCTIONS) ? GENERATED_FUNCTIONS : DEFAULT_FUNCTIONS;
+const tsv = fs.readFileSync(tsvName, { encoding: 'utf8' });
 const header = ['id', 'name', 'parent'];
 const aoa = tsv.split('\n').map(line => line.trim().split('\t'));
 const functionsSheet = wb.addWorksheet('functions');
