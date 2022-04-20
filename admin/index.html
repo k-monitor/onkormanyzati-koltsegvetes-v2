@@ -377,6 +377,7 @@
 					} catch {
 						alert('Nem sikerült! :C')
 					} finally {
+						ref.value = '';
 						this.loading = false
 					}
 				},
