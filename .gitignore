@@ -17,10 +17,12 @@ dist
 src/data/2*
 src/data/config.json
 src/data/data.json
+src/data/functions.tsv
 src/data/milestones.json
 src/data/tags.json
 src/data/tooltips.json
 src/data/lorem*
+src/scss/_generated.scss
 
 # Generated docs:
 README.pdf

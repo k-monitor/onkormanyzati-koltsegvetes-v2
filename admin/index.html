@@ -165,8 +165,8 @@
 									<div class="card shadow-sm">
 										<div class="ratio ratio-16x9">
 											<a class="card-img-top bg-secondary d-flex align-items-center justify-content-center thumb"
-												:style="{ backgroundImage: 'url(assets/img/' + f.name + '#' + r + ')' }"
-												:href="'assets/img/' + f.name" target="_blank">
+												:style="{ backgroundImage: `url(${logoUrl(f.name)}?${r})`, backgroundSize: logoSize(f.name) }"
+												:href="logoUrl(f.name)" target="_blank">
 											</a>
 										</div>
 										<div class="card-footer d-flex align-items-center px-1">
@@ -253,6 +253,22 @@
 				</div>
 			</div>
 		</main>
+		<div id="errorModal" class="modal" tabindex="-1">
+			<div class="modal-dialog modal-dialog-scrollable modal-xl">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">{{ errorType }}</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<pre>{{ error }}</pre>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div id="loading"
 			class="align-items-center d-flex flex-column h-100 justify-content-center position-absolute w-100"
 			v-if="loading">
@@ -281,20 +297,45 @@
 					{ name: 'pub.jpg', text: 'Kiadvány borítója', format: 'JPG, max. 500x500 (arány mindegy)' },
 					{ name: 'logo-footer.png', text: 'Város logó (lábléc)', format: 'PNG, max. 500x500' },
 					{ name: 'ogimage.jpg', text: 'Facebook bélyegkép', format: 'JPG, <a href="https://developers.facebook.com/docs/sharing/webmasters/images/" target="_blank">méretek</a>' },
+					{ name: 'favicon.png', text: 'Favicon (böngésző ikon)', format: 'PNG, max. 256x256 (négyzet!)' },
 				],
 				ms: [],
-				publicUrl: null
+				publicUrl: null,
+				error: null,
+				errorType: null,
 			},
 			methods: {
+				logoSize(logo) {
+					return logo.match(/face|favicon|logo|pub/) ? 'contain' : null /* default is cover */
+				},
+				logoUrl(logo) {
+					const path = logo === 'favicon.png' ? '/src' : '/assets/img'
+					return `${path}/${logo}`
+				},
 				async buildSite() {
+					let r, e = '', failed = false
 					try {
 						this.loading = 'Weboldal generálása...'
-						await fetch('buildSite', { method: 'POST' })
+						r = await fetch('buildSite', { method: 'POST' })
+						e += await r.text()
+						if (r.status !== 200) throw ''
+
 						this.loading = 'Weboldal publikálása...'
-						await fetch('deploySite', { method: 'POST' })
-					} catch {
-						alert('Nem sikerült! :C')
+						r = await fetch('deploySite', { method: 'POST' })
+						e += await r.text()
+						if (r.status !== 200) throw ''
+					} catch (error) {
+						// actual build/deploy failure
+						failed = true;
+						e += error
 					} finally {
+						console.error(e)
+						this.error = e;
+						this.errorType = failed ? 'Nem sikerült!' : 'Nem stimmelnek az adatok'
+						if (failed || e.includes('[KÖKÖ]')) {
+							// acutal failure OR invalid data (which is HTTP 200)
+							new bootstrap.Modal(document.getElementById('errorModal')).show()
+						}
 						this.loading = false
 					}
 				},
@@ -336,6 +377,7 @@
 					} catch {
 						alert('Nem sikerült! :C')
 					} finally {
+						ref.value = '';
 						this.loading = false
 					}
 				},
@@ -362,7 +404,7 @@
 				this.loading = false
 
 				// TODO ONLY FOR DEV:
-				document.querySelectorAll('.nav-link')[3].click()
+				// document.querySelectorAll('.nav-link')[3].click()
 			}
 		})
 	</script>

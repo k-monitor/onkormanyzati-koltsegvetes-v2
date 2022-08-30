@@ -22,6 +22,7 @@ app.use(fileUpload())
 app.use(express.static('admin'))
 app.use('/input', express.static('input'))
 app.use('/assets', express.static('static/assets'))
+app.use('/src', express.static('src'))
 
 app.post('/budget', (req, res) => {
 	fs.writeFileSync('input/budget.xlsx', req.files.budget.data)
@@ -30,22 +31,14 @@ app.post('/budget', (req, res) => {
 
 app.post('/buildSite', (req, res) => {
 	exec("npm run build", (error, stdout, stderr) => {
-		if (error) {
-			console.error('ERROR', error.message)
-			console.error(stderr)
-		}
-		res.sendStatus(error ? 500 : 200)
+		res.status(error ? 500 : 200).send(stderr);
 	})
 })
 
 app.post('/deploySite', (req, res) => {
 	if (CONFIG.DEPLOY_CMD) {
 		exec(CONFIG.DEPLOY_CMD, (error, stdout, stderr) => {
-			if (error) {
-				console.error('ERROR', error.message)
-				console.error(stderr)
-			}
-			res.sendStatus(error ? 500 : 200)
+			res.status(error ? 500 : 200).send(stderr);
 		})
 	} else {
 		res.end()
@@ -61,6 +54,7 @@ app.post('/logo', (req, res) => {
 	const logos = [
 		'cover.jpg',
 		'face.png',
+		'favicon.png',
 		'logo.png',
 		'logo-footer.png',
 		'pub.jpg',
@@ -69,7 +63,8 @@ app.post('/logo', (req, res) => {
 	for (let i = 0; i < logos.length; i++) {
 		const logo = logos[i]
 		const f = req.files[logo]
-		if (f) fs.writeFileSync('static/assets/img/' + logo, f.data)
+		const path = logo === 'favicon.png' ? 'src' : 'static/assets/img'
+		if (f) fs.writeFileSync(`${path}/${logo}`, f.data)
 	}
 	res.end()
 })

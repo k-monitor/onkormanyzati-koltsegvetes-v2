@@ -51,7 +51,7 @@
 
 		<div
 			class="d-flex border-top border-bottom vis"
-			:id="id"
+			ref="vis"
 			@mouseout="hovered=-1"
 		>
 			<div class="d-flex left-column">
@@ -91,8 +91,7 @@
 						<div class="d-flex d-sm-none">
 							<div
 								class="btn btn-link bg-light milestone-button ml-3 mr-1 px-2"
-								data-toggle="modal"
-								:data-target="'#' + milestoneId(n)"
+								@click="$eventBus.$emit('ms', milestoneId(n))"
 								v-if="$config.modules.milestones && milestoneId(n)"
 							><i class="fas fa-fw fa-camera"></i></div>
 							<div
@@ -121,7 +120,7 @@
 					></path>
 				</svg>
 			</div>
-			<div class="d-none d-sm-flex flex-column right-column text-left">
+			<div class="d-none d-sm-flex flex-column justify-content-around right-column text-left">
 				<div
 					class="label"
 					v-for="(n,i) in children"
@@ -135,8 +134,7 @@
 					<span @click="down(n, i);autoScroll()">{{ n.name }}</span>
 					<span
 						class="btn btn-link milestone-button ml-auto"
-						data-toggle="modal"
-						:data-target="'#' + milestoneId(n)"
+						@click="$eventBus.$emit('ms', milestoneId(n))"
 						v-if="$config.modules.milestones && milestoneId(n)"
 					><i class="fas fa-camera"></i></span>
 				</div>
@@ -149,7 +147,7 @@
 import tinycolor from "tinycolor2";
 
 export default {
-	props: ["defaultMode", "id", "year", "side"], // side is "expense" or "income"
+	props: ["defaultMode", "year", "side"], // side is "expense" or "income"
 	data() {
 		return {
 			curves: [],
@@ -214,7 +212,6 @@ export default {
 			this.$nextTick(function () {
 				this.updateCurves();
 			});
-
 		},
 		year: function (y) {
 			if (!this.data.func && this.mode != 0) {
@@ -228,85 +225,40 @@ export default {
 			$("html, body").animate({ scrollTop: $(this.$el).offset().top - 75 });
 		},
 		bgColor: function (node, index) {
-			var colors = [
-				"#f7981d" /* 01 Általános közszolgáltatások */,
-				"#5c628f" /* 02 Védelem */,
-				"#ee2a7b" /* 03 Közrend és közbiztonság */,
-				"#254478" /* 04 Gazdasági ügyek */,
-				"#d32027" /* 05 Környezetvédelem */,
-				"#5c9ad2" /* 06 Lakásépítés és kommunális létesítménye */,
-				"#cf7017" /* 07 Egészségügy */,
-				"#70ac45" /* 08 Szabadidő, sport, kultúra, vallás */,
-				"#4971b6" /* 09 Oktatás */,
-				"#bb208a" /* 10 Szociális védelem */,
-				"#ef538c" /* 9000 Technikai funkciókódok */,
-			];
+			const id = this.nodePath.length > 1 ? this.nodePath[1].id : node.id;
 
-			var color = colors[this.colorIndex(node)];
-
-			if (
-				node.name.includes("Finanszírozási") ||
-				(this.nodePath.length > 1 &&
-					this.nodePath[1].name.includes("Finanszírozási"))
-			) {
-				color = tinycolor("seagreen").lighten(42); // just like in Inex
-			}
-
+			const defaultColor = "#6c757d";
+			const colors = this.$config.color || {};
+			const color = tinycolor(colors[id] || defaultColor);
 			if (this.nodePath.length > 1) {
-				var opacity = node.value / this.nodePath[1].value;
-				opacity = 0.5 + opacity * 0.5;
-
-				color = tinycolor(color);
+				const opacity = 0.5 + 0.5 * (node.value / this.nodePath[1].value);
 				color.setAlpha(opacity);
-				color = color.toRgbString();
 			}
 			if (this.hovered > -1 && index != this.hovered && index > -1) {
-				color = tinycolor(color);
 				color.setAlpha(color.getAlpha() * 0.5);
-				color = color.toRgbString();
 			}
-			return color;
+			return color.toRgbString();
 		},
 		fgColor: function (node, index) {
 			var color = tinycolor(this.bgColor(node, index));
 			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
 		},
-		colorIndex: function (node) {
-			function norm(id) {
-				return (id + "").replace(/\D+/, "");
-			}
-
-			var id = node.id;
-			if (this.nodePath.length > 1) {
-				id = this.nodePath[1].id;
-			}
-
-			id = norm(id);
-			var ids = this.root.children
-				.map(function (c) {
-					return norm(c.id);
-				})
-				.sort(function (a, b) {
-					return Number(a) - Number(b);
-				});
-			return ids.indexOf(id);
-		},
-		curve(id, node, index) {
+		curve(index) {
 			try {
-				var bars = $("#" + id);
+				var bars = this.$refs.vis;
 				var barsTop = $(bars).offset().top;
 
-				var bar = $("#" + id + " .bar[data-index=" + index + "]");
+				var bar = $(`.bar[data-index=${index}]`, bars);
 				var barHeight = $(bar).outerHeight();
 				var barTop = $(bar).offset().top - barsTop;
 				var barMiddle = barTop + barHeight / 2;
 
-				var label = $("#" + id + " .label[data-index=" + index + "]");
+				var label = $(`.label[data-index=${index}]`, bars);
 				var labelHeight = $(label).outerHeight();
 				var labelTop = $(label).offset().top - barsTop;
 				var labelMiddle = labelTop + labelHeight / 2;
 
-				var svg = $("#" + id + " .curves svg");
+				var svg = $(".curves svg", bars);
 				var svgWidth = $(svg).outerWidth();
 
 				var x1 = 0;
@@ -338,14 +290,14 @@ export default {
 			}
 		},
 		updateCurves: function () {
-			var svg = $("#" + this.id + " .curves svg");
+			var svg = $(".curves svg", this.$refs.vis);
 			var svgHeight = $(svg).outerHeight();
 			var svgWidth = $(svg).outerWidth();
 			$(svg).attr("viewBox", [0, 0, svgWidth, svgHeight].join(" "));
 
 			var self = this;
 			this.curves = this.children.map(function (n, i) {
-				return self.curve(self.id, n, i);
+				return self.curve(i);
 			});
 		},
 		regenerateTooltips() {
@@ -354,7 +306,7 @@ export default {
 		milestoneId: function (node) {
 			try {
 				const mid = this.$milestones.rels[this.year][node.id];
-				return mid ? "milestone-modal-" + mid : null;
+				return mid ? mid : null;
 			} catch (e) {
 				return null;
 			}
@@ -374,17 +326,19 @@ export default {
 		});
 
 		self.$eventBus.$on("jump", (target) => {
+			console.log("ON jump", target);
 			if (target.side == self.side) {
 				self.mode = target.type == "econ" ? 0 : 1;
 				self.path = [];
 				(target.path || []).forEach((id) => {
 					for (let i = 0; i < self.children.length; i++) {
 						const node = self.children[i];
-						if (node.id == id) {
+						if (node.id == id && node.children && node.children.length > 0) {
 							self.path.push(id);
 						}
 					}
 				});
+				self.$nextTick(() => self.autoScroll());
 			}
 		});
 	},
@@ -401,6 +355,8 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 .visualization {
+	font-family: $vis-font-family;
+
 	.left-column {
 		width: 35%;
 
@@ -431,7 +387,6 @@ export default {
 	.label {
 		align-items: center;
 		display: flex;
-		flex: 1;
 		margin-bottom: 1px;
 		min-height: 64px; // iOS fix
 		padding: 0.25rem 0.25rem;

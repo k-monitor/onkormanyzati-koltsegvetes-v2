@@ -8,7 +8,13 @@
 				class="navbar-brand js-scroll-trigger"
 				href="#page-top"
 			>
-				<img class="mr-2" src="assets/img/logo.png" width="30" height="30" alt="">
+				<img
+					class="mr-2"
+					src="/assets/img/logo.png"
+					width="30"
+					height="30"
+					alt=""
+				>
 				{{ $config.city }}
 			</a>
 			<button
@@ -26,7 +32,10 @@
 				class="collapse navbar-collapse"
 				id="navbarResponsive"
 			>
-				<ul class="navbar-nav ml-auto my-2 my-lg-0">
+				<ul
+					v-if="!subpageMode"
+					class="navbar-nav ml-auto my-2 my-lg-0"
+				>
 					<li class="nav-item">
 						<a
 							href="javascript:void(0)"
@@ -51,7 +60,7 @@
 					</li>
 					<li
 						class="nav-item"
-						v-if="$config.modules.milestones"
+						v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0"
 					>
 						<a
 							href="#milestones"
@@ -81,7 +90,7 @@
 								class="dropdown-item"
 								href="javascript:void(0)"
 								v-for="y in years"
-								:class="['theme-' + Object.keys($d).sort().indexOf(y)]"
+								:class="['theme-' + $util.slugify(y)]"
 								:key="y"
 								@click="$emit('yearSelected', y)"
 							>
@@ -98,7 +107,19 @@
 							data-target="#moreInfoModal"
 						>{{ $config.navBar.moreInfo }}</a>
 					</li>
-					<li class="nav-item">
+					<li
+						v-if="$config.iframe.title && $config.iframe.url"
+						class="nav-item"
+					>
+						<a
+							:href="`/${$util.slugify($config.iframe.title).toLowerCase()}`"
+							class="nav-link"
+						>{{ $config.iframe.title }}</a>
+					</li>
+					<li
+						v-if="$config.modules.feedback"
+						class="nav-item"
+					>
 						<a
 							class="nav-link"
 							data-target="#feedbackModal"
@@ -109,6 +130,19 @@
 						</a>
 					</li>
 				</ul>
+				<ul
+					class="navbar-nav ml-auto my-2 my-lg-0"
+					v-else
+				>
+					<li class="nav-item">
+						<a
+							class="nav-link"
+							href="/"
+						>
+							Vissza a költségetésre
+						</a>
+					</li>
+				</ul>
 			</div>
 		</div>
 	</nav>
@@ -116,16 +150,16 @@
 
 <script>
 export default {
-	props: ["year", "years"],
+	props: ["subpageMode", "year", "years"],
 	mounted() {
 		// Activate scrollspy to add active class to navbar items on scroll
 		$("body").scrollspy({
 			target: "#mainNav",
-			offset: 75
+			offset: 75,
 		});
 
 		// Collapse Navbar
-		var navbarCollapse = function() {
+		var navbarCollapse = function () {
 			if ($("#mainNav").offset().top > 100) {
 				$("#mainNav").addClass("navbar-scrolled");
 			} else {
@@ -136,7 +170,7 @@ export default {
 		navbarCollapse();
 		// Collapse the navbar when page is scrolled
 		$(window).scroll(navbarCollapse);
-	}
+	},
 };
 </script>
 
@@ -147,8 +181,8 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 @mixin enlargedLogo() {
-	height: 75px;
-	width: 75px;
+	height: 48px;
+	width: 48px;
 }
 
 #mainNav {
@@ -158,11 +192,10 @@ export default {
 	.navbar-brand {
 		font-family: $font-family-sans-serif;
 		font-weight: $font-weight-bold;
-		color: $gray-900;
 		img {
-			filter: invert(1);
+			// filter: invert(1);
 			position: relative;
-			transition: all .2s;
+			transition: all 0.2s;
 			top: -2px;
 		}
 	}
@@ -187,12 +220,8 @@ export default {
 	@include media-breakpoint-up(lg) {
 		// Base styling for the navbar - screen sizes greater than the large breakpoint
 		box-shadow: none;
-		background-color: transparent;
+		// background-color: transparent;
 		.navbar-brand {
-			color: fade-out($white, 0.3);
-			&:hover {
-				color: $white;
-			}
 			img {
 				filter: none;
 			}
@@ -200,10 +229,10 @@ export default {
 		.navbar-nav {
 			.nav-item {
 				.nav-link {
-					color: fade-out($white, 0.3);
+					color: $gray-900; // fade-out($white, 0.3);
 					padding: 0 1rem;
 					&:hover {
-						color: $white;
+						color: $primary; // $white;
 					}
 				}
 				&:last-child {
@@ -221,12 +250,8 @@ export default {
 			box-shadow: $box-shadow;
 			background-color: $white;
 			.navbar-brand {
-				color: $gray-900;
-				&:hover {
-					color: $primary;
-				}
 				img {
-					filter: invert(1);
+					// filter: invert(1);
 				}
 			}
 			.navbar-nav {
@@ -254,7 +279,7 @@ export default {
 	@include media-breakpoint-up(lg) {
 		.navbar-nav .nav-item.highlight {
 			.nav-link {
-				color: white !important;
+				color: $gray-900 !important; // white !important;
 				text-decoration: underline;
 			}
 		}
@@ -269,6 +294,7 @@ export default {
 				position: relative;
 
 				.nav-link {
+					color: $white !important;
 					text-decoration: none;
 				}
 

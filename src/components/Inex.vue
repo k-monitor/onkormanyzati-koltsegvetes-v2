@@ -7,7 +7,7 @@
 						:title="$config.inex.title"
 						:year="year"
 					/>
-					<hr class="divider my-4">
+					<hr class="divider my-4" />
 				</div>
 			</div>
 			<div class="row justify-content-center mb-5">
@@ -99,7 +99,27 @@
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
-					<VueMarkdown :source="$config.inex.text" :anchorAttributes="{ target: '_blank' }" />
+					<VueMarkdown
+						:source="$config.inex.text"
+						:class="{ less: less, more: !less }"
+					/>
+					<div class="border-top">
+						<button
+							class="btn btn-sm btn-link text-decoration-none"
+							@click="less=!less"
+						>
+							<span v-if="less">
+								<i class="fas fa-chevron-down mr-2"></i>
+								Mutass többet!
+								<i class="fas fa-chevron-down ml-2"></i>
+							</span>
+							<span v-else>
+								<i class="fas fa-chevron-up mr-2"></i>
+								Mutass kevesebbet!
+								<i class="fas fa-chevron-up ml-2"></i>
+							</span>
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -112,40 +132,21 @@ import tinycolor from "tinycolor2";
 export default {
 	props: ["year"],
 	data() {
-		return {};
+		return {
+			less: true,
+		};
 	},
 	computed: {
 		data() {
 			return this.$d[this.year];
 		},
 		expenseChildren: function () {
-			const customOrder = [
-				"K1",
-				"K2",
-				"K3",
-				"K4",
-				"K5",
-				"FH1",
-				"FH2",
-				"K6",
-				"K7",
-				"K8",
-			];
-			return this.expenseTree.children
-				.sort(function (a, b) {
-					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
-				})
-				.filter(function (n) {
-					return n.name.indexOf("Finanszírozási") == -1;
-				})
-				.map(function (n) {
-					const i = parseInt(n.id[1]);
-					n.mukodesi = i <= 5;
-					return n;
-				})
-				.filter(function (n) {
-					return Math.abs(n.value) > 0;
-				});
+			return this.$config.inex.expenseNodes
+				.split(",")
+				.map(
+					(id) => this.expenseTree.children.filter((n) => n.id === id.trim())[0]
+				)
+				.filter((n) => n && n.id && n.value && Math.abs(n.value) > 0);
 		},
 		expenseSum: function () {
 			return this.expenseChildren
@@ -160,32 +161,12 @@ export default {
 			return this.data.expense.econ;
 		},
 		incomeChildren: function () {
-			const customOrder = [
-				"B1",
-				"B2",
-				"B3",
-				"B4",
-				"FT1",
-				"FT2",
-				"B5",
-				"B6",
-				"B7",
-			];
-			return this.incomeTree.children
-				.sort(function (a, b) {
-					return customOrder.indexOf(a.id) - customOrder.indexOf(b.id);
-				})
-				.filter(function (n) {
-					return n.name.indexOf("Finanszírozási") == -1 || n.id.startsWith('F');
-				})
-				.map(function (n) {
-					const i = parseInt(n.id[1]);
-					n.mukodesi = [1, 2, 3, 4].indexOf(i) > -1;
-					return n;
-				})
-				.filter(function (n) {
-					return n.value > 0;
-				});
+			return this.$config.inex.incomeNodes
+				.split(",")
+				.map(
+					(id) => this.incomeTree.children.filter((n) => n.id === id.trim())[0]
+				)
+				.filter((n) => n && n.id && n.value && n.value > 0);
 		},
 		incomeSum: function () {
 			return this.incomeChildren
@@ -202,7 +183,8 @@ export default {
 	},
 	methods: {
 		bgColor: function (node, isIncome) {
-			return tinycolor(isIncome ? 'seagreen' : 'firebrick').desaturate(30).brighten(45);
+			const defaultColor = isIncome ? "#bde2cd" : "#ffb5b5";
+			return this.$config.inex[node.id] || defaultColor;
 		},
 		fgColor: function (node, isIncome) {
 			var color = tinycolor(this.bgColor(node, isIncome));
@@ -292,5 +274,24 @@ export default {
 			}
 		}
 	}
+}
+
+.less {
+	max-height: 110px;
+	overflow-y: hidden;
+	position: relative;
+}
+.less::after {
+	box-shadow: inset 0px -40px 30px -30px $light;
+	content: "";
+	display: block;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: absolute;
+}
+.more + div {
+	border-top-color: transparent !important;
 }
 </style>

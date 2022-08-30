@@ -151,8 +151,13 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 
 		// collecting total values for nodes
 		maxRow.split('\t').forEach((col, i) => {
-			if (i > 2) {
+			if (i > 2 && i < header.length) {
 				const id = header[i];
+				if (!id) return;
+				if (!nodes[id]) {
+					console.log('[KÖKÖ]', 'Budget-ben szereplő ID hiányzik a funkcionális fából:', id);
+					return;
+				}
 				nodes[id].value = Number(col.replace(/\D+/g, ''));
 			}
 		});
@@ -231,6 +236,7 @@ function parseEconomicDescriptor(descriptor) {
 function parseFunctionalTreeDescriptor(tsv) {
 	const nodes = {};
 	tsv.split('\n').forEach(row => {
+		if (!row.trim().length) return;
 		let [id, name, parent] = row.split('\t');
 		id = Number(id);
 		parent = Number('0' + parent.replace(/\D+/g, ''));

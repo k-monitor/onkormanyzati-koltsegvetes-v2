@@ -7,10 +7,12 @@
 	$link-color: $primary;
 	$link-hover-color: darken($link-color, 15%);
 	color: $link-color;
+
 	@include hover {
 		color: $link-hover-color;
 	}
 }
+
 @mixin generateTheme($primary, $year) {
 
 	.theme-#{$year} a:not(.btn):not(.dropdown-item):not(.active),
@@ -21,7 +23,7 @@
 
 	.theme-#{$year} {
 		.bg-primary {
-			background-color: $primary !important;
+			background-color: $primary  !important;
 		}
 
 		.btn-primary {
@@ -33,6 +35,7 @@
 		}
 
 		.dropdown-item {
+
 			&.active,
 			&:active {
 				@include gradient-bg($primary);
@@ -44,13 +47,19 @@
 		}
 
 		#mainNav {
+			.navbar-brand {
+				color: $primary;
+			}
+
 			.navbar-nav .nav-item .nav-link {
+
 				&:hover,
 				&:active {
 					color: $primary;
 				}
+
 				&.active {
-					color: $primary !important;
+					color: $primary  !important;
 				}
 			}
 
@@ -59,6 +68,7 @@
 					.navbar-brand:hover {
 						color: $primary;
 					}
+
 					.navbar-nav .nav-item .nav-link:hover {
 						color: $primary;
 					}
@@ -69,6 +79,7 @@
 				&.navbar-scrolled {
 					.navbar-nav .nav-item.highlight {
 						background-color: $primary;
+
 						&:hover {
 							background-color: darken($primary, 10%);
 						}
@@ -78,32 +89,31 @@
 		}
 
 		.nav-pills {
+
 			.nav-link.active,
-			.show > .nav-link {
+			.show>.nav-link {
 				background-color: $primary;
 			}
 		}
 
 		header.masthead {
-			background: linear-gradient(
-					to bottom,
-					#{fade-out(darken($primary, 33%), 0.7)} 0%,
-					#{fade-out(darken($primary, 33%), 0.7)} 100%
-				),
-				url($masthead-img);
+			background: linear-gradient(to bottom,
+				#{fade-out(darken($primary, 33%), 0.2)} 0%,
+				#{fade-out(darken($primary, 33%), 0.2)} 100%),
+			url($masthead-img);
 			background-position: center bottom;
 			background-repeat: no-repeat;
 			background-attachment: scroll;
 			background-size: cover;
 		}
 
-		@if $overlay-on-milestone-card-picture == true {
+		@if $overlay-on-milestone-card-picture==true {
 			.milestone-modal-picture::after {
 				background: fade-out(darken($primary, 1%), 0.2);
 			}
 		}
 
-		@if $overlay-on-milestone-thumbnail == true {
+		@if $overlay-on-milestone-thumbnail==true {
 			.milestone .milestone-picture::after {
 				background: fade-out(darken($primary, 1%), 0.2);
 			}
@@ -111,7 +121,7 @@
 	}
 }
 
-@each $primary in $year-colors {
-	$year: index($year-colors, $primary) - 1;
+@each $year,
+$primary in $year-colors {
 	@include generateTheme($primary, $year);
 }

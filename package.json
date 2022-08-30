@@ -15,6 +15,7 @@
     "prepare": "node scripts/prepare"
   },
   "dependencies": {
+    "@gridsome/plugin-google-analytics": "^0.1.2",
     "babel-runtime": "^6.26.0",
     "bootstrap": "^4.5.0",
     "dotenv": "^10.0.0",
@@ -22,6 +23,8 @@
     "express-basic-auth": "^1.2.0",
     "express-fileupload": "^1.2.1",
     "gridsome": "^0.7.0",
+    "gridsome-plugin-gtm": "^0.1.1",
+    "slugify": "^1.6.3",
     "tinycolor2": "^1.4.1",
     "vue-markdown": "^2.2.4"
   },

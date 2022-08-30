@@ -1,22 +1,34 @@
+@import "generated";
+
 // Definitions
+
+@function prependOverride($custom, $default) {
+	@if $custom  !=null {
+		@return $custom,
+		$default;
+	}
+
+	@return $default;
+}
 
 // Bootstrap overrides
 
-$font-family-sans-serif: "Roboto Condensed", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", 'Noto Color Emoji' !default;
-$font-family-base: $font-family-sans-serif !default;
-$headings-font-family: $font-family-sans-serif !default;
+$font-family-sans-serif: "Roboto Condensed";
+$font-family-base: null !default;
+$font-family-base: prependOverride($font-family-base, $font-family-sans-serif);
+$headings-font-family: null !default;
+$headings-font-family: prependOverride($headings-font-family, $font-family-base);
 
-$primary: royalblue; // default year theme color
-$danger: firebrick;
-$success: seagreen;
+$danger: firebrick !default;
+$success: seagreen !default;
 
 // Custom variables
 
 $masthead-img: '/assets/img/cover.jpg';
 $navbar-height: 72px;
-$year-colors: // themes
-  #1078b7,
-  brown
-;
 $overlay-on-milestone-card-picture: true;
 $overlay-on-milestone-thumbnail: true;
+$vis-font-family: null !default;
+$vis-font-family: prependOverride($vis-font-family, $font-family-base);
+$year-colors: (
+	) !default;

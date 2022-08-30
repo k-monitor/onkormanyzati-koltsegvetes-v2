@@ -10,10 +10,16 @@
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
-						<VueMarkdown :source="$config.welcome.leftBlock" :anchorAttributes="{ target: '_blank' }" />
+						<VueMarkdown
+							:source="$config.welcome.leftBlock"
+							:anchorAttributes="{ target: '_blank' }"
+						/>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
-						<VueMarkdown :source="$config.welcome.rightBlock" :anchorAttributes="{ target: '_blank' }" />
+						<VueMarkdown
+							:source="$config.welcome.rightBlock"
+							:anchorAttributes="{ target: '_blank' }"
+						/>
 						<p class="my-5">{{ $config.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
@@ -37,7 +43,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="row justify-content-center mb-5">
+				<div class="row justify-content-center">
 					<div class="col-lg-8 text-center">
 						<div
 							class="btn btn-outline-light btn-xl js-scroll-trigger"
@@ -53,14 +59,26 @@
 <script>
 import config from "~/data/config.json";
 
+function scrollTo(targetElement) {
+	$("html, body").animate(
+		{
+			scrollTop: $(targetElement).offset().top - 160,
+		},
+		1000,
+		"easeInOutExpo"
+	);
+}
+
 export default {
 	props: ["year"],
 	methods: {
 		intro() {
+			const self = this;
 			$("#mainNav").css("position", "absolute");
 			$(".milestone-button").addClass("disabled");
 			const intro = introJs()
 				.setOption("doneLabel", "Kilépés")
+				.setOption("hideNext", true)
 				.setOption("nextLabel", "Tovább")
 				.setOption("prevLabel", "Vissza")
 				.setOption("scrollToElement", false)
@@ -70,16 +88,39 @@ export default {
 				.setOption("skipLabel", "Kilépés")
 				.setOption("tooltipPosition", "left")
 				.onbeforechange(function (targetElement) {
-					if (targetElement.className.includes("fa-search")) {
+					const step = this._introItems[this._currentStep];
+					if (step.milestoneButtonStep) {
+						self.$eventBus.$emit("jump", { side: "expense", type: "econ" });
+						self.$eventBus.$emit("jump", { side: "income", type: "econ" });
+						self.$nextTick(() => {
+							targetElement = $(".milestone-button:visible")[0];
+							targetElement.classList.add("disabled", "introjs-showElement");
+							step.element = targetElement;
+							step.position = "left";
+							intro.refresh();
+							scrollTo(targetElement);
+						});
+						return;
+					} else if (step.path && step.side && step.targetNode) {
+						const { path, side, targetNode } = step;
+						self.$eventBus.$emit("jump", {
+							side,
+							type: "econ",
+							path: path.split(";"),
+						});
+						self.$nextTick(() => {
+							targetElement = $(`.bar[data-id=${targetNode}]`)[0];
+							targetElement.classList.add("introjs-showElement");
+							step.element = targetElement;
+							step.position = "right";
+							intro.refresh();
+							scrollTo(targetElement);
+						});
+						return;
+					} else if (targetElement.className.includes("fa-search")) {
 						$("#navbarResponsive").addClass("show");
 					}
-					$("html, body").animate(
-						{
-							scrollTop: $(targetElement).offset().top - 160,
-						},
-						1000,
-						"easeInOutExpo"
-					);
+					scrollTo(targetElement);
 				})
 				.onexit(function () {
 					$("#navbarResponsive").removeClass("show");
@@ -88,6 +129,7 @@ export default {
 				});
 
 			const steps = [];
+
 			if (config.modules.inex) {
 				steps.push({
 					element: "#inex-wrapper",
@@ -119,13 +161,11 @@ export default {
 				position: "right",
 			});
 
-			const mb = $(".milestone-button");
-			if (config.modules.milestones && mb.length > 0) {
+			if (config.modules.milestones) {
 				steps.push({
-					element: ".milestone-button",
+					milestoneButtonStep: true, // see onbeforechange above
 					intro:
 						"Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.",
-					position: "left",
 				});
 			}
 
@@ -136,6 +176,30 @@ export default {
 				position: "bottom",
 			});
 
+			Object.keys(self.$config.tutorial).forEach((targetNode) => {
+				const text = self.$config.tutorial[targetNode] || "";
+				if (text.trim().length === 0) return;
+				const side = targetNode[0] === "B" ? "income" : "expense";
+				let root = self.$d[self.year][side].econ;
+				const path = [];
+				for (let i = 1; i < targetNode.length - 1; i++) {
+					const needle = targetNode.substring(0, i + 1);
+					const n = (root.children || []).filter((n) => n.id === needle)[0];
+					if (n) {
+						path.push(n.id);
+						root = n;
+					}
+				}
+				if ((root.children || []).filter((n) => n.id === targetNode).length) {
+					steps.push({
+						path: path.join(";"), // introJs converts array to object, so I trick him by passing string...
+						side,
+						targetNode,
+						intro: text,
+					});
+				}
+			});
+
 			steps.push({
 				element: "#mainNav .fa-search",
 				intro:
@@ -143,12 +207,14 @@ export default {
 				position: "bottom",
 			});
 
-			steps.push({
-				element: "#mainNav .dropdown",
-				intro:
-					"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
-				position: "bottom",
-			});
+			if (Object.keys(this.$d).length > 1) {
+				steps.push({
+					element: "#mainNav .dropdown",
+					intro:
+						"Az évváltó gombbal pedig a különböző évek költségvetései között válthat.",
+					position: "bottom",
+				});
+			}
 
 			if (config.modules.milestones) {
 				steps.push({
