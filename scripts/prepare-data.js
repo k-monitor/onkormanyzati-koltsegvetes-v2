@@ -67,7 +67,7 @@ function generateEconomicTree(matrixTsv) {
 		.forEach((row, i) => {
 			let [_, descriptor, value] = row.split('\t'); // we need only the 2nd and 3rd column
 			let { id, name } = parseEconomicDescriptor(descriptor);
-			value = Number(value.replace(/[^0-9\-]+/g, ''));
+			value = Number((value || '').replace(/[^0-9\-]+/g, ''));
 			if (id && id.indexOf('-') == -1) {
 				if (name.startsWith("ebből:") || nodes[id]) {
 					id = `${id}:${i}`;
