@@ -28,7 +28,7 @@ function printInvalidNode(node, childrensSum) {
 	const diff = childrensSum - node.value;
 	const plus = diff > 0 ? '+' : '';
 	print('Gyerek node-ok összege:');
-	print(`\t${''.padEnd(10)}  ${groupNums(childrensSum).padStart(20)} (${plus}${groupNums(diff)})`);
+	print(`\t${''.padEnd(10)}  ${groupNums(childrensSum).padStart(25)} (${plus}${groupNums(diff)})`);
 
 	print('Gyerek node-ok tételesen:');
 	node.children.forEach(n => printNode(n));
@@ -36,7 +36,7 @@ function printInvalidNode(node, childrensSum) {
 }
 
 function printNode(node) {
-	print(`\t${(node.id || '').padEnd(10)}  ${groupNums(node.value).padStart(20)}  ${node.name}`);
+	print(`\t${(node.id || '').padEnd(10)}  ${groupNums(node.value).padStart(25)}  ${node.name}`);
 }
 
 function print(...message) {
