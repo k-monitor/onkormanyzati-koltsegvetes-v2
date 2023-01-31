@@ -136,7 +136,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv);
 
 	const rows = matrixTsv.split('\n');
-	const header = rows[1].trim().split('\t').map(col => Number(col.split(' ')[0]));
+	const header = rows[1].split('\t').map(col => Number(col.trim().split(' ')[0]));
 	if (header.length > 3) {
 
 		// finding the total row
