@@ -54,7 +54,7 @@
 								data-toggle="tooltip"
 								data-placement="left"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[year][n.id] || '')"
+								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + (tooltips[n.id] || '')"
 								oncontextmenu="return false;"
 							>
 								<div class="text-left">
@@ -81,7 +81,7 @@
 								data-toggle="tooltip"
 								data-placement="right"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + ($tooltips[year][n.id] || '')"
+								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + (tooltips[n.id] || '')"
 								oncontextmenu="return false;"
 							>
 								<div class="value mr-2 no-wrap text-left">
@@ -179,6 +179,9 @@ export default {
 		},
 		incomeTree: function () {
 			return this.data.income.econ;
+		},
+		tooltips() {
+			return this.$tooltips[this.year] || {};
 		},
 	},
 	methods: {

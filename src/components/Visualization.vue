@@ -75,7 +75,7 @@
 						@mouseover="hovered=i"
 						data-toggle="tooltip"
 						data-placement="left"
-						:title="$tooltips[year][n.id]"
+						:title="tooltips[n.id]"
 						oncontextmenu="return false;"
 					>
 						<div class="text-right w-100">
@@ -97,7 +97,7 @@
 							<div
 								class="btn btn-link ml-3 mr-1 px-2"
 								:style="{ color: fgColor(n,i) }"
-								v-else-if="$tooltips[year][n.id]"
+								v-else-if="tooltips[n.id]"
 							>
 								<sub class="fas fa-fw fa-info"></sub>
 							</div>
@@ -201,6 +201,9 @@ export default {
 					children: [],
 				}
 			);
+		},
+		tooltips() {
+			return this.$tooltips[this.year] || {};
 		},
 		type: function () {
 			return this.mode % 2 == 0 ? "econ" : "func";
