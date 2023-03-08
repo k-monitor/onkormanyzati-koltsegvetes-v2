@@ -202,11 +202,11 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		}
 		cleanUp(root);
 
-		return root;
-	} else {
-		console.log('No functional data found.');
-		return null;
+		if (root.value > 0) return root;
 	}
+
+	console.log('No functional data found.');
+	return null;
 }
 
 /**
