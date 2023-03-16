@@ -1,4 +1,5 @@
 import VueMarkdown from 'vue-markdown'
+import slugify from 'slugify';
 
 import DefaultLayout from '~/layouts/Default';
 import SectionHeading from '~/components/SectionHeading';
@@ -18,6 +19,7 @@ import Footer from '~/components/Footer';
 import Social from '~/components/Social';
 import FeedbackModal from '~/components/FeedbackModal';
 import MoreInfoModal from '~/components/MoreInfoModal';
+import PublicationSection from '~/components/PublicationSection';
 
 import config from '~/data/config.json';
 import data from '~/data/data.json';
@@ -46,6 +48,7 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.component('Social', Social);
 	Vue.component('FeedbackModal', FeedbackModal);
 	Vue.component('MoreInfoModal', MoreInfoModal);
+	Vue.component('PublicationSection', PublicationSection);
 
 	Vue.prototype.$config = config;
 	Vue.prototype.$d = data;
@@ -54,20 +57,22 @@ export default function (Vue, { router, head, isClient }) {
 	Vue.prototype.$tags = tags;
 	Vue.prototype.$tooltips = tooltips;
 	Vue.prototype.$util = {
-		groupNums(v, ns) {
-			var s = ['', 'e', 'M', 'Mrd'];
+		groupNums(v, ns, suffixes) {
+			suffixes = suffixes || ['', 'e', 'M', 'Mrd'];
 			var i = 0;
 			v = Number(v);
 			var neg = v < 0;
 			v = Math.abs(v);
-			while (ns && i < s.length && v > 1000) {
+			while (ns && i < suffixes.length - 1 && v > 1000) {
 				v /= 1000;
 				i++;
 			}
 			v = Math.round(v * 10) / 10;
-			var vs = (v + '').replace(/\d(?=(?:\d{3})+(?:\.|$))/g, function ($0, i) { return $0 + ' ' });
-			return (neg ? '-' : '') + (vs + ' ' + s[i] + ' Ft').trim();
-		}
+			if (ns) v = v.toFixed(1)
+			var vs = (v + '').replace(/\./g, ',').replace(/\d(?=(?:\d{3})+(?:,|$))/g, function ($0, i) { return $0 + ' ' });
+			return (neg ? '-' : '') + (vs + ' ' + suffixes[i] + ' Ft').trim();
+		},
+		slugify,
 	};
 
 	// disabling modules if there's no data

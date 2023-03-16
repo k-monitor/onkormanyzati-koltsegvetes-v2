@@ -12,6 +12,7 @@ workbook.SheetNames.filter(name => name.startsWith('tooltips ')).forEach(tooltip
 	const p = tooltipSheetName.split(' ');
 	p.shift();
 	const year = p.join(' ');
+	output[year] = output[year] || {};
 
 	const tsv = xlsx.utils.sheet_to_csv(workbook.Sheets[tooltipSheetName], { FS: '\t' });
 
@@ -20,7 +21,6 @@ workbook.SheetNames.filter(name => name.startsWith('tooltips ')).forEach(tooltip
 		let [id, _, tooltip] = row.split('\t');
 		if (tooltip === '#N/A') tooltip = false;
 		if (id && tooltip) {
-			output[year] = output[year] || {};
 			output[year][id] = tooltip.trim();
 		}
 	});
