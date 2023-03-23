@@ -8,7 +8,7 @@
 				<div class="col-12 col-md-6">
 					<figure class="figure">
 						<img
-							src="assets/img/cover.jpg"
+							src="assets/img/pub.jpg"
 							class="figure-img img-fluid rounded shadow"
 						>
 					</figure>
