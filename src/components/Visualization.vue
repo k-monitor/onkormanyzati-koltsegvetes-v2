@@ -226,6 +226,7 @@ export default {
 	},
 	methods: {
 		autoScroll: function () {
+			document.querySelector('.tooltip')?.remove();
 			$("html, body").animate({ scrollTop: $(this.$el).offset().top - 75 });
 		},
 		bgColor: function (node, index) {
