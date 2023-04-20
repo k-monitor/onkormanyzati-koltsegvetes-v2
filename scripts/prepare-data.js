@@ -97,7 +97,7 @@ function generateEconomicTree(matrixTsv) {
 		const id = sortedIds[i];
 		if (id.length == 2 || id.startsWith('F') || id.startsWith('I')) continue; // root nodes, incl. FHx, FTx, IBx, IKx
 		let j = i - 1;
-		for (; sortedIds[j].length >= id.length; j--);
+		for (; j >= 0 && sortedIds[j].length >= id.length; j--);
 		if (j > -1) { // found parent
 			const parentId = sortedIds[j];
 			nodes[parentId].children = nodes[parentId].children || [];
