@@ -176,7 +176,7 @@ export default {
 				position: "bottom",
 			});
 
-			Object.keys(self.$config.tutorial).forEach((targetNode) => {
+			Object.keys(self.$config.tutorial || {}).forEach((targetNode) => {
 				const text = self.$config.tutorial[targetNode] || '';
 				if (text.trim().length === 0) return;
 				const side = targetNode[0] === "B" ? "income" : "expense";
