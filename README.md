@@ -49,7 +49,7 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 - **input/tags.xlsx** - A kereső által használt címkehalmazok.
 - **src/data/config.js** - A weboldal beállításai, szövegei.
 - **src/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
-- **src/data/functions.tsv** - A funkcionális kategóriák fa struktúrája.
+- **src/data/functions.tsv (generált)** - A funkcionális kategóriák fa struktúrája.
 - **src/data/milestones.json (generált)** - A fejlesztések leírásai, előkészítve.
 - **src/data/tags.json (generált)** - A kereső által használt címkehalmazok, előkészítve.
 - **src/data/tooltips.json (generált)** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei, előkészítve.
@@ -137,20 +137,37 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
 
 #### A "milestones" munkalap formátuma:
 
-- az 1. sor a fejléc, melynek oszlopai kötelezően:
+- az 1. sor a fejléc, melynek oszlopai kötelezően (a sorrend mindegy):
 	- "nodeId"
 	- "year"
 	- "imageFile"
 	- "videoFile"
 	- "title"
 	- "descriptionInMarkdown"
+	- "tags"
 - a 2. sortól kezdve a fejlesztések adatai:
-	- 1\. oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító)
-	- 2\. oszlop: azon év, amelyhez a fejlesztés tartozik
-	- 3\. oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
-	- 4\. oszlop: a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
-	- 5\. oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
-	- 6\. oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
+	- "nodeId" oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító). Több azonosító is megadható, vesszővel elválasztva. Opcionális.
+	- "year" oszlop: azon év, amelyhez a fejlesztés tartozik
+	- "imageFile" oszlop: a fejlesztéshez tartozó képfájl elérési útvonala vagy URL-je (linkje)
+	- "videoFile" oszlop: a fejlesztséhez tartozó videó (opcionális), ami egy MP4 fájlra kell mutasson
+	- "title" oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
+	- "descriptionInMarkdown" oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
+	- "tags" oszlop: a fejlesztés címkéi, vesszővel elválasztva
+
+
+
+#### A "functions munkalap formátuma:
+
+A funkcionális kategóriák fa struktúráját írja le.
+
+- az 1. sor a fejléc, melynek oszlopai kötelezően (a sorrend mindegy):
+	- "id"
+	- "name"
+	- "parent"
+- a 2. sortól kezdve a funkcionális kategóriák definíciói
+	- "id" oszlop: a kategória azonosítója, egész szám
+	- "name" oszlop: a kategória megnevezése
+	- "parent" oszlop: a szülő kategória azonosítója, egész szám. Ha nem létező definiált kategóriára mutat, akkor az aktuális kategória a gyökérbe kerül.
 
 
 
@@ -174,20 +191,9 @@ Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell mega
 
 
 
-### src/data/functions.tsv
+### src/data/functions.tsv (generált)
 
-A funkcionális kategóriák fa struktúráját írja le.
-
-Formátuma TSV, oszlopai: kategória azonosító, címke, szülő kategória azonosító.
-
-Ha az utóbbi oszlopba olyan érték kerül, amihez nem tartozik sor, akkor az adott kategória a gyökérben lesz látható.
-
-```tsv
-107054	Családsegítés	1070
-107014	Támogatott lakhatás hajléktalan személyek részére	1070
-900070	Fejezeti és általános tartalékok elszámolása	9000
-...
-```
+Tartalma a config.xlsx "functions" munkalappal ekvivalens, fejléc sor nélkül.
 
 
 
@@ -317,10 +323,7 @@ Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog
 
 Az oldalon megjelenő szövegeket és a SEO beállításokat (amik nem a `data.json`-ból jönnek) az `input/config.xlsx` fájlban lehet szerkeszteni, mely tartalmazza az egyes mezők magyarázatait is.
 
-A fejléc képet az `src/scss/_variables.scss` fájlban lehet módosítani (ajánlott a `config.xlsx`-ben az `seo.ogImage`-et is erre a képre állítani). A képfájlt az `src/`-n belül kell elhelyezni, NEM a `static/` mappában. Itt lehet módosítani a színeket is.
-
-A lábléc logói, valamint a fejlesztések képei és videói a `static/assets/` mappában találhatóak.
-
+A képeket (favicon, logók, fejlesztések képei, stb.) az admin felület segítségével lehet egyszerűen cserélni. Az admin felületet az `npm run admin` paranccsal lehet indítani és alapértelmezésként a http://localhost:8081/ címen lesz elérhető, "admin" felhasználónévvel és "admin" jelszóval.
 
 
 ## Keresési napló
@@ -330,3 +333,63 @@ Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a ta
 - előfordulások száma (hányszor szerepelt az alábbi keresőkifejezés az alábbi találatszámmal)
 - keresőkifejezés
 - találatok száma
+
+
+## Admin felület beüzemelése
+
+Magának a költségvetés site-nak a beüzemelése ezekből a fázisokból áll (ez van fentebb részletesebben):
+
+1. A forráskódban cserélni/módosítani kell az Excel és képfájlokat.
+2. Le kell generálni a site-ot a forráskódból (`npm run build`).
+3. Ezután a `dist` mappában egy statikus weboldal fájljai lesznek, ezt lehet egy webszerverrel (pl. Apache, Nginx) hosztolni.
+
+Az admin modul eme 3 lépés megkönnyítésére szolgál. Ez egy webalkalmazás, ami a forráskód mappájában fut, így le tudja cserélni a fájlokat, és meg tudja hívni az `npm run build` parancsot. Mindezen műveletekhez pedig egy webes felületet biztosít.
+
+Admin beüzemelés lépései részletesen:
+
+1. Telepíts Node.js-t és Yarn-t, ezek adják az alapvető környezetet a projekthez.
+2. A projekt mappájában futtasd le a `yarn install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
+3. Készíts másolatot az `.env.example` fájlról `.env` néven.
+4. Szerkeszd az `.env` fájlt, hogy beállítsd az admin felületet:
+	- `ADMIN_PORT=8081` - a port száma, amin a webes felület elérhető lesz
+	- `ADMIN_USER=admin` - ezzel a felhasználónévvel lehet majd elérni az admin felületet
+	- `ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
+	- `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
+	- `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
+5. Az admin felület az `npm run admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
+
+Ahhoz, hogy az admin felület publikusan is elérhető legyen, az alábbiakra van szükség:
+
+1. Állíts be egy domain nevet (pl. admin.pelda.koltsegvetes.hu) úgy, hogy arra a szerverre mutasson, ahol az admin fut.
+2. Telepíts és indíts el egy webszervert (pl. Apache vagy Nginx) ugyanazon a gépen.
+3. Állítsd be a webszervert úgy, hogy kiszolgálja az 1. pontban beállított domain nevet, és proxy-zza a kéréseket az admin felület portjára.
+
+Apache példa konfig:
+
+```
+<VirtualHost *:80>
+        ServerAdmin elek@teszt.hu
+        ServerName admin.pelda.koltsegvetes.hu
+        ProxyPass / http://localhost:8081/
+        ProxyPassReverse / http://localhost:8081/
+</VirtualHost>
+```
+
+Nginx példa konfig:
+
+```
+server {
+    listen          80;
+    server_name     admin.pelda.koltsegvetes.hu;
+    location / {
+        proxy_redirect                      off;
+        proxy_set_header Host               $host;
+        proxy_set_header X-Real-IP          $remote_addr;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+        proxy_read_timeout          1m;
+        proxy_connect_timeout       1m;
+        proxy_pass                          http://127.0.0.1:8081;
+    }
+}
+```

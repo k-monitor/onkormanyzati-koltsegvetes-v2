@@ -3,41 +3,42 @@
 		<div class="container">
 			<div class="row mb-4">
 				<div
-					class="col-12 col-lg-6 col-xl-7 d-flex"
+					class="col-12 col-lg-6 col-xl-7 px-0"
 					id="city-logo"
 				>
-					<div class="mr-5">
-						<a href="https://kecsup.hu/">
-							<img
-								src="assets/img/logo-150.png"
-								alt=""
-							>
-						</a>
-					</div>
-					<div class="ml-4 mt-3">
-						<p class="lead">
+					<div class="mx-0 row w-100">
+						<div class="col-12 col-sm-4 mb-5 mb-sm-0">
 							<a
-								href="https://kecsup.hu/"
+								class="js-scroll-trigger"
+								:href="$config.footer.url"
 								target="_blank"
 							>
+								<img
+									src="/assets/img/logo-footer.png"
+									alt=""
+								>
+							</a>
+						</div>
+						<div class="col-12 col-sm-8 mt-3" id="contacts">
+							<p v-if="$config.footer.url" class="lead">
 								<i class="fas fa-fw fa-globe-europe mr-2"></i>
-								<span class="d-none d-sm-inline">kecsup.hu</span>
-							</a>
-						</p>
-						<p class="lead"><a
-								href="https://www.facebook.com/kecsuphirek"
-								target="_blank"
-							>
+								<a
+									:href="$config.footer.url"
+									target="_blank"
+								>{{ $config.footer.url.replace(/^.*?\/\/|\/.*$|www\./g, '') }}</a>
+							</p>
+							<p v-if="$config.footer.fb" class="lead">
 								<i class="fab fa-fw fa-facebook mr-2"></i>
-								<span class="d-none d-sm-inline">facebook.com/kecsuphirek</span>
-							</a>
-						</p>
-						<p class="lead">
-							<a href="mailto:szerkesztoseg@kecsup.hu">
+								<a
+									:href="`https://www.facebook.com/${$config.footer.fb}/`"
+									target="_blank"
+								>@{{ $config.footer.fb }}</a>
+							</p>
+							<p v-if="$config.footer.email" class="lead">
 								<i class="fas fa-fw fa-envelope mr-2"></i>
-								<span class="d-none d-sm-inline">szerkesztoseg@kecsup.hu</span>
-							</a>
-						</p>
+								<a :href="`mailto:${$config.footer.email}`">{{ $config.footer.email }}</a>
+							</p>
+						</div>
 					</div>
 				</div>
 				<div class="col mt-5 mt-lg-0">
@@ -46,17 +47,19 @@
 						id="logos"
 					>
 						<a
+							class="mr-3"
 							href="https://k-monitor.hu/"
 							target="_blank"
 						><img
-								src="assets/img/k-monitor-logo.png"
+								src="/assets/img/k-monitor-logo.png"
 								alt=""
 							></a>
 						<a
+							class="mr-3"
 							href="https://www.deepdata.hu/"
 							target="_blank"
 						><img
-								src="assets/img/deepdata-logo.png"
+								src="/assets/img/deepdata-logo.png"
 								alt=""
 							></a>
 					</div>
@@ -90,6 +93,16 @@
 </template>
 
 <style lang="scss">
+#contacts a,
+#license a {
+	//color: white !important;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
 #logos a {
 	opacity: 0.75;
 	&:hover {
@@ -99,6 +112,7 @@
 
 #city-logo img {
 	max-height: 150px;
+	max-width: 150px;
 }
 
 #logos img {

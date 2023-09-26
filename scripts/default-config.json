@@ -25,6 +25,21 @@
 		"Fejlesztések szakasz megjelenítése? (1 = Igen, 0 = Nem)"
 	],
 	[
+		"modules.pub",
+		1,
+		"Kiadványos szakasz megjelenítése? (1 = Igen, 0 = Nem)"
+	],
+	[
+		"modules.feedback",
+		1,
+		"Visszajelzés szakasz/gomb megjelenítése? (1 = Igen, 0 = Nem)"
+	],
+	[
+		"modules.social",
+		1,
+		"Legyenek megosztás gombok? (1 = Igen, 0 = Nem)"
+	],
+	[
 		"defaultYear",
 		2021,
 		"Alapértelmezettként kiválasztott év."
@@ -48,26 +63,6 @@
 		"seo.description",
 		"Mintaváros költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.",
 		"Google találatban, ill. Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő leírás. Max. 160 karakter."
-	],
-	[
-		"seo.ogImage",
-		"https://kozertheto.k-monitor.hu/assets/img/mintavaros-01.png",
-		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép URL-je."
-	],
-	[
-		"seo.ogImageType",
-		"image/png",
-		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép MIME formátuma."
-	],
-	[
-		"seo.ogImageHeight",
-		750,
-		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép magassága (px)."
-	],
-	[
-		"seo.ogImageWidth",
-		1200,
-		"Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő kép szélessége (px)."
 	],
 	[
 		"social.text",
@@ -120,6 +115,11 @@
 		"Keresési találatban megjelenő link szövege, mely a Kiadások szakaszra mutat."
 	],
 	[
+		"search.milestones",
+		"Fejlesztések",
+		"Keresési találatban megjelenő link szövege, mely a Fejlesztések szakaszra mutat."
+	],
+	[
 		"search.econ",
 		"közgazdasági kategória",
 		"Keresési találatban megjelenő szöveg, ha az adott találat egy közgazdasági kategória."
@@ -128,6 +128,11 @@
 		"search.func",
 		"funkcionális kategória",
 		"Keresési találatban megjelenő szöveg, ha az adott találat egy funkcionális kategória."
+	],
+	[
+		"search.milestone",
+		"fejlesztés",
+		"Keresési találatban megjelenő szöveg, ha az adott találat egy fejlesztés."
 	],
 	[
 		"header.title",
@@ -175,6 +180,21 @@
 		"Köszöntő szakaszt aláíró személy tisztsége."
 	],
 	[
+		"tutorial.K1107",
+		"",
+		"Hasábokra von. tutorial lépések így szúrhatók be. A 2. oszlopba kell írni a szöveget."
+	],
+	[
+		"pub.lead",
+		"Lórum ipse - mint apacska - kató bosszúkás zerc, ahol tűsölő magyat, szelés, ciga, irség és más fekes zölék szervelít. Bord gális iheges nem házta a zsujdot izálnia, és kaszakrács lett.",
+		"Kiadvány szakasz szövege."
+	],
+	[
+		"pub.url",
+		"about:blank",
+		"Kiadvány szakasz gombja erre az URL-re linkel."
+	],
+	[
 		"moreInfo.title",
 		"A projektről",
 		"További információ ablak címsora."
@@ -193,6 +213,16 @@
 		"inex.subtitle",
 		"Mintaváros idei költségvetése:",
 		"Mérleg ábra fejléce."
+	],
+	[
+		"inex.expenseNodes",
+		"K1,K2,K3,K4,K5,FH1,FH2,K6,K7,K8",
+		"Mérleg ábra kiadási oldalán szereplő hasábok azonosítói vesszővel elválasztva."
+	],
+	[
+		"inex.incomeNodes",
+		"B1,B2,B3,B4,FT1,B5,B6,B7",
+		"Mérleg ábra bevételi oldalán szereplő hasábok azonosítói vesszővel elválasztva."
 	],
 	[
 		"inex.text",
@@ -263,5 +293,60 @@
 		"feedback.url",
 		"about:blank",
 		"Visszajelző űrlap URL-je."
+	],
+	[
+		"footer.url",
+		"https://k-monitor.hu/",
+		"Kontakt weboldal címe."
+	],
+	[
+		"footer.fb",
+		"Kmonitor",
+		"Kontakt Facebook oldal azonosítója."
+	],
+	[
+		"footer.email",
+		"info@k-monitor.hu",
+		"Kontakt e-mail cím."
+	],
+	[
+		"iframe.title",
+		"",
+		"Iframe-es oldal elnevezése."
+	],
+	[
+		"iframe.url",
+		"",
+		"Iframe-es oldalban beágyazott URL."
+	],
+	[
+		"ga.id",
+		"",
+		"Google Analytics azonosító (UA-XXXXXXXXX-X)."
+	],
+	[
+		"gtm.id",
+		"",
+		"Google Tag Manager azonosító (GTM-XXXXXXX)."
+	],
+	[
+		"font.imports",
+		"",
+		"Webfonto(ka)t importáló CSS kód, pl: `@import url('https://...');`, lehet több ilyen a cellában."
+	],
+	[
+		"font.base",
+		"",
+		"Alap betűtípus neve, alapértelmezetthez (Roboto Condensed) hagyd üresen."
+	],
+	[
+		"font.headings",
+		"",
+		"Fejlécek betűtípusának neve, font.base használatához hagyd üresen."
+	],
+	[
+		"font.vis",
+		"",
+		"Ábrák betűtípusának neve, font.base használatához hagyd üresen."
 	]
 ]

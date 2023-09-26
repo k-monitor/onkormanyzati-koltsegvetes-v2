@@ -67,7 +67,7 @@ function generateEconomicTree(matrixTsv) {
 		.forEach((row, i) => {
 			let [_, descriptor, value] = row.split('\t'); // we need only the 2nd and 3rd column
 			let { id, name } = parseEconomicDescriptor(descriptor);
-			value = Number(value.replace(/[^0-9\-]+/g, ''));
+			value = Number((value || '').replace(/[^0-9\-]+/g, ''));
 			if (id && id.indexOf('-') == -1) {
 				if (name.startsWith("ebből:") || nodes[id]) {
 					id = `${id}:${i}`;
@@ -97,7 +97,7 @@ function generateEconomicTree(matrixTsv) {
 		const id = sortedIds[i];
 		if (id.length == 2 || id.startsWith('F')) continue; // root nodes, incl. FH1, FH2, FT1, FT2
 		let j = i - 1;
-		for (; sortedIds[j].length >= id.length; j--);
+		for (; j >= 0 && sortedIds[j].length >= id.length; j--);
 		if (j > -1) { // found parent
 			const parentId = sortedIds[j];
 			nodes[parentId].children = nodes[parentId].children || [];
@@ -136,7 +136,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv);
 
 	const rows = matrixTsv.split('\n');
-	const header = rows[1].trim().split('\t').map(col => Number(col.split(' ')[0]));
+	const header = rows[1].split('\t').map(col => Number(col.trim().split(' ')[0]));
 	if (header.length > 3) {
 
 		// finding the total row
@@ -151,9 +151,13 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 
 		// collecting total values for nodes
 		maxRow.split('\t').forEach((col, i) => {
-			if (i > 2) {
+			if (i > 2 && i < header.length) {
 				const id = header[i];
-				if (!nodes[id]) console.log('NO NODE', id);
+				if (!id) return;
+				if (!nodes[id]) {
+					console.log('[KÖKÖ]', 'Budget-ben szereplő ID hiányzik a funkcionális fából:', id);
+					return;
+				}
 				nodes[id].value = Number(col.replace(/\D+/g, ''));
 			}
 		});
@@ -198,11 +202,11 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		}
 		cleanUp(root);
 
-		return root;
-	} else {
-		console.log('No functional data found.');
-		return null;
+		if (root.value > 0) return root;
 	}
+
+	console.log('No functional data found.');
+	return null;
 }
 
 /**
@@ -231,7 +235,8 @@ function parseEconomicDescriptor(descriptor) {
  */
 function parseFunctionalTreeDescriptor(tsv) {
 	const nodes = {};
-	tsv.trim().split('\n').forEach(row => {
+	tsv.split('\n').forEach(row => {
+		if (!row.trim().length) return;
 		let [id, name, parent] = row.split('\t');
 		id = Number(id);
 		parent = Number('0' + parent.replace(/\D+/g, ''));
