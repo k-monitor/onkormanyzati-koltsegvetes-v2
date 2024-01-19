@@ -4,25 +4,25 @@ const data = JSON.parse(fs.readFileSync('src/data/data.json', { encoding: 'utf8'
 Object.keys(data).forEach(year => {
 	['expense', 'income'].forEach(side => {
 		const root = data[year][side].econ;
-		validateSum(root);
+		validateSum(root, year);
 	});
 });
 
-function validateSum(node) {
+function validateSum(node, year) {
 	if (node.children && node.children.length) {
 		const childrensSum = node.children
 			.filter(n => !(n.id || '').startsWith('F'))
 			.map(n => n.value)
 			.reduce((sum, v) => sum + v, 0);
 		if (node.value !== childrensSum) {
-			printInvalidNode(node, childrensSum);
+			printInvalidNode(node, year, childrensSum);
 		}
-		node.children.forEach(n => validateSum(n));
+		node.children.forEach(n => validateSum(n, year));
 	}
 }
 
-function printInvalidNode(node, childrensSum) {
-	print('Összeg nem jön ki:');
+function printInvalidNode(node, year, childrensSum) {
+	print(`Összeg nem jön ki (${year}):`);
 	printNode(node);
 
 	const diff = childrensSum - node.value;
