@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="modal-dialog"
+		class="modal-dialog modal-lg"
 		role="document"
 	>
 		<div class="modal-content">
@@ -45,8 +45,17 @@
 						:key="r.side + r.type + r.id"
 					>
 						<div class="flex-grow-1 font-weight-bold mb-2">
-							<span v-html="r.name"></span>
+							<span>
+								<span v-html="r.name"></span>
+								<span
+									v-if="r.value"
+									class="ml-1 text-nowrap text-secondary"
+								>
+									({{ $util.groupNums(r.value, true) }})
+								</span>
+							</span>
 							<br>
+
 							<small class="text-muted">({{ $config.search[r.type] }})</small>
 							<br>
 							<span v-if="(r.tags || '').length > 0">
@@ -90,6 +99,7 @@ export default {
 	},
 	computed: {
 		results() {
+			const valueSearch = this.searchTerm.match(/^\d+(-\d+)?$/);
 			return this.searchTerm.length < 3
 				? []
 				: search(this.year, this.searchTerm)
@@ -97,6 +107,7 @@ export default {
 						.sort(function (a, b) {
 							function score(r) {
 								if (r.matchedId) return 1000;
+								if (valueSearch) return r.distance * -1;
 								return (r.matchesInName || 0) + (r.tags || []).length;
 							}
 							const sa = score(a);
@@ -107,7 +118,7 @@ export default {
 							this.searchTerm.split(" ").forEach((t) => {
 								t = t.trim();
 								if (t.length >= 3) {
-									r.name = r.name.replace(
+									r.name = (r.name || '').replace(
 										new RegExp(`(${t})`, "i"),
 										"<u>$1</u>"
 									);
