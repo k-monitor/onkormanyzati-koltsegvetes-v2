@@ -17,6 +17,7 @@
 							aria-describedby="searchTerm-label"
 							aria-label="Szöveges keresés"
 							class="form-control"
+							id="searchTerm-input"
 							placeholder="Kulcsszó..."
 							type="text"
 							v-model="searchTerm"
@@ -236,7 +237,7 @@ export default {
 			self.searchTerm = "";
 		});
 		$("#search-modal").on("shown.bs.modal", function (e) {
-			$("#search-modal input").focus();
+			$("#searchTerm-input").focus();
 		});
 	},
 };
