@@ -34,7 +34,7 @@
 							aria-describedby="valueTerm-label"
 							aria-label="Szűrés érték szerint"
 							class="form-control"
-							placeholder="Érték vagy tartomány... (pl. 10-20)"
+							placeholder="Érték..."
 							type="text"
 							v-model="valueTerm"
 						>
@@ -56,9 +56,13 @@
 							</div>
 						</div>
 					</div>
+					<div class="form-text text-muted text-xs">
+						Megadható értéktartomány is,
+						<span class="text-nowrap">pl. "10-20"</span>.
+					</div>
 				</div>
 				<button
-					class="close"
+					class="close pl-0"
 					type="button"
 				>
 					<i
