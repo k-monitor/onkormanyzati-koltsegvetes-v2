@@ -34,16 +34,17 @@
 			>
 				<ul
 					v-if="!subpageMode"
-					class="navbar-nav ml-auto my-2 my-lg-0"
+					class="navbar-nav ml-auto my-2 my-lg-0 align-items-center"
 				>
 					<li class="nav-item">
 						<a
 							href="javascript:void(0)"
-							class="nav-link"
+							class="nav-link px-2 py-1 rounded-pill search-nav-link"
 							data-toggle="modal"
 							data-target="#search-modal"
 						>
 							<i class="fas fa-search"></i>
+							<span class="sr-only">Keresés</span>
 						</a>
 					</li>
 					<li class="nav-item">
@@ -304,6 +305,14 @@ export default {
 				}
 			}
 		}
+	}
+}
+
+.search-nav-link {
+	background-color: $gray-200;
+	width: 100px;
+	&:hover {
+		background-color: $gray-300;
 	}
 }
 </style>

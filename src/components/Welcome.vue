@@ -176,7 +176,7 @@ export default {
 				position: "bottom",
 			});
 
-			Object.keys(self.$config.tutorial).forEach((targetNode) => {
+			Object.keys(self.$config.tutorial || {}).forEach((targetNode) => {
 				const text = self.$config.tutorial[targetNode] || '';
 				if (text.trim().length === 0) return;
 				const side = targetNode[0] === "B" ? "income" : "expense";
@@ -203,7 +203,7 @@ export default {
 			steps.push({
 				element: "#mainNav .fa-search",
 				intro:
-					"A keresés funkcióval könnyedén megtalálhatja bármelyik kategóriát, akár a neve, akár hozzá kapcsolódó szavak (címkék) alapján.",
+					"A keresés funkcióval könnyedén megtalálhatja bármelyik kategóriát, akár a neve, akár hozzá kapcsolódó szavak (címkék) alapján. Lehetőség van összegre és összeg tartományra is szűrni.",
 				position: "bottom",
 			});
 

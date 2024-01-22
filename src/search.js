@@ -9,15 +9,21 @@ const $tags = require('../src/data/tags.json');
 //	}
 //};
 
-export default function search(year, term) {
+export default function search(year, term, range) {
+	range = range || [];
+	const meanValue = range.reduce((a, b) => a + b, 0) / range.length || 0;
+
+	console.log('search', year, term, range);
+
 	let results = [];
 	['expense', 'income'].forEach(side => {
 		['econ', 'func'].forEach(type => {
 			const tree = $data[year][side][type] || {};
 			const tags = ($tags[side] || { type: {} })[type] || {};
-			const treeResults = searchNode(tree, tags, term, []).map(result => {
+			const treeResults = searchNode(tree, tags, term, range, []).map(result => {
 				result.side = side;
 				result.type = type;
+				result.distance = meanValue && Math.abs(result.value - meanValue);
 				return result;
 			});
 			results = results.concat(treeResults);
@@ -44,13 +50,16 @@ export default function search(year, term) {
 	return results;
 }
 
-function searchNode(node, tags, term, path) {
+function searchNode(node, tags, term, range, path) {
 	const nodeTags = (tags[node.id] || tags['0' + node.id] || []);
 	const matchesInName = term.toLowerCase().split(' ').filter(t => t.trim().length >= 3 && (node.name || '').toLowerCase().includes(t)).length;
 	const matchedTags = nodeTags.filter(tag => tag.includes(term.toLowerCase()));
 	const matchedId = String(node.id || '').toLowerCase() == term.toLowerCase();
+	const matchedValue = (range.length === 1) ||
+		(range.length === 2 && range[0] <= node.value && node.value <= range[1]);
+
 	let results = [];
-	if (matchedTags.length > 0 || matchesInName > 0 || matchedId) {
+	if (node.id && (matchedTags.length > 0 || matchesInName > 0 || matchedId || matchedValue)) {
 		results.push({
 			id: node.id,
 			matchedId,
@@ -63,7 +72,7 @@ function searchNode(node, tags, term, path) {
 	}
 	path = node.id ? path.concat(node.id) : path; // <-- root has no ID, but every other node must have iD
 	(node.children || []).forEach(children => {
-		results = results.concat(searchNode(children, tags, term, path));
+		results = results.concat(searchNode(children, tags, term, range, path));
 	});
 	return results;
 }
