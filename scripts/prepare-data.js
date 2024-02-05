@@ -42,7 +42,7 @@ const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
 			console.log('Generating functional tree');
 			data[year][side]['func'] = generateFunctionalTree(matrixTsv, funcTreeTsv);
 		} else {
-			console.log('Invalid sheet name!');
+			console.error('[KÖKÖ]', 'Érvénytelen munkalap név budget.xlsx-ben:', sheetName);
 		}
 	});
 
@@ -155,7 +155,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 				const id = header[i];
 				if (!id) return;
 				if (!nodes[id]) {
-					console.log('[KÖKÖ]', 'Budget-ben szereplő ID hiányzik a funkcionális fából:', id);
+					console.error('[KÖKÖ]', 'Budget-ben szereplő ID hiányzik a funkcionális fából:', id);
 					return;
 				}
 				nodes[id].value = Number(col.replace(/\D+/g, ''));
@@ -169,7 +169,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 					nodes[node.parent].children = (nodes[node.parent].children || []).concat(node);
 					node.deletable = true;
 				} else {
-					console.log(`Parent node not found: ${node.parent}`);
+					console.error('[KÖKÖ]', 'Szülő funkcionális kategória nem található:', node.parent);
 				}
 			}
 		});
