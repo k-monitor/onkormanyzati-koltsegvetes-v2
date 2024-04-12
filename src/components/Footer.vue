@@ -1,5 +1,5 @@
 <template>
-	<footer class="bg-dark py-5 text-white-75">
+	<footer class="py-5">
 		<div class="container">
 			<div class="row mb-4">
 				<div
@@ -94,7 +94,7 @@
 <style lang="scss">
 #contacts a,
 #license a {
-	color: white !important;
+	__color: red !important;
 	text-decoration: none;
 
 	&:hover {
@@ -118,6 +118,7 @@
 	display: inline-block;
 	margin: 0 1rem 1rem 0;
 	max-height: 32px;
+	filter: invert(1);
 }
 </style>
 
