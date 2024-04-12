@@ -7,7 +7,7 @@
 					id="city-logo"
 				>
 					<div class="mx-0 row w-100">
-						<div class="col-12 col-sm-4 mb-5 mb-sm-0">
+						<div class="col-12 col-sm-4 col-md-6 mb-5 mb-sm-0">
 							<a
 								class="js-scroll-trigger"
 								href="#page-top"
@@ -18,7 +18,7 @@
 								>
 							</a>
 						</div>
-						<div class="col-12 col-sm-8 mt-3" id="contacts">
+						<div class="col mt-3" id="contacts">
 							<p v-if="$config.footer.url" class="lead">
 								<i class="fas fa-fw fa-globe-europe mr-2"></i>
 								<a
@@ -110,8 +110,8 @@
 }
 
 #city-logo img {
-	max-height: 100px;
-	max-width: 150px;
+	_max-height: 100px;
+	max-width: 100%;
 }
 
 #logos img {
