@@ -1,3 +1,4 @@
+import VueGtag from 'vue-gtag';
 import VueMarkdown from 'vue-markdown'
 import slugify from 'slugify';
 
@@ -29,6 +30,14 @@ import tags from '~/data/tags.json';
 import tooltips from '~/data/tooltips.json';
 
 export default function (Vue, { router, head, isClient }) {
+
+	if (config.ga && String(config.ga.id).startsWith('G-')) {
+		Vue.use(VueGtag, {
+			config: { id: config.ga.id },
+			enabled: true
+		});
+	}
+
 	Vue.component('VueMarkdown', VueMarkdown);
 	Vue.component('Layout', DefaultLayout);
 	Vue.component('SectionHeading', SectionHeading);
