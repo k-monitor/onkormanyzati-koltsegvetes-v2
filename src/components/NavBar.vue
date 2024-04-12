@@ -1,6 +1,6 @@
 <template>
 	<nav
-		class="navbar navbar-expand-lg navbar-light fixed-top py-3"
+		class="navbar navbar-expand-lg navbar-light fixed-top"
 		id="mainNav"
 	>
 		<div class="container">
@@ -11,8 +11,8 @@
 				<img
 					class="mr-2"
 					src="/assets/img/logo.png"
-					width="30"
-					height="30"
+					width="117"
+					height="48"
 					alt=""
 				>
 				{{ $config.city }}
@@ -182,8 +182,8 @@ export default {
 @import "~bootstrap/scss/mixins";
 
 @mixin enlargedLogo() {
-	height: 48px;
-	width: 48px;
+	height: 72px;
+	width: 175px;
 }
 
 #mainNav {
