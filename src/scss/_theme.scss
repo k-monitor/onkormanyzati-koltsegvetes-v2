@@ -3,6 +3,10 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
+html {
+	font-size: 15px;
+}
+
 @mixin linkColor($primary) {
 	$link-color: $primary;
 	$link-hover-color: darken($link-color, 15%);
