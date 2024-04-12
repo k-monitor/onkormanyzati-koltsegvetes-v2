@@ -198,7 +198,7 @@ hr.light {
 
 // Page section padding
 .page-section {
-	padding: 8rem 0;
+	padding: 3rem 0;
 }
 
 // Tooltips on mobile
