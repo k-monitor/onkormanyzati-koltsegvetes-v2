@@ -25,7 +25,7 @@ export default {
 		window.addEventListener("scroll", function() {
 			const scrollPosition = window.pageYOffset;
 			const bgParallax = document.getElementById("masthead-parallax");
-			bgParallax.style.backgroundPositionY = (100 - scrollPosition * .15) + "%";
+			bgParallax.style.backgroundPositionY = (25 - scrollPosition * .15) + "%";
 		});
 	}
 };
