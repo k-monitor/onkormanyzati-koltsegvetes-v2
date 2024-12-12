@@ -354,6 +354,8 @@ Admin beüzemelés lépései részletesen:
 	- `ADMIN_PORT=8081` - a port száma, amin a webes felület elérhető lesz
 	- `ADMIN_USER=admin` - ezzel a felhasználónévvel lehet majd elérni az admin felületet
 	- `ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
+	- `SECOND_USER=user` - ezzel a felhasználónévvel is el lehet érni az admin felületet
+	- `SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
 	- `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
 	- `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
 5. Az admin felület az `npm run admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
