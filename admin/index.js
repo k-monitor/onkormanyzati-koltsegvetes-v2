@@ -9,12 +9,16 @@ const CONFIG = {
 	PORT: process.env.ADMIN_PORT || 8081,
 	USER: process.env.ADMIN_USER || 'admin',
 	PASS: process.env.ADMIN_PASS || 'admin',
+	SECOND_USER: process.env.SECOND_USER,
+	SECOND_PASS: process.env.SECOND_PASS,
 	PUBLIC_URL: process.env.PUBLIC_URL,
 	DEPLOY_CMD: (process.env.DEPLOY_CMD || '').trim(),
 }
 
 const users = {}
 users[CONFIG.USER] = CONFIG.PASS
+if (CONFIG.SECOND_USER && CONFIG.SECOND_PASS)
+	users[CONFIG.SECOND_USER] = CONFIG.SECOND_PASS
 
 const app = express()
 app.use(basicAuth({ users, challenge: true }))
