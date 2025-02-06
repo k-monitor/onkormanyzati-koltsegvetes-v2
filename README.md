@@ -2,6 +2,8 @@
 
 *KÖKÖ: Közérthető Költségvetés*
 
+Ha a keretrendszer telepítése utáni folyamat részletei érdekelnek, olvasd el [Balla Imre írását](https://ballaimre.hu/2024/07/11/koltsegvetes-kozerthetoen/)!
+
 Az oldal alapja a [StartBootstrap / Creative](https://github.com/BlackrockDigital/startbootstrap-creative) sablon, illetve az [önkormányzati költségvetés vizualizáció v1.x](https://github.com/k-monitor/onkormanyzati-koltsegvetes-v1).
 
 *Copyright &copy; 2020 DeepData Ltd.*
