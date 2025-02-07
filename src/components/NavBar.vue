@@ -69,18 +69,14 @@
 				</div>
 			</div>
 		</nav>
-        <div id="banner" v-if="isBannerVisible && $config.navBar.showBanner">
-			<VueMarkdown
-						:source="$config.navBar.bannerText"
-						:class="{ less: less, more: !less }"
-					/>
-            <!-- Megcsinálnád településednek? <a href="http://github.com/k-monitor/onkormanyzati-koltsegvetes-v2">Telepítsd a keretrendszert!</a> -->
-            <button aria-label="Close" class="close-banner" @click="closeBanner" type="button">
-                <span aria-hidden="true">
-                    <i class="far fa-times-circle"></i>
-                </span>
-            </button>
-        </div>
+		<div id="banner" v-if="isBannerVisible && $config.navBar.showBanner">
+			<VueMarkdown :source="$config.navBar.bannerText" :class="{ less: less, more: !less }" />
+			<button aria-label="Close" class="close-banner" @click="closeBanner" type="button">
+				<span aria-hidden="true">
+					<i class="far fa-times-circle"></i>
+				</span>
+			</button>
+		</div>
 	</div>
 </template>
 
