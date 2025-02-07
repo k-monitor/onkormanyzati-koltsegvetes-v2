@@ -69,8 +69,12 @@
 				</div>
 			</div>
 		</nav>
-        <div id="banner" v-if="isBannerVisible">
-            Megcsinálnád településednek? <a href="http://github.com/k-monitor/onkormanyzati-koltsegvetes-v2">Telepítsd a keretrendszert!</a>
+        <div id="banner" v-if="isBannerVisible && $config.navBar.showBanner">
+			<VueMarkdown
+						:source="$config.navBar.bannerText"
+						:class="{ less: less, more: !less }"
+					/>
+            <!-- Megcsinálnád településednek? <a href="http://github.com/k-monitor/onkormanyzati-koltsegvetes-v2">Telepítsd a keretrendszert!</a> -->
             <button aria-label="Close" class="close-banner" @click="closeBanner" type="button">
                 <span aria-hidden="true">
                     <i class="far fa-times-circle"></i>
@@ -138,6 +142,9 @@ export default {
 	width: 100%;
 	color: $white;
 	padding: 8px;
+	p {
+		margin: 0;
+	}
 	a {
 		color: $white;
 		text-decoration: underline;
