@@ -111,6 +111,12 @@ export default {
 		};
 		// Collapse now if page is not at top
 		navbarCollapse();
+
+		// Fix banner position after nav bar transition
+		$("#mainNav").on("transitionend", function () {
+			$("#banner").css("top", $("#mainNav").height() + 30 + "px");
+		});
+
 		// Collapse the navbar when page is scrolled
 		$(window).scroll(navbarCollapse);
 	},
