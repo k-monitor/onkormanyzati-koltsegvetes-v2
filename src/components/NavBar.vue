@@ -1,157 +1,93 @@
 <template>
-	<nav
-		class="navbar navbar-expand-lg navbar-light fixed-top py-3"
-		id="mainNav"
-	>
-		<div class="container">
-			<a
-				class="navbar-brand js-scroll-trigger"
-				href="#page-top"
-			>
-				<img
-					class="mr-2"
-					src="/assets/img/logo.png"
-					width="30"
-					height="30"
-					alt=""
-				>
-				{{ $config.city }}
-			</a>
-			<button
-				class="navbar-toggler navbar-toggler-right"
-				type="button"
-				data-toggle="collapse"
-				data-target="#navbarResponsive"
-				aria-controls="navbarResponsive"
-				aria-expanded="false"
-				aria-label="Toggle navigation"
-			>
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div
-				class="collapse navbar-collapse"
-				id="navbarResponsive"
-			>
-				<ul
-					v-if="!subpageMode"
-					class="navbar-nav ml-auto my-2 my-lg-0 align-items-center"
-				>
-					<li class="nav-item">
-						<a
-							href="javascript:void(0)"
-							class="nav-link px-2 py-1 rounded-pill search-nav-link"
-							data-toggle="modal"
-							data-target="#search-modal"
-						>
-							<i class="fas fa-search"></i>
-							<span class="sr-only">Keresés</span>
-						</a>
-					</li>
-					<li class="nav-item">
-						<a
-							href="#welcome"
-							class="nav-link js-scroll-trigger"
-						>{{ $config.navBar.welcome }}</a>
-					</li>
-					<li class="nav-item">
-						<a
-							:href="'#' + ($config.modules.inex ? 'inex' : ($config.modules.income ? 'income' : 'expense'))"
-							class="nav-link js-scroll-trigger"
-						>{{ $config.navBar.inex }}</a>
-					</li>
-					<li
-						class="nav-item"
-						v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0"
-					>
-						<a
-							href="#milestones"
-							class="nav-link js-scroll-trigger"
-						>{{ $config.navBar.milestones }}</a>
-					</li>
-					<li
-						class="nav-item dropdown highlight"
-						v-if="years.length > 1"
-					>
-						<a
-							class="nav-link dropdown-toggle"
-							href="#"
-							id="navbarDropdown"
-							role="button"
-							data-toggle="dropdown"
-							aria-haspopup="true"
-							aria-expanded="false"
-						>
-							<span class="mr-1">{{ year }}</span>
-						</a>
-						<div
-							class="dropdown-menu dropdown-menu-right"
-							aria-labelledby="navbarDropdown"
-						>
-							<a
-								class="dropdown-item"
-								href="javascript:void(0)"
-								v-for="y in years"
-								:class="['theme-' + $util.slugify(y)]"
-								:key="y"
-								@click="$emit('yearSelected', y)"
-							>
-								<i class="fas fa-circle mr-2"></i>
-								{{ y }}
+	<div id="outerDiv">
+		<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+			<div class="container">
+				<a class="navbar-brand js-scroll-trigger" href="#page-top">
+					<img class="mr-2" src="/assets/img/logo.png" width="30" height="30" alt="">
+					{{ $config.city }}
+				</a>
+				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+					data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul v-if="!subpageMode" class="navbar-nav ml-auto my-2 my-lg-0 align-items-center">
+						<li class="nav-item">
+							<a href="javascript:void(0)" class="nav-link px-2 py-1 rounded-pill search-nav-link"
+								data-toggle="modal" data-target="#search-modal">
+								<i class="fas fa-search"></i>
+								<span class="sr-only">Keresés</span>
 							</a>
-						</div>
-					</li>
-					<li class="nav-item">
-						<a
-							href="javascript:void(0)"
-							class="nav-link"
-							data-toggle="modal"
-							data-target="#moreInfoModal"
-						>{{ $config.navBar.moreInfo }}</a>
-					</li>
-					<li
-						v-if="$config.iframe.title && $config.iframe.url"
-						class="nav-item"
-					>
-						<a
-							:href="`/${$util.slugify($config.iframe.title).toLowerCase()}`"
-							class="nav-link"
-						>{{ $config.iframe.title }}</a>
-					</li>
-					<li
-						v-if="$config.modules.feedback"
-						class="nav-item"
-					>
-						<a
-							class="nav-link"
-							data-target="#feedbackModal"
-							data-toggle="modal"
-							href="javascript:void(0)"
-						>
-							<i class="far fa-comment-dots"></i>
-						</a>
-					</li>
-				</ul>
-				<ul
-					class="navbar-nav ml-auto my-2 my-lg-0"
-					v-else
-				>
-					<li class="nav-item">
-						<a
-							class="nav-link"
-							href="/"
-						>
-							Vissza a költségetésre
-						</a>
-					</li>
-				</ul>
+						</li>
+						<li class="nav-item">
+							<a href="#welcome" class="nav-link js-scroll-trigger">{{ $config.navBar.welcome }}</a>
+						</li>
+						<li class="nav-item">
+							<a :href="'#' + ($config.modules.inex ? 'inex' : ($config.modules.income ? 'income' : 'expense'))"
+								class="nav-link js-scroll-trigger">{{ $config.navBar.inex }}</a>
+						</li>
+						<li class="nav-item"
+							v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0">
+							<a href="#milestones" class="nav-link js-scroll-trigger">{{ $config.navBar.milestones }}</a>
+						</li>
+						<li class="nav-item dropdown highlight" v-if="years.length > 1">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<span class="mr-1">{{ year }}</span>
+							</a>
+							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+								<a class="dropdown-item" href="javascript:void(0)" v-for="y in years"
+									:class="['theme-' + $util.slugify(y)]" :key="y" @click="$emit('yearSelected', y)">
+									<i class="fas fa-circle mr-2"></i>
+									{{ y }}
+								</a>
+							</div>
+						</li>
+						<li class="nav-item">
+							<a href="javascript:void(0)" class="nav-link" data-toggle="modal"
+								data-target="#moreInfoModal">{{ $config.navBar.moreInfo }}</a>
+						</li>
+						<li v-if="$config.iframe.title && $config.iframe.url" class="nav-item">
+							<a :href="`/${$util.slugify($config.iframe.title).toLowerCase()}`" class="nav-link">{{
+								$config.iframe.title }}</a>
+						</li>
+						<li v-if="$config.modules.feedback" class="nav-item">
+							<a class="nav-link" data-target="#feedbackModal" data-toggle="modal"
+								href="javascript:void(0)">
+								<i class="far fa-comment-dots"></i>
+							</a>
+						</li>
+					</ul>
+					<ul class="navbar-nav ml-auto my-2 my-lg-0" v-else>
+						<li class="nav-item">
+							<a class="nav-link" href="/">
+								Vissza a költségetésre
+							</a>
+						</li>
+					</ul>
+				</div>
 			</div>
+		</nav>
+		<div id="banner" v-if="isBannerVisible && $config.navBar.showBanner">
+			<VueMarkdown :source="$config.navBar.bannerText" :class="{ less: less, more: !less }" />
+			<button aria-label="Close" class="close-banner" @click="closeBanner" type="button">
+				<span aria-hidden="true">
+					<i class="far fa-times-circle"></i>
+				</span>
+			</button>
 		</div>
-	</nav>
+	</div>
 </template>
 
 <script>
 export default {
 	props: ["subpageMode", "year", "years"],
+	data() {
+        return {
+            isBannerVisible: true
+        };
+    },
 	mounted() {
 		// Activate scrollspy to add active class to navbar items on scroll
 		$("body").scrollspy({
@@ -166,12 +102,25 @@ export default {
 			} else {
 				$("#mainNav").removeClass("navbar-scrolled");
 			}
+			// Set banner position
+			$("#banner").css("top", $("#mainNav").height() + 30 + "px");
 		};
 		// Collapse now if page is not at top
 		navbarCollapse();
+
+		// Fix banner position after nav bar transition
+		$("#mainNav").on("transitionend", function () {
+			$("#banner").css("top", $("#mainNav").height() + 30 + "px");
+		});
+
 		// Collapse the navbar when page is scrolled
 		$(window).scroll(navbarCollapse);
 	},
+    methods: {
+        closeBanner() {
+            this.isBannerVisible = false;
+        }
+    }
 };
 </script>
 
@@ -184,6 +133,35 @@ export default {
 @mixin enlargedLogo() {
 	height: 48px;
 	width: 48px;
+}
+
+#banner {
+	box-shadow: $box-shadow;
+	position: fixed;
+	top: 90px;
+	z-index: 1000;
+	background-color: $primary;
+	width: 100%;
+	color: $white;
+	padding: 8px;
+	p {
+		margin: 0;
+	}
+	a {
+		color: $white;
+		text-decoration: underline;
+	}
+	.close-banner {
+		right: 10px;
+		position: absolute;
+		top: 8px;
+		background: none;
+		border: none;
+		i {
+			color: $white;
+			font-size: 1.5rem;
+		}
+	}
 }
 
 #mainNav {
