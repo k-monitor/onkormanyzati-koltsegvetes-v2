@@ -1,8 +1,8 @@
 # Önkormányzati költségvetés vizualizáció 2.0+
 
-*KÖKÖ: Közérthető Költségvetés*
+*KöKö: Közérthető Költségvetés*
 
-Ha a keretrendszer telepítése utáni folyamat részletei érdekelnek, olvasd el [Balla Imre írását](https://ballaimre.hu/2024/07/11/koltsegvetes-kozerthetoen/)!
+Egy KöKö létrehozása a ától cettig számos elemből áll. Alább a keretrendszer telepítésének részleteit olvashatod. Amennyiben az ezen túli feladatokról olvasnál, nyisd meg a [Wiki oldalt](https://github.com/k-monitor/onkormanyzati-koltsegvetes-v2/wiki/K%C3%B6z%C3%A9rthet%C5%91-K%C3%B6lts%C3%A9gvet%C3%A9s-%E2%80%90-%C3%ADgy-kezdj-neki!). Gyakorlati útmutatóként ajánljuk [Balla Imre írását](https://ballaimre.hu/2024/07/11/koltsegvetes-kozerthetoen/) is!
 
 Az oldal alapja a [StartBootstrap / Creative](https://github.com/BlackrockDigital/startbootstrap-creative) sablon, illetve az [önkormányzati költségvetés vizualizáció v1.x](https://github.com/k-monitor/onkormanyzati-koltsegvetes-v1).
 
