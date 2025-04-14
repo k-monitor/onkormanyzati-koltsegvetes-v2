@@ -1,6 +1,8 @@
 # Önkormányzati költségvetés vizualizáció 2.0+
 
-*KÖKÖ: Közérthető Költségvetés*
+*KöKö: Közérthető Költségvetés*
+
+Egy KöKö létrehozása a ától cettig számos elemből áll. Alább a keretrendszer telepítésének részleteit olvashatod. Amennyiben az ezen túli feladatokról olvasnál, nyisd meg a [Wiki oldalt](https://github.com/k-monitor/onkormanyzati-koltsegvetes-v2/wiki/K%C3%B6z%C3%A9rthet%C5%91-K%C3%B6lts%C3%A9gvet%C3%A9s-%E2%80%90-%C3%ADgy-kezdj-neki!). Gyakorlati útmutatóként ajánljuk [Balla Imre írását](https://ballaimre.hu/2024/07/11/koltsegvetes-kozerthetoen/) is!
 
 Az oldal alapja a [StartBootstrap / Creative](https://github.com/BlackrockDigital/startbootstrap-creative) sablon, illetve az [önkormányzati költségvetés vizualizáció v1.x](https://github.com/k-monitor/onkormanyzati-koltsegvetes-v1).
 
@@ -354,6 +356,8 @@ Admin beüzemelés lépései részletesen:
 	- `ADMIN_PORT=8081` - a port száma, amin a webes felület elérhető lesz
 	- `ADMIN_USER=admin` - ezzel a felhasználónévvel lehet majd elérni az admin felületet
 	- `ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
+	- `SECOND_USER=user` - ezzel a felhasználónévvel is el lehet érni az admin felületet
+	- `SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
 	- `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
 	- `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
 5. Az admin felület az `npm run admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
