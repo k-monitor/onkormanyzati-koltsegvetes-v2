@@ -3,7 +3,7 @@
 		<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
 			<div class="container">
 				<a class="navbar-brand js-scroll-trigger" href="#page-top">
-					<img class="mr-2" src="/assets/img/logo.png" width="30" height="30" alt="">
+					<img class="mr-2" src="assets/img/logo.png" width="30" height="30" alt="">
 					{{ $config.city }}
 				</a>
 				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
