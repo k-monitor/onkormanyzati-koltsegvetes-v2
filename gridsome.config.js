@@ -10,6 +10,7 @@ const gtm = !config.gtm || !config.gtm.id ? [] : [{
 }]
 
 module.exports = {
+	pathPrefix: process.env.PATH_PREFIX || '',
 	plugins: [
 		...gtm
 	],
