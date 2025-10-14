@@ -13,16 +13,20 @@ useHead({
 	},
 	link: [
 		{
+			rel: 'canonical',
+			href: config.url,
+		},
+		{
 			rel: 'stylesheet',
 			href: 'https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&amp;subset=latin-ext',
 		},
 		{
 			rel: 'stylesheet',
-			href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css',
+			href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css',
 		},
 		{
-			rel: 'canonical',
-			href: config.url,
+			rel: 'stylesheet',
+			href: 'https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css',
 		},
 	],
 	meta: [
@@ -52,13 +56,22 @@ useHead({
 			content: config.url + 'assets/img/ogimage.jpg',
 		},
 	],
+	script: [
+		{ src: 'https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js' },
+		{ src: 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js' },
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js' },
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js' },
+		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js' },
+	],
 	title: config.seo.pageTitle,
 });
 
 onMounted(() => {
-	// FIXME jquery scroll
+	// FIXME test jquery stuff
+	const $ = window.$;
+
 	// Smooth scrolling using jQuery easing
-	/*$('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
+	$('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
 		if (
 			location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') &&
 			location.hostname == this.hostname
@@ -86,19 +99,18 @@ onMounted(() => {
 	// Remove focus
 	$('.js-scroll-trigger').click(function () {
 		$(this).blur();
-	});*/
+	});
 });
 </script>
 
 <template>
 	<div :class="'theme-' + slugify(year)">
-		<!-- <NavBar
+		<NavBar
 			:year="year"
-			:years="Object.keys($d).sort().reverse()"
+			:years="Object.keys(data).sort().reverse()"
 			@yearSelected="handleYearSelected"
 		/>
-		<SearchModal :year="year" />
-		<MastHead href="#welcome" /> -->
+		<!--<SearchModal :year="year" /> <MastHead href="#welcome" /> -->
 		<div class="flex-grow-1">
 			<!-- <Welcome
 				:year="year"
