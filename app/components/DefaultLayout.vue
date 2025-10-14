@@ -146,11 +146,10 @@ onMounted(() => {
 	</div>
 </template>
 
-<!--
 <style lang="scss">
-@import "../scss/variables";
-@import "~bootstrap/scss/bootstrap";
-@import "../scss/theme";
+@import '../scss/variables';
+@import '../../node_modules/bootstrap/scss/bootstrap';
+@import '../scss/theme';
 
 // Global styling for this template
 body,
@@ -222,4 +221,3 @@ hr.light {
 	}
 }
 </style>
--->
