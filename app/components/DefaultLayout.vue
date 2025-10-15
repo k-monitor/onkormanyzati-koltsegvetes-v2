@@ -3,6 +3,7 @@ import config from '~/data/config.json';
 import data from '~/data/data.json';
 
 const { handleYearSelected, year } = useYear();
+// TODO LATER these can be used directly inside components, no need for prop drilling
 
 useHead({
 	bodyAttrs: {
@@ -111,7 +112,7 @@ onMounted(() => {
 			:years="Object.keys(data).sort().reverse()"
 			@yearSelected="handleYearSelected"
 		/>
-		<!--<SearchModal :year="year" />-->
+		<SearchModal :year="year" />
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
 			<!-- <Welcome
