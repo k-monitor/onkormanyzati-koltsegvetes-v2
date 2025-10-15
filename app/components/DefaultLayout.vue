@@ -156,7 +156,7 @@ onMounted(() => {
 			<slot />
 		</div>
 		<Footer />
-		<!-- <Social v-if="$config.modules.social" /> -->
+		<Social v-if="config.modules.social" />
 		<FeedbackModal />
 		<!-- <MoreInfoModal />  -->
 	</div>
