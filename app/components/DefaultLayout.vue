@@ -151,8 +151,8 @@ onMounted(() => {
 			<FeedbackSection v-if="$config.modules.feedback" /> -->
 			<slot />
 		</div>
-		<!-- <Footer />
-		<Social v-if="$config.modules.social" />
+		<Footer />
+		<!-- <Social v-if="$config.modules.social" />
 		<FeedbackModal />
 		<MoreInfoModal /> -->
 	</div>

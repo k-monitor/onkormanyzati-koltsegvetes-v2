@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import config from '~/data/config.json';
+</script>
+
 <template>
 	<footer class="bg-dark py-5 text-white-75">
 		<div class="container">
@@ -13,29 +17,45 @@
 								href="#page-top"
 							>
 								<img
-									src="assets/img/logo-footer.png"
+									:src="'assets/img/logo-footer.png'"
 									alt=""
-								>
+								/>
 							</a>
 						</div>
-						<div class="col-12 col-sm-8 mt-3" id="contacts">
-							<p v-if="$config.footer.url" class="lead">
+						<div
+							class="col-12 col-sm-8 mt-3"
+							id="contacts"
+						>
+							<p
+								v-if="config.footer.url"
+								class="lead"
+							>
 								<i class="fas fa-fw fa-globe-europe mr-2"></i>
 								<a
-									:href="$config.footer.url"
+									:href="config.footer.url"
 									target="_blank"
-								>{{ $config.footer.url.replace(/^.*?\/\/|\/.*$|www\./g, '') }}</a>
+									>{{ config.footer.url.replace(/^.*?\/\/|\/.*$|www\./g, '') }}</a
+								>
 							</p>
-							<p v-if="$config.footer.fb" class="lead">
+							<p
+								v-if="config.footer.fb"
+								class="lead"
+							>
 								<i class="fab fa-fw fa-facebook mr-2"></i>
 								<a
-									:href="`https://www.facebook.com/${$config.footer.fb}/`"
+									:href="`https://www.facebook.com/${config.footer.fb}/`"
 									target="_blank"
-								>@{{ $config.footer.fb }}</a>
+									>@{{ config.footer.fb }}</a
+								>
 							</p>
-							<p v-if="$config.footer.email" class="lead">
+							<p
+								v-if="config.footer.email"
+								class="lead"
+							>
 								<i class="fas fa-fw fa-envelope mr-2"></i>
-								<a :href="`mailto:${$config.footer.email}`">{{ $config.footer.email }}</a>
+								<a :href="`mailto:${config.footer.email}`">{{
+									config.footer.email
+								}}</a>
 							</p>
 						</div>
 					</div>
@@ -49,41 +69,44 @@
 							class="mr-3"
 							href="https://k-monitor.hu/"
 							target="_blank"
-						><img
-								src="assets/img/k-monitor-logo.png"
+							><img
+								:src="'assets/img/k-monitor-logo.png'"
 								alt=""
-							></a>
+						/></a>
 						<a
 							class="mr-3"
 							href="https://www.deepdata.hu/"
 							target="_blank"
-						><img
-								src="assets/img/deepdata-logo.png"
+							><img
+								:src="'assets/img/deepdata-logo.png'"
 								alt=""
-							></a>
+						/></a>
 					</div>
 					<div id="license">
 						<i class="fab fa-fw fa-creative-commons"></i>
 						<i class="fab fa-fw fa-creative-commons-by"></i>
 						<i class="fab fa-fw fa-creative-commons-sa mr-2"></i>
-						<br class="d-none d-lg-inline-block">
-						Ez a Mű a <a
+						<br class="d-none d-lg-inline-block" />
+						Ez a Mű a
+						<a
 							rel="license"
 							href="http://creativecommons.org/licenses/by-sa/4.0/"
-						>Creative Commons
-							Nevezd
-							meg! - Így add tovább! 4.0 Nemzetközi Licenc</a> feltételeinek megfelelően felhasználható.
-						<br>
+							>Creative Commons Nevezd meg! - Így add tovább! 4.0 Nemzetközi Licenc</a
+						>
+						feltételeinek megfelelően felhasználható.
+						<br />
 						<i class="fab fa-github fa-fw mr-2"></i>
 						<a
 							href="https://github.com/k-monitor/onkormanyzati-koltsegvetes-v2"
 							target="_blank"
-						>Forráskód a GitHub-on</a>
+							>Forráskód a GitHub-on</a
+						>
 						(licensz:
 						<a
 							href="https://spdx.org/licenses/GPL-3.0.html"
 							target="_blank"
-						>GPL 3.0</a>)
+							>GPL 3.0</a
+						>)
 					</div>
 				</div>
 			</div>
@@ -120,4 +143,3 @@
 	max-height: 32px;
 }
 </style>
-
