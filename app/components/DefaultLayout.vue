@@ -68,6 +68,7 @@ useHead({
 
 onMounted(() => {
 	// FIXME test jquery stuff
+	// TODO LATER: jQuery -> Vue refactor
 	const $ = window.$;
 
 	// Smooth scrolling using jQuery easing
@@ -110,7 +111,8 @@ onMounted(() => {
 			:years="Object.keys(data).sort().reverse()"
 			@yearSelected="handleYearSelected"
 		/>
-		<!--<SearchModal :year="year" /> <MastHead href="#welcome" /> -->
+		<!--<SearchModal :year="year" />-->
+		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
 			<!-- <Welcome
 				:year="year"

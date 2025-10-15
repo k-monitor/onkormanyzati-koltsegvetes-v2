@@ -12,7 +12,7 @@ const isBannerVisible = ref(true);
 const less = ref(true);
 
 onMounted(() => {
-	// FIXME test jquery stuff
+	// TODO LATER: jQuery -> Vue refactor
 	const $ = window.$;
 
 	// Activate scrollspy to add active class to navbar items on scroll
@@ -57,7 +57,7 @@ onMounted(() => {
 				>
 					<img
 						class="mr-2"
-						:src="'assets/img/logo.png'"
+						src="/assets/img/logo.png"
 						width="30"
 						height="30"
 						alt=""

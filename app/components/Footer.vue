@@ -17,7 +17,7 @@ import config from '~/data/config.json';
 								href="#page-top"
 							>
 								<img
-									:src="'assets/img/logo-footer.png'"
+									src="/assets/img/logo-footer.png"
 									alt=""
 								/>
 							</a>
@@ -70,7 +70,7 @@ import config from '~/data/config.json';
 							href="https://k-monitor.hu/"
 							target="_blank"
 							><img
-								:src="'assets/img/k-monitor-logo.png'"
+								src="/assets/img/k-monitor-logo.png"
 								alt=""
 						/></a>
 						<a
@@ -78,7 +78,7 @@ import config from '~/data/config.json';
 							href="https://www.deepdata.hu/"
 							target="_blank"
 							><img
-								:src="'assets/img/deepdata-logo.png'"
+								src="/assets/img/deepdata-logo.png"
 								alt=""
 						/></a>
 					</div>

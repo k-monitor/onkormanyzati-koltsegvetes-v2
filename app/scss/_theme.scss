@@ -99,7 +99,7 @@
 					#{fade-out(darken($primary, 33%), 0.2)} 0%,
 					#{fade-out(darken($primary, 33%), 0.2)} 100%
 				),
-				url('../../static/assets/img/cover.jpg');
+				url('../../public/assets/img/cover.jpg');
 			background-position: center bottom;
 			background-repeat: no-repeat;
 			background-attachment: scroll;
