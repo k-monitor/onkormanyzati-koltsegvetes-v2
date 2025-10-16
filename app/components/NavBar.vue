@@ -2,7 +2,7 @@
 import config from '~/data/config.json';
 import milestones from '~/data/milestones.json';
 
-const props = defineProps<{
+defineProps<{
 	subpageMode?: boolean;
 	year: string;
 	years: string[];

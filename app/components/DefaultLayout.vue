@@ -115,17 +115,19 @@ onMounted(() => {
 		<SearchModal :year="year" />
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
+			<!-- FIXME layout sections -->
 			<!-- <Welcome
 				:year="year"
 				id="welcome"
 			/> -->
 			<PublicationSection v-if="config.modules.pub" />
-			<!--
+
 			<Inex
 				:year="year"
 				id="inex"
-				v-if="$config.modules.inex"
+				v-if="config.modules.inex"
 			/>
+			<!--
 			<VisualizationSection
 				:year="year"
 				id="income"
