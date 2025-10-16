@@ -158,7 +158,7 @@ onMounted(() => {
 		<Footer />
 		<Social v-if="config.modules.social" />
 		<FeedbackModal />
-		<!-- <MoreInfoModal />  -->
+		<MoreInfoModal />
 	</div>
 </template>
 
