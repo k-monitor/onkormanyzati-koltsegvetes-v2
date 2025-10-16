@@ -12,9 +12,8 @@ export type BudgetNode = {
 	value: number;
 };
 
-export type BudgetData = Record<
-	string, // year
-	{
+export type BudgetData = {
+	[year: string]: {
 		income: {
 			econ: BudgetNode;
 			func?: BudgetNode | null;
@@ -23,5 +22,23 @@ export type BudgetData = Record<
 			econ: BudgetNode;
 			func?: BudgetNode | null;
 		};
-	}
->;
+	};
+};
+
+export type Milestone = {
+	year: string | number;
+	picture: string;
+	overlay: boolean;
+	title: string;
+	description: string;
+	vid: string | null;
+	tags: string[];
+	nodeIds: string[];
+};
+
+export type MilestoneWithId = Milestone & { id: string };
+
+export type Milestones = {
+	milestones: { [id: string]: Milestone };
+	rels: { [year: string]: Record<string, string> };
+};

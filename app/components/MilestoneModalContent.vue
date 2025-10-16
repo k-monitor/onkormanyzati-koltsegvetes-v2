@@ -1,3 +1,78 @@
+<script setup lang="ts">
+import search from '../lib/search.js';
+
+const { milestone, modalId, nextModalId, prevModalId } = defineProps<{
+	milestone: MilestoneWithId;
+	modalId: string;
+	nextModalId: string;
+	prevModalId: string;
+}>();
+
+const playing = ref(false);
+
+const nodes = computed(() => {
+	// TODO LATER search result type
+	const nodes = [];
+	milestone.nodeIds.forEach((id) => {
+		const results = search(milestone.year, id).filter((r) => r.matchedId);
+		if (results.length) nodes.push(results[0]);
+	});
+	return nodes;
+});
+
+function play() {
+	playing.value = true;
+}
+
+function switchModal(id: string) {
+	// FIXME test jquery stuff
+	// TODO LATER jQuery -> Vue refactor
+	const $ = window.$;
+
+	$('.modal').modal('hide');
+	setTimeout(() => $('#' + id).modal('show'), 325);
+}
+
+function prev() {
+	switchModal(prevModalId);
+}
+
+function next() {
+	switchModal(nextModalId);
+}
+
+function jump(result) {
+	// TODO LATER search result type
+
+	// FIXME test jquery stuff
+	// TODO LATER jQuery -> Vue refactor
+	const $ = window.$;
+
+	// based on SearchModalContent.vue#jump
+	$('.modal').modal('hide');
+	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
+	$('html, body').animate(
+		{
+			scrollTop: $('#' + result.side).offset().top - 72,
+		},
+		1000,
+		'easeInOutExpo',
+	);
+	setTimeout(function () {
+		// FIXME milestone event bus
+		//self.$eventBus.$emit('jump', result);
+	}, 1000);
+}
+
+onMounted(() => {
+	// FIXME test jquery stuff
+	// TODO LATER jQuery -> Vue refactor
+	const $ = window.$;
+
+	$('#' + modalId).on('hide.bs.modal', () => (playing.value = false));
+});
+</script>
+
 <template>
 	<div
 		class="modal-dialog modal-dialog-centered modal-lg"
@@ -61,7 +136,6 @@
 							:source="milestone.description"
 							:anchorAttributes="{ target: '_blank' }"
 						/>
-
 					</div>
 					<div class="d-flex flex-wrap">
 						<button
@@ -79,69 +153,3 @@
 		</div>
 	</div>
 </template>
-
-<script>
-import search from "~/search.js";
-
-export default {
-	props: ["milestone", "modalId", "nextModalId", "prevModalId"],
-	data() {
-		return {
-			playing: false,
-		};
-	},
-	computed: {
-		nodes() {
-			const nodes = [];
-			this.milestone.nodeIds.forEach((id) => {
-				const results = search(this.milestone.year, id).filter(
-					(r) => r.matchedId
-				);
-				if (results.length) nodes.push(results[0]);
-			});
-			return nodes;
-		},
-	},
-	methods: {
-		play() {
-			this.playing = true;
-		},
-		prev() {
-			$(".modal").modal("hide");
-			const self = this;
-			setTimeout(function () {
-				$("#" + self.prevModalId).modal("show");
-			}, 325);
-		},
-		next() {
-			$(".modal").modal("hide");
-			const self = this;
-			setTimeout(function () {
-				$("#" + self.nextModalId).modal("show");
-			}, 325);
-		},
-		jump(result) {
-			// based on SearchModalContent.vue#jump
-			$(".modal").modal("hide");
-			if ($("#mainNav .show").length > 0) $("#mainNav button").click();
-			$("html, body").animate(
-				{
-					scrollTop: $("#" + result.side).offset().top - 72,
-				},
-				1000,
-				"easeInOutExpo"
-			);
-			const self = this;
-			setTimeout(function () {
-				self.$eventBus.$emit("jump", result);
-			}, 1000);
-		},
-	},
-	mounted() {
-		const self = this;
-		$("#" + this.modalId).on("hide.bs.modal", function (e) {
-			self.playing = false;
-		});
-	},
-};
-</script>

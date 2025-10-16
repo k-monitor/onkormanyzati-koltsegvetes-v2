@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import config from '~/data/config.json';
 import data from '~/data/data.json';
+import milestonesJson from '~/data/milestones.json';
 
+const milestones = (milestonesJson as Milestones).milestones;
 const { handleYearSelected, year } = useYear();
 // TODO LATER these can be used directly inside components, no need for prop drilling
 
@@ -69,7 +71,7 @@ useHead({
 
 onMounted(() => {
 	// FIXME test jquery stuff
-	// TODO LATER: jQuery -> Vue refactor
+	// TODO LATER jQuery -> Vue refactor
 	const $ = window.$;
 
 	// Smooth scrolling using jQuery easing
@@ -144,17 +146,16 @@ onMounted(() => {
 				:text="$config.vis.expenseText"
 				:title="$config.vis.expense"
 			/>
+			-->
 			<MilestoneSection
 				:year="year"
 				class="pb-0"
 				id="milestones"
 				v-if="
-					$config.modules.milestones &&
-					Object.entries($milestones.milestones).filter((m) => m[1].year == year).length >
-						0
+					config.modules.milestones &&
+					Object.entries(milestones).filter((m) => m[1].year == year).length > 0
 				"
 			/>
-			-->
 			<FeedbackSection v-if="config.modules.feedback" />
 			<slot />
 		</div>

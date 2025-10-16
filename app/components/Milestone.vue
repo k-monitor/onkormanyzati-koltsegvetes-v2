@@ -1,3 +1,15 @@
+<script setup lang="ts">
+defineProps<{
+	milestone: MilestoneWithId;
+	nextId: string;
+	prevId: string;
+}>();
+
+function modalId(milestoneId: string) {
+	return 'milestone-modal-' + milestoneId;
+}
+</script>
+
 <template>
 	<div>
 		<div
@@ -30,28 +42,12 @@
 	</div>
 </template>
 
-<script>
-export default {
-	props: ["milestone", "nextId", "prevId"],
-	data() {
-		return {
-			playing: false,
-		};
-	},
-	methods: {
-		modalId(milestoneId) {
-			return "milestone-modal-" + milestoneId;
-		},
-	},
-};
-</script>
-
 <style lang="scss">
-@import "../scss/variables";
-@import "../scss/common";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '../scss/variables';
+@import '../scss/common';
+@import '../../node_modules/bootstrap/scss/functions';
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/mixins';
 
 .milestone-picture,
 .milestone-modal-picture {
@@ -60,7 +56,7 @@ export default {
 	background-size: cover;
 
 	&.overlay::after {
-		content: "";
+		content: '';
 		display: block;
 		height: 100%;
 		left: 0;
@@ -121,4 +117,3 @@ export default {
 	}
 }
 </style>
-
