@@ -118,8 +118,9 @@ onMounted(() => {
 			<!-- <Welcome
 				:year="year"
 				id="welcome"
-			/>
-			<PublicationSection v-if="$config.modules.pub" />
+			/> -->
+			<PublicationSection v-if="config.modules.pub" />
+			<!--
 			<Inex
 				:year="year"
 				id="inex"
