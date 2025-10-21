@@ -70,7 +70,6 @@ useHead({
 });
 
 onMounted(() => {
-	// FIXME test jquery stuff
 	// TODO LATER jQuery -> Vue refactor
 	const $ = window.$;
 
@@ -129,24 +128,22 @@ onMounted(() => {
 				id="inex"
 				v-if="config.modules.inex"
 			/>
-			<!--
 			<VisualizationSection
 				:year="year"
 				id="income"
 				side="income"
-				:text="$config.vis.incomeText"
-				:title="$config.vis.income"
-				v-if="$config.modules.income"
+				:text="config.vis.incomeText"
+				:title="config.vis.income"
+				v-if="config.modules.income"
 			/>
 			<VisualizationSection
 				:year="year"
 				class="bg-light"
 				id="expense"
 				side="expense"
-				:text="$config.vis.expenseText"
-				:title="$config.vis.expense"
+				:text="config.vis.expenseText"
+				:title="config.vis.expense"
 			/>
-			-->
 			<MilestoneSection
 				:year="year"
 				class="pb-0"

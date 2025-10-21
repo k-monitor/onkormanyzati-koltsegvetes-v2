@@ -1,4 +1,4 @@
-export default (v: string | number, ns: boolean, suffixes?: string[]) => {
+export default (v: string | number, ns?: boolean, suffixes?: string[]) => {
 	suffixes = suffixes || ['', 'e', 'M', 'Mrd'];
 	var i = 0;
 	v = Number(v);

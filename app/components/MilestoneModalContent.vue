@@ -25,7 +25,6 @@ function play() {
 }
 
 function switchModal(id: string) {
-	// FIXME test jquery stuff
 	// TODO LATER jQuery -> Vue refactor
 	const $ = window.$;
 
@@ -43,8 +42,6 @@ function next() {
 
 function jump(result) {
 	// TODO LATER search result type
-
-	// FIXME test jquery stuff
 	// TODO LATER jQuery -> Vue refactor
 	const $ = window.$;
 
@@ -65,10 +62,8 @@ function jump(result) {
 }
 
 onMounted(() => {
-	// FIXME test jquery stuff
 	// TODO LATER jQuery -> Vue refactor
 	const $ = window.$;
-
 	$('#' + modalId).on('hide.bs.modal', () => {
 		playing.value = false;
 	});

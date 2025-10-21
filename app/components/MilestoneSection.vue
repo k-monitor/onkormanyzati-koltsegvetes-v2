@@ -27,7 +27,6 @@ const filteredMilestones = computed(() => {
 });
 
 onMounted(() => {
-	// FIXME test jquery stuff
 	// TODO LATER jQuery -> Vue refactor
 	const $ = window.$;
 
