@@ -26,19 +26,19 @@ function modalId(milestoneId: string) {
 			</div>
 			<h5 class="bg-white milestone-title px-2 text-center w-100">{{ milestone.title }}</h5>
 		</div>
-		<div
-			class="modal fade"
-			:id="modalId(milestone.id)"
-			tabindex="-1"
-			role="dialog"
-		>
-			<MilestoneModalContent
-				:milestone="milestone"
-				:modalId="modalId(milestone.id)"
-				:nextModalId="modalId(nextId)"
-				:prevModalId="modalId(prevId)"
-			/>
-		</div>
+	</div>
+	<div
+		class="modal fade"
+		:id="modalId(milestone.id)"
+		role="dialog"
+		tabindex="-1"
+	>
+		<MilestoneModalContent
+			:milestone="milestone"
+			:modalId="modalId(milestone.id)"
+			:nextModalId="modalId(nextId)"
+			:prevModalId="modalId(prevId)"
+		/>
 	</div>
 </template>
 
