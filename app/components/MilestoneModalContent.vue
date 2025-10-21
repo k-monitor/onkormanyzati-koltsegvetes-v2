@@ -69,7 +69,9 @@ onMounted(() => {
 	// TODO LATER jQuery -> Vue refactor
 	const $ = window.$;
 
-	$('#' + modalId).on('hide.bs.modal', () => (playing.value = false));
+	$('#' + modalId).on('hide.bs.modal', () => {
+		playing.value = false;
+	});
 });
 </script>
 
