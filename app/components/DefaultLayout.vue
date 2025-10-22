@@ -111,11 +111,10 @@ onMounted(() => {
 		<SearchModal :year="year" />
 		<MastHead href="#welcome" />
 		<div class="flex-grow-1">
-			<!-- FIXME layout sections -->
-			<!-- <Welcome
+			<Welcome
 				:year="year"
 				id="welcome"
-			/> -->
+			/>
 			<PublicationSection v-if="config.modules.pub" />
 
 			<Inex
