@@ -25,6 +25,7 @@
 	},
 	"devDependencies": {
 		"@nuxt/eslint": "^1.9.0",
+		"@types/tinycolor2": "^1.4.6",
 		"prettier": "^3.6.2",
 		"typescript": "^5.9.3"
 	}
