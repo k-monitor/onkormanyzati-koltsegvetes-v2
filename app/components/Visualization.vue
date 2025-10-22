@@ -65,7 +65,7 @@ const tooltips = computed(() => ($tooltips as Record<string, Record<string, stri
 const type = computed(() => (mode.value % 2 == 0 ? 'econ' : 'func'));
 
 watch(node, async () => {
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery
 	window.$('.nav-pills .nav-link').blur();
 	await nextTick();
 	updateCurves();
@@ -111,7 +111,7 @@ function fgColor(node: BudgetNode | undefined, index: number) {
 
 const vis = useTemplateRef('vis');
 function curve(index: number) {
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery
 	const $ = window.$;
 	try {
 		var bars = vis.value;
@@ -162,13 +162,13 @@ function up(n?: number) {
 }
 
 function updateCurves() {
-	// TODO LATER jQuery -> Vue refactor
-	const $ = window.$;
-	var svg = $('.curves svg', vis.value);
-	var svgHeight = $(svg).outerHeight();
-	var svgWidth = $(svg).outerWidth();
-	$(svg).attr('viewBox', [0, 0, svgWidth, svgHeight].join(' '));
-
+	if (!vis.value) return;
+	const svg = vis.value.querySelector('.curves svg');
+	if (svg) {
+		var svgHeight = svg.getBoundingClientRect().height;
+		var svgWidth = svg.getBoundingClientRect().width;
+		svg.setAttribute('viewBox', [0, 0, svgWidth, svgHeight].join(' '));
+	}
 	curves.value = children.value.map((n, i) => curve(i));
 }
 

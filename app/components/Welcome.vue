@@ -9,7 +9,6 @@ const { year } = defineProps<{
 const $data = dataJson as BudgetData;
 
 function intro() {
-	// FIXME test jQuery
 	// TODO LATER eliminate jQuery
 	const $ = window.$;
 	$('#mainNav').css('position', 'absolute');

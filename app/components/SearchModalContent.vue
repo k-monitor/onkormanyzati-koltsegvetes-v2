@@ -56,6 +56,7 @@ const results = computed(() => {
 		.slice(0, 5);
 });
 
+let searchTimeout: number | undefined = undefined;
 watch(searchTerm, (term, oldTerm) => {
 	// TODO LATER jQuery -> Axios
 	const $ = window.$;
@@ -69,12 +70,12 @@ watch(searchTerm, (term, oldTerm) => {
 		}
 	}
 
-	clearTimeout(window.searchTimeout);
+	clearTimeout(searchTimeout);
 	if (term.length == oldTerm.length - 1) {
 		// immediate reaction to backspace
 		track(oldTerm);
 	} else if (term.length >= 3) {
-		window.searchTimeout = setTimeout(function () {
+		searchTimeout = setTimeout(function () {
 			track(term);
 		}, 1000);
 	}
@@ -83,7 +84,7 @@ watch(searchTerm, (term, oldTerm) => {
 function jump(result) {
 	// TODO LATER search result type
 
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
 	$('#search-modal').modal('hide');
@@ -101,9 +102,8 @@ function jump(result) {
 }
 
 onMounted(() => {
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery
 	const $ = window.$;
-
 	$('#search-modal').on('show.bs.modal', () => (searchTerm.value = ''));
 	$('#search-modal').on('shown.bs.modal', () => $('#searchTerm-input').focus());
 });

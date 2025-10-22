@@ -12,7 +12,7 @@ const isBannerVisible = ref(true);
 const less = ref(true);
 
 onMounted(() => {
-	// TODO LATER: jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
 	// Activate scrollspy to add active class to navbar items on scroll

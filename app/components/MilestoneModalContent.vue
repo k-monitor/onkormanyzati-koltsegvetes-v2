@@ -25,7 +25,7 @@ function play() {
 }
 
 function switchModal(id: string) {
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
 	$('.modal').modal('hide');
@@ -42,7 +42,7 @@ function next() {
 
 function jump(result) {
 	// TODO LATER search result type
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
 	// based on SearchModalContent.vue#jump
@@ -57,7 +57,7 @@ function jump(result) {
 }
 
 onMounted(() => {
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 	$('#' + modalId).on('hide.bs.modal', () => {
 		playing.value = false;

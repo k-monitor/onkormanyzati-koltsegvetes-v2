@@ -27,7 +27,7 @@ const filteredMilestones = computed(() => {
 });
 
 onMounted(() => {
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery
 	const $ = window.$;
 
 	document.onkeyup = function (e) {

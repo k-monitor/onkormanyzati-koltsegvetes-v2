@@ -71,7 +71,7 @@ useHead({
 });
 
 onMounted(() => {
-	// TODO LATER jQuery -> Vue refactor
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
 	// Smooth scrolling using jQuery easing
