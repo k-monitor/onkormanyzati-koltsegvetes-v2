@@ -48,13 +48,8 @@ function jump(result) {
 	// based on SearchModalContent.vue#jump
 	$('.modal').modal('hide');
 	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
-	$('html, body').animate(
-		{
-			scrollTop: $('#' + result.side).offset().top - 72,
-		},
-		1000,
-		'easeInOutExpo',
-	);
+
+	scrollToElement($('#' + result.side), 72);
 	setTimeout(function () {
 		// FIXME milestone event bus
 		//self.$eventBus.$emit('jump', result);

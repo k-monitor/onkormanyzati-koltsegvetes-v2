@@ -84,9 +84,7 @@ watch(
 const wrapper = useTemplateRef('wrapper');
 function autoScroll() {
 	document.querySelector('.tooltip')?.remove();
-	// TODO LATER jQuery -> Vue refactor
-	const $ = window.$;
-	$('html, body').animate({ scrollTop: $(wrapper.value).offset().top - 75 });
+	if (wrapper.value) scrollToElement(wrapper.value, 75);
 }
 
 function bgColor(node: BudgetNode | undefined, index: number) {

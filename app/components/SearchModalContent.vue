@@ -88,13 +88,7 @@ function jump(result) {
 
 	$('#search-modal').modal('hide');
 	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
-	$('html, body').animate(
-		{
-			scrollTop: $('#' + result.side).offset().top - 72,
-		},
-		1000,
-		'easeInOutExpo',
-	);
+	scrollToElement($('#' + result.side), 72);
 
 	// FIXME search event bus
 	/*setTimeout(function () {

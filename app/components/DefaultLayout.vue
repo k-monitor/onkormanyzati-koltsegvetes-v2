@@ -2,6 +2,7 @@
 import config from '~/data/config.json';
 import data from '~/data/data.json';
 import milestonesJson from '~/data/milestones.json';
+import scrollToElement from '~/utils/scrollToElement';
 
 const milestones = (milestonesJson as Milestones).milestones;
 const { handleYearSelected, year } = useYear();
@@ -82,13 +83,7 @@ onMounted(() => {
 			var target = $(this.hash);
 			target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
 			if (target.length) {
-				$('html, body').animate(
-					{
-						scrollTop: target.offset().top - 72,
-					},
-					1000,
-					'easeInOutExpo',
-				);
+				scrollToElement(target, 72);
 				return false;
 			}
 		}
