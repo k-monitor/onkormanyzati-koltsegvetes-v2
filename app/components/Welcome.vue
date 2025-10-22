@@ -28,9 +28,8 @@ function intro() {
 		.onbeforechange(function (targetElement: Element) {
 			const step = this._introItems[this._currentStep];
 			if (step.milestoneButtonStep) {
-				// FIXME intro event bus
-				//self.$eventBus.$emit('jump', { side: 'expense', type: 'econ' });
-				//self.$eventBus.$emit('jump', { side: 'income', type: 'econ' });
+				eventBus.emit('jump', { side: 'expense', type: 'econ' });
+				eventBus.emit('jump', { side: 'income', type: 'econ' });
 				nextTick(() => {
 					targetElement = $('.milestone-button:visible')[0];
 					targetElement.classList.add('disabled', 'introjs-showElement');
@@ -42,12 +41,11 @@ function intro() {
 				return;
 			} else if (step.path && step.side && step.targetNode) {
 				const { path, side, targetNode } = step;
-				// FIXME intro event bus
-				/*self.$eventBus.$emit('jump', {
+				eventBus.emit('jump', {
 					side,
 					type: 'econ',
 					path: path.split(';'),
-				});*/
+				});
 				nextTick(() => {
 					targetElement = $(`.bar[data-id=${targetNode}]`)[0];
 					targetElement.classList.add('introjs-showElement');

@@ -43,3 +43,16 @@ export type Milestones = {
 	milestones: { [id: string]: Milestone };
 	rels: { [year: string]: Record<string, string> };
 };
+
+export type SearchResult = {
+	distance: number;
+	id: string;
+	matchedId: boolean;
+	matchesInName: number;
+	name: string;
+	path: string[];
+	side: 'income' | 'expense' | 'milestones';
+	tags: string[];
+	type: 'econ' | 'func' | 'milestone';
+	value: number;
+};

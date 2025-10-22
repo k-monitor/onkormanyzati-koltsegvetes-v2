@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import search from '../lib/search.js';
+import search from '../lib/search';
 
 const { milestone, modalId, nextModalId, prevModalId } = defineProps<{
 	milestone: MilestoneWithId;
@@ -51,8 +51,7 @@ function jump(result) {
 
 	scrollToElement($('#' + result.side), 72);
 	setTimeout(function () {
-		// FIXME milestone event bus
-		//self.$eventBus.$emit('jump', result);
+		eventBus.emit('jump', result);
 	}, 1000);
 }
 

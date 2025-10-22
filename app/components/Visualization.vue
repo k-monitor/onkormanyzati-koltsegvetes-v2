@@ -22,7 +22,7 @@ let resizeTimeout: number | undefined = undefined;
 
 const children = computed(() => {
 	try {
-		return node.value.children
+		return (node.value?.children || [])
 			.filter((node) => !String(node.id).startsWith('F'))
 			.sort((a, b) => b.value - a.value);
 	} catch (e) {
@@ -197,25 +197,22 @@ onMounted(() => {
 		}, 100);
 	});
 
-	// FIXME vis event bus
-	/*
-	self.$eventBus.$on('jump', (target) => {
+	eventBus.on('jump', (target) => {
 		console.log('ON jump', target);
-		if (target.side == self.side) {
-			self.mode = target.type == 'econ' ? 0 : 1;
-			self.path = [];
+		if (target.side == side) {
+			mode.value = target.type == 'econ' ? 0 : 1;
+			path.value = [];
 			(target.path || []).forEach((id) => {
-				for (let i = 0; i < self.children.length; i++) {
-					const node = self.children[i];
-					if (node.id == id && node.children && node.children.length > 0) {
-						self.path.push(id);
+				for (let i = 0; i < children.value.length; i++) {
+					const node = children.value[i];
+					if (node?.id == id && node.children && node.children.length > 0) {
+						path.value.push(id);
 					}
 				}
 			});
-			self.$nextTick(() => self.autoScroll());
+			nextTick(autoScroll);
 		}
 	});
-	*/
 });
 
 onUpdated(regenerateTooltips);
@@ -337,10 +334,9 @@ onUpdated(regenerateTooltips);
 							></i>
 						</div>
 						<div class="d-flex d-sm-none">
-							<!-- FIXME eventbus -->
 							<div
 								class="btn btn-link bg-light milestone-button ml-3 mr-1 px-2"
-								__@click="$eventBus.$emit('ms', milestoneId(n))"
+								@click="eventBus.emit('ms', milestoneId(n) || '')"
 								v-if="config.modules.milestones && milestoneId(n)"
 							>
 								<i class="fas fa-fw fa-camera"></i>
@@ -389,10 +385,9 @@ onUpdated(regenerateTooltips);
 						"
 						>{{ n.name }}</span
 					>
-					<!-- FIXME eventbus -->
 					<span
 						class="btn btn-link milestone-button ml-auto"
-						__click="$eventBus.$emit('ms', milestoneId(n))"
+						@click="eventBus.emit('ms', milestoneId(n) || '')"
 						v-if="config.modules.milestones && milestoneId(n)"
 						><i class="fas fa-camera"></i
 					></span>

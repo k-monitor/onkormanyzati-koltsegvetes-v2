@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import config from '~/data/config.json';
-import search from '../lib/search.js';
+import search from '../lib/search';
 
 const { year } = defineProps<{ year: string }>();
 
@@ -81,9 +81,7 @@ watch(searchTerm, (term, oldTerm) => {
 	}
 });
 
-function jump(result) {
-	// TODO LATER search result type
-
+function jump(result: SearchResult) {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
@@ -91,14 +89,13 @@ function jump(result) {
 	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
 	scrollToElement($('#' + result.side), 72);
 
-	// FIXME search event bus
-	/*setTimeout(function () {
+	setTimeout(function () {
 		if (result.side === 'milestones') {
-			$eventBus.$emit('ms', result.id);
+			eventBus.emit('ms', result.id);
 		} else {
-			$eventBus.$emit('jump', result);
+			eventBus.emit('jump', result);
 		}
-	}, 1000);*/
+	}, 1000);
 }
 
 onMounted(() => {

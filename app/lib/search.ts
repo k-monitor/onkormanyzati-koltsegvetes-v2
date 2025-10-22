@@ -1,6 +1,11 @@
-import $data from '../data/data.json';
-import { milestones as $milestones } from '../data/milestones.json';
+import type { SearchResult } from '~/utils/types';
+import dataJson from '~/data/data.json';
+import milestonesJson from '~/data/milestones.json';
 import $tags from '../data/tags.json';
+
+const $data = dataJson as BudgetData;
+const milestones = (milestonesJson as Milestones).milestones;
+
 //{
 //	"expense": {
 //		"func": {
@@ -9,29 +14,32 @@ import $tags from '../data/tags.json';
 //	}
 //};
 
-export default function search(year, term, range) {
+export default function search(year: string, term: string, range: number[]) {
 	range = range || [];
 	const meanValue = range.reduce((a, b) => a + b, 0) / range.length || 0;
 
 	// console.log('search', year, term, range);
 
-	let results = [];
-	['expense', 'income'].forEach((side) => {
-		['econ', 'func'].forEach((type) => {
-			const tree = $data[year][side][type] || {};
+	let results: SearchResult[] = [];
+	(['expense', 'income'] as const).forEach((side) => {
+		(['econ', 'func'] as const).forEach((type) => {
+			const tree = $data[year]?.[side]?.[type] || null;
+			if (!tree) return;
 			const tags = ($tags[side] || { type: {} })[type] || {};
 			const treeResults = searchNode(tree, tags, term, range, []).map((result) => {
 				result.side = side;
 				result.type = type;
-				result.distance = meanValue && Math.abs(result.value - meanValue);
-				return result;
+				result.distance = !meanValue
+					? meanValue
+					: Math.abs((result.value || 0) - meanValue);
+				return result as SearchResult;
 			});
 			results = results.concat(treeResults);
 		});
 	});
-	Object.keys($milestones).forEach((milestoneId) => {
-		const m = $milestones[milestoneId];
-		if (m.year == year) {
+	Object.keys(milestones).forEach((milestoneId) => {
+		const m = milestones[milestoneId];
+		if (m && m.year == year) {
 			const text = m.title + '|' + m.description;
 			const matchesInName = term
 				.toLowerCase()
@@ -40,12 +48,16 @@ export default function search(year, term, range) {
 			const matchedTags = (m.tags || []).filter((tag) => tag.includes(term.toLowerCase()));
 			if (matchedTags.length > 0 || matchesInName > 0) {
 				results.push({
+					distance: Number.MAX_SAFE_INTEGER,
 					id: milestoneId,
+					matchedId: false,
 					matchesInName,
 					name: m.title || '',
+					path: [],
 					side: 'milestones',
 					tags: matchedTags,
 					type: 'milestone',
+					value: 0,
 				});
 			}
 		}
@@ -53,8 +65,14 @@ export default function search(year, term, range) {
 	return results;
 }
 
-function searchNode(node, tags, term, range, path) {
-	const nodeTags = tags[node.id] || tags['0' + node.id] || [];
+function searchNode(
+	node: BudgetNode,
+	tags: Record<string, string[]>,
+	term: string,
+	range: number[],
+	path: string[],
+) {
+	const nodeTags = tags[String(node.id)] || tags['0' + node.id] || [];
 	const matchesInName = term
 		.toLowerCase()
 		.split(' ')
@@ -63,21 +81,21 @@ function searchNode(node, tags, term, range, path) {
 	const matchedId = String(node.id || '').toLowerCase() == term.toLowerCase();
 	const matchedValue =
 		range.length === 1 ||
-		(range.length === 2 && range[0] <= node.value && node.value <= range[1]);
+		(range.length === 2 && range[0]! <= node.value && node.value <= range[1]!);
 
-	let results = [];
+	let results: Partial<SearchResult>[] = [];
 	if (node.id && (matchedTags.length > 0 || matchesInName > 0 || matchedId || matchedValue)) {
 		results.push({
-			id: node.id,
+			id: String(node.id),
 			matchedId,
 			matchesInName,
 			name: node.name,
-			path: path.concat(node.id),
+			path: path.concat(String(node.id)),
 			tags: matchedTags,
 			value: node.value,
 		});
 	}
-	path = node.id ? path.concat(node.id) : path; // <-- root has no ID, but every other node must have iD
+	path = node.id ? path.concat(String(node.id)) : path; // <-- root has no ID, but every other node must have iD
 	(node.children || []).forEach((children) => {
 		results = results.concat(searchNode(children, tags, term, range, path));
 	});

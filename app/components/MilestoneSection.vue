@@ -39,11 +39,10 @@ onMounted(() => {
 		}
 	};
 
-	// FIXME milestone event bus
-	/*this.$eventBus.$on('ms', (id) => {
-		this.tag = null;
-		this.$nextTick(() => $('#milestone-modal-' + id).modal('show'));
-	});*/
+	eventBus.on('ms', (id) => {
+		tag.value = null;
+		nextTick(() => $('#milestone-modal-' + id).modal('show'));
+	});
 });
 </script>
 
