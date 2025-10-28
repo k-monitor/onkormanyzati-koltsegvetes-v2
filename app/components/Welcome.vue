@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const { year } = defineProps<{
-	year: string;
-}>();
+const { year } = useYear();
 
 function intro() {
 	// TODO LATER eliminate jQuery
@@ -163,7 +161,10 @@ function intro() {
 </script>
 
 <template>
-	<section class="page-section bg-primary text-white">
+	<section
+		id="welcome"
+		class="page-section bg-primary text-white"
+	>
 		<div class="container">
 			<div class="container">
 				<div class="row justify-content-center mb-5">

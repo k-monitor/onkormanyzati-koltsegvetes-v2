@@ -1,13 +1,13 @@
 <script setup lang="ts">
 defineProps<{
 	subpageMode?: boolean;
-	years: string[];
 }>();
 
 const isBannerVisible = ref(true);
 const less = ref(true);
 
-const { canShowMilestones, year } = useYear();
+const { canShowMilestones, handleYearSelected, year } = useYear();
+const years = Object.keys(DATA).sort().reverse();
 
 onMounted(() => {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
@@ -148,7 +148,7 @@ onMounted(() => {
 									v-for="y in years"
 									:class="['theme-' + slugify(y)]"
 									:key="y"
-									@click="$emit('yearSelected', y)"
+									@click="handleYearSelected(y)"
 								>
 									<i class="fas fa-circle mr-2"></i>
 									{{ y }}

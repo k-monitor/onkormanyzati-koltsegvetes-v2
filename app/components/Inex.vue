@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
 
-const { year } = defineProps<{ year: string }>();
+const { year } = useYear();
 
 const less = ref(true);
 
-const data = computed(() => DATA[year]);
-const tooltips = computed(() => TOOLTIPS[year] || {});
+const data = computed(() => DATA[year.value]);
+const tooltips = computed(() => TOOLTIPS[year.value] || {});
 
 const expenseTree = computed(() => data.value?.expense.econ);
 const expenseChildren = computed(() =>
@@ -58,7 +58,10 @@ onUpdated(regenerateTooltips);
 </script>
 
 <template>
-	<section class="page-section bg-light">
+	<section
+		id="inex"
+		class="page-section bg-light"
+	>
 		<div class="container">
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-8 text-center">

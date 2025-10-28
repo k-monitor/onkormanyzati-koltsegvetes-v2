@@ -1,6 +1,5 @@
 <script setup lang="ts">
-const { canShowMilestones, handleYearSelected, year } = useYear();
-// TODO LATER these can be used directly inside components, no need for prop drilling
+const { canShowMilestones, year } = useYear();
 
 useHead({
 	bodyAttrs: {
@@ -97,33 +96,21 @@ onMounted(() => {
 
 <template>
 	<div :class="'theme-' + slugify(year)">
-		<NavBar
-			:years="Object.keys(DATA).sort().reverse()"
-			@yearSelected="handleYearSelected"
-		/>
-		<SearchModal :year="year" />
-		<MastHead href="#welcome" />
+		<NavBar />
+		<SearchModal />
+		<MastHead />
 		<div class="flex-grow-1">
-			<Welcome
-				:year="year"
-				id="welcome"
-			/>
+			<Welcome />
 			<PublicationSection v-if="CONFIG.modules.pub" />
-			<Inex
-				v-if="CONFIG.modules.inex"
-				:year="year"
-				id="inex"
-			/>
+			<Inex v-if="CONFIG.modules.inex" />
 			<VisualizationSection
 				v-if="CONFIG.modules.income"
-				:year="year"
 				id="income"
 				side="income"
 				:text="CONFIG.vis.incomeText"
 				:title="CONFIG.vis.income"
 			/>
 			<VisualizationSection
-				:year="year"
 				class="bg-light"
 				id="expense"
 				side="expense"
@@ -132,7 +119,6 @@ onMounted(() => {
 			/>
 			<MilestoneSection
 				v-if="canShowMilestones"
-				:year="year"
 				class="pb-0"
 				id="milestones"
 			/>

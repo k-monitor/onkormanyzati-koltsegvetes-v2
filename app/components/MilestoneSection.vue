@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const { year } = defineProps<{ year: string }>();
+const { year } = useYear();
 
 const tag = ref<string | null>(null);
 
 const milestones = computed(() =>
 	Object.entries(MILESTONES)
-		.filter((e) => e[1].year == year)
+		.filter((e) => e[1].year == year.value)
 		.map((e) => ({ ...e[1], id: e[0] }) as MilestoneWithId),
 );
 

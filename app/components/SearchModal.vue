@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ year: string }>();
+const { year } = useYear();
 </script>
 
 <template>

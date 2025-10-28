@@ -1,10 +1,11 @@
 <script setup lang="ts">
 defineProps<{
-	year: string;
 	side: 'income' | 'expense';
 	text: string;
 	title: string;
 }>();
+
+const { year } = useYear();
 </script>
 
 <template>
