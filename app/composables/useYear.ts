@@ -1,15 +1,20 @@
-import config from '~/data/config.json'; // import is needed because metaInfo below cannot
-import data from '~/data/data.json';
-
 export default () => {
-	const year = useState('year', () => '' + config.defaultYear);
+	const year = useState('year', () => '' + CONFIG.defaultYear);
 
 	function handleYearSelected(_year: string) {
-		if (Object.hasOwn(data, _year)) year.value = _year;
+		if (Object.hasOwn(DATA, _year)) year.value = _year;
 	}
+
+	const canShowMilestones = computed(() => {
+		return (
+			CONFIG.modules.milestones &&
+			Object.values(MILESTONES).filter((m) => m.year == year.value).length > 0
+		);
+	});
 
 	return {
 		year: readonly(year),
 		handleYearSelected,
+		canShowMilestones,
 	};
 };

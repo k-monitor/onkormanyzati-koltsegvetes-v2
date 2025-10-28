@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import config from '~/data/config.json';
-</script>
-
 <template>
 	<section
 		class="page-section"
@@ -20,11 +16,11 @@ import config from '~/data/config.json';
 				<div
 					class="col offset-md-1 lead text-justify d-flex flex-column justify-content-between"
 				>
-					<p>{{ config.pub.lead }}</p>
+					<p>{{ CONFIG.pub.lead }}</p>
 					<div class="my-4 text-center">
 						<a
 							class="btn btn-outline-primary btn-xl"
-							:href="config.pub.url"
+							:href="CONFIG.pub.url"
 							target="_blank"
 							>Elolvasom</a
 						>

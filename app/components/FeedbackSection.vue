@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import config from '~/data/config.json';
-
 onMounted(() => {
 	window.addEventListener('scroll', function () {
 		const scrollPosition = window.pageYOffset;
@@ -19,7 +17,7 @@ onMounted(() => {
 			<div class="row">
 				<div class="col">
 					<h3 class="font-weight-light mb-5 text-center text-white">
-						{{ config.feedback.text }}
+						{{ CONFIG.feedback.text }}
 					</h3>
 				</div>
 			</div>
@@ -27,9 +25,9 @@ onMounted(() => {
 				<div class="col text-center">
 					<a
 						class="btn btn-xl btn-light"
-						:href="config.feedback.url"
+						:href="CONFIG.feedback.url"
 						target="_blank"
-						>{{ config.feedback.action }}</a
+						>{{ CONFIG.feedback.action }}</a
 					>
 				</div>
 			</div>

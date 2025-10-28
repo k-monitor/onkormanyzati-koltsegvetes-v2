@@ -1,11 +1,5 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
-import config from '~/data/config.json';
-import dataJson from '~/data/data.json';
-import milestonesJson from '~/data/milestones.json';
-import $tooltips from '~/data/tooltips.json';
-
-const $data = dataJson as BudgetData;
 
 const { defaultMode, year, side } = defineProps<{
 	defaultMode: number;
@@ -15,10 +9,12 @@ const { defaultMode, year, side } = defineProps<{
 
 const curves = ref<string[]>([]);
 const hovered = ref(-1);
-const loading = ref(true);
 const mode = ref(0); // 0 = econ, 1 = func
 const path = ref<string[]>([]);
 let resizeTimeout: number | undefined = undefined;
+
+const data = computed(() => DATA[year]?.[side] || { econ: null, func: null });
+const tooltips = computed(() => TOOLTIPS[year] || {});
 
 const children = computed(() => {
 	try {
@@ -29,8 +25,6 @@ const children = computed(() => {
 		return [];
 	}
 });
-
-const data = computed(() => $data[year]?.[side] || { econ: null, func: null });
 
 const root = computed(() => {
 	return (
@@ -60,10 +54,6 @@ const nodePath = computed(() => {
 
 const node = computed(() => nodePath.value[nodePath.value.length - 1]);
 
-const tooltips = computed(() => ($tooltips as Record<string, Record<string, string>>)[year] || {});
-
-const type = computed(() => (mode.value % 2 == 0 ? 'econ' : 'func'));
-
 watch(node, async () => {
 	// TODO LATER eliminate jQuery
 	window.$('.nav-pills .nav-link').blur();
@@ -92,7 +82,7 @@ function bgColor(node: BudgetNode | undefined, index: number) {
 	if (!node) return defaultColor;
 
 	const id = nodePath.value.length > 1 ? nodePath.value[1]!.id : node.id;
-	const colors: Record<string, string> = config.color || {};
+	const colors: Record<string, string> = CONFIG.color || {};
 	const color = tinycolor(colors[String(id)] || defaultColor);
 	if (nodePath.value.length > 1) {
 		const opacity = 0.5 + 0.5 * (node.value / nodePath.value[1]!.value);
@@ -173,12 +163,13 @@ function updateCurves() {
 }
 
 function regenerateTooltips() {
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	window.$('[data-toggle="tooltip"]').tooltip();
 }
 
 function milestoneId(node: BudgetNode) {
 	try {
-		const mid = (milestonesJson as Milestones).rels[year]?.[String(node.id)];
+		const mid = MILESTONE_RELS[year]?.[String(node.id)];
 		return mid ? mid : null;
 	} catch (e) {
 		return null;
@@ -232,7 +223,7 @@ onUpdated(regenerateTooltips);
 					<li class="nav-item">
 						<a
 							:class="{ active: mode == 1 }"
-							:title="config.vis.funcHint"
+							:title="CONFIG.vis.funcHint"
 							@click="
 								path = [];
 								mode = 1;
@@ -242,13 +233,13 @@ onUpdated(regenerateTooltips);
 							data-toggle="tooltip"
 							href="javascript:void(0)"
 						>
-							{{ config.vis.func }}
+							{{ CONFIG.vis.func }}
 						</a>
 					</li>
 					<li class="nav-item">
 						<a
 							:class="{ active: mode == 0 }"
-							:title="config.vis.econHint"
+							:title="CONFIG.vis.econHint"
 							@click="
 								path = [];
 								mode = 0;
@@ -258,7 +249,7 @@ onUpdated(regenerateTooltips);
 							data-toggle="tooltip"
 							href="javascript:void(0)"
 						>
-							{{ config.vis.econ }}
+							{{ CONFIG.vis.econ }}
 						</a>
 					</li>
 				</ul>
@@ -337,7 +328,7 @@ onUpdated(regenerateTooltips);
 							<div
 								class="btn btn-link bg-light milestone-button ml-3 mr-1 px-2"
 								@click="eventBus.emit('ms', milestoneId(n) || '')"
-								v-if="config.modules.milestones && milestoneId(n)"
+								v-if="CONFIG.modules.milestones && milestoneId(n)"
 							>
 								<i class="fas fa-fw fa-camera"></i>
 							</div>
@@ -388,7 +379,7 @@ onUpdated(regenerateTooltips);
 					<span
 						class="btn btn-link milestone-button ml-auto"
 						@click="eventBus.emit('ms', milestoneId(n) || '')"
-						v-if="config.modules.milestones && milestoneId(n)"
+						v-if="CONFIG.modules.milestones && milestoneId(n)"
 						><i class="fas fa-camera"></i
 					></span>
 				</div>

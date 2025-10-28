@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import config from '~/data/config.json';
-
-const fb = `https://facebook.com/sharer/sharer.php?u=${config.url}`;
-const tw = `https://twitter.com/intent/tweet/?text=${config.social.text}&url=${config.url}`;
+const fb = `https://facebook.com/sharer/sharer.php?u=${CONFIG.url}`;
+const tw = `https://twitter.com/intent/tweet/?text=${CONFIG.social.text}&url=${CONFIG.url}`;
 const li = `https://www.linkedin.com/shareArticle?mini=true&url=${
-	config.url
-}&title=${config.social.text}&summary=&source=${config.url}`;
-const ml = `mailto:?subject=${config.social.text}&body=${config.url}`;
+	CONFIG.url
+}&title=${CONFIG.social.text}&summary=&source=${CONFIG.url}`;
+const ml = `mailto:?subject=${CONFIG.social.text}&body=${CONFIG.url}`;
 </script>
 <template>
 	<div id="sharingbuttons">

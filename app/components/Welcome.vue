@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import config from '~/data/config.json';
-import dataJson from '~/data/data.json';
-
 const { year } = defineProps<{
 	year: string;
 }>();
-
-const $data = dataJson as BudgetData;
 
 function intro() {
 	// TODO LATER eliminate jQuery
@@ -68,7 +63,7 @@ function intro() {
 
 	const steps = [];
 
-	if (config.modules.inex) {
+	if (CONFIG.modules.inex) {
 		steps.push({
 			element: '#inex-wrapper',
 			intro: 'Ebben a szakaszban a költségvetés bevételeinek és kiadásainak fő számait mutatjuk be.',
@@ -81,9 +76,9 @@ function intro() {
 		});
 	}
 
-	const side = config.modules.income ? 'income' : 'expense';
+	const side = CONFIG.modules.income ? 'income' : 'expense';
 	const el = '#' + side;
-	const yearData = $data[year] || ({} as Record<string, any>);
+	const yearData = DATA[year] || ({} as Record<string, any>);
 	const sideData = yearData[side] || ({} as Record<string, any>);
 	if (sideData.func) {
 		steps.push({
@@ -98,7 +93,7 @@ function intro() {
 		position: 'right',
 	});
 
-	if (config.modules.milestones) {
+	if (CONFIG.modules.milestones) {
 		steps.push({
 			milestoneButtonStep: true, // see onbeforechange above
 			intro: 'Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.',
@@ -111,8 +106,8 @@ function intro() {
 		position: 'bottom',
 	});
 
-	Object.keys(config.tutorial || {}).forEach((targetNode) => {
-		const text = (config.tutorial as Record<string, string>)[targetNode] || '';
+	Object.keys(CONFIG.tutorial || {}).forEach((targetNode) => {
+		const text = (CONFIG.tutorial as Record<string, string>)[targetNode] || '';
 		if (text.trim().length === 0) return;
 		const side = targetNode[0] === 'B' ? 'income' : 'expense';
 		let root = sideData.econ as BudgetNode | undefined;
@@ -141,7 +136,7 @@ function intro() {
 		position: 'bottom',
 	});
 
-	if (Object.keys($data).length > 1) {
+	if (Object.keys(DATA).length > 1) {
 		steps.push({
 			element: '#mainNav .dropdown',
 			intro: 'Az évváltó gombbal pedig a különböző évek költségvetései között válthat.',
@@ -149,7 +144,7 @@ function intro() {
 		});
 	}
 
-	if (config.modules.milestones) {
+	if (CONFIG.modules.milestones) {
 		steps.push({
 			element: '#milestones h2',
 			intro: 'A Fejlesztések szakaszban a kiválasztott évhez kapcsolódó összes fejlesztés megtekinthető fotóval és rövid leírással.',
@@ -173,23 +168,23 @@ function intro() {
 			<div class="container">
 				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
-						<h2>{{ config.welcome.title }}</h2>
+						<h2>{{ CONFIG.welcome.title }}</h2>
 						<hr class="divider light my-4" />
 					</div>
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="config.welcome.leftBlock"
+							:source="CONFIG.welcome.leftBlock"
 							:anchorAttributes="{ target: '_blank' }"
 						/>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="config.welcome.rightBlock"
+							:source="CONFIG.welcome.rightBlock"
 							:anchorAttributes="{ target: '_blank' }"
 						/>
-						<p class="my-5">{{ config.welcome.aboveSignature }}</p>
+						<p class="my-5">{{ CONFIG.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
@@ -203,9 +198,9 @@ function intro() {
 							<div class="flex-grow-1 ml-5">
 								<p class="mt-4 mb-0">
 									<em>
-										{{ config.welcome.name }}
+										{{ CONFIG.welcome.name }}
 										<br />
-										{{ config.welcome.role }}
+										{{ CONFIG.welcome.role }}
 									</em>
 								</p>
 							</div>

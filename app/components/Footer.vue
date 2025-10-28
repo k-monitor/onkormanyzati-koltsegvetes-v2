@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import config from '~/data/config.json';
-</script>
-
 <template>
 	<footer class="bg-dark py-5 text-white-75">
 		<div class="container">
@@ -27,34 +23,34 @@ import config from '~/data/config.json';
 							id="contacts"
 						>
 							<p
-								v-if="config.footer.url"
+								v-if="CONFIG.footer.url"
 								class="lead"
 							>
 								<i class="fas fa-fw fa-globe-europe mr-2"></i>
 								<a
-									:href="config.footer.url"
+									:href="CONFIG.footer.url"
 									target="_blank"
-									>{{ config.footer.url.replace(/^.*?\/\/|\/.*$|www\./g, '') }}</a
+									>{{ CONFIG.footer.url.replace(/^.*?\/\/|\/.*$|www\./g, '') }}</a
 								>
 							</p>
 							<p
-								v-if="config.footer.fb"
+								v-if="CONFIG.footer.fb"
 								class="lead"
 							>
 								<i class="fab fa-fw fa-facebook mr-2"></i>
 								<a
-									:href="`https://www.facebook.com/${config.footer.fb}/`"
+									:href="`https://www.facebook.com/${CONFIG.footer.fb}/`"
 									target="_blank"
-									>@{{ config.footer.fb }}</a
+									>@{{ CONFIG.footer.fb }}</a
 								>
 							</p>
 							<p
-								v-if="config.footer.email"
+								v-if="CONFIG.footer.email"
 								class="lead"
 							>
 								<i class="fas fa-fw fa-envelope mr-2"></i>
-								<a :href="`mailto:${config.footer.email}`">{{
-									config.footer.email
+								<a :href="`mailto:${CONFIG.footer.email}`">{{
+									CONFIG.footer.email
 								}}</a>
 							</p>
 						</div>

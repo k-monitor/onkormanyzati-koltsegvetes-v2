@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import config from '~/data/config.json';
-</script>
-
 <template>
 	<div
 		aria-hidden="true"
@@ -21,7 +17,7 @@ import config from '~/data/config.json';
 						class="modal-title"
 						id="moreInfoModalLabel"
 					>
-						{{ config.moreInfo.title }}
+						{{ CONFIG.moreInfo.title }}
 					</h5>
 					<button
 						aria-label="Close"
@@ -36,7 +32,7 @@ import config from '~/data/config.json';
 				</div>
 				<div class="modal-body">
 					<VueMarkdown
-						:source="config.moreInfo.text"
+						:source="CONFIG.moreInfo.text"
 						:anchorAttributes="{ target: '_blank' }"
 					/>
 				</div>

@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import config from '~/data/config.json';
-import data from '~/data/data.json';
-import milestonesJson from '~/data/milestones.json';
-import scrollToElement from '~/utils/scrollToElement';
-
-const milestones = (milestonesJson as Milestones).milestones;
-const { handleYearSelected, year } = useYear();
+const { canShowMilestones, handleYearSelected, year } = useYear();
 // TODO LATER these can be used directly inside components, no need for prop drilling
 
 useHead({
@@ -18,7 +12,7 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: config.url,
+			href: CONFIG.url,
 		},
 		{
 			rel: 'stylesheet',
@@ -36,20 +30,20 @@ useHead({
 	meta: [
 		{
 			property: 'og:site_name',
-			content: config.seo.siteName,
+			content: CONFIG.seo.siteName,
 		},
 		{
 			property: 'og:title',
-			content: config.seo.ogTitle,
+			content: CONFIG.seo.ogTitle,
 		},
 		{
 			name: 'description',
 			property: 'og:description',
-			content: config.seo.description,
+			content: CONFIG.seo.description,
 		},
 		{
 			property: 'og:url',
-			content: config.url,
+			content: CONFIG.url,
 		},
 		{
 			property: 'og:type',
@@ -57,7 +51,7 @@ useHead({
 		},
 		{
 			property: 'og:image',
-			content: config.url + 'assets/img/ogimage.jpg',
+			content: CONFIG.url + 'assets/img/ogimage.jpg',
 		},
 	],
 	script: [
@@ -67,7 +61,7 @@ useHead({
 		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js' },
 		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js' },
 	],
-	title: config.seo.pageTitle,
+	title: CONFIG.seo.pageTitle,
 });
 
 onMounted(() => {
@@ -104,8 +98,7 @@ onMounted(() => {
 <template>
 	<div :class="'theme-' + slugify(year)">
 		<NavBar
-			:year="year"
-			:years="Object.keys(data).sort().reverse()"
+			:years="Object.keys(DATA).sort().reverse()"
 			@yearSelected="handleYearSelected"
 		/>
 		<SearchModal :year="year" />
@@ -115,43 +108,39 @@ onMounted(() => {
 				:year="year"
 				id="welcome"
 			/>
-			<PublicationSection v-if="config.modules.pub" />
-
+			<PublicationSection v-if="CONFIG.modules.pub" />
 			<Inex
+				v-if="CONFIG.modules.inex"
 				:year="year"
 				id="inex"
-				v-if="config.modules.inex"
 			/>
 			<VisualizationSection
+				v-if="CONFIG.modules.income"
 				:year="year"
 				id="income"
 				side="income"
-				:text="config.vis.incomeText"
-				:title="config.vis.income"
-				v-if="config.modules.income"
+				:text="CONFIG.vis.incomeText"
+				:title="CONFIG.vis.income"
 			/>
 			<VisualizationSection
 				:year="year"
 				class="bg-light"
 				id="expense"
 				side="expense"
-				:text="config.vis.expenseText"
-				:title="config.vis.expense"
+				:text="CONFIG.vis.expenseText"
+				:title="CONFIG.vis.expense"
 			/>
 			<MilestoneSection
+				v-if="canShowMilestones"
 				:year="year"
 				class="pb-0"
 				id="milestones"
-				v-if="
-					config.modules.milestones &&
-					Object.entries(milestones).filter((m) => m[1].year == year).length > 0
-				"
 			/>
-			<FeedbackSection v-if="config.modules.feedback" />
+			<FeedbackSection v-if="CONFIG.modules.feedback" />
 			<slot />
 		</div>
 		<Footer />
-		<Social v-if="config.modules.social" />
+		<Social v-if="CONFIG.modules.social" />
 		<FeedbackModal />
 		<MoreInfoModal />
 	</div>

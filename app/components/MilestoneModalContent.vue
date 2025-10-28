@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import search from '../lib/search';
+import search from '../utils/search';
 
 const { milestone, modalId, nextModalId, prevModalId } = defineProps<{
 	milestone: MilestoneWithId;

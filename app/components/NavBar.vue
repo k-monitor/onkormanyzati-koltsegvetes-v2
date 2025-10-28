@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import config from '~/data/config.json';
-import milestones from '~/data/milestones.json';
-
 defineProps<{
 	subpageMode?: boolean;
-	year: string;
 	years: string[];
 }>();
 
 const isBannerVisible = ref(true);
 const less = ref(true);
+
+const { canShowMilestones, year } = useYear();
 
 onMounted(() => {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
@@ -62,7 +60,7 @@ onMounted(() => {
 						height="30"
 						alt=""
 					/>
-					{{ config.city }}
+					{{ CONFIG.city }}
 				</a>
 				<button
 					class="navbar-toggler navbar-toggler-right"
@@ -98,36 +96,31 @@ onMounted(() => {
 							<a
 								href="#welcome"
 								class="nav-link js-scroll-trigger"
-								>{{ config.navBar.welcome }}</a
+								>{{ CONFIG.navBar.welcome }}</a
 							>
 						</li>
 						<li class="nav-item">
 							<a
 								:href="
 									'#' +
-									(config.modules.inex
+									(CONFIG.modules.inex
 										? 'inex'
-										: config.modules.income
+										: CONFIG.modules.income
 											? 'income'
 											: 'expense')
 								"
 								class="nav-link js-scroll-trigger"
-								>{{ config.navBar.inex }}</a
+								>{{ CONFIG.navBar.inex }}</a
 							>
 						</li>
 						<li
 							class="nav-item"
-							v-if="
-								config.modules.milestones &&
-								Object.entries(milestones.milestones).filter(
-									(m) => String(m[1].year) == year,
-								).length > 0
-							"
+							v-if="canShowMilestones"
 						>
 							<a
 								href="#milestones"
 								class="nav-link js-scroll-trigger"
-								>{{ config.navBar.milestones }}</a
+								>{{ CONFIG.navBar.milestones }}</a
 							>
 						</li>
 						<li
@@ -168,21 +161,21 @@ onMounted(() => {
 								class="nav-link"
 								data-toggle="modal"
 								data-target="#moreInfoModal"
-								>{{ config.navBar.moreInfo }}</a
+								>{{ CONFIG.navBar.moreInfo }}</a
 							>
 						</li>
 						<li
-							v-if="config.iframe.title && config.iframe.url"
+							v-if="CONFIG.iframe.title && CONFIG.iframe.url"
 							class="nav-item"
 						>
 							<a
-								:href="`/${slugify(config.iframe.title).toLowerCase()}`"
+								:href="`/${slugify(CONFIG.iframe.title).toLowerCase()}`"
 								class="nav-link"
-								>{{ config.iframe.title }}</a
+								>{{ CONFIG.iframe.title }}</a
 							>
 						</li>
 						<li
-							v-if="config.modules.feedback"
+							v-if="CONFIG.modules.feedback"
 							class="nav-item"
 						>
 							<a
@@ -213,10 +206,10 @@ onMounted(() => {
 		</nav>
 		<div
 			id="banner"
-			v-if="isBannerVisible && config.navBar.showBanner"
+			v-if="isBannerVisible && CONFIG.navBar.showBanner"
 		>
 			<VueMarkdown
-				:source="config.navBar.bannerText"
+				:source="CONFIG.navBar.bannerText"
 				:class="{ less, more: !less }"
 			/>
 			<button

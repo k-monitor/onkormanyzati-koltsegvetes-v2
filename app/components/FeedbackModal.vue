@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import config from '~/data/config.json';
-</script>
-
 <template>
 	<div
 		aria-hidden="true"
@@ -21,7 +17,7 @@ import config from '~/data/config.json';
 						class="modal-title"
 						id="feedbackModalLabel"
 					>
-						{{ config.feedback.title }}
+						{{ CONFIG.feedback.title }}
 					</h5>
 					<button
 						aria-label="Close"
@@ -36,15 +32,15 @@ import config from '~/data/config.json';
 				</div>
 				<div class="modal-body">
 					<p class="font-weight-bold my-4 lead text-center">
-						{{ config.feedback.text }}
+						{{ CONFIG.feedback.text }}
 					</p>
 				</div>
 				<div class="modal-footer">
 					<a
 						class="btn btn-primary"
-						:href="config.feedback.url"
+						:href="CONFIG.feedback.url"
 						target="_blank"
-						>{{ config.feedback.action }}</a
+						>{{ CONFIG.feedback.action }}</a
 					>
 				</div>
 			</div>

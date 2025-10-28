@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
-import config from '~/data/config.json';
-import $data from '~/data/data.json';
-import $tooltips from '~/data/tooltips.json';
 
 const { year } = defineProps<{ year: string }>();
 
 const less = ref(true);
 
-const data = computed(() => ($data as BudgetData)[year]);
+const data = computed(() => DATA[year]);
+const tooltips = computed(() => TOOLTIPS[year] || {});
 
 const expenseTree = computed(() => data.value?.expense.econ);
 const expenseChildren = computed(() =>
-	config.inex.expenseNodes
+	CONFIG.inex.expenseNodes
 		.split(',')
 		.map((id) => expenseTree.value?.children?.filter((n) => n.id === id.trim())[0])
 		.filter((n) => !!n)
@@ -24,7 +22,7 @@ const expenseSum = computed(() =>
 
 const incomeTree = computed(() => data.value?.income.econ);
 const incomeChildren = computed(() =>
-	config.inex.incomeNodes
+	CONFIG.inex.incomeNodes
 		.split(',')
 		.map((id) => incomeTree.value?.children?.filter((n) => n.id === id.trim())[0])
 		.filter((n) => !!n)
@@ -34,11 +32,9 @@ const incomeSum = computed(() =>
 	incomeChildren.value.map((node) => node.value || 0).reduce((sum, value) => sum + value, 0),
 );
 
-const tooltips = computed(() => ($tooltips as Record<string, Record<string, string>>)[year] || {});
-
 function bgColor(node: BudgetNode, isIncome: boolean) {
 	const defaultColor = isIncome ? '#bde2cd' : '#ffb5b5';
-	return (config.inex as Record<string, string>)[String(node.id)] || defaultColor;
+	return (CONFIG.inex as Record<string, string>)[String(node.id)] || defaultColor;
 }
 function fgColor(node: BudgetNode, isIncome: boolean) {
 	const color = tinycolor(bgColor(node, isIncome));
@@ -67,7 +63,7 @@ onUpdated(regenerateTooltips);
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-8 text-center">
 					<SectionHeading
-						:title="config.inex.title"
+						:title="CONFIG.inex.title"
 						:year="year"
 					/>
 					<hr class="divider my-4" />
@@ -86,12 +82,12 @@ onUpdated(regenerateTooltips);
 							>
 								<i class="fas fa-fw fa-angle-double-down"></i>
 								<span class="d-none d-md-inline-block">{{
-									config.vis.income
+									CONFIG.vis.income
 								}}</span>
 							</a>
 						</div>
 						<div class="mx-auto">
-							<span>{{ config.inex.subtitle }}</span>
+							<span>{{ CONFIG.inex.subtitle }}</span>
 							<br />
 							<span>{{ groupNums(Math.max(incomeSum, expenseSum), true) }}</span>
 						</div>
@@ -101,7 +97,7 @@ onUpdated(regenerateTooltips);
 								class="btn btn-outline-danger js-scroll-trigger"
 							>
 								<span class="d-none d-md-inline-block">{{
-									config.vis.expense
+									CONFIG.vis.expense
 								}}</span>
 								<i class="fas fa-fw fa-angle-double-down"></i>
 							</a>
@@ -192,7 +188,7 @@ onUpdated(regenerateTooltips);
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
 					<VueMarkdown
-						:source="config.inex.text"
+						:source="CONFIG.inex.text"
 						:class="{ less: less, more: !less }"
 					/>
 					<div class="border-top">

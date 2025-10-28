@@ -1,11 +1,3 @@
-import type { SearchResult } from '~/utils/types';
-import dataJson from '~/data/data.json';
-import milestonesJson from '~/data/milestones.json';
-import $tags from '../data/tags.json';
-
-const $data = dataJson as BudgetData;
-const milestones = (milestonesJson as Milestones).milestones;
-
 //{
 //	"expense": {
 //		"func": {
@@ -23,9 +15,9 @@ export default function search(year: string, term: string, range: number[]) {
 	let results: SearchResult[] = [];
 	(['expense', 'income'] as const).forEach((side) => {
 		(['econ', 'func'] as const).forEach((type) => {
-			const tree = $data[year]?.[side]?.[type] || null;
+			const tree = DATA[year]?.[side]?.[type] || null;
 			if (!tree) return;
-			const tags = ($tags[side] || { type: {} })[type] || {};
+			const tags = (TAGS[side] || { type: {} })[type] || {};
 			const treeResults = searchNode(tree, tags, term, range, []).map((result) => {
 				result.side = side;
 				result.type = type;
@@ -37,8 +29,8 @@ export default function search(year: string, term: string, range: number[]) {
 			results = results.concat(treeResults);
 		});
 	});
-	Object.keys(milestones).forEach((milestoneId) => {
-		const m = milestones[milestoneId];
+	Object.keys(MILESTONES).forEach((milestoneId) => {
+		const m = MILESTONES[milestoneId];
 		if (m && m.year == year) {
 			const text = m.title + '|' + m.description;
 			const matchesInName = term

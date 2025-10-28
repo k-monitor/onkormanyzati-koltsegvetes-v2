@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import config from '~/data/config.json';
-import milestonesJson from '~/data/milestones.json';
-
 const { year } = defineProps<{ year: string }>();
 
 const tag = ref<string | null>(null);
 
 const milestones = computed(() =>
-	Object.entries((milestonesJson as Milestones).milestones)
+	Object.entries(MILESTONES)
 		.filter((e) => e[1].year == year)
 		.map((e) => ({ ...e[1], id: e[0] }) as MilestoneWithId),
 );
@@ -52,7 +49,7 @@ onMounted(() => {
 			<div class="row">
 				<div class="col text-center">
 					<SectionHeading
-						:title="config.milestones.title"
+						:title="CONFIG.milestones.title"
 						:year="year"
 					/>
 					<hr class="divider my-4 mb-5" />

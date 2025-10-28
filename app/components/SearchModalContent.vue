@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import config from '~/data/config.json';
-import search from '../lib/search';
-
 const { year } = defineProps<{ year: string }>();
 
 type Suffix = {
@@ -32,7 +29,7 @@ const results = computed(() => {
 	if (searchTerm.value.length < 3 && range.value.length == 0) return [];
 	const valueSearch = range.value.length > 0;
 	return search(year, searchTerm.value, range.value)
-		.filter((r) => r.side != 'income' || config.modules.income)
+		.filter((r) => r.side != 'income' || CONFIG.modules.income)
 		.sort(function (a, b) {
 			function score(r) {
 				// TODO LATER search result type
@@ -196,8 +193,8 @@ onMounted(() => {
 					class="text-center text-muted"
 					v-if="results.length == 0"
 				>
-					<span v-if="searchTerm.length < 3">{{ config.search.tooShort }}</span>
-					<span v-else>{{ config.search.noResults }}</span>
+					<span v-if="searchTerm.length < 3">{{ CONFIG.search.tooShort }}</span>
+					<span v-else>{{ CONFIG.search.noResults }}</span>
 				</p>
 				<div class="list-group">
 					<div
@@ -217,7 +214,7 @@ onMounted(() => {
 							</span>
 							<br />
 
-							<small class="text-muted">({{ config.search[r.type] }})</small>
+							<small class="text-muted">({{ CONFIG.search[r.type] }})</small>
 							<br />
 							<span v-if="(r.tags || '').length > 0">
 								<span
@@ -244,7 +241,7 @@ onMounted(() => {
 							>
 								<i class="far fa-hand-point-right"></i>
 								<br />
-								{{ config.search[r.side] }}
+								{{ CONFIG.search[r.side] }}
 							</a>
 						</div>
 					</div>
