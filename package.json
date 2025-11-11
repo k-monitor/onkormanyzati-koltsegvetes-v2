@@ -1,23 +1,26 @@
 {
 	"name": "onkormanyzati-koltsegvetes",
+	"description": "Önkormányzati költségvetés vizualizáció 2.0+",
 	"version": "3.0.0",
 	"type": "module",
 	"private": true,
+	"license": "GPL-3.0",
+	"author": "Zsolt Jurányi <juranyi.zsolt@k-monitor.hu>",
 	"scripts": {
-		"build": "nuxt build",
 		"dev": "nuxt dev",
 		"generate": "nuxt generate",
-		"preview": "nuxt preview",
-		"postinstall": "nuxt prepare",
-		"lint": "eslint .",
-		"lint:fix": "eslint . --fix",
+		"prepare": "node scripts/prepare",
 		"new-config": "node scripts/generate-config",
-		"prepare": "node scripts/prepare"
+		"admin": "node admin/index.cjs"
 	},
 	"dependencies": {
 		"@nuxt/scripts": "0.13.0",
 		"@unhead/vue": "^2.0.19",
 		"bootstrap": "^4.5.0",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"express-basic-auth": "^1.2.0",
+		"express-fileupload": "^1.2.1",
 		"markdown-it": "^6.1.1",
 		"mitt": "^3.0.1",
 		"nuxt": "^4.1.3",

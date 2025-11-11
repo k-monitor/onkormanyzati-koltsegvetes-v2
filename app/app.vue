@@ -10,7 +10,7 @@ useHead({
 		{
 			rel: 'icon',
 			type: 'image/png',
-			href: CONFIG.url + 'favicon.png',
+			href: CONFIG.url + 'assets/img/favicon.png',
 		},
 		{
 			rel: 'canonical',

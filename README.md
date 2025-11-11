@@ -12,12 +12,14 @@ _Copyright &copy; 2025 K-Monitor_
 
 ## Változások korábbi verzióhoz képest
 
-- Node verzió: 22
+- Node verzió: 12+ -> 20+
 - yarn -> pnpm
+- `yarn build` -> `pnpm generate`
 - alapértelmezett port: `8080` -> `3000`
 - `static` -> `public`
 - `src` -> `app`
-- `src/favicon.png` -> `public/favicon.png`
+- `src/favicon.png` -> `public/assets/img/favicon.png`
+- `dist` -> `.output/public`
 
 ## Beüzemelés
 
@@ -33,7 +35,7 @@ A beüzemelés lépései:
 1. Ellenőrizd, hogy az alábbiakban bemutatott XLSX fájlok mind jelen vannak-e az `input` mappában, és mindegyiknek megfelelő-e a formátuma.
 1. A projekt mappájában futtasd le a `pnpm prepare` parancsot, ez az `input` mappában levő fájlokban rejlő adatokat átalakítja a vizualizációnak megfelelő formátumra. A generált adatfájlok az `app/data` mappába kerülnek, a weboldal fejlesztésekor és generálásakor innen lesznek kiolvasva.
 1. A projekt mappájában indítsd el a `pnpm dev` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:3000/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
-1. A weboldal legenerálásához használd a `pnpm build` parancsot. (Ez lefuttatja a `prepare` szkriptet is.) A kész weboldal az `.output` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
+1. A weboldal legenerálásához használd a `pnpm generate` parancsot. (Ez lefuttatja a `prepare` szkriptet is.) A kész weboldal az `.output/public` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
 1. A kereső naplózás funkciójához szükség van telepített PHP interpreterre is, valamint a következő parancs lefuttatására a hosztolt mappában: `touch search.log && sudo chown www-data:www-data search.log`. A `search.log` fájlt érdemes publikusan elérhetetlenné tenni (ld. `public/.htaccess`). Ha erre a naplózó funkcióra nincs szükség, a `track-search.php` fájlt ajánlott törölni a webszerverről.
 
 ## Mappastruktúra
@@ -41,7 +43,7 @@ A beüzemelés lépései:
 - **.output/ (generált)** - Ebbe a mappába generálja a Nuxt a kész weboldalt.
 - **app/** - A weboldal forrásfájljai.
 - **input/** - Ebbe a mappába kell helyezni az input adatokat.
-- **public/** - A weboldal statikus fájljai, amik a build folyamat során érintetlenül át lesznek másolva a kimeneti mappába. Ezen belül lehet elhelyezni a képeket és videókat.
+- **public/** - A weboldal statikus fájljai, amik a generálási folyamat során érintetlenül át lesznek másolva a kimeneti mappába. Ezen belül lehet elhelyezni a képeket és videókat.
 - **scripts/** - Ebben a mappában segédszkriptek vannak.
 
 ## Adatok
@@ -311,10 +313,10 @@ Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a ta
 Magának a költségvetés site-nak a beüzemelése ezekből a fázisokból áll (ez van fentebb részletesebben):
 
 1. A forráskódban cserélni/módosítani kell az Excel és képfájlokat.
-2. Le kell generálni a site-ot a forráskódból (`pnpm build`).
-3. Ezután az `.output` mappában egy statikus weboldal fájljai lesznek, ezt lehet egy webszerverrel (pl. Apache, Nginx) hosztolni.
+2. Le kell generálni a site-ot a forráskódból (`pnpm generate`).
+3. Ezután az `.output/public` mappában egy statikus weboldal fájljai lesznek, ezt lehet egy webszerverrel (pl. Apache, Nginx) hosztolni.
 
-Az admin modul eme 3 lépés megkönnyítésére szolgál. Ez egy webalkalmazás, ami a forráskód mappájában fut, így le tudja cserélni a fájlokat, és meg tudja hívni az `pnpm build` parancsot. Mindezen műveletekhez pedig egy webes felületet biztosít.
+Az admin modul eme 3 lépés megkönnyítésére szolgál. Ez egy webalkalmazás, ami a forráskód mappájában fut, így le tudja cserélni a fájlokat, és meg tudja hívni az `pnpm generate` parancsot. Mindezen műveletekhez pedig egy webes felületet biztosít.
 
 Admin beüzemelés lépései részletesen:
 
@@ -328,7 +330,7 @@ Admin beüzemelés lépései részletesen:
     - `SECOND_USER=user` - ezzel a felhasználónévvel is el lehet érni az admin felületet
     - `SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
     - `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
-    - `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami az `.output` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
+    - `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami az `.output/public` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
 5. Az admin felület az `pnpm admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
 
 Ahhoz, hogy az admin felület publikusan is elérhető legyen, az alábbiakra van szükség:
