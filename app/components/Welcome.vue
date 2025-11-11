@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { year } = useYear();
+const { canShowMilestones, year } = useYear();
 
 function intro() {
 	// TODO LATER eliminate jQuery
@@ -91,7 +91,7 @@ function intro() {
 		position: 'right',
 	});
 
-	if (CONFIG.modules.milestones) {
+	if (canShowMilestones.value) {
 		steps.push({
 			milestoneButtonStep: true, // see onbeforechange above
 			intro: 'Az egyes kategóriákhoz fejlesztés is kapcsolódhat. A gombra kattintva fotó és leírás jelenik meg.',
@@ -142,7 +142,7 @@ function intro() {
 		});
 	}
 
-	if (CONFIG.modules.milestones) {
+	if (canShowMilestones.value) {
 		steps.push({
 			element: '#milestones h2',
 			intro: 'A Fejlesztések szakaszban a kiválasztott évhez kapcsolódó összes fejlesztés megtekinthető fotóval és rövid leírással.',
