@@ -22,3 +22,17 @@ logs
 .env
 .env.*
 !.env.example
+
+# KÖKÖ
+
+app/data/2*
+app/data/config.json
+app/data/data.json
+app/data/functions.tsv
+app/data/milestones.json
+app/data/tags.json
+app/data/tooltips.json
+app/data/lorem*
+app/scss/_generated.scss
+public/budget.xlsx
+public/search.log
