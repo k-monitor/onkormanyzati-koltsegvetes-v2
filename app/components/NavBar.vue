@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const { subpageMode } = defineProps<{
 	subpageMode?: boolean;
 }>();
 
@@ -7,7 +7,7 @@ const isBannerVisible = ref(true);
 const less = ref(true);
 
 const { canShowMilestones, handleYearSelected, year } = useYear();
-const years = Object.keys(DATA).sort().reverse();
+const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
 
 onMounted(() => {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
