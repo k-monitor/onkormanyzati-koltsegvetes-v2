@@ -1,23 +1,25 @@
-const fs = require('fs');
-const fg = require('fast-glob');
-const rmrf = require('rimraf').sync;
-const xlsx = require('xlsx');
+import fs from 'fs';
+import fg from 'fast-glob';
+import { rimrafSync } from 'rimraf';
+import xlsx from 'xlsx';
+
+const rmrf = rimrafSync;
 
 const INPUT_FILE = './input/budget.xlsx';
-const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
+const INTERMEDIARY_JSON_GLOB = './app/data/2*/*.json';
 // main script
 
 (() => {
 	console.log(`Processing file: ${INPUT_FILE}`);
 	const workbook = xlsx.readFile(INPUT_FILE);
-	const funcTreeTsv = fs.readFileSync('./src/data/functions.tsv', 'utf-8');
+	const funcTreeTsv = fs.readFileSync('./app/data/functions.tsv', 'utf-8');
 
 	// cleanup
-	fg.sync(INTERMEDIARY_JSON_GLOB).forEach(f => {
+	fg.sync(INTERMEDIARY_JSON_GLOB).forEach((f) => {
 		fs.unlinkSync(f);
 	});
-	fs.readdirSync('./src/data').forEach(d => {
-		const fd = './src/data/' + d;
+	fs.readdirSync('./app/data').forEach((d) => {
+		const fd = './app/data/' + d;
 		if (d.match(/^2\d+$/) && fs.readdirSync(fd).length == 0) {
 			rmrf(fd);
 		}
@@ -25,7 +27,7 @@ const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
 
 	const data = {};
 
-	workbook.SheetNames.forEach(sheetName => {
+	workbook.SheetNames.forEach((sheetName) => {
 		console.log(`Reading sheet: ${sheetName}`);
 		const matrixTsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 
@@ -46,7 +48,7 @@ const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
 		}
 	});
 
-	const OUTPUT_FILE = './src/data/data.json';
+	const OUTPUT_FILE = './app/data/data.json';
 	writeToFile(JSON.stringify(data), OUTPUT_FILE);
 })();
 
@@ -61,34 +63,37 @@ function generateEconomicTree(matrixTsv) {
 
 	// collecting all nodes
 
-	matrixTsv.split('\n')
+	matrixTsv
+		.split('\n')
 		.splice(2) // header is at least 2 rows
-		.filter(row => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
+		.filter((row) => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
 		.forEach((row, i) => {
 			let [_, descriptor, value] = row.split('\t'); // we need only the 2nd and 3rd column
 			let { id, name } = parseEconomicDescriptor(descriptor);
 			value = Number((value || '').replace(/[^0-9\-]+/g, ''));
 			if (id && id.indexOf('-') == -1) {
-				if (name.startsWith("ebből:") || nodes[id]) {
+				if (name.startsWith('ebből:') || nodes[id]) {
 					id = `${id}:${i}`;
 				}
 				nodes[id] = {
 					id,
 					name,
-					value
+					value,
 				};
 			}
 		});
 
 	// transforming into tree / handling "ebből:" rows
-	Object.keys(nodes).filter(id => id.includes(':')).forEach(id => {
-		const parentId = id.split(':')[0];
-		if (nodes[parentId]) {
-			nodes[parentId].children = nodes[parentId].children || [];
-			nodes[parentId].children.push(nodes[id]);
-		}
-		delete nodes[id];
-	});
+	Object.keys(nodes)
+		.filter((id) => id.includes(':'))
+		.forEach((id) => {
+			const parentId = id.split(':')[0];
+			if (nodes[parentId]) {
+				nodes[parentId].children = nodes[parentId].children || [];
+				nodes[parentId].children.push(nodes[id]);
+			}
+			delete nodes[id];
+		});
 
 	// transforming into tree / connecting parents with children
 	const sortedIds = Object.keys(nodes).sort();
@@ -98,7 +103,8 @@ function generateEconomicTree(matrixTsv) {
 		if (id.length == 2 || id.startsWith('F')) continue; // root nodes, incl. FH1, FH2, FT1, FT2
 		let j = i - 1;
 		for (; j >= 0 && sortedIds[j].length >= id.length; j--);
-		if (j > -1) { // found parent
+		if (j > -1) {
+			// found parent
 			const parentId = sortedIds[j];
 			nodes[parentId].children = nodes[parentId].children || [];
 			nodes[parentId].children.push(nodes[id]);
@@ -108,20 +114,19 @@ function generateEconomicTree(matrixTsv) {
 
 	// cleanup
 	Object.keys(nodes)
-		.filter(id => deletableIds.includes(id))
-		.forEach(id => delete nodes[id]);
-
+		.filter((id) => deletableIds.includes(id))
+		.forEach((id) => delete nodes[id]);
 
 	// we dropped out total sum line (via id filter) so we calculate it
 	const children = Object.values(nodes);
 	const value = children
-		.filter(n => !n.id.startsWith('F')) // skipping FH1, FH2, FT1, FT2
-		.map(n => n.value)
+		.filter((n) => !n.id.startsWith('F')) // skipping FH1, FH2, FT1, FT2
+		.map((n) => n.value)
 		.reduce((sum, v) => sum + v, 0);
 	const root = {
 		name: 'Összesen',
 		children,
-		value
+		value,
 	};
 
 	return root;
@@ -136,12 +141,12 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv);
 
 	const rows = matrixTsv.split('\n');
-	const header = rows[1].split('\t').map(col => Number(col.trim().split(' ')[0]));
+	const header = rows[1].split('\t').map((col) => Number(col.trim().split(' ')[0]));
 	if (header.length > 3) {
-
 		// finding the total row
-		let max = 0, maxRow = '';
-		rows.forEach(row => {
+		let max = 0,
+			maxRow = '';
+		rows.forEach((row) => {
 			const sum = Number((row.split('\t')[2] || '0').replace(/\D+/g, ''));
 			if (sum > max) {
 				max = sum;
@@ -155,7 +160,11 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 				const id = header[i];
 				if (!id) return;
 				if (!nodes[id]) {
-					console.error('[KÖKÖ]', 'Budget-ben szereplő ID hiányzik a funkcionális fából:', id);
+					console.error(
+						'[KÖKÖ]',
+						'Budget-ben szereplő ID hiányzik a funkcionális fából:',
+						id,
+					);
 					return;
 				}
 				nodes[id].value = Number(col.replace(/\D+/g, ''));
@@ -163,29 +172,33 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		});
 
 		// transforming into tree
-		Object.values(nodes).forEach(node => {
+		Object.values(nodes).forEach((node) => {
 			if (node.parent) {
 				if (nodes[node.parent]) {
 					nodes[node.parent].children = (nodes[node.parent].children || []).concat(node);
 					node.deletable = true;
 				} else {
-					console.error('[KÖKÖ]', 'Szülő funkcionális kategória nem található:', node.parent);
+					console.error(
+						'[KÖKÖ]',
+						'Szülő funkcionális kategória nem található:',
+						node.parent,
+					);
 				}
 			}
 		});
 		Object.values(nodes)
-			.filter(node => node.deletable)
-			.forEach(node => delete nodes[node.id]);
+			.filter((node) => node.deletable)
+			.forEach((node) => delete nodes[node.id]);
 		const root = {
 			name: 'Összesen',
-			children: Object.values(nodes)
+			children: Object.values(nodes),
 		};
 
 		// calculating sums
 		function sumNode(node) {
 			if (node.children) {
 				node.value = node.children
-					.map(n => sumNode(n))
+					.map((n) => sumNode(n))
 					.reduce((sum, node) => sum + (node.value || 0), 0);
 			}
 			return node;
@@ -196,7 +209,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 		function cleanUp(node) {
 			delete node.deletable;
 			if (node.children) {
-				node.children = node.children.filter(n => n.value && n.value > 0);
+				node.children = node.children.filter((n) => n.value && n.value > 0);
 				node.children.forEach(cleanUp);
 			}
 		}
@@ -224,7 +237,10 @@ function parseEconomicDescriptor(descriptor) {
 	if ((m = descriptor.match(/[^§]{10} \(?\(?([>=]*[0-9+….]+)\)/))) {
 		name = name.replace(m[1], '');
 	}
-	name = name.replace(/\(\)+ *$/, '').replace(/\(+$/, '').trim();
+	name = name
+		.replace(/\(\)+ *$/, '')
+		.replace(/\(+$/, '')
+		.trim();
 
 	return { id, name };
 }
@@ -235,7 +251,7 @@ function parseEconomicDescriptor(descriptor) {
  */
 function parseFunctionalTreeDescriptor(tsv) {
 	const nodes = {};
-	tsv.split('\n').forEach(row => {
+	tsv.split('\n').forEach((row) => {
 		if (!row.trim().length) return;
 		let [id, name, parent] = row.split('\t');
 		id = Number(id);
@@ -262,8 +278,8 @@ function parseSheetName(sheetName) {
 	if (!sideMatch) return null;
 
 	const side = sideMatch[1];
-	const year = sheetName.substring(0, sideMatch.index)
-	return { year, side }
+	const year = sheetName.substring(0, sideMatch.index);
+	return { year, side };
 }
 
 /**

@@ -1,3 +1,0 @@
-- move md2pdf (md-to-pdf?) into gridsome.server.js build phase
-- fix icon spaces differ
-- make images static + use g-image

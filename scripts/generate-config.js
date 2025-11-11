@@ -1,22 +1,23 @@
-const fs = require('fs');
-const xl = require('excel4node');
-const defaultConfig = require('./default-config.json');
-const defaultMilestones = require('./default-milestones.json');
-require('./prepare-functions'); // required by prepare-data
-require('./prepare-data'); // required for theme colors & tooltips generation
+import fs from 'fs';
+import xl from 'excel4node';
+import defaultConfig from './default-config.json';
+import defaultMilestones from './default-milestones.json';
+import './prepare-functions.js'; // required by prepare-data
+import './prepare-data.js'; // required for theme colors & tooltips generation
 
-const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
+const data = JSON.parse(fs.readFileSync('./app/data/data.json'));
 
-const GENERATED_FUNCTIONS = './src/data/functions.tsv';
+const GENERATED_FUNCTIONS = './app/data/functions.tsv';
 const DEFAULT_FUNCTIONS = './scripts/default-functions.tsv';
-const FUNCTIONS_TO_USE = fs.existsSync(GENERATED_FUNCTIONS) ? GENERATED_FUNCTIONS : DEFAULT_FUNCTIONS;
+const FUNCTIONS_TO_USE = fs.existsSync(GENERATED_FUNCTIONS)
+	? GENERATED_FUNCTIONS
+	: DEFAULT_FUNCTIONS;
 const FUNCTIONS_TSV = fs.readFileSync(FUNCTIONS_TO_USE, { encoding: 'utf8' });
-const FUNCTIONS_AOA = FUNCTIONS_TSV
-	.trim()
+const FUNCTIONS_AOA = FUNCTIONS_TSV.trim()
 	.split('\n')
-	.filter(line => line.length)
-	.map(line => line.trim().split('\t'));
-const OUTPUT_FILE = "input/config.xlsx";
+	.filter((line) => line.length)
+	.map((line) => line.trim().split('\t'));
+const OUTPUT_FILE = 'input/config.xlsx';
 const blue = '#00396C';
 const yellow = '#FFE7A4';
 
@@ -27,12 +28,12 @@ const headerStyle = wb.createStyle({
 		bgColor: blue,
 		fgColor: blue,
 		patternType: 'solid',
-		type: 'pattern'
+		type: 'pattern',
 	},
 	font: {
 		bold: true,
-		color: '#FFFFFF'
-	}
+		color: '#FFFFFF',
+	},
 });
 
 const inputStyle = wb.createStyle({
@@ -40,11 +41,11 @@ const inputStyle = wb.createStyle({
 		bgColor: yellow,
 		fgColor: yellow,
 		patternType: 'solid',
-		type: 'pattern'
+		type: 'pattern',
 	},
 	font: {
-		color: blue
-	}
+		color: blue,
+	},
 });
 
 function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
@@ -71,36 +72,36 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 
 // config sheet
 
-const yearColors = Object.keys(data).map(year => ([
+const yearColors = Object.keys(data).map((year) => [
 	`theme.${year}`,
 	'royalblue',
-	`CSS szín ehhez az évhez: ${year}`
-]));
+	`CSS szín ehhez az évhez: ${year}`,
+]);
 
 const topLevelIds = {};
-Object.keys(data).forEach(year => {
-	['expense', 'income'].forEach(side => {
-		data[year][side].econ.children.forEach(n => topLevelIds[n.id] = n.name);
+Object.keys(data).forEach((year) => {
+	['expense', 'income'].forEach((side) => {
+		data[year][side].econ.children.forEach((n) => (topLevelIds[n.id] = n.name));
 	});
 });
-const inexColors = Object.keys(topLevelIds).sort().map(id => ([
-	`inex.${id}`,
-	'',
-	`CSS szín a Mérleg ábrán ehhez: ${topLevelIds[id]}`
-]));
-const visColors = Object.keys(topLevelIds).sort().map(id => ([
-	`color.${id}`,
-	'royalblue',
-	`CSS szín a Bevétel/Kiadás ábrán ehhez: ${topLevelIds[id]}`
-]));
+const inexColors = Object.keys(topLevelIds)
+	.sort()
+	.map((id) => [`inex.${id}`, '', `CSS szín a Mérleg ábrán ehhez: ${topLevelIds[id]}`]);
+const visColors = Object.keys(topLevelIds)
+	.sort()
+	.map((id) => [
+		`color.${id}`,
+		'royalblue',
+		`CSS szín a Bevétel/Kiadás ábrán ehhez: ${topLevelIds[id]}`,
+	]);
 
 const configSheet = wb.addWorksheet('config');
-aoaTo3colSheet(configSheet,
-	defaultConfig
-		.concat(yearColors)
-		.concat(inexColors)
-		.concat(visColors),
-	[1], [25, 40, 100]);
+aoaTo3colSheet(
+	configSheet,
+	defaultConfig.concat(yearColors).concat(inexColors).concat(visColors),
+	[1],
+	[25, 40, 100],
+);
 
 // tooltips sheets
 
@@ -112,32 +113,31 @@ function gatherIds(ids, node) {
 		ids[node.id] = node.name;
 	}
 	if (node.children) {
-		node.children.forEach(c => gatherIds(ids, c));
+		node.children.forEach((c) => gatherIds(ids, c));
 	}
 }
 
-
-Object.keys(data).forEach(year => {
+Object.keys(data).forEach((year) => {
 	const ids = {};
-	FUNCTIONS_AOA.forEach(r => {
+	FUNCTIONS_AOA.forEach((r) => {
 		const id = r[0];
 		const name = r[1];
 		ids[id] = name;
 	});
-	Object.values(data[year]).forEach(sideObj => {
-		Object.values(sideObj).forEach(treeRoot => {
+	Object.values(data[year]).forEach((sideObj) => {
+		Object.values(sideObj).forEach((treeRoot) => {
 			gatherIds(ids, treeRoot);
 		});
 	});
 
-	let tooltipRows = [
-		['Azon.', 'Megnevezés', 'Súgószöveg'],
-	];
+	let tooltipRows = [['Azon.', 'Megnevezés', 'Súgószöveg']];
 
-	Object.keys(ids).sort().forEach(id => {
-		const name = ids[id];
-		tooltipRows.push([id, name, `Itt rövid leírás olvasható a kategóriáról: ${id}`]);
-	});
+	Object.keys(ids)
+		.sort()
+		.forEach((id) => {
+			const name = ids[id];
+			tooltipRows.push([id, name, `Itt rövid leírás olvasható a kategóriáról: ${id}`]);
+		});
 
 	const tooltipsSheet = wb.addWorksheet('tooltips ' + year);
 	aoaTo3colSheet(tooltipsSheet, tooltipRows, [2], [10, 50, 100]);
