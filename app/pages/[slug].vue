@@ -19,7 +19,7 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url,
+			href: CONFIG.url + routeName,
 		},
 		{
 			rel: 'stylesheet',
@@ -46,7 +46,7 @@ useHead({
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url,
+			content: CONFIG.url + routeName,
 		},
 		{
 			property: 'og:type',
