@@ -117,7 +117,7 @@ app.get('/zip/code', (req, res) => {
 });
 
 app.get('/zip/site', (req, res) => {
-	generateAndDownloadFile('zip -r koko-site.zip .output/public', 'koko-site.zip', res);
+	generateAndDownloadFile('zip -r koko-site.zip dist', 'koko-site.zip', res);
 });
 
 app.listen(CONFIG.PORT, () => {

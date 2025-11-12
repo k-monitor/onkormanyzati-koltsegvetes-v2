@@ -10,6 +10,12 @@ export default defineNuxtConfig({
 		public: 'static',
 	},
 	modules: ['@nuxt/eslint', '@nuxt/scripts'],
+	nitro: {
+		output: {
+			dir: 'dist/.nitro',
+			publicDir: 'dist',
+		},
+	},
 	scripts: {
 		registry: {
 			googleAnalytics: true,
