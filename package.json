@@ -8,7 +8,7 @@
 	"author": "Zsolt Jurányi <juranyi.zsolt@k-monitor.hu>",
 	"scripts": {
 		"dev": "nuxt dev",
-		"generate": "nuxt generate",
+		"build": "nuxt generate",
 		"prepare": "node scripts/prepare",
 		"new-config": "node scripts/generate-config",
 		"admin": "node admin/index.cjs"
