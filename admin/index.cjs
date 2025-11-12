@@ -23,9 +23,9 @@ const app = express();
 app.use(basicAuth({ users, challenge: true }));
 app.use(fileUpload());
 app.use(express.static('admin'));
+app.use('/assets', express.static('static/assets'));
 app.use('/input', express.static('input'));
-app.use('/assets', express.static('public/assets'));
-app.use('/app', express.static('app'));
+app.use('/src', express.static('src'));
 
 app.post('/budget', (req, res) => {
 	fs.writeFileSync('input/budget.xlsx', req.files.budget.data);
@@ -66,18 +66,18 @@ app.post('/logo', (req, res) => {
 	for (let i = 0; i < logos.length; i++) {
 		const logo = logos[i];
 		const f = req.files[logo];
-		const path = 'public/assets/img';
+		const path = 'static/assets/img';
 		if (f) fs.writeFileSync(`${path}/${logo}`, f.data);
 	}
 	res.end();
 });
 
 app.get('/ms', (req, res) => {
-	res.json(fs.readdirSync('public/assets/ms'));
+	res.json(fs.readdirSync('static/assets/ms'));
 });
 
 app.delete('/ms/:f', (req, res) => {
-	const fn = 'public/assets/ms/' + req.params.f;
+	const fn = 'static/assets/ms/' + req.params.f;
 	if (fs.existsSync(fn)) fs.unlinkSync(fn);
 	res.end();
 });
@@ -88,7 +88,7 @@ app.post('/ms', (req, res) => {
 	}
 	for (let i = 0; i < req.files.ms.length; i++) {
 		const f = req.files.ms[i];
-		fs.writeFileSync('public/assets/ms/' + f.name, f.data);
+		fs.writeFileSync('static/assets/ms/' + f.name, f.data);
 	}
 	res.end();
 });
@@ -110,7 +110,7 @@ app.get('/publicUrl', (req, res) => {
 // TODO LATER replace zip system calls below with Node solution, then delete zip.exe
 app.get('/zip/code', (req, res) => {
 	generateAndDownloadFile(
-		'zip -r koko-code.zip input scripts app public LICENSE README.* *.js* *.lock',
+		'zip -r koko-code.zip input scripts src static LICENSE README.* *.js* *.lock',
 		'koko-code.zip',
 		res,
 	);

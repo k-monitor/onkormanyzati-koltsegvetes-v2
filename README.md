@@ -12,10 +12,9 @@ _Copyright &copy; 2025 K-Monitor_
 
 ## Változások korábbi verzióhoz képest
 
-- Node verzió: 12+ -> 20+
+- minimum Node verzió: v12 -> v20
 - yarn -> pnpm
-- `static` -> `public`
-- `src/favicon.png` -> `public/assets/img/favicon.png`
+- `src/favicon.png` -> `static/assets/img/favicon.png`
 - `dist` -> `.output/public`
 
 ## Beüzemelés
@@ -24,7 +23,7 @@ A weboldal a Nuxt keretrendszeren alapul, ami a forrásfájlokból egy optimaliz
 
 A beüzemelés lépései:
 
-1. Telepíts Node.js v22-t és PNPM-et, ezek adják az alapvető környezetet a projekthez.
+1. Telepíts Node.js-t (legalább v20) és PNPM-et, ezek adják az alapvető környezetet a projekthez.
 1. A projekt mappájában futtasd le a `pnpm install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
 1. Másold be az önkormányzattól kapott XLSX fájlt az `input` mappába, `budget.xlsx` néven.
 1. Futtasd le a `pnpm new-config` parancsot, ez legenerálja az `input/config.xlsx` fájlt, melynek tartalma részben függ a `budget.xlsx`-től.
@@ -33,15 +32,15 @@ A beüzemelés lépései:
 1. A projekt mappájában futtasd le a `pnpm prepare` parancsot, ez az `input` mappában levő fájlokban rejlő adatokat átalakítja a vizualizációnak megfelelő formátumra. A generált adatfájlok az `src/data` mappába kerülnek, a weboldal fejlesztésekor és generálásakor innen lesznek kiolvasva.
 1. A projekt mappájában indítsd el a `pnpm dev` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
 1. A weboldal legenerálásához használd a `pnpm build` parancsot. (Ez lefuttatja a `prepare` szkriptet is.) A kész weboldal az `.output/public` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
-1. A kereső naplózás funkciójához szükség van telepített PHP interpreterre is, valamint a következő parancs lefuttatására a hosztolt mappában: `touch search.log && sudo chown www-data:www-data search.log`. A `search.log` fájlt érdemes publikusan elérhetetlenné tenni (ld. `public/.htaccess`). Ha erre a naplózó funkcióra nincs szükség, a `track-search.php` fájlt ajánlott törölni a webszerverről.
+1. A kereső naplózás funkciójához szükség van telepített PHP interpreterre is, valamint a következő parancs lefuttatására a hosztolt mappában: `touch search.log && sudo chown www-data:www-data search.log`. A `search.log` fájlt érdemes publikusan elérhetetlenné tenni (ld. `static/.htaccess`). Ha erre a naplózó funkcióra nincs szükség, a `track-search.php` fájlt ajánlott törölni a webszerverről.
 
 ## Mappastruktúra
 
 - **.output/ (generált)** - Ebbe a mappába generálja a Nuxt a kész weboldalt.
-- **src/** - A weboldal forrásfájljai.
 - **input/** - Ebbe a mappába kell helyezni az input adatokat.
-- **public/** - A weboldal statikus fájljai, amik a generálási folyamat során érintetlenül át lesznek másolva a kimeneti mappába. Ezen belül lehet elhelyezni a képeket és videókat.
 - **scripts/** - Ebben a mappában segédszkriptek vannak.
+- **src/** - A weboldal forrásfájljai.
+- **static/** - A weboldal statikus fájljai, amik a generálási folyamat során érintetlenül át lesznek másolva a kimeneti mappába. Ezen belül lehet elhelyezni a képeket és videókat.
 
 ## Adatok
 

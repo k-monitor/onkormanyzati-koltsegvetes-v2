@@ -34,5 +34,5 @@ src/data/tags.json
 src/data/tooltips.json
 src/data/lorem*
 src/scss/_generated.scss
-public/budget.xlsx
-public/search.log
+static/budget.xlsx
+static/search.log

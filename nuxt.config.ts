@@ -7,6 +7,7 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	dir: {
 		app: 'src',
+		public: 'static',
 	},
 	modules: ['@nuxt/eslint', '@nuxt/scripts'],
 	scripts: {
