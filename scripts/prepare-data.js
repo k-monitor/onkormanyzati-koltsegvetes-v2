@@ -6,20 +6,20 @@ import xlsx from 'xlsx';
 const rmrf = rimrafSync;
 
 const INPUT_FILE = './input/budget.xlsx';
-const INTERMEDIARY_JSON_GLOB = './app/data/2*/*.json';
+const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
 // main script
 
 (() => {
 	console.log(`Processing file: ${INPUT_FILE}`);
 	const workbook = xlsx.readFile(INPUT_FILE);
-	const funcTreeTsv = fs.readFileSync('./app/data/functions.tsv', 'utf-8');
+	const funcTreeTsv = fs.readFileSync('./src/data/functions.tsv', 'utf-8');
 
 	// cleanup
 	fg.sync(INTERMEDIARY_JSON_GLOB).forEach((f) => {
 		fs.unlinkSync(f);
 	});
-	fs.readdirSync('./app/data').forEach((d) => {
-		const fd = './app/data/' + d;
+	fs.readdirSync('./src/data').forEach((d) => {
+		const fd = './src/data/' + d;
 		if (d.match(/^2\d+$/) && fs.readdirSync(fd).length == 0) {
 			rmrf(fd);
 		}
@@ -48,7 +48,7 @@ const INTERMEDIARY_JSON_GLOB = './app/data/2*/*.json';
 		}
 	});
 
-	const OUTPUT_FILE = './app/data/data.json';
+	const OUTPUT_FILE = './src/data/data.json';
 	writeToFile(JSON.stringify(data), OUTPUT_FILE);
 })();
 

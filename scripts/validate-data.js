@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const data = JSON.parse(fs.readFileSync('app/data/data.json', { encoding: 'utf8' }));
+const data = JSON.parse(fs.readFileSync('src/data/data.json', { encoding: 'utf8' }));
 
 Object.keys(data).forEach((year) => {
 	['expense', 'income'].forEach((side) => {

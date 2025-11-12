@@ -1,8 +1,8 @@
 import fs from 'fs';
 import slugify from 'slugify';
 
-const config = JSON.parse(fs.readFileSync('app/data/config.json', { encoding: 'utf8' }));
-const data = JSON.parse(fs.readFileSync('app/data/data.json', { encoding: 'utf8' }));
+const config = JSON.parse(fs.readFileSync('src/data/config.json', { encoding: 'utf8' }));
+const data = JSON.parse(fs.readFileSync('src/data/data.json', { encoding: 'utf8' }));
 
 const { defaultYear, font, theme } = config;
 
@@ -35,6 +35,6 @@ const $yearColors = `$year-colors:(\n${mapEntries}\n);\n`;
 const $primary = theme[defaultYear] ? `$primary: ${defaultColor};\n` : '';
 
 fs.writeFileSync(
-	'app/scss/_generated.scss',
+	'src/scss/_generated.scss',
 	[font.imports, $fonts, $primary, $yearColors].join('\n'),
 );

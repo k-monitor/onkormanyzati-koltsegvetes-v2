@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const csv = fs.readFileSync('./app/data/functions.tsv', 'utf8');
+const csv = fs.readFileSync('./src/data/functions.tsv', 'utf8');
 const json = {};
 csv.split('\n')
 	.map((line) => line.split('\t'))
@@ -11,4 +11,4 @@ csv.split('\n')
 		json[id] = name;
 	});
 
-fs.writeFileSync('./app/data/functions.json', JSON.stringify(json));
+fs.writeFileSync('./src/data/functions.json', JSON.stringify(json));

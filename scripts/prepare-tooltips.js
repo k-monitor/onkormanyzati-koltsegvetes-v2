@@ -2,7 +2,7 @@ import fs from 'fs';
 import xlsx from 'xlsx';
 
 const INPUT_FILE = './input/config.xlsx';
-const OUTPUT_FILE = './app/data/tooltips.json';
+const OUTPUT_FILE = './src/data/tooltips.json';
 
 const workbook = xlsx.readFile(INPUT_FILE);
 

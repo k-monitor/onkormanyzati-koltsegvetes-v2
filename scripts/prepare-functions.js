@@ -2,7 +2,7 @@ import fs from 'fs';
 import xlsx from 'xlsx';
 
 const INPUT_FILE = './input/config.xlsx';
-const OUTPUT_FILE = './app/data/functions.tsv';
+const OUTPUT_FILE = './src/data/functions.tsv';
 
 const workbook = xlsx.readFile(INPUT_FILE);
 const json = xlsx.utils.sheet_to_json(workbook.Sheets['functions']);

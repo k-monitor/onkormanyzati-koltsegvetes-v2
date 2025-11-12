@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const csv = fs.readFileSync('./app/data/tags.csv', 'utf8');
+const csv = fs.readFileSync('./src/data/tags.csv', 'utf8');
 const json = {};
 csv.split('\n')
 	.map((line) => line.split(';'))
@@ -29,4 +29,4 @@ csv.split('\n')
 		json[id] = Object.keys(uniqueTags).sort();
 	});
 
-fs.writeFileSync('./app/data/tags.json', JSON.stringify(json));
+fs.writeFileSync('./src/data/tags.json', JSON.stringify(json));

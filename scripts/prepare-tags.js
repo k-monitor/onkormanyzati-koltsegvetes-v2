@@ -2,7 +2,7 @@ import fs from 'fs';
 import xlsx from 'xlsx';
 
 const INPUT_FILE = './input/tags.xlsx';
-const OUTPUT_FILE = './app/data/tags.json';
+const OUTPUT_FILE = './src/data/tags.json';
 
 const workbook = xlsx.readFile(INPUT_FILE);
 const sheetName = workbook.SheetNames[0];

@@ -25,14 +25,14 @@ logs
 
 # KÖKÖ
 
-app/data/2*
-app/data/config.json
-app/data/data.json
-app/data/functions.tsv
-app/data/milestones.json
-app/data/tags.json
-app/data/tooltips.json
-app/data/lorem*
-app/scss/_generated.scss
+src/data/2*
+src/data/config.json
+src/data/data.json
+src/data/functions.tsv
+src/data/milestones.json
+src/data/tags.json
+src/data/tooltips.json
+src/data/lorem*
+src/scss/_generated.scss
 public/budget.xlsx
 public/search.log

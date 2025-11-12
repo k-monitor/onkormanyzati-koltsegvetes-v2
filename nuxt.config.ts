@@ -5,6 +5,9 @@ export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
 	devServer: { port: 8080 },
 	devtools: { enabled: true },
+	dir: {
+		app: 'src',
+	},
 	modules: ['@nuxt/eslint', '@nuxt/scripts'],
 	scripts: {
 		registry: {

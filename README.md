@@ -15,7 +15,6 @@ _Copyright &copy; 2025 K-Monitor_
 - Node verzió: 12+ -> 20+
 - yarn -> pnpm
 - `static` -> `public`
-- `src` -> `app`
 - `src/favicon.png` -> `public/assets/img/favicon.png`
 - `dist` -> `.output/public`
 
@@ -31,7 +30,7 @@ A beüzemelés lépései:
 1. Futtasd le a `pnpm new-config` parancsot, ez legenerálja az `input/config.xlsx` fájlt, melynek tartalma részben függ a `budget.xlsx`-től.
 1. Töltsd ki a `config.xlsx` fájlt, ez tartalmazza a weboldal beállításait és szövegeit.
 1. Ellenőrizd, hogy az alábbiakban bemutatott XLSX fájlok mind jelen vannak-e az `input` mappában, és mindegyiknek megfelelő-e a formátuma.
-1. A projekt mappájában futtasd le a `pnpm prepare` parancsot, ez az `input` mappában levő fájlokban rejlő adatokat átalakítja a vizualizációnak megfelelő formátumra. A generált adatfájlok az `app/data` mappába kerülnek, a weboldal fejlesztésekor és generálásakor innen lesznek kiolvasva.
+1. A projekt mappájában futtasd le a `pnpm prepare` parancsot, ez az `input` mappában levő fájlokban rejlő adatokat átalakítja a vizualizációnak megfelelő formátumra. A generált adatfájlok az `src/data` mappába kerülnek, a weboldal fejlesztésekor és generálásakor innen lesznek kiolvasva.
 1. A projekt mappájában indítsd el a `pnpm dev` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
 1. A weboldal legenerálásához használd a `pnpm build` parancsot. (Ez lefuttatja a `prepare` szkriptet is.) A kész weboldal az `.output/public` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
 1. A kereső naplózás funkciójához szükség van telepített PHP interpreterre is, valamint a következő parancs lefuttatására a hosztolt mappában: `touch search.log && sudo chown www-data:www-data search.log`. A `search.log` fájlt érdemes publikusan elérhetetlenné tenni (ld. `public/.htaccess`). Ha erre a naplózó funkcióra nincs szükség, a `track-search.php` fájlt ajánlott törölni a webszerverről.
@@ -39,7 +38,7 @@ A beüzemelés lépései:
 ## Mappastruktúra
 
 - **.output/ (generált)** - Ebbe a mappába generálja a Nuxt a kész weboldalt.
-- **app/** - A weboldal forrásfájljai.
+- **src/** - A weboldal forrásfájljai.
 - **input/** - Ebbe a mappába kell helyezni az input adatokat.
 - **public/** - A weboldal statikus fájljai, amik a generálási folyamat során érintetlenül át lesznek másolva a kimeneti mappába. Ezen belül lehet elhelyezni a képeket és videókat.
 - **scripts/** - Ebben a mappában segédszkriptek vannak.
@@ -51,12 +50,12 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 - **input/budget.xlsx** - A vizualizáció adatainak forrása.
 - **input/config.xlsx** - A weboldal beállításai és szövegei.
 - **input/tags.xlsx** - A kereső által használt címkehalmazok.
-- **app/data/config.js** - A weboldal beállításai, szövegei.
-- **app/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
-- **app/data/functions.tsv (generált)** - A funkcionális kategóriák fa struktúrája.
-- **app/data/milestones.json (generált)** - A fejlesztések leírásai, előkészítve.
-- **app/data/tags.json (generált)** - A kereső által használt címkehalmazok, előkészítve.
-- **app/data/tooltips.json (generált)** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei, előkészítve.
+- **src/data/config.js** - A weboldal beállításai, szövegei.
+- **src/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
+- **src/data/functions.tsv (generált)** - A funkcionális kategóriák fa struktúrája.
+- **src/data/milestones.json (generált)** - A fejlesztések leírásai, előkészítve.
+- **src/data/tags.json (generált)** - A kereső által használt címkehalmazok, előkészítve.
+- **src/data/tooltips.json (generált)** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei, előkészítve.
 
 ### Markdown formátum
 
@@ -174,11 +173,11 @@ Ezeket az adatokat a `tags.xlsx`-ben, egyetlen munkalapon (az elsőn!) kell mega
     - 3\. oszlop a kategória azonosítót tartalmazza: funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosítókat használni. A cellában az azonosító után opcionálisan szerepelhet egy szóköz után a kategória elnevezése is a szerkesztést segítendő, de ezt a program nem fogja olvasni.
     - 4\. oszlop tartalmazza a címkéket: vesszővel, és opcionálisan még szóközzel is elválasztott kifejezések
 
-### app/data/functions.tsv (generált)
+### src/data/functions.tsv (generált)
 
 Tartalma a config.xlsx "functions" munkalappal ekvivalens, fejléc sor nélkül.
 
-### app/data/data.json (generált)
+### src/data/data.json (generált)
 
 Ezt a fájlt a `budget.xlsx` tartalmából generálja a `prepare-data.js` szkript. Ez a fájl tartalmazza a több éves költségvetési adatokat az alábbi struktúrában:
 
@@ -214,7 +213,7 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 - **value** - Az adott node-hoz tartozó összeg.
 - **children** - Gyerek node-ok tömbje.
 
-### app/data/milestones.json (generált)
+### src/data/milestones.json (generált)
 
 Ezt a fájlt a `milestones.xlsx` tartalmából generálja a `prepare-milestones.js` szkript. Ez a fájl tartalmazza a _Fejlesztések_ szakasz tartalmát.
 
@@ -251,7 +250,7 @@ A `milestones` objektumban a kulcsok a fejlesztés azonosítók, az érték pedi
 
 A `rels` objektum évekre bontva tartalmazza a kategóriákhoz tartozó fejlesztéseket. A bontásokhoz tartozó objektumban a kulcsok a kategória azonosítók, az értékek a fejlesztés azonosítók.
 
-### app/data/tags.json (generált)
+### src/data/tags.json (generált)
 
 Ezt a fájlt a `tags.xlsx` tartalmából generálja a `prepare-tags.js` szkript. Ez a fájl tartalmazza a 4 címkehalmazt a 2 költségvetési oldalhoz és 2 bontáshoz.
 
@@ -270,7 +269,7 @@ Formátuma hasonló struktúrát követ, mint a `data.json`, csak itt nincsenek 
 }
 ```
 
-### app/data/tooltips.json (generált)
+### src/data/tooltips.json (generált)
 
 Ezt a fájlt a `config.xlsx`-ben levő `tooltips <ÉVSZÁM>` munkalapokból generálja a `prepare-tooltips.js` szkript. Ez a fájl tartalmazza a kategóriákhoz tartozó tooltip-ek szövegeit, évekre bontva.
 

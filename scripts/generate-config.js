@@ -5,9 +5,9 @@ import defaultMilestones from './default-milestones.json';
 import './prepare-functions.js'; // required by prepare-data
 import './prepare-data.js'; // required for theme colors & tooltips generation
 
-const data = JSON.parse(fs.readFileSync('./app/data/data.json'));
+const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
 
-const GENERATED_FUNCTIONS = './app/data/functions.tsv';
+const GENERATED_FUNCTIONS = './src/data/functions.tsv';
 const DEFAULT_FUNCTIONS = './scripts/default-functions.tsv';
 const FUNCTIONS_TO_USE = fs.existsSync(GENERATED_FUNCTIONS)
 	? GENERATED_FUNCTIONS
