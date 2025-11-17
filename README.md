@@ -14,7 +14,7 @@ _Copyright &copy; 2025 K-Monitor_
 
 - minimum Node verzió: v12 -> v20
 - yarn -> pnpm
-- `src/favicon.png` -> `static/assets/img/favicon.png`
+- `src/favicon.png` -> `static/assets/img/favicon.png` (a program automatikusan átmozgatja)
 
 ## Beüzemelés
 
@@ -32,6 +32,20 @@ A beüzemelés lépései:
 1. A projekt mappájában indítsd el a `pnpm dev` parancsot, mely egy lokális webszervert nyit. Ezután a http://localhost:8080/ címen meg tudod tekinteni a weboldal előnézetét. Ahogy módosítod a fájlokat, az előnézet is frissülni fog. A programot a `Ctrl+C` kombinációval lehet leállítani.
 1. A weboldal legenerálásához használd a `pnpm build` parancsot. (Ez lefuttatja a `prepare` szkriptet is.) A kész weboldal a `dist` mappába kerül, ennek tartalmát kell a webszervereddel hosztolnod.
 1. A kereső naplózás funkciójához szükség van telepített PHP interpreterre is, valamint a következő parancs lefuttatására a hosztolt mappában: `touch search.log && sudo chown www-data:www-data search.log`. A `search.log` fájlt érdemes publikusan elérhetetlenné tenni (ld. `static/.htaccess`). Ha erre a naplózó funkcióra nincs szükség, a `track-search.php` fájlt ajánlott törölni a webszerverről.
+
+## Beüzemelés almappába
+
+Ha az oldalt egy meglévő honlap aloldalaként szeretnénk hosztolni, akkor a genenárálást ennek megfelelően kell megtenni. Az alábbi parancsban a `KOKO_DIR` változó értékének a kívánt almappa nevét kell megadni:
+
+```bash
+export KOKO_DIR=kv2; NUXT_APP_BASE_URL=/$KOKO_DIR/ pnpm build; mv dist temp; mkdir -p dist; mv temp dist/$KOKO_DIR
+```
+
+Ekkor a generált weboldal a `dist/$KOKO_DIR`-be kerül. Az alábbi paranccsal lehet tesztelni:
+
+```bash
+pnpx live-server dist --open=$KOKO_DIR
+```
 
 ## Mappastruktúra
 
