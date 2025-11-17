@@ -329,7 +329,7 @@ Az admin modul eme 3 lépés megkönnyítésére szolgál. Ez egy webalkalmazás
 
 Admin beüzemelés lépései részletesen:
 
-1. Telepíts Node.js-t és Yarn-t, ezek adják az alapvető környezetet a projekthez.
+1. Telepíts Node.js-t és PNPM-et, ezek adják az alapvető környezetet a projekthez.
 2. A projekt mappájában futtasd le a `pnpm install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
 3. Készíts másolatot az `.env.example` fájlról `.env` néven.
 4. Szerkeszd az `.env` fájlt, hogy beállítsd az admin felületet:
