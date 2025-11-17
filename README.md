@@ -38,7 +38,7 @@ A beüzemelés lépései:
 Ha az oldalt egy meglévő honlap aloldalaként szeretnénk hosztolni, akkor a genenárálást ennek megfelelően kell megtenni. Az alábbi parancsban a `KOKO_DIR` változó értékének a kívánt almappa nevét kell megadni:
 
 ```bash
-export KOKO_DIR=kv2; NUXT_APP_BASE_URL=/$KOKO_DIR/ pnpm build; mv dist temp; mkdir -p dist; mv temp dist/$KOKO_DIR
+export KOKO_DIR=kv; NUXT_APP_BASE_URL=/$KOKO_DIR/ pnpm build; mv dist temp; mkdir -p dist; mv temp dist/$KOKO_DIR
 ```
 
 Ekkor a generált weboldal a `dist/$KOKO_DIR`-be kerül. Az alábbi paranccsal lehet tesztelni:
