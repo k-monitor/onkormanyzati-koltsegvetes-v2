@@ -1,19 +1,30 @@
-# Gridsome .gitignore
-# -------------------
-
-*.log
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
 .cache
-.DS_Store
-src/.temp
-node_modules
 dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
 .env
 .env.*
+!.env.example
 
-# Custom .gitignore
-# -----------------
+# KÖKÖ
 
-# Generated data:
 src/data/2*
 src/data/config.json
 src/data/data.json
@@ -23,15 +34,5 @@ src/data/tags.json
 src/data/tooltips.json
 src/data/lorem*
 src/scss/_generated.scss
-
-# Generated docs:
-README.pdf
-
-# Logs:
-static/search.log
-
-# Copied downloads:
 static/budget.xlsx
-
-# Deploy script
-UPLOAD.sh
+static/search.log

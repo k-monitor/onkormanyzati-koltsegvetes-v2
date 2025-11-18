@@ -1,10 +1,72 @@
+<script setup lang="ts">
+import tinycolor from 'tinycolor2';
+
+const { year } = useYear();
+
+const less = ref(true);
+
+const data = computed(() => DATA[year.value]);
+const tooltips = computed(() => TOOLTIPS[year.value] || {});
+
+const expenseTree = computed(() => data.value?.expense.econ);
+const expenseChildren = computed(() =>
+	CONFIG.inex.expenseNodes
+		.split(',')
+		.map((id) => expenseTree.value?.children?.filter((n) => n.id === id.trim())[0])
+		.filter((n) => !!n)
+		.filter((n) => n && n.id && n.value && Math.abs(n.value) > 0),
+);
+const expenseSum = computed(() =>
+	expenseChildren.value.map((node) => node.value || 0).reduce((sum, value) => sum + value, 0),
+);
+
+const incomeTree = computed(() => data.value?.income.econ);
+const incomeChildren = computed(() =>
+	CONFIG.inex.incomeNodes
+		.split(',')
+		.map((id) => incomeTree.value?.children?.filter((n) => n.id === id.trim())[0])
+		.filter((n) => !!n)
+		.filter((n) => n && n.id && n.value && n.value > 0),
+);
+const incomeSum = computed(() =>
+	incomeChildren.value.map((node) => node.value || 0).reduce((sum, value) => sum + value, 0),
+);
+
+function bgColor(node: BudgetNode, isIncome: boolean) {
+	const defaultColor = isIncome ? '#bde2cd' : '#ffb5b5';
+	return (CONFIG.inex as Record<string, string>)[String(node.id)] || defaultColor;
+}
+function fgColor(node: BudgetNode, isIncome: boolean) {
+	const color = tinycolor(bgColor(node, isIncome));
+	return color.isLight() || color.getAlpha() < 0.5 ? 'black' : 'white';
+}
+
+function isNodeSmall(node: BudgetNode, tree: BudgetNode | undefined) {
+	if (!tree || !tree.children) return false;
+	const max = tree.children.map((n) => n.value).reduce((m, v) => Math.max(m, v), 0);
+	return Math.abs(node.value) < max * 0.1;
+}
+
+function regenerateTooltips() {
+	// TODO LATER jQuery -> Vue refactor
+	const $ = window.$;
+	$('[data-toggle="tooltip"]').tooltip();
+}
+
+onMounted(regenerateTooltips);
+onUpdated(regenerateTooltips);
+</script>
+
 <template>
-	<section class="page-section bg-light">
+	<section
+		id="inex"
+		class="page-section bg-light"
+	>
 		<div class="container">
 			<div class="row justify-content-center mb-5">
 				<div class="col-lg-8 text-center">
 					<SectionHeading
-						:title="$config.inex.title"
+						:title="CONFIG.inex.title"
 						:year="year"
 					/>
 					<hr class="divider my-4" />
@@ -22,20 +84,24 @@
 								class="btn btn-outline-success js-scroll-trigger"
 							>
 								<i class="fas fa-fw fa-angle-double-down"></i>
-								<span class="d-none d-md-inline-block">{{ $config.vis.income }}</span>
+								<span class="d-none d-md-inline-block">{{
+									CONFIG.vis.income
+								}}</span>
 							</a>
 						</div>
 						<div class="mx-auto">
-							<span>{{ $config.inex.subtitle }}</span>
-							<br>
-							<span>{{ $util.groupNums(Math.max(incomeSum, expenseSum), true) }}</span>
+							<span>{{ CONFIG.inex.subtitle }}</span>
+							<br />
+							<span>{{ groupNums(Math.max(incomeSum, expenseSum), true) }}</span>
 						</div>
 						<div>
 							<a
 								href="#expense"
 								class="btn btn-outline-danger js-scroll-trigger"
 							>
-								<span class="d-none d-md-inline-block">{{ $config.vis.expense }}</span>
+								<span class="d-none d-md-inline-block">{{
+									CONFIG.vis.expense
+								}}</span>
 								<i class="fas fa-fw fa-angle-double-down"></i>
 							</a>
 						</div>
@@ -46,22 +112,33 @@
 							<div
 								class="bar"
 								:class="{ small: isNodeSmall(n, incomeTree) }"
-								v-for="(n,i) in incomeChildren"
+								v-for="(n, i) in incomeChildren"
 								:data-id="n.id"
 								:data-index="i"
 								:key="year + '/' + i"
-								:style="{ backgroundColor: bgColor(n, true), color: fgColor(n, true), flexGrow: n.value }"
+								:style="{
+									backgroundColor: bgColor(n, true),
+									color: fgColor(n, true),
+									flexGrow: n.value,
+								}"
 								data-toggle="tooltip"
 								data-placement="left"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + (tooltips[n.id] || '')"
+								:title="
+									'<b>' +
+									n.name +
+									' (' +
+									groupNums(n.value, true) +
+									')</b>: ' +
+									(tooltips[String(n.id)] || '')
+								"
 								oncontextmenu="return false;"
 							>
 								<div class="text-left">
 									{{ n.name }}
 								</div>
 								<div class="value ml-2 no-wrap text-right">
-									<strong>{{ $util.groupNums(n.value, true) }}</strong>
+									<strong>{{ groupNums(n.value, true) }}</strong>
 								</div>
 							</div>
 						</div>
@@ -73,19 +150,30 @@
 							<div
 								class="bar"
 								:class="{ small: isNodeSmall(n, expenseTree) }"
-								v-for="(n,i) in expenseChildren"
+								v-for="(n, i) in expenseChildren"
 								:data-id="n.id"
 								:data-index="i"
 								:key="year + '/' + i"
-								:style="{ backgroundColor: bgColor(n, false), color: fgColor(n, false), flexGrow: Math.abs(n.value) }"
+								:style="{
+									backgroundColor: bgColor(n, false),
+									color: fgColor(n, false),
+									flexGrow: Math.abs(n.value),
+								}"
 								data-toggle="tooltip"
 								data-placement="right"
 								data-html="true"
-								:title="'<b>' + n.name + ' (' + $util.groupNums(n.value, true) + ')</b>: ' + (tooltips[n.id] || '')"
+								:title="
+									'<b>' +
+									n.name +
+									' (' +
+									groupNums(n.value, true) +
+									')</b>: ' +
+									(tooltips[String(n.id)] || '')
+								"
 								oncontextmenu="return false;"
 							>
 								<div class="value mr-2 no-wrap text-left">
-									<strong>{{ $util.groupNums(n.value, true) }}</strong>
+									<strong>{{ groupNums(n.value, true) }}</strong>
 								</div>
 								<div class="flex-grow-1 text-right">
 									{{ n.name }}
@@ -95,18 +183,21 @@
 						<div class="bg-danger side"></div>
 					</div>
 				</div>
-				<p class="d-md-none font-italic p-3 small text-center text-muted">Érintőképernyős eszközökön a kategória leírások megjelenítéséhez tartsa az ujját a hasábon egy kis ideig.</p>
+				<p class="d-md-none font-italic p-3 small text-center text-muted">
+					Érintőképernyős eszközökön a kategória leírások megjelenítéséhez tartsa az ujját
+					a hasábon egy kis ideig.
+				</p>
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
 					<VueMarkdown
-						:source="$config.inex.text"
+						:source="CONFIG.inex.text"
 						:class="{ less: less, more: !less }"
 					/>
 					<div class="border-top">
 						<button
 							class="btn btn-sm btn-link text-decoration-none"
-							@click="less=!less"
+							@click="less = !less"
 						>
 							<span v-if="less">
 								<i class="fas fa-chevron-down mr-2"></i>
@@ -126,101 +217,11 @@
 	</section>
 </template>
 
-<script>
-import tinycolor from "tinycolor2";
-
-export default {
-	props: ["year"],
-	data() {
-		return {
-			less: true,
-		};
-	},
-	computed: {
-		data() {
-			return this.$d[this.year];
-		},
-		expenseChildren: function () {
-			return this.$config.inex.expenseNodes
-				.split(",")
-				.map(
-					(id) => this.expenseTree.children.filter((n) => n.id === id.trim())[0]
-				)
-				.filter((n) => n && n.id && n.value && Math.abs(n.value) > 0);
-		},
-		expenseSum: function () {
-			return this.expenseChildren
-				.map(function (node) {
-					return node.value;
-				})
-				.reduce(function (sum, value) {
-					return sum + value;
-				}, 0);
-		},
-		expenseTree: function () {
-			return this.data.expense.econ;
-		},
-		incomeChildren: function () {
-			return this.$config.inex.incomeNodes
-				.split(",")
-				.map(
-					(id) => this.incomeTree.children.filter((n) => n.id === id.trim())[0]
-				)
-				.filter((n) => n && n.id && n.value && n.value > 0);
-		},
-		incomeSum: function () {
-			return this.incomeChildren
-				.map(function (node) {
-					return node.value;
-				})
-				.reduce(function (sum, value) {
-					return sum + value;
-				}, 0);
-		},
-		incomeTree: function () {
-			return this.data.income.econ;
-		},
-		tooltips() {
-			return this.$tooltips[this.year] || {};
-		},
-	},
-	methods: {
-		bgColor: function (node, isIncome) {
-			const defaultColor = isIncome ? '#bde2cd' : '#ffb5b5';
-			return this.$config.inex[node.id] || defaultColor;
-		},
-		fgColor: function (node, isIncome) {
-			var color = tinycolor(this.bgColor(node, isIncome));
-			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
-		},
-		isNodeSmall: function (node, tree) {
-			var max = tree.children
-				.map(function (n) {
-					return n.value;
-				})
-				.reduce(function (m, v) {
-					return Math.max(m, v);
-				});
-			return Math.abs(node.value) < max * 0.1;
-		},
-		regenerateTooltips() {
-			$('[data-toggle="tooltip"]').tooltip();
-		},
-	},
-	mounted() {
-		this.regenerateTooltips();
-	},
-	updated() {
-		this.regenerateTooltips();
-	},
-};
-</script>
-
 <style lang="scss">
-@import "../scss/variables";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '../scss/variables';
+@import '../../node_modules/bootstrap/scss/functions';
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/mixins';
 
 #inex {
 	.bar {
@@ -277,24 +278,24 @@ export default {
 			}
 		}
 	}
-}
 
-.less {
-	max-height: 110px;
-	overflow-y: hidden;
-	position: relative;
-}
-.less::after {
-	box-shadow: inset 0px -40px 30px -30px $light;
-	content: "";
-	display: block;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	position: absolute;
-}
-.more + div {
-	border-top-color: transparent !important;
+	.less {
+		max-height: 110px;
+		overflow-y: hidden;
+		position: relative;
+	}
+	.less::after {
+		box-shadow: inset 0px -40px 30px -30px $light;
+		content: '';
+		display: block;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		position: absolute;
+	}
+	.more + div {
+		border-top-color: transparent !important;
+	}
 }
 </style>

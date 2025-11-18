@@ -1,5 +1,5 @@
-const fs = require('fs');
-const xlsx = require('xlsx');
+import fs from 'fs';
+import xlsx from 'xlsx';
 
 const INPUT_FILE = './input/config.xlsx';
 const OUTPUT_FILE = './src/data/config.json';
@@ -8,7 +8,7 @@ const workbook = xlsx.readFile(INPUT_FILE);
 const json = xlsx.utils.sheet_to_json(workbook.Sheets['config']);
 
 let configJson = {};
-json.forEach(row => {
+json.forEach((row) => {
 	const fullKey = row['key'];
 	const value = row['value'] || '';
 	if (!fullKey) return;

@@ -1,3 +1,13 @@
+<script setup lang="ts">
+onMounted(() => {
+	window.addEventListener('scroll', function () {
+		const scrollPosition = window.pageYOffset;
+		const bgParallax = document.getElementById('feedback-parallax');
+		if (bgParallax) bgParallax.style.backgroundPositionY = scrollPosition / -12 + '%';
+	});
+});
+</script>
+
 <template>
 	<section
 		class="page-section bg-primary"
@@ -7,7 +17,7 @@
 			<div class="row">
 				<div class="col">
 					<h3 class="font-weight-light mb-5 text-center text-white">
-						{{ $config.feedback.text }}
+						{{ CONFIG.feedback.text }}
 					</h3>
 				</div>
 			</div>
@@ -15,26 +25,15 @@
 				<div class="col text-center">
 					<a
 						class="btn btn-xl btn-light"
-						:href="$config.feedback.url"
+						:href="CONFIG.feedback.url"
 						target="_blank"
-					>{{ $config.feedback.action }}</a>
+						>{{ CONFIG.feedback.action }}</a
+					>
 				</div>
 			</div>
 		</div>
 	</section>
 </template>
-
-<script>
-export default {
-	mounted() {
-		window.addEventListener("scroll", function () {
-			const scrollPosition = window.pageYOffset;
-			const bgParallax = document.getElementById("feedback-parallax");
-			bgParallax.style.backgroundPositionY = scrollPosition / -12 + "%";
-		});
-	},
-};
-</script>
 
 <style scoped>
 .page-section {

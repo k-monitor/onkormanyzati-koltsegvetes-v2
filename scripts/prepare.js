@@ -1,9 +1,11 @@
-require('./prepare-functions');
-require('./prepare-config');
-require('./prepare-data');
-require('./prepare-milestones');
-require('./prepare-tags');
-require('./prepare-tooltips');
-require('./prepare-downloads');
-require('./prepare-style');
-require('./validate-data');
+import './prepare-functions.js';
+import './prepare-config.js';
+import './prepare-data.js';
+import './prepare-milestones.js';
+import './prepare-tags.js';
+import './prepare-tooltips.js';
+import './prepare-downloads.js';
+import './prepare-style.js';
+import './validate-data.js';
+
+// TODO LATER refactor these into TS

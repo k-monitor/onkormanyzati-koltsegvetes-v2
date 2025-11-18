@@ -1,5 +1,5 @@
-const fs = require('fs');
-const xlsx = require('xlsx');
+import fs from 'fs';
+import xlsx from 'xlsx';
 
 const INPUT_FILE = './input/config.xlsx';
 const OUTPUT_FILE = './src/data/tooltips.json';
@@ -8,7 +8,7 @@ const workbook = xlsx.readFile(INPUT_FILE);
 
 const output = {};
 
-workbook.SheetNames.filter(name => name.startsWith('tooltips ')).forEach(tooltipSheetName => {
+workbook.SheetNames.filter((name) => name.startsWith('tooltips ')).forEach((tooltipSheetName) => {
 	const p = tooltipSheetName.split(' ');
 	p.shift();
 	const year = p.join(' ');

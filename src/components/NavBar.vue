@@ -1,67 +1,202 @@
+<script setup lang="ts">
+const { subpageMode } = defineProps<{
+	subpageMode?: boolean;
+}>();
+
+const isBannerVisible = ref(true);
+const less = ref(true);
+
+const { canShowMilestones, handleYearSelected, year } = useYear();
+const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
+
+onMounted(() => {
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
+	const $ = window.$;
+
+	// Activate scrollspy to add active class to navbar items on scroll
+	$('body').scrollspy({
+		target: '#mainNav',
+		offset: 75,
+	});
+
+	// Collapse Navbar
+	var navbarCollapse = function () {
+		if ($('#mainNav').offset().top > 100) {
+			$('#mainNav').addClass('navbar-scrolled');
+		} else {
+			$('#mainNav').removeClass('navbar-scrolled');
+		}
+		// Set banner position
+		$('#banner').css('top', $('#mainNav').height() + 30 + 'px');
+	};
+	// Collapse now if page is not at top
+	navbarCollapse();
+
+	// Fix banner position after nav bar transition
+	$('#mainNav').on('transitionend', function () {
+		$('#banner').css('top', $('#mainNav').height() + 30 + 'px');
+	});
+
+	// Collapse the navbar when page is scrolled
+	$(window).scroll(navbarCollapse);
+});
+</script>
+
 <template>
 	<div id="outerDiv">
-		<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
+		<nav
+			class="navbar navbar-expand-lg navbar-light fixed-top py-3"
+			id="mainNav"
+		>
 			<div class="container">
-				<a class="navbar-brand js-scroll-trigger" href="#page-top">
-					<img class="mr-2" src="assets/img/logo.png" width="30" height="30" alt="">
-					{{ $config.city }}
+				<a
+					class="navbar-brand js-scroll-trigger"
+					href="#page-top"
+				>
+					<img
+						class="mr-2"
+						src="/assets/img/logo.png"
+						width="30"
+						height="30"
+						alt=""
+					/>
+					{{ CONFIG.city }}
 				</a>
-				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-					data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-					aria-label="Toggle navigation">
+				<button
+					class="navbar-toggler navbar-toggler-right"
+					type="button"
+					data-toggle="collapse"
+					data-target="#navbarResponsive"
+					aria-controls="navbarResponsive"
+					aria-expanded="false"
+					aria-label="Toggle navigation"
+				>
 					<span class="navbar-toggler-icon"></span>
 				</button>
-				<div class="collapse navbar-collapse" id="navbarResponsive">
-					<ul v-if="!subpageMode" class="navbar-nav ml-auto my-2 my-lg-0 align-items-center">
+				<div
+					class="collapse navbar-collapse"
+					id="navbarResponsive"
+				>
+					<ul
+						v-if="!subpageMode"
+						class="navbar-nav ml-auto my-2 my-lg-0 align-items-center"
+					>
 						<li class="nav-item">
-							<a href="javascript:void(0)" class="nav-link px-2 py-1 rounded-pill search-nav-link"
-								data-toggle="modal" data-target="#search-modal">
+							<a
+								href="javascript:void(0)"
+								class="nav-link px-2 py-1 rounded-pill search-nav-link"
+								data-toggle="modal"
+								data-target="#search-modal"
+							>
 								<i class="fas fa-search"></i>
 								<span class="sr-only">Keresés</span>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="#welcome" class="nav-link js-scroll-trigger">{{ $config.navBar.welcome }}</a>
+							<a
+								href="#welcome"
+								class="nav-link js-scroll-trigger"
+								>{{ CONFIG.navBar.welcome }}</a
+							>
 						</li>
 						<li class="nav-item">
-							<a :href="'#' + ($config.modules.inex ? 'inex' : ($config.modules.income ? 'income' : 'expense'))"
-								class="nav-link js-scroll-trigger">{{ $config.navBar.inex }}</a>
+							<a
+								:href="
+									'#' +
+									(CONFIG.modules.inex
+										? 'inex'
+										: CONFIG.modules.income
+											? 'income'
+											: 'expense')
+								"
+								class="nav-link js-scroll-trigger"
+								>{{ CONFIG.navBar.inex }}</a
+							>
 						</li>
-						<li class="nav-item"
-							v-if="$config.modules.milestones && Object.entries($milestones.milestones).filter(m => m[1].year == year).length > 0">
-							<a href="#milestones" class="nav-link js-scroll-trigger">{{ $config.navBar.milestones }}</a>
+						<li
+							class="nav-item"
+							v-if="canShowMilestones"
+						>
+							<a
+								href="#milestones"
+								class="nav-link js-scroll-trigger"
+								>{{ CONFIG.navBar.milestones }}</a
+							>
 						</li>
-						<li class="nav-item dropdown highlight" v-if="years.length > 1">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<li
+							class="nav-item dropdown highlight"
+							v-if="years.length > 1"
+						>
+							<a
+								class="nav-link dropdown-toggle"
+								href="#"
+								id="navbarDropdown"
+								role="button"
+								data-toggle="dropdown"
+								aria-haspopup="true"
+								aria-expanded="false"
+							>
 								<span class="mr-1">{{ year }}</span>
 							</a>
-							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-								<a class="dropdown-item" href="javascript:void(0)" v-for="y in years"
-									:class="['theme-' + $util.slugify(y)]" :key="y" @click="$emit('yearSelected', y)">
+							<div
+								class="dropdown-menu dropdown-menu-right"
+								aria-labelledby="navbarDropdown"
+							>
+								<a
+									class="dropdown-item"
+									href="javascript:void(0)"
+									v-for="y in years"
+									:class="['theme-' + slugify(y)]"
+									:key="y"
+									@click="handleYearSelected(y)"
+								>
 									<i class="fas fa-circle mr-2"></i>
 									{{ y }}
 								</a>
 							</div>
 						</li>
 						<li class="nav-item">
-							<a href="javascript:void(0)" class="nav-link" data-toggle="modal"
-								data-target="#moreInfoModal">{{ $config.navBar.moreInfo }}</a>
+							<a
+								href="javascript:void(0)"
+								class="nav-link"
+								data-toggle="modal"
+								data-target="#moreInfoModal"
+								>{{ CONFIG.navBar.moreInfo }}</a
+							>
 						</li>
-						<li v-if="$config.iframe.title && $config.iframe.url" class="nav-item">
-							<a :href="`/${$util.slugify($config.iframe.title).toLowerCase()}`" class="nav-link">{{
-								$config.iframe.title }}</a>
+						<li
+							v-if="CONFIG.iframe.title && CONFIG.iframe.url"
+							class="nav-item"
+						>
+							<a
+								:href="`/${slugify(CONFIG.iframe.title).toLowerCase()}`"
+								class="nav-link"
+								>{{ CONFIG.iframe.title }}</a
+							>
 						</li>
-						<li v-if="$config.modules.feedback" class="nav-item">
-							<a class="nav-link" data-target="#feedbackModal" data-toggle="modal"
-								href="javascript:void(0)">
+						<li
+							v-if="CONFIG.modules.feedback"
+							class="nav-item"
+						>
+							<a
+								class="nav-link"
+								data-target="#feedbackModal"
+								data-toggle="modal"
+								href="javascript:void(0)"
+							>
 								<i class="far fa-comment-dots"></i>
 							</a>
 						</li>
 					</ul>
-					<ul class="navbar-nav ml-auto my-2 my-lg-0" v-else>
+					<ul
+						class="navbar-nav ml-auto my-2 my-lg-0"
+						v-else
+					>
 						<li class="nav-item">
-							<a class="nav-link" href="/">
+							<a
+								class="nav-link"
+								href="/"
+							>
 								Vissza a költségetésre
 							</a>
 						</li>
@@ -69,9 +204,20 @@
 				</div>
 			</div>
 		</nav>
-		<div id="banner" v-if="isBannerVisible && $config.navBar.showBanner">
-			<VueMarkdown :source="$config.navBar.bannerText" :class="{ less: less, more: !less }" />
-			<button aria-label="Close" class="close-banner" @click="closeBanner" type="button">
+		<div
+			id="banner"
+			v-if="isBannerVisible && CONFIG.navBar.showBanner"
+		>
+			<VueMarkdown
+				:source="CONFIG.navBar.bannerText"
+				:class="{ less, more: !less }"
+			/>
+			<button
+				aria-label="Close"
+				class="close-banner"
+				@click="isBannerVisible = false"
+				type="button"
+			>
 				<span aria-hidden="true">
 					<i class="far fa-times-circle"></i>
 				</span>
@@ -80,55 +226,11 @@
 	</div>
 </template>
 
-<script>
-export default {
-	props: ["subpageMode", "year", "years"],
-	data() {
-        return {
-            isBannerVisible: true
-        };
-    },
-	mounted() {
-		// Activate scrollspy to add active class to navbar items on scroll
-		$("body").scrollspy({
-			target: "#mainNav",
-			offset: 75,
-		});
-
-		// Collapse Navbar
-		var navbarCollapse = function () {
-			if ($("#mainNav").offset().top > 100) {
-				$("#mainNav").addClass("navbar-scrolled");
-			} else {
-				$("#mainNav").removeClass("navbar-scrolled");
-			}
-			// Set banner position
-			$("#banner").css("top", $("#mainNav").height() + 30 + "px");
-		};
-		// Collapse now if page is not at top
-		navbarCollapse();
-
-		// Fix banner position after nav bar transition
-		$("#mainNav").on("transitionend", function () {
-			$("#banner").css("top", $("#mainNav").height() + 30 + "px");
-		});
-
-		// Collapse the navbar when page is scrolled
-		$(window).scroll(navbarCollapse);
-	},
-    methods: {
-        closeBanner() {
-            this.isBannerVisible = false;
-        }
-    }
-};
-</script>
-
 <style lang="scss">
-@import "../scss/variables";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '../scss/variables';
+@import '../../node_modules/bootstrap/scss/functions';
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/mixins';
 
 @mixin enlargedLogo() {
 	height: 48px;

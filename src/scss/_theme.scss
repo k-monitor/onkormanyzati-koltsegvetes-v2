@@ -1,7 +1,7 @@
-@import "../scss/variables";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '../scss/variables';
+@import '../../node_modules/bootstrap/scss/functions';
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/mixins';
 
 @mixin linkColor($primary) {
 	$link-color: $primary;
@@ -14,7 +14,6 @@
 }
 
 @mixin generateTheme($primary, $year) {
-
 	.theme-#{$year} a:not(.btn):not(.dropdown-item):not(.active),
 	a.theme-#{$year},
 	.btn-link {
@@ -35,7 +34,6 @@
 		}
 
 		.dropdown-item {
-
 			&.active,
 			&:active {
 				@include gradient-bg($primary);
@@ -52,7 +50,6 @@
 			}
 
 			.navbar-nav .nav-item .nav-link {
-
 				&:hover,
 				&:active {
 					color: $primary;
@@ -89,18 +86,20 @@
 		}
 
 		.nav-pills {
-
 			.nav-link.active,
-			.show>.nav-link {
+			.show > .nav-link {
 				background-color: $primary;
 			}
 		}
 
 		header.masthead {
-			background: linear-gradient(to bottom,
-				#{fade-out(darken($primary, 33%), 0.2)} 0%,
-				#{fade-out(darken($primary, 33%), 0.2)} 100%),
-			url("../../static/assets/img/cover.jpg");
+			background:
+				linear-gradient(
+					to bottom,
+					#{fade-out(darken($primary, 33%), 0.2)} 0%,
+					#{fade-out(darken($primary, 33%), 0.2)} 100%
+				),
+				url('../../static/assets/img/cover.jpg');
 			background-position: center bottom;
 			background-repeat: no-repeat;
 			background-attachment: scroll;
@@ -121,7 +120,6 @@
 	}
 }
 
-@each $year,
-$primary in $year-colors {
+@each $year, $primary in $year-colors {
 	@include generateTheme($primary, $year);
 }

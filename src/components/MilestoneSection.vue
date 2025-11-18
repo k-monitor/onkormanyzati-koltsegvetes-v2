@@ -1,13 +1,58 @@
+<script setup lang="ts">
+const { year } = useYear();
+
+const tag = ref<string | null>(null);
+
+const milestones = computed(() =>
+	Object.entries(MILESTONES)
+		.filter((e) => e[1].year == year.value)
+		.map((e) => ({ ...e[1], id: e[0] }) as MilestoneWithId),
+);
+
+const tags = computed(() => {
+	const dict: Record<string, boolean> = {};
+	milestones.value.forEach((m) => {
+		(m.tags || []).forEach((t) => (dict[t] = true));
+	});
+	const tags = Object.keys(dict);
+	tags.sort();
+	return tags;
+});
+
+const filteredMilestones = computed(() => {
+	return milestones.value.filter((m) => !tag.value || (m.tags || []).includes(tag.value));
+});
+
+onMounted(() => {
+	// TODO LATER eliminate jQuery
+	const $ = window.$;
+
+	document.onkeyup = function (e) {
+		e = e || window.event;
+		if (e.keyCode == 37) {
+			$('.modal.show .prev').click();
+		} else if (e.keyCode == 39) {
+			$('.modal.show .next').click();
+		}
+	};
+
+	eventBus.on('ms', (id) => {
+		tag.value = null;
+		nextTick(() => $('#milestone-modal-' + id).modal('show'));
+	});
+});
+</script>
+
 <template>
 	<section class="page-section milestones">
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col text-center">
 					<SectionHeading
-						:title="$config.milestones.title"
+						:title="CONFIG.milestones.title"
 						:year="year"
 					/>
-					<hr class="divider my-4 mb-5">
+					<hr class="divider my-4 mb-5" />
 				</div>
 			</div>
 			<div
@@ -19,8 +64,9 @@
 						class="btn btn-sm btn-light m-2"
 						:class="!tag ? 'btn-primary' : 'btn-light'"
 						href="javascript:void(0)"
-						@click="tag = false"
-					>Összes</a>
+						@click="tag = null"
+						>Összes</a
+					>
 					<a
 						v-for="t in tags"
 						:key="t"
@@ -28,7 +74,8 @@
 						:class="tag === t ? 'btn-primary' : 'btn-light'"
 						href="javascript:void(0)"
 						@click="tag = t"
-					>{{ t }}</a>
+						>{{ t }}</a
+					>
 				</div>
 			</div>
 			<div class="row mb-5">
@@ -40,64 +87,15 @@
 				>
 					<Milestone
 						:milestone="m"
-						:nextId="filteredMilestones[(i + 1) % filteredMilestones.length].id"
-						:prevId="filteredMilestones[(filteredMilestones.length + i - 1) % filteredMilestones.length].id"
+						:nextId="filteredMilestones[(i + 1) % filteredMilestones.length]?.id || ''"
+						:prevId="
+							filteredMilestones[
+								(filteredMilestones.length + i - 1) % filteredMilestones.length
+							]?.id || ''
+						"
 					/>
 				</div>
 			</div>
 		</div>
 	</section>
 </template>
-
-<script>
-export default {
-	props: ["year"],
-	data() {
-		return {
-			tag: null,
-		};
-	},
-	computed: {
-		milestones() {
-			return Object.entries(this.$milestones.milestones)
-				.filter((e) => {
-					return e[1].year == this.year;
-				})
-				.map((e) => {
-					const m = e[1];
-					m.id = e[0];
-					return m;
-				});
-		},
-		tags() {
-			const dict = {};
-			this.milestones.forEach((m) => {
-				(m.tags || []).forEach((t) => (dict[t] = true));
-			});
-			const tags = Object.keys(dict);
-			tags.sort();
-			return tags;
-		},
-		filteredMilestones() {
-			return this.milestones.filter(
-				(m) => !this.tag || (m.tags || []).includes(this.tag)
-			);
-		},
-	},
-	mounted() {
-		document.onkeyup = function (e) {
-			e = e || window.event;
-			if (e.keyCode == "37") {
-				$(".modal.show .prev").click();
-			} else if (e.keyCode == "39") {
-				$(".modal.show .next").click();
-			}
-		};
-
-		this.$eventBus.$on("ms", (id) => {
-			this.tag = null;
-			this.$nextTick(() => $("#milestone-modal-" + id).modal("show"));
-		});
-	},
-};
-</script>

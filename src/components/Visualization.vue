@@ -1,5 +1,219 @@
+<script setup lang="ts">
+import tinycolor from 'tinycolor2';
+
+const { defaultMode, year, side } = defineProps<{
+	defaultMode: number;
+	year: string;
+	side: 'expense' | 'income';
+}>();
+
+const curves = ref<string[]>([]);
+const hovered = ref(-1);
+const mode = ref(0); // 0 = econ, 1 = func
+const path = ref<string[]>([]);
+let resizeTimeout: number | undefined = undefined;
+
+const data = computed(() => DATA[year]?.[side] || { econ: null, func: null });
+const tooltips = computed(() => TOOLTIPS[year] || {});
+
+const children = computed(() => {
+	try {
+		return (node.value?.children || [])
+			.filter((node) => !String(node.id).startsWith('F'))
+			.sort((a, b) => b.value - a.value);
+	} catch (e) {
+		return [];
+	}
+});
+
+const root = computed(() => {
+	return (
+		(mode.value % 2 == 0 ? data.value.econ : data.value.func) || {
+			name: '',
+			value: 0,
+			children: [],
+		}
+	);
+});
+
+const nodePath = computed(() => {
+	var r = root.value;
+	var np = [r];
+	for (var p = 0; p < path.value.length; p++) {
+		var id = path.value[p];
+		var c = (r.children || []).filter((n) => n.id == id)[0];
+		if (c && (c.children || []).length > 0) {
+			r = c;
+			np.push(r);
+		} else {
+			break;
+		}
+	}
+	return np;
+});
+
+const node = computed(() => nodePath.value[nodePath.value.length - 1]);
+
+watch(node, async () => {
+	// TODO LATER eliminate jQuery
+	window.$('.nav-pills .nav-link').blur();
+	await nextTick();
+	updateCurves();
+});
+
+watch(
+	() => year,
+	() => {
+		if (!data.value.func && mode.value != 0) {
+			mode.value = 0;
+			path.value = [];
+		}
+	},
+);
+
+const wrapper = useTemplateRef('wrapper');
+function autoScroll() {
+	document.querySelector('.tooltip')?.remove();
+	if (wrapper.value) scrollToElement(wrapper.value, 75);
+}
+
+function bgColor(node: BudgetNode | undefined, index: number) {
+	const defaultColor = '#6c757d';
+	if (!node) return defaultColor;
+
+	const id = nodePath.value.length > 1 ? nodePath.value[1]!.id : node.id;
+	const colors: Record<string, string> = CONFIG.color || {};
+	const color = tinycolor(colors[String(id)] || defaultColor);
+	if (nodePath.value.length > 1) {
+		const opacity = 0.5 + 0.5 * (node.value / nodePath.value[1]!.value);
+		color.setAlpha(opacity);
+	}
+	if (hovered.value > -1 && index != hovered.value && index > -1) {
+		color.setAlpha(color.getAlpha() * 0.5);
+	}
+	return color.toRgbString();
+}
+
+function fgColor(node: BudgetNode | undefined, index: number) {
+	var color = tinycolor(bgColor(node, index));
+	return color.isLight() || color.getAlpha() < 0.5 ? 'black' : 'white';
+}
+
+const vis = useTemplateRef('vis');
+function curve(index: number) {
+	// TODO LATER eliminate jQuery
+	const $ = window.$;
+	try {
+		var bars = vis.value;
+		var barsTop = $(bars).offset().top;
+
+		var bar = $(`.bar[data-index=${index}]`, bars);
+		var barHeight = $(bar).outerHeight();
+		var barTop = $(bar).offset().top - barsTop;
+		var barMiddle = barTop + barHeight / 2;
+
+		var label = $(`.label[data-index=${index}]`, bars);
+		var labelHeight = $(label).outerHeight();
+		var labelTop = $(label).offset().top - barsTop;
+		var labelMiddle = labelTop + labelHeight / 2;
+
+		var svg = $('.curves svg', bars);
+		var svgWidth = $(svg).outerWidth();
+
+		var x1 = 0;
+		var y1 = barMiddle;
+		var x2 = svgWidth;
+		var y2 = labelMiddle; //self.labelY(node, index).slice(0, -1);
+		var cx1 = svgWidth * 0.2;
+		var cx2 = svgWidth * 0.8;
+		var m = x1 + ',' + y1;
+		var c1 = cx1 + ',' + y1;
+		var c2 = cx2 + ',' + y2;
+		var e = x2 + ',' + y2;
+		return ['M' + m, 'C' + c1, c2, e].join(' ');
+	} catch (e) {
+		return '';
+	}
+}
+
+function down(node: BudgetNode, index: number) {
+	window.$('.tooltip').remove();
+	if (node.children && node.children.length > 0) {
+		path.value.push(String(node.id));
+	}
+}
+
+function up(n?: number) {
+	n = Math.max(n || 1, 0);
+	while (n > 0) {
+		path.value.pop();
+		n--;
+	}
+}
+
+function updateCurves() {
+	if (!vis.value) return;
+	const svg = vis.value.querySelector('.curves svg');
+	if (svg) {
+		var svgHeight = svg.getBoundingClientRect().height;
+		var svgWidth = svg.getBoundingClientRect().width;
+		svg.setAttribute('viewBox', [0, 0, svgWidth, svgHeight].join(' '));
+	}
+	curves.value = children.value.map((n, i) => curve(i));
+}
+
+function regenerateTooltips() {
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
+	window.$('[data-toggle="tooltip"]').tooltip();
+}
+
+function milestoneId(node: BudgetNode) {
+	try {
+		const mid = MILESTONE_RELS[year]?.[String(node.id)];
+		return mid ? mid : null;
+	} catch (e) {
+		return null;
+	}
+}
+
+onMounted(() => {
+	if (data.value.func && defaultMode == 1) mode.value = 1;
+
+	regenerateTooltips();
+	updateCurves();
+	window.addEventListener('resize', function () {
+		clearTimeout(resizeTimeout);
+		resizeTimeout = setTimeout(function () {
+			updateCurves();
+		}, 100);
+	});
+
+	eventBus.on('jump', (target) => {
+		console.log('ON jump', target);
+		if (target.side == side) {
+			mode.value = target.type == 'econ' ? 0 : 1;
+			path.value = [];
+			(target.path || []).forEach((id) => {
+				for (let i = 0; i < children.value.length; i++) {
+					const node = children.value[i];
+					if (node?.id == id && node.children && node.children.length > 0) {
+						path.value.push(id);
+					}
+				}
+			});
+			nextTick(autoScroll);
+		}
+	});
+});
+
+onUpdated(regenerateTooltips);
+</script>
+
 <template>
-	<div class="visualization">
+	<div
+		class="visualization"
+		ref="wrapper"
+	>
 		<div class="row justify-content-center">
 			<div
 				class="col-lg-8 text-center"
@@ -9,27 +223,33 @@
 					<li class="nav-item">
 						<a
 							:class="{ active: mode == 1 }"
-							:title="$config.vis.funcHint"
-							@click="path = []; mode = 1"
+							:title="CONFIG.vis.funcHint"
+							@click="
+								path = [];
+								mode = 1;
+							"
 							class="nav-link"
 							data-placement="bottom"
 							data-toggle="tooltip"
 							href="javascript:void(0)"
 						>
-							{{ $config.vis.func }}
+							{{ CONFIG.vis.func }}
 						</a>
 					</li>
 					<li class="nav-item">
 						<a
 							:class="{ active: mode == 0 }"
-							:title="$config.vis.econHint"
-							@click="path = []; mode = 0"
+							:title="CONFIG.vis.econHint"
+							@click="
+								path = [];
+								mode = 0;
+							"
 							class="nav-link"
 							data-placement="bottom"
 							data-toggle="tooltip"
 							href="javascript:void(0)"
 						>
-							{{ $config.vis.econ }}
+							{{ CONFIG.vis.econ }}
 						</a>
 					</li>
 				</ul>
@@ -40,49 +260,65 @@
 			<ol class="breadcrumb">
 				<li
 					class="breadcrumb-item"
-					v-for="(n,i) in nodePath"
+					v-for="(n, i) in nodePath"
 					:key="i"
 					:class="{ active: i == nodePath.length - 1 }"
 					@click="up(path.length - i)"
-				>{{ n.name }}</li>
-				<div class="ml-auto subtotal">{{ $util.groupNums(node.value) }}</div>
+				>
+					{{ n.name }}
+				</li>
+				<div class="ml-auto subtotal">{{ groupNums(node?.value || 0) }}</div>
 			</ol>
 		</nav>
 
 		<div
 			class="d-flex border-top border-bottom vis"
 			ref="vis"
-			@mouseout="hovered=-1"
+			@mouseout="hovered = -1"
 		>
 			<div class="d-flex left-column">
 				<div
 					class="back-bar d-flex justify-content-center"
 					v-if="path.length > 0"
-					@click="up();autoScroll()"
-					:style="{ backgroundColor: bgColor(node,-1), color: fgColor(node,-1) }"
+					@click="
+						up();
+						autoScroll();
+					"
+					:style="{ backgroundColor: bgColor(node, -1), color: fgColor(node, -1) }"
 				>
 					<i class="fas fa-fw fa-level-up-alt mx-2 my-auto"></i>
 				</div>
 				<div class="d-flex flex-column flex-grow-1">
 					<div
 						class="bar"
-						v-for="(n,i) in children"
+						v-for="(n, i) in children"
 						:key="n.id"
 						:data-id="n.id"
 						:data-index="i"
-						:style="{ backgroundColor: bgColor(n,i), color: fgColor(n,i), flexGrow: n.value }"
-						@click="down(n, i);autoScroll()"
-						@mouseover="hovered=i"
+						:style="{
+							backgroundColor: bgColor(n, i),
+							color: fgColor(n, i),
+							flexGrow: n.value,
+						}"
+						@click="
+							down(n, i);
+							autoScroll();
+						"
+						@mouseover="hovered = i"
 						data-toggle="tooltip"
 						data-placement="left"
-						:title="tooltips[n.id]"
+						:title="tooltips[String(n.id)]"
 						oncontextmenu="return false;"
 					>
 						<div class="text-right w-100">
-							<span class="d-inline d-sm-none font-weight-bold">{{ $util.groupNums(n.value, true) }}</span>
-							<span class="d-none d-sm-inline">{{ $util.groupNums(n.value) }}</span>
-							<span class="d-none d-md-inline ml-1">({{ Math.round(n.value/node.value*100) }}%)</span>
-							<span class="d-sm-none"><br>{{ n.name }}</span>
+							<span class="d-inline d-sm-none font-weight-bold">{{
+								groupNums(n.value, true)
+							}}</span>
+							<span class="d-none d-sm-inline">{{ groupNums(n.value) }}</span>
+							<span class="d-none d-md-inline ml-1"
+								>({{ Math.round((n.value / (node?.value || 1)) * 100) }}%)</span
+							>
+							<span class="d-sm-none"><br />{{ n.name }}</span>
 							<i
 								class="fas fa-fw fa-level-down-alt ml-1"
 								v-if="n.children && n.children.length"
@@ -91,13 +327,15 @@
 						<div class="d-flex d-sm-none">
 							<div
 								class="btn btn-link bg-light milestone-button ml-3 mr-1 px-2"
-								@click="$eventBus.$emit('ms', milestoneId(n))"
-								v-if="$config.modules.milestones && milestoneId(n)"
-							><i class="fas fa-fw fa-camera"></i></div>
+								@click="eventBus.emit('ms', milestoneId(n) || '')"
+								v-if="CONFIG.modules.milestones && milestoneId(n)"
+							>
+								<i class="fas fa-fw fa-camera"></i>
+							</div>
 							<div
 								class="btn btn-link ml-3 mr-1 px-2"
-								:style="{ color: fgColor(n,i) }"
-								v-else-if="tooltips[n.id]"
+								:style="{ color: fgColor(n, i) }"
+								v-else-if="tooltips[String(n.id)]"
 							>
 								<sub class="fas fa-fw fa-info"></sub>
 							</div>
@@ -112,10 +350,10 @@
 				>
 					<path
 						class="curve"
-						v-for="(n,i) in children"
+						v-for="(n, i) in children"
 						:d="curves[i]"
 						:key="n.id"
-						:style="{ stroke: bgColor(n,i) }"
+						:style="{ stroke: bgColor(n, i) }"
 						vector-effect="non-scaling-stroke"
 					></path>
 				</svg>
@@ -123,240 +361,38 @@
 			<div class="d-none d-sm-flex flex-column justify-content-around right-column text-left">
 				<div
 					class="label"
-					v-for="(n,i) in children"
+					v-for="(n, i) in children"
 					:class="{ 'text-muted': hovered > -1 && i != hovered }"
 					:data-id="n.id"
 					:data-index="i"
 					:key="n.id"
-					@mouseover="hovered=i"
+					@mouseover="hovered = i"
 					oncontextmenu="return false;"
 				>
-					<span @click="down(n, i);autoScroll()">{{ n.name }}</span>
+					<span
+						@click="
+							down(n, i);
+							autoScroll();
+						"
+						>{{ n.name }}</span
+					>
 					<span
 						class="btn btn-link milestone-button ml-auto"
-						@click="$eventBus.$emit('ms', milestoneId(n))"
-						v-if="$config.modules.milestones && milestoneId(n)"
-					><i class="fas fa-camera"></i></span>
+						@click="eventBus.emit('ms', milestoneId(n) || '')"
+						v-if="CONFIG.modules.milestones && milestoneId(n)"
+						><i class="fas fa-camera"></i
+					></span>
 				</div>
 			</div>
 		</div>
 	</div>
 </template>
 
-<script>
-import tinycolor from "tinycolor2";
-
-export default {
-	props: ["defaultMode", "year", "side"], // side is "expense" or "income"
-	data() {
-		return {
-			curves: [],
-			hovered: -1,
-			loading: true,
-			mode: 0, // 0 = econ, 1 = func
-			path: [],
-			resizeTimeout: null,
-		};
-	},
-	computed: {
-		children: function () {
-			try {
-				return this.node.children
-					.filter(function (node) {
-						return !String(node.id).startsWith("F");
-					})
-					.sort(function (a, b) {
-						return b.value - a.value;
-					});
-			} catch (e) {
-				return [];
-			}
-		},
-		data() {
-			return this.$d[this.year][this.side];
-		},
-		node: function () {
-			return this.nodePath[this.nodePath.length - 1];
-		},
-		nodePath: function () {
-			var r = this.root;
-			var np = [r];
-			for (var p = 0; p < this.path.length; p++) {
-				var id = this.path[p];
-				var c = r.children.filter((n) => n.id == id)[0];
-				if (c && c.children.length > 0) {
-					r = c;
-					np.push(r);
-				} else {
-					break;
-				}
-			}
-			return np;
-		},
-		root: function () {
-			return (
-				(this.mode % 2 == 0 ? this.data.econ : this.data.func) || {
-					name: "",
-					value: 0,
-					children: [],
-				}
-			);
-		},
-		tooltips() {
-			return this.$tooltips[this.year] || {};
-		},
-		type: function () {
-			return this.mode % 2 == 0 ? "econ" : "func";
-		},
-	},
-	watch: {
-		node: function () {
-			$(".nav-pills .nav-link").blur();
-			this.$nextTick(function () {
-				this.updateCurves();
-			});
-		},
-		year: function (y) {
-			if (!this.data.func && this.mode != 0) {
-				this.mode = 0;
-				this.path = [];
-			}
-		},
-	},
-	methods: {
-		autoScroll: function () {
-			document.querySelector('.tooltip')?.remove();
-			$("html, body").animate({ scrollTop: $(this.$el).offset().top - 75 });
-		},
-		bgColor: function (node, index) {
-			const id = this.nodePath.length > 1 ? this.nodePath[1].id : node.id;
-
-			const defaultColor = "#6c757d";
-			const colors = this.$config.color || {};
-			const color = tinycolor(colors[id] || defaultColor);
-			if (this.nodePath.length > 1) {
-				const opacity = 0.5 + 0.5 * (node.value / this.nodePath[1].value);
-				color.setAlpha(opacity);
-			}
-			if (this.hovered > -1 && index != this.hovered && index > -1) {
-				color.setAlpha(color.getAlpha() * 0.5);
-			}
-			return color.toRgbString();
-		},
-		fgColor: function (node, index) {
-			var color = tinycolor(this.bgColor(node, index));
-			return color.isLight() || color.getAlpha() < 0.5 ? "black" : "white";
-		},
-		curve(index) {
-			try {
-				var bars = this.$refs.vis;
-				var barsTop = $(bars).offset().top;
-
-				var bar = $(`.bar[data-index=${index}]`, bars);
-				var barHeight = $(bar).outerHeight();
-				var barTop = $(bar).offset().top - barsTop;
-				var barMiddle = barTop + barHeight / 2;
-
-				var label = $(`.label[data-index=${index}]`, bars);
-				var labelHeight = $(label).outerHeight();
-				var labelTop = $(label).offset().top - barsTop;
-				var labelMiddle = labelTop + labelHeight / 2;
-
-				var svg = $(".curves svg", bars);
-				var svgWidth = $(svg).outerWidth();
-
-				var x1 = 0;
-				var y1 = barMiddle;
-				var x2 = svgWidth;
-				var y2 = labelMiddle; //self.labelY(node, index).slice(0, -1);
-				var cx1 = svgWidth * 0.2;
-				var cx2 = svgWidth * 0.8;
-				var m = x1 + "," + y1;
-				var c1 = cx1 + "," + y1;
-				var c2 = cx2 + "," + y2;
-				var e = x2 + "," + y2;
-				return ["M" + m, "C" + c1, c2, e].join(" ");
-			} catch (e) {
-				return "";
-			}
-		},
-		down: function (node, index) {
-			$(".tooltip").remove();
-			if (node.children && node.children.length > 0) {
-				this.path.push(node.id);
-			}
-		},
-		up: function (n) {
-			n = Math.max(n || 1, 0);
-			while (n > 0) {
-				this.path.pop();
-				n--;
-			}
-		},
-		updateCurves: function () {
-			var svg = $(".curves svg", this.$refs.vis);
-			var svgHeight = $(svg).outerHeight();
-			var svgWidth = $(svg).outerWidth();
-			$(svg).attr("viewBox", [0, 0, svgWidth, svgHeight].join(" "));
-
-			var self = this;
-			this.curves = this.children.map(function (n, i) {
-				return self.curve(i);
-			});
-		},
-		regenerateTooltips() {
-			$('[data-toggle="tooltip"]').tooltip();
-		},
-		milestoneId: function (node) {
-			try {
-				const mid = this.$milestones.rels[this.year][node.id];
-				return mid ? mid : null;
-			} catch (e) {
-				return null;
-			}
-		},
-	},
-	mounted: function () {
-		if (this.data.func && this.defaultMode == 1) this.mode = 1;
-
-		this.regenerateTooltips();
-		const self = this;
-		self.updateCurves();
-		window.addEventListener("resize", function () {
-			clearTimeout(self.resizeTimeout);
-			self.resizeTimeout = setTimeout(function () {
-				self.updateCurves();
-			}, 100);
-		});
-
-		self.$eventBus.$on("jump", (target) => {
-			console.log("ON jump", target);
-			if (target.side == self.side) {
-				self.mode = target.type == "econ" ? 0 : 1;
-				self.path = [];
-				(target.path || []).forEach((id) => {
-					for (let i = 0; i < self.children.length; i++) {
-						const node = self.children[i];
-						if (node.id == id && node.children && node.children.length > 0) {
-							self.path.push(id);
-						}
-					}
-				});
-				self.$nextTick(() => self.autoScroll());
-			}
-		});
-	},
-	updated: function () {
-		this.regenerateTooltips();
-	},
-};
-</script>
-
 <style lang="scss">
-@import "../scss/variables";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '../scss/variables';
+@import '../../node_modules/bootstrap/scss/functions';
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/mixins';
 
 .visualization {
 	font-family: $vis-font-family;
@@ -465,4 +501,3 @@ export default {
 	}
 }
 </style>
-

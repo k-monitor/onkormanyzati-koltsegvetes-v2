@@ -1,40 +1,43 @@
 {
-  "private": true,
-  "name": "onkormanyzati-koltsegvetes",
-  "version": "2.0.0",
-  "description": "Önkormányzati költségvetés vizualizáció 2.0+",
-  "license": "GPL-3.0",
-  "author": "Zsolt Jurányi <juranyi@deepdata.hu>",
-  "scripts": {
-    "admin": "node admin",
-    "admin-dev": "npx nodemon admin",
-    "build": "gridsome build",
-    "develop": "gridsome develop",
-    "explore": "gridsome explore",
-    "new-config": "node scripts/generate-config",
-    "prepare": "node scripts/prepare"
-  },
-  "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "bootstrap": "^4.5.0",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "express-basic-auth": "^1.2.0",
-    "express-fileupload": "^1.2.1",
-    "gridsome": "^0.7.0",
-    "gridsome-plugin-gtm": "^0.1.1",
-    "slugify": "^1.6.3",
-    "tinycolor2": "^1.4.1",
-    "vue-gtag": "^1.16.1",
-    "vue-markdown": "^2.2.4"
-  },
-  "devDependencies": {
-    "excel4node": "^1.7.2",
-    "fast-glob": "^3.0.3",
-    "mkdirp": "^1.0.0",
-    "rimraf": "^3.0.0",
-    "sass": "1.26.10",
-    "sass-loader": "^9.0.2",
-    "xlsx": "^0.14.3"
-  }
+	"name": "onkormanyzati-koltsegvetes",
+	"description": "Önkormányzati költségvetés vizualizáció 2.0+",
+	"version": "3.0.0",
+	"type": "module",
+	"private": true,
+	"license": "GPL-3.0",
+	"author": "Zsolt Jurányi <juranyi.zsolt@k-monitor.hu>",
+	"scripts": {
+		"dev": "nuxt dev",
+		"build": "nuxt generate",
+		"prepare": "node scripts/prepare",
+		"new-config": "node scripts/generate-config",
+		"admin": "node admin/index.cjs"
+	},
+	"dependencies": {
+		"@nuxt/scripts": "0.13.0",
+		"@unhead/vue": "^2.0.19",
+		"bootstrap": "^4.5.0",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"express-basic-auth": "^1.2.0",
+		"express-fileupload": "^1.2.1",
+		"markdown-it": "^6.1.1",
+		"mitt": "^3.0.1",
+		"nuxt": "^4.2.1",
+		"sass": "1.77.6",
+		"slugify": "^1.6.6",
+		"tinycolor2": "^1.6.0",
+		"vue": "^3.5.24",
+		"vue-router": "^4.6.3"
+	},
+	"devDependencies": {
+		"@nuxt/eslint": "^1.10.0",
+		"@types/tinycolor2": "^1.4.6",
+		"excel4node": "^1.7.2",
+		"fast-glob": "^3.0.3",
+		"prettier": "^3.6.2",
+		"rimraf": "^6.0.0",
+		"typescript": "^5.9.3",
+		"xlsx": "^0.14.3"
+	}
 }
