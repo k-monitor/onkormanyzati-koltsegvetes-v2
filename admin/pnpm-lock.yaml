@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@kgierke/nuxt-basic-auth':
+        specifier: 1.7.0
+        version: 1.7.0(magicast@0.5.1)
       nuxt:
         specifier: ^4.2.2
         version: 4.2.2(@parcel/watcher@2.5.1)(@vue/compiler-sfc@3.5.25)(cac@6.7.14)(db0@0.3.4)(ioredis@5.8.2)(magicast@0.5.1)(rollup@4.53.3)(terser@5.44.1)(vite@7.2.7(jiti@2.6.1)(terser@5.44.1)(yaml@2.8.2))(yaml@2.8.2)
@@ -518,6 +521,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@kgierke/nuxt-basic-auth@1.7.0':
+    resolution: {integrity: sha512-OT1XcUTDVgUd2d5eZbsvaLPrX17wKo9YkoCB0ViTQNDokRzgeOpKKG1v8qFep1RJAh23WMlP4fo/rRsyBM96Yg==}
 
   '@kwsites/file-exists@1.1.1':
     resolution: {integrity: sha512-m9/5YGR18lIwxSFDwfE3oA7bWuq9kdau6ugN4H2rJeyhFQZcG9AgSHkQtSD15a8WvTgfz9aikZMrKPHvbpqFiw==}
@@ -3680,6 +3686,13 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@kgierke/nuxt-basic-auth@1.7.0(magicast@0.5.1)':
+    dependencies:
+      '@nuxt/kit': 3.20.2(magicast@0.5.1)
+      defu: 6.1.4
+    transitivePeerDependencies:
+      - magicast
 
   '@kwsites/file-exists@1.1.1':
     dependencies:
