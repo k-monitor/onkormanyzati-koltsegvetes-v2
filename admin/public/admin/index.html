@@ -396,8 +396,8 @@
 											<div class="ratio ratio-16x9">
 												<a
 													class="card-img-top bg-light d-flex align-items-center justify-content-center thumb"
-													:style="{ backgroundImage: 'url(assets/ms/' + f + ')' }"
-													:href="'assets/ms/' + f"
+													:style="{ backgroundImage: 'url(/static/assets/ms/' + f + ')' }"
+													:href="'/static/assets/ms/' + f"
 													target="_blank"
 												>
 												</a>
@@ -629,7 +629,7 @@
 						if (!confirm(`Biztosan törlöd ezt a fájlt? (${f})`)) return;
 						this.loading = true;
 						try {
-							await fetch('ms/' + f, { method: 'DELETE' });
+							await fetch('/api/ms/' + f, { method: 'DELETE' });
 							await this.updateMs();
 						} catch {
 							alert('Nem sikerült! :C');
@@ -654,9 +654,8 @@
 						}
 					},
 					async updateMs() {
-						// FIXME call ms
-						//const r = await fetch('ms');
-						//this.ms = await r.json();
+						const r = await fetch('/api/ms');
+						this.ms = await r.json();
 					},
 					async upload(endpoint, field, ref) {
 						this.loading = 'Feltöltés...';
