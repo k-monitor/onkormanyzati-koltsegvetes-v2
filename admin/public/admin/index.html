@@ -674,17 +674,17 @@
 						}
 					},
 					uploadBudget(e) {
-						this.upload('budget', 'budget', e.target);
+						this.upload('/api/budget', 'budget', e.target);
 					},
 					uploadConfig(e) {
-						this.upload('config', 'config', e.target);
+						this.upload('/api/config', 'config', e.target);
 					},
 					async uploadLogo(e, f) {
-						await this.upload('logo', f, e.target);
+						await this.upload(`/api/logo/${f}`, 'logo', e.target);
 						this.r = Math.random(); // update logo on UI ;)
 					},
 					async uploadMs(e) {
-						await this.upload('ms', 'ms', e.target);
+						await this.upload('/api/ms', 'ms', e.target);
 						this.updateMs();
 					},
 				},
