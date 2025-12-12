@@ -602,14 +602,14 @@
 							failed = false;
 						try {
 							this.loading = 'Weboldal generálása...';
-							r = await fetch('buildSite', { method: 'POST' });
-							e += await r.text();
-							if (r.status !== 200) throw '';
+							r = await fetch('/api/buildSite', { method: 'POST' });
+							e += (await r.json()).stderr || '';
+							if (r.status >= 400) throw '';
 
 							this.loading = 'Weboldal publikálása...';
-							r = await fetch('deploySite', { method: 'POST' });
-							e += await r.text();
-							if (r.status !== 200) throw '';
+							r = await fetch('/api/deploySite', { method: 'POST' });
+							e += (await r.json()).stderr || '';
+							if (r.status >= 400) throw '';
 						} catch (error) {
 							// actual build/deploy failure
 							failed = true;
@@ -646,7 +646,7 @@
 							return;
 						this.loading = 'Új konfig generálása...';
 						try {
-							await fetch('newConfig', { method: 'POST' });
+							await fetch('/api/newConfig', { method: 'POST' });
 						} catch {
 							alert('Nem sikerült! :C');
 						} finally {

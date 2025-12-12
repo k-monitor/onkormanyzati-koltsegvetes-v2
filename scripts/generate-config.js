@@ -1,10 +1,10 @@
 import fs from 'fs';
 import xl from 'excel4node';
-import defaultConfig from './default-config.json';
-import defaultMilestones from './default-milestones.json';
 import './prepare-functions.js'; // required by prepare-data
 import './prepare-data.js'; // required for theme colors & tooltips generation
 
+const defaultConfig = JSON.parse(fs.readFileSync('./scripts/default-config.json', 'utf8'));
+const defaultMilestones = JSON.parse(fs.readFileSync('./scripts/default-milestones.json', 'utf8'));
 const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
 
 const GENERATED_FUNCTIONS = './src/data/functions.tsv';
