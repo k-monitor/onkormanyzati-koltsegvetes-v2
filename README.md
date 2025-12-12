@@ -21,6 +21,8 @@ _Copyright &copy; 2025 K-Monitor_
 - `ADMIN_PASS` -> `NUXT_ADMIN_PASS`
 - `SECOND_USER` -> `NUXT_SECOND_USER`
 - `SECOND_PASS` -> `NUXT_SECOND_PASS`
+- `DEPLOY_CMD` -> `NUXT_DEPLOY_CMD`
+- `PUBLIC_URL` -> `NUXT_PUBLIC_URL`
 
 ## Beüzemelés
 
@@ -55,6 +57,7 @@ pnpx live-server dist --open=$KOKO_DIR
 
 ## Mappastruktúra
 
+- **admin/** - Ebben a mappában van definiálva az admin felület, ami egy külön webalkalmazás. (Használata opcionális.)
 - **dist/ (generált)** - Ebbe a mappába generálja a Nuxt a kész weboldalt.
 - **input/** - Ebbe a mappába kell helyezni az input adatokat.
 - **scripts/** - Ebben a mappában segédszkriptek vannak.
@@ -346,8 +349,8 @@ Admin beüzemelés lépései részletesen:
     - `NUXT_ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
     - `NUXT_SECOND_USER=user` - ezzel a felhasználónévvel is el lehet érni az admin felületet
     - `NUXT_SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
-    - `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
-    - `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
+    - `NUXT_PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
+    - `NUXT_DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
 1. Lépj vissza egy mappaszinttel fejlebb, a projekt mappájába.
 1. Futtasd le a `pnpm build:admin` parancsot.
 1. Az admin felület az `pnpm admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.

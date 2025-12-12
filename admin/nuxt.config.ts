@@ -11,5 +11,7 @@ export default defineNuxtConfig({
 			user: '', // NUXT_SECOND_USER
 			pass: '', // NUXT_SECOND_PASS
 		},
+		deployCmd: '', // NUXT_DEPLOY_CMD
+		publicUrl: '', // NUXT_PUBLIC_URL
 	},
 });
