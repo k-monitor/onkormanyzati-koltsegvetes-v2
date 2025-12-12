@@ -1,13 +1,15 @@
-const { ADMIN_USER, ADMIN_PASS, SECOND_USER, SECOND_PASS } = process.env;
-const users = [{ username: ADMIN_USER || 'admin', password: ADMIN_PASS || 'admin' }];
-if (SECOND_USER && SECOND_PASS) {
-	users.push({ username: SECOND_USER, password: SECOND_PASS });
-}
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
 	devtools: { enabled: true },
-	modules: ['@kgierke/nuxt-basic-auth'],
-	basicAuth: { users },
+	runtimeConfig: {
+		admin: {
+			user: '', // NUXT_ADMIN_USER
+			pass: '', // NUXT_ADMIN_PASS
+		},
+		second: {
+			user: '', // NUXT_SECOND_USER
+			pass: '', // NUXT_SECOND_PASS
+		},
+	},
 });
