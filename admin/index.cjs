@@ -33,7 +33,7 @@ app.post('/budget', (req, res) => {
 });
 
 app.post('/buildSite', (req, res) => {
-	exec('pnpm generate', (error, stdout, stderr) => {
+	exec('pnpm build', (error, stdout, stderr) => {
 		res.status(error ? 500 : 200).send(stderr);
 	});
 });
