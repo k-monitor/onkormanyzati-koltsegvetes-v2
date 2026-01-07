@@ -3,6 +3,7 @@ export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
 	devtools: { enabled: true },
 	runtimeConfig: {
+		kokoDir: '', // NUXT_KOKO_DIR
 		admin: {
 			user: '', // NUXT_ADMIN_USER
 			pass: '', // NUXT_ADMIN_PASS
