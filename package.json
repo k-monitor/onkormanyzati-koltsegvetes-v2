@@ -13,7 +13,7 @@
 		"new-config": "node scripts/generate-config",
 		"dev:admin": "nuxt dev admin",
 		"build:admin": "nuxt build admin",
-		"admin": "node --env-file=.env admin/.output/server/index.mjs"
+		"admin": "node --env-file=admin/.env admin/.output/server/index.mjs"
 	},
 	"dependencies": {
 		"@nuxt/scripts": "0.13.0",
