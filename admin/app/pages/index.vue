@@ -1,3 +1,6 @@
-<template>
-	<h1>Hello Admin!</h1>
-</template>
+<script setup lang="ts">
+const router = useRouter();
+onMounted(() => {
+	router.replace('/budget/');
+});
+</script>

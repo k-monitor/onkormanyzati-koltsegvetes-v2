@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const links = [
-	{ href: '/', text: 'KÖKÖ Admin' },
 	{ href: '/budget/', text: 'Költségvetés' },
 	{ href: '/config/', text: 'Konfiguráció' },
 	{ href: '/logos/', text: 'Logók' },
@@ -10,6 +9,7 @@ const links = [
 </script>
 <template>
 	<div>
+		<strong>KÖKÖ Admin | </strong>
 		<template
 			v-for="(link, index) in links"
 			:key="link.href"
