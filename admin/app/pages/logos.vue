@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// FIXME admin SSR error
 const logos = [
 	{
 		name: 'logo.png',
