@@ -1,14 +1,15 @@
 <script setup lang="ts">
+const loading = useLoading();
+
 async function newConfig() {
 	if (!confirm('Biztosan felülírod az aktuális konfigot egy új, üres konfiggal?')) return;
-	// FIXME admin loading
-	//this.loading = 'Új konfig generálása...';
+	loading.value = 'Új konfig generálása...';
 	try {
 		await fetch('/api/newConfig', { method: 'POST' });
 	} catch {
 		alert('Nem sikerült! :C');
 	} finally {
-		//this.loading = false;
+		loading.value = false;
 	}
 }
 

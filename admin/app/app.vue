@@ -3,5 +3,6 @@
 		<NuxtRouteAnnouncer />
 		<NavBar />
 		<NuxtPage />
+		<LoadingOverlay />
 	</div>
 </template>

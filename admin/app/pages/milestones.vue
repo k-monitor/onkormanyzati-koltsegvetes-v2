@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// FIXME admin loading
+const loading = useLoading();
 
 const ms = ref<string[]>();
 async function updateMs() {
@@ -14,20 +14,21 @@ async function uploadMs(e: Event) {
 
 async function delMs(f: string) {
 	if (!confirm(`Biztosan törlöd ezt a fájlt? (${f})`)) return;
-	//this.loading = true;
+	loading.value = true;
 	try {
 		await fetch('/api/ms/' + f, { method: 'DELETE' });
 		await updateMs();
 	} catch {
 		alert('Nem sikerült! :C');
 	} finally {
-		//this.loading = false;
+		loading.value = false;
 	}
 }
 
 onMounted(async () => {
+	loading.value = true;
 	await updateMs();
-	//this.loading = false;
+	loading.value = false;
 });
 </script>
 

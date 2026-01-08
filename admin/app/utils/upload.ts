@@ -1,7 +1,8 @@
 export default async (endpoint: string, field: string, ref: HTMLInputElement) => {
 	if (!ref.files) return;
-	// FIXME admin loading
-	//this.loading = 'Feltöltés...';
+	const loading = useLoading(); // maybe it's not elegant calling composable from util?
+
+	loading.value = 'Feltöltés...';
 	const body = new FormData();
 
 	for (let i = 0; i < ref.files.length; i++) {
@@ -13,6 +14,6 @@ export default async (endpoint: string, field: string, ref: HTMLInputElement) =>
 		alert('Nem sikerült! :C');
 	} finally {
 		ref.value = '';
-		//this.loading = false;
+		loading.value = false;
 	}
 };
