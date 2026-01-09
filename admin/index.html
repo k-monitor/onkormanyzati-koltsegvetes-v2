@@ -211,6 +211,22 @@
 									>Site</span
 								>
 							</li>
+							<li
+								class="nav-item"
+								role="presentation"
+							>
+								<span
+									class="nav-link"
+									id="embeds-tab"
+									data-bs-toggle="tab"
+									data-bs-target="#embeds"
+									type="button"
+									role="tab"
+									aria-controls="embeds"
+									aria-selected="false"
+									>Beágyazás</span
+								>
+							</li>
 						</ul>
 					</div>
 					<div class="tab-content">
@@ -478,6 +494,43 @@
 								</a>
 							</div>
 						</div>
+
+						<div
+							class="tab-pane fade"
+							id="embeds"
+							role="tabpanel"
+							aria-labelledby="embeds-tab"
+						>
+							<div class="card-body">
+								<p>
+									Az alábbi kódok segítségével a KÖKÖ vizualizációk beágyazhatók
+									más weboldalakba. Másold ki a kívánt kódot és illeszd be a
+									céloldal HTML kódjába.
+								</p>
+								<div
+									class="mb-4"
+									v-for="embed in embeds"
+									:key="embed.path"
+								>
+									<label class="form-label fw-bold">{{ embed.name }}</label>
+									<div class="input-group">
+										<input
+											type="text"
+											class="form-control font-monospace"
+											:value="getEmbedCode(embed.path)"
+											readonly
+										/>
+										<button
+											class="btn btn-success"
+											@click="copyToClipboard(embed.path)"
+											title="Másolás"
+										>
+											<i class="fas fa-fw fa-copy"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</main>
@@ -583,6 +636,11 @@
 					],
 					ms: [],
 					publicUrl: null,
+					embeds: [
+						{ name: 'Bevételek', path: '/income/' },
+						{ name: 'Kiadások', path: '/expense/' },
+						{ name: 'Bevételek és kiadások', path: '/inex/' },
+					],
 					error: null,
 					errorType: null,
 				},
