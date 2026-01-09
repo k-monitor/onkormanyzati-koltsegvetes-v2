@@ -654,6 +654,20 @@
 						const path = '/assets/img';
 						return `${path}/${logo}`;
 					},
+					getEmbedCode(path) {
+						if (!this.publicUrl) return '';
+						const baseUrl = this.publicUrl.replace(/\/$/, '');
+						return `<iframe width="100%" height="1200px" src="${baseUrl}${path}" frameborder="0"></iframe>`;
+					},
+					async copyToClipboard(path) {
+						const code = this.getEmbedCode(path);
+						try {
+							await navigator.clipboard.writeText(code);
+							alert('Vágólapra másolva!');
+						} catch {
+							alert('Nem sikerült a másolás!');
+						}
+					},
 					async buildSite() {
 						let r,
 							e = '',
