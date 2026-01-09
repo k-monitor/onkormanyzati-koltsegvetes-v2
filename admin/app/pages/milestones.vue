@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Trash, Upload } from 'lucide-vue-next';
+
 const loading = useLoading();
 
 const ms = ref<string[]>();
@@ -33,57 +35,76 @@ onMounted(async () => {
 </script>
 
 <template>
-	<h1>Fejlesztéskártyák képei</h1>
-	<p>
-		A feltöltött fájlok eredeti neve megmarad, a szerveren levő azonos nevű fájl felül lesz
-		írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes fájlnevekkel
-		dolgozni. A konfigban a fájlnevet pontosan kell megadni, mappanevet nem kell eléírni.
-	</p>
-	<p>
-		A képeket ajánlott feltöltés előtt 1200 pixel szélesre kicsinyíteni arányosan, JPG
-		formátumba menteni, és
-		<a
-			href="https://www.tinyjpg.com/"
-			target="_blank"
-			>TinyJPG</a
-		>
-		segítségével optimalizálni.
-	</p>
-	<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mt-4">
-		<div
-			class="col"
-			v-for="f in ms"
-		>
-			<div class="card shadow-sm">
-				<div class="ratio ratio-16x9">
+	<main class="prose mx-auto my-16">
+		<h1>Fejlesztéskártyák képei</h1>
+		<p>
+			A feltöltött fájlok eredeti neve megmarad, a szerveren levő azonos nevű fájl felül lesz
+			írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes fájlnevekkel
+			dolgozni. A konfigban a fájlnevet pontosan kell megadni, mappanevet nem kell eléírni.
+		</p>
+		<p>
+			A képeket ajánlott feltöltés előtt 1200 pixel szélesre kicsinyíteni arányosan, JPG
+			formátumba menteni, és
+			<a
+				href="https://www.tinyjpg.com/"
+				target="_blank"
+				>TinyJPG</a
+			>
+			segítségével optimalizálni.
+		</p>
+		<div class="not-prose flex gap-8">
+			<Button as-child>
+				<label class="cursor-pointer">
+					<Upload />
+					Feltöltés
+					<input
+						style="display: none"
+						type="file"
+						multiple
+						@change="uploadMs"
+					/>
+				</label>
+			</Button>
+		</div>
+	</main>
+
+	<div class="container mx-auto px-16 my-16">
+		<ItemGroup class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+			<Item
+				v-for="f in ms"
+				:key="f"
+				role="listitem"
+				variant="outline"
+			>
+				<ItemHeader>
 					<a
-						class="card-img-top bg-light d-flex align-items-center justify-content-center thumb"
-						:style="{ backgroundImage: 'url(/static/assets/ms/' + f + ')' }"
 						:href="'/static/assets/ms/' + f"
+						class="aspect-16/9 bg-foreground/5 rounded-sm w-full"
+						style="
+							background-position: center;
+							background-repeat: no-repeat;
+							background-size: cover;
+						"
+						:style="{
+							backgroundImage: 'url(/static/assets/ms/' + f + ')',
+						}"
 						target="_blank"
-					>
+						>&nbsp;
 					</a>
-				</div>
-				<div class="card-footer d-flex align-items-center px-1">
-					<div class="flex-grow-1 text-truncate">{{ f }}</div>
-					<button
-						class="btn btn-sm btn-danger"
+				</ItemHeader>
+				<ItemContent>
+					<ItemTitle>{{ f }}</ItemTitle>
+				</ItemContent>
+				<ItemActions>
+					<Button
+						class="cursor-pointer"
+						variant="destructive"
 						@click="delMs(f)"
 					>
-						<i class="fas fa-fw fa-trash"></i>
-					</button>
-				</div>
-			</div>
-		</div>
+						<Trash />
+					</Button>
+				</ItemActions>
+			</Item>
+		</ItemGroup>
 	</div>
-	<label class="btn btn-success">
-		<i class="fas fa-fw fa-upload me-1"></i>
-		Feltöltés
-		<input
-			style="display: none"
-			type="file"
-			multiple
-			@change="uploadMs"
-		/>
-	</label>
 </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Cog, Download } from 'lucide-vue-next';
+
 const loading = useLoading();
 const error = ref('');
 const errorType = ref('');
@@ -36,41 +38,64 @@ async function buildSite() {
 </script>
 
 <template>
-	<h1>Weboldal</h1>
-	<p>
-		A KÖKÖ site-ot a költségvetés, konfiguráció, vagy képek módosítása után le kell generálni.
-		Ez a folyamat akár 1-2 percig is tarthat.
-	</p>
-	<p>
-		Generálás után a site fájljai letölthetőek ZIP-ben. Ez egy
-		<code>dist</code> mappát fog tartalmazni, ezt lehet webszerveren hosztolni. Fontos, hogy a
-		site végleges URL-jét a konfigban előzetesen be kell állítani!
-	</p>
-	<p>
-		Lehetőség van a forráskód letöltésére is, a generált ZIP fájl tartalmazza a feltöltött
-		fájlokat és a használati útmutatót is.
-	</p>
-	<a
-		class="btn btn-outline-primary"
-		href="/api/zipCode"
-		target="_blank"
-	>
-		<i class="fas fa-fw fa-code me-1"></i>
-		Forráskód
-	</a>
-	<button
-		class="btn btn-success"
-		@click="buildSite"
-	>
-		<i class="fas fa-fw fa-cog me-1"></i>
-		Generálás
-	</button>
-	<a
-		class="btn btn-primary"
-		href="/api/zipSite"
-		target="_blank"
-	>
-		<i class="fas fa-fw fa-download me-1"></i>
-		Kész site
-	</a>
+	<main class="prose mx-auto my-16">
+		<h1>Weboldal</h1>
+
+		<p>
+			A KÖKÖ site-ot a költségvetés, konfiguráció, vagy képek módosítása után le kell
+			generálni. Ez a folyamat akár 1-2 percig is tarthat.
+		</p>
+		<div class="not-prose flex gap-8">
+			<Button
+				class="cursor-pointer"
+				@click="buildSite"
+			>
+				<Cog />
+				Generálás
+			</Button>
+		</div>
+
+		<hr />
+
+		<p>
+			Generálás után a site fájljai letölthetőek ZIP-ben. Ez egy
+			<code>dist</code> mappát fog tartalmazni, ezt lehet webszerveren hosztolni. Fontos, hogy
+			a site végleges URL-jét a konfigban előzetesen be kell állítani!
+		</p>
+		<div class="not-prose flex gap-8">
+			<Button
+				as-child
+				variant="secondary"
+			>
+				<a
+					download
+					href="/api/zipSite"
+				>
+					<Download />
+					Kész site
+				</a>
+			</Button>
+		</div>
+
+		<hr />
+
+		<p>
+			Lehetőség van a forráskód letöltésére is, a generált ZIP fájl tartalmazza a feltöltött
+			fájlokat és a használati útmutatót is.
+		</p>
+		<div class="not-prose flex gap-8">
+			<Button
+				as-child
+				variant="secondary"
+			>
+				<a
+					download
+					href="/api/zipCode"
+				>
+					<Download />
+					Forráskód
+				</a>
+			</Button>
+		</div>
+	</main>
 </template>

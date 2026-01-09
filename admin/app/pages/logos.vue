@@ -1,35 +1,37 @@
 <script setup lang="ts">
+import { Upload } from 'lucide-vue-next';
+
 const logos = [
 	{
 		name: 'logo.png',
 		text: 'Város logó (fent)',
-		format: 'PNG, max. 300x300 (négyzet!)',
+		format: 'PNG, négyzet<br>max. 300x300',
 	},
-	{ name: 'cover.jpg', text: 'Fejléc', format: 'JPG, max. 1920x1080' },
+	{ name: 'cover.jpg', text: 'Fejléc', format: 'JPG<br>max. 1920x1080' },
 	{
 		name: 'face.png',
 		text: 'Polgárm. arckép',
-		format: 'PNG, max. 250x250 (négyzet!)',
+		format: 'PNG, négyzet<br>max. 250x250',
 	},
 	{
 		name: 'pub.jpg',
 		text: 'Kiadvány borítója',
-		format: 'JPG, max. 500x500 (arány mindegy)',
+		format: 'JPG<br>ax. 500x500',
 	},
 	{
 		name: 'logo-footer.png',
 		text: 'Város logó (lábléc)',
-		format: 'PNG, max. 500x500',
+		format: 'PNG<br>max. 500x500',
 	},
 	{
 		name: 'ogimage.jpg',
 		text: 'Facebook bélyegkép',
-		format: 'JPG, <a href="https://developers.facebook.com/docs/sharing/webmasters/images/" target="_blank">méretek</a>',
+		format: 'JPG<br><a href="https://developers.facebook.com/docs/sharing/webmasters/images/" target="_blank">méretek</a>',
 	},
 	{
 		name: 'favicon.png',
 		text: 'Favicon (böngésző ikon)',
-		format: 'PNG, max. 256x256 (négyzet!)',
+		format: 'PNG, négyzet<br>max. 256x256',
 	},
 ];
 
@@ -46,61 +48,70 @@ async function uploadLogo(e: Event, f: string) {
 }
 </script>
 <template>
-	<h1>Logók</h1>
-	<p>
-		A feltöltött fájlok neve mindegy, azonban a formátum kötött. A képeket feltöltés előtt az
-		ajánlott méretre kell alakítani, megfelelő formátumba menteni, és
-		<a
-			href="https://www.tinyjpg.com/"
-			target="_blank"
-			>TinyJPG</a
-		>
-		segítségével optimalizálni.
-	</p>
-	<p>
-		A Facebook bélyegkép cserélése és a site újragenerálása után a Facebook szervereit is
-		frissíteni kell, ez
-		<a
-			href="https://developers.facebook.com/tools/debug/"
-			target="_blank"
-			>itt</a
-		>
-		tehető meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.
-	</p>
-	<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3 mt-4"></div>
-	<div
-		class="col"
-		v-for="f in logos"
-	>
-		<div class="card shadow-sm">
-			<div class="ratio ratio-16x9">
-				<a
-					class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
-					:href="logoUrl(f.name)"
-					style="background-position: center; background-repeat: no-repeat"
-					:style="{
-						backgroundImage: `url(${logoUrl(f.name)}?${r})`,
-						backgroundSize: f.name.match(/face|favicon|logo|pub/) ? 'contain' : 'cover',
-					}"
-					target="_blank"
-				>
-				</a>
-			</div>
-			<div class="card-footer d-flex align-items-center px-1">
-				<div class="flex-grow-1 text-truncate">
-					{{ f.text }}
-					<br />
-					<small v-html="f.format"></small>
-				</div>
-				<label class="btn btn-sm btn-success">
-					<i class="fas fa-fw fa-upload"></i>
-					<input
-						style="display: none"
-						type="file"
-						@change="uploadLogo($event, f.name)"
-					/>
-				</label>
-			</div>
-		</div>
+	<main class="prose mx-auto my-16">
+		<h1>Logók</h1>
+		<p>
+			A feltöltött fájlok neve mindegy, azonban a formátum kötött. A képeket feltöltés előtt
+			az ajánlott méretre kell alakítani, megfelelő formátumba menteni, és
+			<a
+				href="https://www.tinyjpg.com/"
+				target="_blank"
+				>TinyJPG</a
+			>
+			segítségével optimalizálni.
+		</p>
+		<p>
+			A Facebook bélyegkép cserélése és a site újragenerálása után a Facebook szervereit is
+			frissíteni kell, ez
+			<a
+				href="https://developers.facebook.com/tools/debug/"
+				target="_blank"
+				>itt</a
+			>
+			tehető meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.
+		</p>
+	</main>
+
+	<div class="container mx-auto px-16 my-16">
+		<ItemGroup class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+			<Item
+				v-for="f in logos"
+				:key="f.name"
+				role="listitem"
+				variant="outline"
+			>
+				<ItemHeader>
+					<a
+						:href="logoUrl(f.name)"
+						class="aspect-16/9 bg-foreground/5 rounded-sm w-full"
+						style="background-position: center; background-repeat: no-repeat"
+						:style="{
+							backgroundImage: `url(${logoUrl(f.name)}?${r})`,
+							backgroundSize: f.name.match(/face|favicon|logo|pub/)
+								? 'contain'
+								: 'cover',
+						}"
+						target="_blank"
+						>&nbsp;
+					</a>
+				</ItemHeader>
+				<ItemContent>
+					<ItemTitle>{{ f.text }}</ItemTitle>
+					<ItemDescription v-html="f.format"></ItemDescription>
+				</ItemContent>
+				<ItemActions>
+					<Button as-child>
+						<label class="cursor-pointer">
+							<Upload />
+							<input
+								style="display: none"
+								type="file"
+								@change="uploadLogo($event, f.name)"
+							/>
+						</label>
+					</Button>
+				</ItemActions>
+			</Item>
+		</ItemGroup>
 	</div>
 </template>

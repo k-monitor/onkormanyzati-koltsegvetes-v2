@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Cog, Download, Upload } from 'lucide-vue-next';
+
 const loading = useLoading();
 
 async function newConfig() {
@@ -19,38 +21,55 @@ function uploadConfig(e: Event) {
 </script>
 
 <template>
-	<h1>Konfiguráció</h1>
-	<p>
-		Új konfiguráció generálásakor a meglévő felülíródik: minden kézzel beírt érték törlődik, és
-		új tooltip munkalapok jönnek létre a <code>budget.xlsx</code>-nek megfelelően.
-	</p>
-	<p>
-		Feltöltéskor a fájl neve mindegy, a szerveren levő
-		<code>config.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365 (<code>*.xlsx</code>)
-		fájlt kell feltölteni, melynek szerkezete követi a dokumentációban írtakat.
-	</p>
-	<button
-		class="btn btn-danger"
-		@click="newConfig"
-	>
-		<i class="fas fa-fw fa-cog me-1"></i>
-		Új konfig
-	</button>
-	<a
-		class="btn btn-primary"
-		href="/input/config.xlsx"
-		target="_blank"
-	>
-		<i class="fas fa-fw fa-download me-1"></i>
-		Letöltés
-	</a>
-	<label class="btn btn-success">
-		<i class="fas fa-fw fa-upload me-1"></i>
-		Feltöltés
-		<input
-			style="display: none"
-			type="file"
-			@change="uploadConfig"
-		/>
-	</label>
+	<main class="prose mx-auto my-16">
+		<h1>Konfiguráció</h1>
+
+		<p>
+			Feltöltéskor a fájl neve mindegy, a szerveren levő
+			<code>config.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365 (<code>*.xlsx</code>)
+			fájlt kell feltölteni, melynek szerkezete követi a dokumentációban írtakat.
+		</p>
+		<div class="not-prose flex gap-8">
+			<Button
+				as-child
+				variant="secondary"
+			>
+				<a
+					download
+					href="/input/config.xlsx"
+				>
+					<Download />
+					Letöltés
+				</a>
+			</Button>
+			<Button as-child>
+				<label class="cursor-pointer">
+					<Upload />
+					Feltöltés
+					<input
+						style="display: none"
+						type="file"
+						@change="uploadConfig"
+					/>
+				</label>
+			</Button>
+		</div>
+
+		<hr />
+
+		<p>
+			Új konfiguráció generálásakor a meglévő felülíródik: minden kézzel beírt érték törlődik,
+			és új tooltip munkalapok jönnek létre a <code>budget.xlsx</code>-nek megfelelően.
+		</p>
+		<div class="not-prose flex gap-8">
+			<Button
+				class="cursor-pointer"
+				variant="destructive"
+				@click="newConfig"
+			>
+				<Cog />
+				Új konfig
+			</Button>
+		</div>
+	</main>
 </template>
