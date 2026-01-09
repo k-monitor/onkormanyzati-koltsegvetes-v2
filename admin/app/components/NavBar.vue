@@ -11,10 +11,22 @@ const links = [
 		external: true,
 	},
 ];
+
+const {
+	public: { url: kokoUrl },
+} = useRuntimeConfig();
+
+if (kokoUrl) {
+	links.push({
+		href: kokoUrl,
+		text: 'KÖKÖ',
+		external: true,
+	});
+}
 </script>
 <template>
 	<div>
-		<strong>KÖKÖ Admin |</strong>
+		<strong>KÖKÖ Admin | </strong>
 		<template
 			v-for="(link, index) in links"
 			:key="link.href"

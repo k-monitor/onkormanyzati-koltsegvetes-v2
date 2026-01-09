@@ -13,6 +13,8 @@ export default defineNuxtConfig({
 			pass: '', // NUXT_SECOND_PASS
 		},
 		deployCmd: '', // NUXT_DEPLOY_CMD
-		publicUrl: '', // NUXT_PUBLIC_URL
+		public: {
+			url: '', // NUXT_PUBLIC_URL
+		},
 	},
 });

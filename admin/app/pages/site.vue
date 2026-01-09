@@ -27,7 +27,7 @@ async function buildSite() {
 		errorType.value = failed ? 'Nem sikerült!' : 'Nem stimmelnek az adatok';
 		if (failed || e.includes('[KÖKÖ]')) {
 			// acutal failure OR invalid data (which is HTTP 200)
-			// FIXME admin modal
+			// FIXME admin modal (title: errorType, body: error)
 			//new bootstrap.Modal(document.getElementById('errorModal')).show();
 		}
 		loading.value = false;
