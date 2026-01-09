@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { year } = useYear();
+
 onMounted(() => {
 	window.addEventListener('scroll', function () {
 		const scrollPosition = window.pageYOffset;
@@ -23,7 +25,7 @@ onMounted(() => {
 					<p class="text-white font-weight-light mb-5">{{ CONFIG.header.headline }}</p>
 					<a
 						class="btn btn-primary btn-xl js-scroll-trigger"
-						href="#welcome"
+						:href="`#${year}-koszonto`"
 						>{{ CONFIG.header.button }}</a
 					>
 				</div>

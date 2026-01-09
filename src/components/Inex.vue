@@ -80,7 +80,7 @@ onUpdated(regenerateTooltips);
 					<div class="d-flex font-weight-bold mb-2">
 						<div>
 							<a
-								href="#income"
+								:href="`#${year}-bevetel`"
 								class="btn btn-outline-success js-scroll-trigger"
 							>
 								<i class="fas fa-fw fa-angle-double-down"></i>
@@ -96,7 +96,7 @@ onUpdated(regenerateTooltips);
 						</div>
 						<div>
 							<a
-								href="#expense"
+								:href="`#${year}-kiadas`"
 								class="btn btn-outline-danger js-scroll-trigger"
 							>
 								<span class="d-none d-md-inline-block">{{

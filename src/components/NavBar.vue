@@ -94,7 +94,7 @@ onMounted(() => {
 						</li>
 						<li class="nav-item">
 							<a
-								href="#welcome"
+								:href="`#${year}-koszonto`"
 								class="nav-link js-scroll-trigger"
 								>{{ CONFIG.navBar.welcome }}</a
 							>
@@ -102,12 +102,12 @@ onMounted(() => {
 						<li class="nav-item">
 							<a
 								:href="
-									'#' +
+									`#${year}-` +
 									(CONFIG.modules.inex
-										? 'inex'
+										? 'merleg'
 										: CONFIG.modules.income
-											? 'income'
-											: 'expense')
+											? 'bevetel'
+											: 'kiadas')
 								"
 								class="nav-link js-scroll-trigger"
 								>{{ CONFIG.navBar.inex }}</a
@@ -118,7 +118,7 @@ onMounted(() => {
 							v-if="canShowMilestones"
 						>
 							<a
-								href="#milestones"
+								:href="`#${year}-fejlesztesek`"
 								class="nav-link js-scroll-trigger"
 								>{{ CONFIG.navBar.milestones }}</a
 							>
