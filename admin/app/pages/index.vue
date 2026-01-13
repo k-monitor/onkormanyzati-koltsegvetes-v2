@@ -4,3 +4,5 @@ onMounted(() => {
 	router.replace('/budget/');
 });
 </script>
+
+<template></template>

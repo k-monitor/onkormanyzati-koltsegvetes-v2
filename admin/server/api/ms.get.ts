@@ -1,5 +1,7 @@
 import fs from 'fs';
+import path from 'path';
 
 export default defineEventHandler(() => {
-	return fs.readdirSync('static/assets/ms');
+	const dir = path.resolve(kokoDir(), 'static/assets/ms');
+	return fs.readdirSync(dir);
 });
