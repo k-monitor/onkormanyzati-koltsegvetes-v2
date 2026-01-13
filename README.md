@@ -317,6 +317,16 @@ Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a ta
 - keresőkifejezés
 - találatok száma
 
+## Ábrák beágyazása
+
+A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba. Ezekhez html kód az admin felület _Beágyazás_ menüpontjából érhető el.
+
+Az ábrák url-jei:
+
+- `/bevetelek`
+- `/kiadasok`
+- `/merleg`
+
 ## Admin felület beüzemelése
 
 Magának a költségvetés site-nak a beüzemelése ezekből a fázisokból áll (ez van fentebb részletesebben):
