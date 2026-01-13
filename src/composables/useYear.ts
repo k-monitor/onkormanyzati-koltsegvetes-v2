@@ -77,11 +77,11 @@ export default () => {
 		return translations[section] || section;
 	}
 
-	function scrollToSection(section: string) {
+	function scrollToSection(section: string, instant = false) {
 		if (typeof window === 'undefined') return;
 		const element = document.getElementById(translateSection(section));
 		if (element) {
-			element.scrollIntoView({ behavior: 'smooth' });
+			element.scrollIntoView({ behavior: instant ? 'instant' : 'smooth' });
 		}
 	}
 
@@ -111,7 +111,7 @@ export default () => {
 			updateHash(year.value, section, milestoneId);
 			if (section) {
 				setTimeout(() => {
-					scrollToSection(section);
+					scrollToSection(section, true);
 					if (milestoneId) {
 						eventBus.emit('ms', milestoneId);
 					}
