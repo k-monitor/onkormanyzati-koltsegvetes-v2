@@ -1,8 +1,13 @@
 <template>
 	<div>
 		<NuxtRouteAnnouncer />
-		<NavBar />
-		<NuxtPage />
+		<SidebarProvider>
+			<SideNav />
+			<SidebarInset>
+				<TopNav />
+				<NuxtPage />
+			</SidebarInset>
+		</SidebarProvider>
 		<LoadingOverlay />
 	</div>
 </template>

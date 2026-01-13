@@ -48,7 +48,7 @@ async function uploadLogo(e: Event, f: string) {
 }
 </script>
 <template>
-	<main class="prose mx-auto my-16">
+	<main class="prose mx-auto my-8">
 		<h1>Logók</h1>
 		<p>
 			A feltöltött fájlok neve mindegy, azonban a formátum kötött. A képeket feltöltés előtt

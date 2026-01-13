@@ -35,7 +35,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<main class="prose mx-auto my-16">
+	<main class="prose mx-auto my-8">
 		<h1>Fejlesztéskártyák képei</h1>
 		<p>
 			A feltöltött fájlok eredeti neve megmarad, a szerveren levő azonos nevű fájl felül lesz

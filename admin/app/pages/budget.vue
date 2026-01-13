@@ -7,7 +7,7 @@ function uploadBudget(e: Event) {
 </script>
 
 <template>
-	<main class="prose mx-auto my-16">
+	<main class="prose mx-auto my-8">
 		<h1>Költségvetés</h1>
 
 		<p>

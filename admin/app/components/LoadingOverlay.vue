@@ -4,17 +4,12 @@ const loading = useLoading();
 <template>
 	<div
 		id="loading"
-		class="align-items-center d-flex flex-column h-100 justify-content-center position-absolute w-100"
+		class="absolute inset-0 flex flex-col items-center justify-center bg-background/75 z-10"
 		v-if="loading"
 	>
-		<div
-			class="spinner-border"
-			role="status"
-		>
-			<span class="visually-hidden">Loading...</span>
-		</div>
+		<Spinner class="size-12 mb-4" />
 		<h1
-			class="mt-4"
+			class="mt-4 text-lg font-medium"
 			v-if="loading !== !!loading"
 		>
 			{{ loading }}

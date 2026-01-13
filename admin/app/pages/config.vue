@@ -21,7 +21,7 @@ function uploadConfig(e: Event) {
 </script>
 
 <template>
-	<main class="prose mx-auto my-16">
+	<main class="prose mx-auto my-8">
 		<h1>Konfiguráció</h1>
 
 		<p>
