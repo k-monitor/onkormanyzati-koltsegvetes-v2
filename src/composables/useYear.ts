@@ -4,6 +4,19 @@ export default () => {
 	const year = useState('year', () => '' + CONFIG.defaultYear);
 	const initialized = useState('yearInitialized', () => false);
 
+	function y2s(year: string): string {
+		return slugify(year);
+	}
+
+	function s2y(slug: string): string | null {
+		for (const y of Object.keys(DATA)) {
+			if (y2s(y) === slug) {
+				return y;
+			}
+		}
+		return null;
+	}
+
 	function parseHash(): { year: string | null; section: string | null; milestoneId: string | null } {
 		if (typeof window === 'undefined') return { year: null, section: null, milestoneId: null };
 		const hash = window.location.hash.slice(1);
@@ -14,21 +27,21 @@ export default () => {
 			return { year: hash, section: null, milestoneId: null };
 		}
 
-		// Check if hash is year-section-milestoneId format (e.g., #2024-fejlesztesek-m1)
-		const milestoneMatch = hash.match(/^(\d{4})-(milestones|fejlesztesek)-(.+)$/);
+		// Check if hash is year-section-milestoneId format (e.g., #2024-kozponti/fejlesztesek/m1)
+		const milestoneMatch = hash.match(/^([\w-]+)\/(fejlesztesek)\/(.+)$/);
 		if (milestoneMatch) {
 			const [, yearPart, , milestoneId] = milestoneMatch;
 			if (Object.hasOwn(DATA, yearPart)) {
-				return { year: yearPart, section: 'fejlesztesek', milestoneId };
+				return { year: s2y(yearPart), section: 'fejlesztesek', milestoneId };
 			}
 		}
 
 		// Check if hash is year-section format (e.g., #2024-fejlesztesek)
-		const match = hash.match(/^(\d{4})-(.+)$/);
+		const match = hash.match(/^([\w-]+)\/(.+)$/);
 		if (match) {
 			const [, yearPart, sectionPart] = match;
 			if (Object.hasOwn(DATA, yearPart)) {
-				return { year: yearPart, section: sectionPart, milestoneId: null };
+				return { year: s2y(yearPart), section: sectionPart, milestoneId: null };
 			}
 		}
 
@@ -39,9 +52,9 @@ export default () => {
 		if (typeof window === 'undefined') return;
 		let newHash = newYear;
 		if (section) {
-			newHash = `${newYear}-${section}`;
+			newHash = `${y2s(newYear)}/${section}`;
 			if (milestoneId) {
-				newHash = `${newHash}-${milestoneId}`;
+				newHash = `${newHash}/${milestoneId}`;
 			}
 		}
 		const currentHash = window.location.hash.slice(1);

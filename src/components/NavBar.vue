@@ -51,7 +51,7 @@ onMounted(() => {
 			<div class="container">
 				<a
 					class="navbar-brand js-scroll-trigger"
-					href="#page-top"
+					:href="`#${year}/koszonto`"
 				>
 					<img
 						class="mr-2"
@@ -94,7 +94,7 @@ onMounted(() => {
 						</li>
 						<li class="nav-item">
 							<a
-								:href="`#${year}-koszonto`"
+								:href="`#${year}/koszonto`"
 								class="nav-link js-scroll-trigger"
 								>{{ CONFIG.navBar.welcome }}</a
 							>
@@ -102,7 +102,7 @@ onMounted(() => {
 						<li class="nav-item">
 							<a
 								:href="
-									`#${year}-` +
+									`#${year}/` +
 									(CONFIG.modules.inex
 										? 'merleg'
 										: CONFIG.modules.income
@@ -118,7 +118,7 @@ onMounted(() => {
 							v-if="canShowMilestones"
 						>
 							<a
-								:href="`#${year}-fejlesztesek`"
+								:href="`#${year}/fejlesztesek`"
 								class="nav-link js-scroll-trigger"
 								>{{ CONFIG.navBar.milestones }}</a
 							>
