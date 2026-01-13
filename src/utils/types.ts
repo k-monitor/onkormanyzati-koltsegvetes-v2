@@ -55,4 +55,5 @@ export type SearchResult = {
 	tags: string[];
 	type: 'econ' | 'func' | 'milestone';
 	value: number;
+	year?: string | number;
 };

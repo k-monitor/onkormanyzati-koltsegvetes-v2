@@ -6,32 +6,37 @@
 //	}
 //};
 
-export default function search(year: string, term: string, range: number[]) {
+export default function search(year: string | null | undefined, term: string, range: number[]) {
 	range = range || [];
 	const meanValue = range.reduce((a, b) => a + b, 0) / range.length || 0;
 
-	// console.log('search', year, term, range);
+	console.log('search', year, term, range);
 
 	let results: SearchResult[] = [];
-	(['expense', 'income'] as const).forEach((side) => {
-		(['econ', 'func'] as const).forEach((type) => {
-			const tree = DATA[year]?.[side]?.[type] || null;
-			if (!tree) return;
-			const tags = (TAGS[side] || { type: {} })[type] || {};
-			const treeResults = searchNode(tree, tags, term, range, []).map((result) => {
-				result.side = side;
-				result.type = type;
-				result.distance = !meanValue
-					? meanValue
-					: Math.abs((result.value || 0) - meanValue);
-				return result as SearchResult;
+	const yearsToSearch = year ? [year] : Object.keys(DATA);
+
+	yearsToSearch.forEach((searchYear) => {
+		(['expense', 'income'] as const).forEach((side) => {
+			(['econ', 'func'] as const).forEach((type) => {
+				const tree = DATA[searchYear]?.[side]?.[type] || null;
+				if (!tree) return;
+				const tags = (TAGS[side] || { type: {} })[type] || {};
+				const treeResults = searchNode(tree, tags, term, range, []).map((result) => {
+					result.side = side;
+					result.type = type;
+					result.year = searchYear;
+					result.distance = !meanValue
+						? meanValue
+						: Math.abs((result.value || 0) - meanValue);
+					return result as SearchResult;
+				});
+				results = results.concat(treeResults);
 			});
-			results = results.concat(treeResults);
 		});
 	});
 	Object.keys(MILESTONES).forEach((milestoneId) => {
 		const m = MILESTONES[milestoneId];
-		if (m && m.year == year) {
+		if (m && (!year || m.year == year)) {
 			const text = m.title + '|' + m.description;
 			const matchesInName = term
 				.toLowerCase()
@@ -50,6 +55,7 @@ export default function search(year: string, term: string, range: number[]) {
 					tags: matchedTags,
 					type: 'milestone',
 					value: 0,
+					year: m.year,
 				});
 			}
 		}
