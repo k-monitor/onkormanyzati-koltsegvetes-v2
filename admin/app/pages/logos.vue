@@ -3,35 +3,39 @@ import { Upload } from 'lucide-vue-next';
 
 const logos = [
 	{
+		name: 'favicon.png',
+		text: 'Favicon (böngésző ikon)',
+		format: 'PNG, négyzet<br>max. 256x256',
+		square: true,
+	},
+	{
 		name: 'logo.png',
 		text: 'Város logó (fent)',
 		format: 'PNG, négyzet<br>max. 300x300',
+		square: true,
 	},
-	{ name: 'cover.jpg', text: 'Fejléc', format: 'JPG<br>max. 1920x1080' },
 	{
 		name: 'face.png',
 		text: 'Polgárm. arckép',
 		format: 'PNG, négyzet<br>max. 250x250',
-	},
-	{
-		name: 'pub.jpg',
-		text: 'Kiadvány borítója',
-		format: 'JPG<br>ax. 500x500',
-	},
-	{
-		name: 'logo-footer.png',
-		text: 'Város logó (lábléc)',
-		format: 'PNG<br>max. 500x500',
+		square: true,
 	},
 	{
 		name: 'ogimage.jpg',
 		text: 'Facebook bélyegkép',
 		format: 'JPG<br><a href="https://developers.facebook.com/docs/sharing/webmasters/images/" target="_blank">méretek</a>',
 	},
+	{ name: 'cover.jpg', text: 'Fejléc', format: 'JPG<br>max. 1920x1080' },
+
 	{
-		name: 'favicon.png',
-		text: 'Favicon (böngésző ikon)',
-		format: 'PNG, négyzet<br>max. 256x256',
+		name: 'pub.jpg',
+		text: 'Kiadvány borítója',
+		format: 'JPG<br>max. 500x500',
+	},
+	{
+		name: 'logo-footer.png',
+		text: 'Város logó (lábléc)',
+		format: 'PNG<br>max. 500x500',
 	},
 ];
 
@@ -74,7 +78,7 @@ async function uploadLogo(e: Event, f: string) {
 	</PageFrame>
 
 	<div class="container mx-auto px-16 my-16">
-		<ItemGroup class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+		<ItemGroup class="grid grid-cols-2 md:grid-cols-3 _lg:grid-cols-4 gap-4">
 			<Item
 				v-for="f in logos"
 				:key="f.name"
@@ -84,13 +88,12 @@ async function uploadLogo(e: Event, f: string) {
 				<ItemHeader>
 					<a
 						:href="logoUrl(f.name)"
-						class="aspect-16/9 bg-foreground/5 rounded-sm w-full"
+						class="bg-foreground/5 rounded-sm w-full"
+						:class="f.square ? 'h-24' : 'aspect-video'"
 						style="background-position: center; background-repeat: no-repeat"
 						:style="{
 							backgroundImage: `url(${logoUrl(f.name)}?${r})`,
-							backgroundSize: f.name.match(/face|favicon|logo|pub/)
-								? 'contain'
-								: 'cover',
+							backgroundSize: f.name.match(/face|favicon|logo/) ? '64px' : 'cover',
 						}"
 						target="_blank"
 						>&nbsp;
