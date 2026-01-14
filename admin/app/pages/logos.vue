@@ -48,8 +48,7 @@ async function uploadLogo(e: Event, f: string) {
 }
 </script>
 <template>
-	<main class="prose mx-auto my-8">
-		<h1>Logók</h1>
+	<PageFrame title="Logók">
 		<p>
 			A feltöltött fájlok neve mindegy, azonban a formátum kötött. A képeket feltöltés előtt
 			az ajánlott méretre kell alakítani, megfelelő formátumba menteni, és
@@ -70,7 +69,7 @@ async function uploadLogo(e: Event, f: string) {
 			>
 			tehető meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.
 		</p>
-	</main>
+	</PageFrame>
 
 	<div class="container mx-auto px-16 my-16">
 		<ItemGroup class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

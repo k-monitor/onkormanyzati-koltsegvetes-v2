@@ -21,9 +21,7 @@ function uploadConfig(e: Event) {
 </script>
 
 <template>
-	<main class="prose mx-auto my-8">
-		<h1>Konfiguráció</h1>
-
+	<PageFrame title="Konfiguráció">
 		<p>
 			Feltöltéskor a fájl neve mindegy, a szerveren levő
 			<code>config.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365 (<code>*.xlsx</code>)
@@ -71,5 +69,5 @@ function uploadConfig(e: Event) {
 				Új konfig
 			</Button>
 		</div>
-	</main>
+	</PageFrame>
 </template>

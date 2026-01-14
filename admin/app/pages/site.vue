@@ -38,9 +38,7 @@ async function buildSite() {
 </script>
 
 <template>
-	<main class="prose mx-auto my-8">
-		<h1>Weboldal</h1>
-
+	<PageFrame title="Weboldal">
 		<p>
 			A KÖKÖ site-ot a költségvetés, konfiguráció, vagy képek módosítása után le kell
 			generálni. Ez a folyamat akár 1-2 percig is tarthat.
@@ -97,7 +95,8 @@ async function buildSite() {
 				</a>
 			</Button>
 		</div>
-	</main>
+	</PageFrame>
+
 	<Dialog v-model:open="dialogOpened">
 		<DialogContent
 			class="min-w-3/4"

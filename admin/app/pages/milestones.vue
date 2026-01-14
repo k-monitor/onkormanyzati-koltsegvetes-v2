@@ -35,8 +35,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<main class="prose mx-auto my-8">
-		<h1>Fejlesztéskártyák képei</h1>
+	<PageFrame title="Fejlesztéskártyák képei">
 		<p>
 			A feltöltött fájlok eredeti neve megmarad, a szerveren levő azonos nevű fájl felül lesz
 			írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes fájlnevekkel
@@ -66,7 +65,7 @@ onMounted(async () => {
 				</label>
 			</Button>
 		</div>
-	</main>
+	</PageFrame>
 
 	<div class="container mx-auto px-16 my-16">
 		<ItemGroup class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

@@ -7,9 +7,7 @@ function uploadBudget(e: Event) {
 </script>
 
 <template>
-	<main class="prose mx-auto my-8">
-		<h1>Költségvetés</h1>
-
+	<PageFrame title="Költségvetés">
 		<p>
 			Feltöltéskor a fájl neve mindegy, a szerveren levő
 			<code>budget.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365 (<code>*.xlsx</code>)
@@ -41,5 +39,5 @@ function uploadBudget(e: Event) {
 				</label>
 			</Button>
 		</div>
-	</main>
+	</PageFrame>
 </template>
