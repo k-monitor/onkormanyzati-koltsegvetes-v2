@@ -23,8 +23,10 @@ const links = computed(() => {
 	];
 });
 
-onMounted(() => {
-	refresh();
+const mounted = ref(false);
+onMounted(async () => {
+	await refresh();
+	mounted.value = true;
 });
 </script>
 <template>
@@ -40,7 +42,10 @@ onMounted(() => {
 				</SidebarMenuItem>
 			</SidebarMenu>
 		</SidebarHeader>
-		<SidebarContent :class="pending ? 'pointer-events-none opacity-50 select-none' : ''">
+		<SidebarContent
+			class="transition-opacity"
+			:class="!mounted || pending ? 'pointer-events-none opacity-50 select-none' : ''"
+		>
 			<SidebarGroup>
 				<SidebarGroupContent>
 					<SidebarMenu>
