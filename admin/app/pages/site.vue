@@ -4,6 +4,7 @@ import { Cog, Download } from 'lucide-vue-next';
 const loading = useLoading();
 const error = ref('');
 const errorType = ref('');
+const dialogOpened = ref(false);
 
 async function buildSite() {
 	let r,
@@ -29,8 +30,7 @@ async function buildSite() {
 		errorType.value = failed ? 'Nem sikerült!' : 'Nem stimmelnek az adatok';
 		if (failed || e.includes('[KÖKÖ]')) {
 			// acutal failure OR invalid data (which is HTTP 200)
-			// FIXME admin modal (title: errorType, body: error)
-			//new bootstrap.Modal(document.getElementById('errorModal')).show();
+			dialogOpened.value = true;
 		}
 		loading.value = false;
 	}
@@ -38,7 +38,7 @@ async function buildSite() {
 </script>
 
 <template>
-	<main class="prose mx-auto my-16">
+	<main class="prose mx-auto my-8">
 		<h1>Weboldal</h1>
 
 		<p>
@@ -98,4 +98,18 @@ async function buildSite() {
 			</Button>
 		</div>
 	</main>
+	<Dialog v-model:open="dialogOpened">
+		<DialogContent
+			class="min-w-3/4"
+			@interact-outside.prevent
+			@escape-key-down.prevent
+		>
+			<DialogHeader>
+				<DialogTitle>{{ errorType }}</DialogTitle>
+				<DialogDescription class="prose max-w-full overflow-y-scroll max-h-[75vh]">
+					<pre class="text-left text-lg">{{ error }}</pre>
+				</DialogDescription>
+			</DialogHeader>
+		</DialogContent>
+	</Dialog>
 </template>
