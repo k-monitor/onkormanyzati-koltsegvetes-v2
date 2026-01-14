@@ -7,6 +7,7 @@ const isBannerVisible = ref(true);
 const less = ref(true);
 
 const { canShowMilestones, handleYearSelected, year } = useYear();
+const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
 
 function scrollToTop() {
@@ -17,11 +18,10 @@ onMounted(() => {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
-	// Activate scrollspy to add active class to navbar items on scroll
-	$('body').scrollspy({
-		target: '#mainNav',
-		offset: 75,
-	});
+	// Initialize custom scrollspy
+	if (!subpageMode) {
+		initScrollspy();
+	}
 
 	// Collapse Navbar
 	var navbarCollapse = function () {
@@ -43,6 +43,10 @@ onMounted(() => {
 
 	// Collapse the navbar when page is scrolled
 	$(window).scroll(navbarCollapse);
+});
+
+onUnmounted(() => {
+	destroyScrollspy();
 });
 </script>
 
