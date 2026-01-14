@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { H3Event } from 'h3';
 
-export default (event: H3Event, dir: 'input' | 'static') => {
+export default (event: H3Event, dir: 'input' | 'src/data' | 'static') => {
 	const baseDir = path.resolve(kokoDir());
 	const file = path.resolve(baseDir, dir, event.context.params?._ || '');
 	if (!file.startsWith(baseDir + path.sep)) {
