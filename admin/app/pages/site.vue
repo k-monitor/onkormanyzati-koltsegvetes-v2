@@ -45,10 +45,7 @@ async function buildSite() {
 				generálni. Ez a folyamat akár 1-2 percig is tarthat.
 			</p>
 			<template #actions>
-				<Button
-					class="cursor-pointer"
-					@click="buildSite"
-				>
+				<Button @click="buildSite">
 					<Cog />
 					Generálás
 				</Button>

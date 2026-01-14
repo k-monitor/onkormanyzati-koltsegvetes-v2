@@ -55,7 +55,7 @@ onMounted(async () => {
 			</p>
 			<template #actions>
 				<Button as-child>
-					<label class="cursor-pointer">
+					<label>
 						<Upload />
 						Feltöltés
 						<input
@@ -99,7 +99,6 @@ onMounted(async () => {
 				</ItemContent>
 				<ItemActions>
 					<Button
-						class="cursor-pointer"
 						variant="destructive"
 						@click="delMs(f)"
 					>

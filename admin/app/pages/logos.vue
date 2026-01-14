@@ -105,7 +105,7 @@ async function uploadLogo(e: Event, f: string) {
 				</ItemContent>
 				<ItemActions>
 					<Button as-child>
-						<label class="cursor-pointer">
+						<label>
 							<Upload />
 							<input
 								style="display: none"

@@ -43,7 +43,7 @@ function uploadConfig(e: Event) {
 					</a>
 				</Button>
 				<Button as-child>
-					<label class="cursor-pointer">
+					<label>
 						<Upload />
 						Feltöltés
 						<input
@@ -63,7 +63,6 @@ function uploadConfig(e: Event) {
 			</p>
 			<template #actions>
 				<Button
-					class="cursor-pointer"
 					variant="destructive"
 					@click="newConfig"
 				>

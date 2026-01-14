@@ -29,7 +29,7 @@ function uploadBudget(e: Event) {
 					</a>
 				</Button>
 				<Button as-child>
-					<label class="cursor-pointer">
+					<label>
 						<Upload />
 						Feltöltés
 						<input
