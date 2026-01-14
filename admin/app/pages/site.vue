@@ -44,7 +44,7 @@ async function buildSite() {
 				A KÖKÖ site-ot a költségvetés, konfiguráció, vagy képek módosítása után le kell
 				generálni. Ez a folyamat akár 1-2 percig is tarthat.
 			</p>
-			<div class="not-prose flex gap-8">
+			<template #actions>
 				<Button
 					class="cursor-pointer"
 					@click="buildSite"
@@ -52,7 +52,7 @@ async function buildSite() {
 					<Cog />
 					Generálás
 				</Button>
-			</div>
+			</template>
 		</PageSection>
 		<PageSection>
 			<p>
@@ -60,7 +60,7 @@ async function buildSite() {
 				<code>dist</code> mappát fog tartalmazni, ezt lehet webszerveren hosztolni. Fontos,
 				hogy a site végleges URL-jét a konfigban előzetesen be kell állítani!
 			</p>
-			<div class="not-prose flex gap-8">
+			<template #actions>
 				<Button
 					as-child
 					variant="secondary"
@@ -73,14 +73,14 @@ async function buildSite() {
 						Kész site
 					</a>
 				</Button>
-			</div>
+			</template>
 		</PageSection>
 		<PageSection>
 			<p>
 				Lehetőség van a forráskód letöltésére is, a generált ZIP fájl tartalmazza a
 				feltöltött fájlokat és a használati útmutatót is.
 			</p>
-			<div class="not-prose flex gap-8">
+			<template #actions>
 				<Button
 					as-child
 					variant="secondary"
@@ -93,7 +93,7 @@ async function buildSite() {
 						Forráskód
 					</a>
 				</Button>
-			</div>
+			</template>
 		</PageSection>
 	</PageFrame>
 
@@ -105,7 +105,7 @@ async function buildSite() {
 		>
 			<DialogHeader>
 				<DialogTitle>{{ errorType }}</DialogTitle>
-				<DialogDescription class="prose max-w-full overflow-y-scroll max-h-[75vh]">
+				<DialogDescription class="prose max-h-[75vh] max-w-full overflow-y-scroll">
 					<pre class="text-left text-lg">{{ error }}</pre>
 				</DialogDescription>
 			</DialogHeader>
