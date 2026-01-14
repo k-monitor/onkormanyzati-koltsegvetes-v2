@@ -1,11 +1,12 @@
 import archiver from 'archiver';
+import path from 'path';
 
 export default defineEventHandler((event) => {
 	const filename = 'koko-code.zip';
 	setHeader(event, 'content-disposition', `attachment; filename=${filename}`);
+	setHeader(event, 'content-type', 'application/zip');
 
 	const archive = archiver('zip', { zlib: { level: 9 } });
-	const output = event.node.res;
 
 	archive.on('warning', function (err: unknown) {
 		throw err;
@@ -14,17 +15,18 @@ export default defineEventHandler((event) => {
 		throw err;
 	});
 
-	archive.directory('input', 'input');
-	archive.directory('scripts', 'scripts');
-	archive.directory('src', 'src');
-	archive.directory('static', 'static');
-	archive.file('LICENSE', { name: 'LICENSE' });
-	archive.file('README.md', { name: 'README.md' });
-	archive.file('nuxt.config.ts', { name: 'nuxt.config.ts' });
-	archive.file('package.json', { name: 'package.json' });
-	archive.file('pnpm-lock.yaml', { name: 'pnpm-lock.yaml' });
-	archive.file('tsconfig.json', { name: 'tsconfig.json' });
+	const dir = kokoDir();
+	archive.directory(path.resolve(dir, 'input'), 'input');
+	archive.directory(path.resolve(dir, 'scripts'), 'scripts');
+	archive.directory(path.resolve(dir, 'src'), 'src');
+	archive.directory(path.resolve(dir, 'static'), 'static');
+	archive.file(path.resolve(dir, 'LICENSE'), { name: 'LICENSE' });
+	archive.file(path.resolve(dir, 'README.md'), { name: 'README.md' });
+	archive.file(path.resolve(dir, 'nuxt.config.ts'), { name: 'nuxt.config.ts' });
+	archive.file(path.resolve(dir, 'package.json'), { name: 'package.json' });
+	archive.file(path.resolve(dir, 'pnpm-lock.yaml'), { name: 'pnpm-lock.yaml' });
+	archive.file(path.resolve(dir, 'tsconfig.json'), { name: 'tsconfig.json' });
 
-	archive.pipe(output);
-	return archive.finalize();
+	archive.finalize();
+	return sendStream(event, archive);
 });

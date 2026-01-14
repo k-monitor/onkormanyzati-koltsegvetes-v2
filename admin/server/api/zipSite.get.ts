@@ -1,11 +1,12 @@
 import archiver from 'archiver';
+import path from 'path';
 
 export default defineEventHandler((event) => {
 	const filename = 'koko-site.zip';
 	setHeader(event, 'content-disposition', `attachment; filename=${filename}`);
+	setHeader(event, 'content-type', 'application/zip');
 
 	const archive = archiver('zip', { zlib: { level: 9 } });
-	const output = event.node.res;
 
 	archive.on('warning', function (err: unknown) {
 		throw err;
@@ -14,8 +15,9 @@ export default defineEventHandler((event) => {
 		throw err;
 	});
 
-	archive.directory('dist', 'dist');
+	const dir = kokoDir();
+	archive.directory(path.resolve(dir, 'dist'), 'dist');
 
-	archive.pipe(output);
-	return archive.finalize();
+	archive.finalize();
+	return sendStream(event, archive);
 });
