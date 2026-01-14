@@ -9,6 +9,10 @@ const less = ref(true);
 const { canShowMilestones, handleYearSelected, year } = useYear();
 const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
 
+function scrollToTop() {
+	window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 onMounted(() => {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
@@ -51,7 +55,8 @@ onMounted(() => {
 			<div class="container">
 				<a
 					class="navbar-brand js-scroll-trigger"
-					:href="`#${slugify(year)}/koszonto`"
+					:href="`#${slugify(year)}/`"
+					v-on:click="scrollToTop()"
 				>
 					<img
 						class="mr-2"
