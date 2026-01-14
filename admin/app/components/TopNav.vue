@@ -36,7 +36,7 @@ if (kokoUrl) {
 				>
 					<NavigationMenuLink as-child>
 						<NuxtLink
-							class="flex flex-row gap-2 items-center"
+							class="flex flex-row items-center gap-2"
 							:href="link.href"
 							target="_blank"
 						>

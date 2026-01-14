@@ -77,8 +77,8 @@ async function uploadLogo(e: Event, f: string) {
 		</PageSection>
 	</PageFrame>
 
-	<div class="container mx-auto px-16 my-16">
-		<ItemGroup class="grid grid-cols-2 md:grid-cols-3 _lg:grid-cols-4 gap-4">
+	<div class="container mx-auto my-16 px-16">
+		<ItemGroup class="grid grid-cols-2 gap-4 md:grid-cols-3">
 			<Item
 				v-for="f in logos"
 				:key="f.name"
@@ -88,7 +88,7 @@ async function uploadLogo(e: Event, f: string) {
 				<ItemHeader>
 					<a
 						:href="logoUrl(f.name)"
-						class="bg-foreground/5 rounded-sm w-full"
+						class="bg-foreground/5 w-full rounded-sm"
 						:class="f.square ? 'h-24' : 'aspect-video'"
 						style="background-position: center; background-repeat: no-repeat"
 						:style="{

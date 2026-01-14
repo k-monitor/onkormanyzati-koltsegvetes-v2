@@ -70,8 +70,8 @@ onMounted(async () => {
 		</PageSection>
 	</PageFrame>
 
-	<div class="container mx-auto px-16 my-16">
-		<ItemGroup class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+	<div class="container mx-auto my-16 px-16">
+		<ItemGroup class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
 			<Item
 				v-for="f in ms"
 				:key="f"
@@ -81,7 +81,7 @@ onMounted(async () => {
 				<ItemHeader>
 					<a
 						:href="'/static/assets/ms/' + f"
-						class="aspect-16/9 bg-foreground/5 rounded-sm w-full"
+						class="bg-foreground/5 aspect-16/9 w-full rounded-sm"
 						style="
 							background-position: center;
 							background-repeat: no-repeat;

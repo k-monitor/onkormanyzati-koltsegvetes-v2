@@ -1,5 +1,5 @@
 <template>
-	<div class="not-first-of-type:mt-12 not-first-of-type:pt-4 not-first-of-type:border-t">
+	<div class="not-first-of-type:mt-12 not-first-of-type:border-t not-first-of-type:pt-4">
 		<slot />
 		<div
 			v-if="$slots.actions"
