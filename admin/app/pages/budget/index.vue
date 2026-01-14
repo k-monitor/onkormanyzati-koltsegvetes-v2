@@ -15,6 +15,13 @@ function uploadBudget(e: Event) {
 				(<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete követi a
 				dokumentációban írtakat.
 			</p>
+			<p>
+				<strong>Fontos:</strong> ha az admin felületen keresztül bármilyen módosítást
+				hajtasz végre a költségvetésen, a program újra fogja építeni a
+				<code>budget.xlsx</code> fájlt. Ez a művelet csak az adatok átjárhatóságát tudja
+				garantálni, az Excel funkciókét (pl. függvények, formázás, makrók) nem - ezek
+				elveszhhetnek.
+			</p>
 			<template #actions>
 				<Button
 					as-child
