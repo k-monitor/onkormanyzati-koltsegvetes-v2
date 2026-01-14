@@ -36,35 +36,38 @@ onMounted(async () => {
 
 <template>
 	<PageFrame title="Fejlesztéskártyák képei">
-		<p>
-			A feltöltött fájlok eredeti neve megmarad, a szerveren levő azonos nevű fájl felül lesz
-			írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes fájlnevekkel
-			dolgozni. A konfigban a fájlnevet pontosan kell megadni, mappanevet nem kell eléírni.
-		</p>
-		<p>
-			A képeket ajánlott feltöltés előtt 1200 pixel szélesre kicsinyíteni arányosan, JPG
-			formátumba menteni, és
-			<a
-				href="https://www.tinyjpg.com/"
-				target="_blank"
-				>TinyJPG</a
-			>
-			segítségével optimalizálni.
-		</p>
-		<div class="not-prose flex gap-8">
-			<Button as-child>
-				<label class="cursor-pointer">
-					<Upload />
-					Feltöltés
-					<input
-						style="display: none"
-						type="file"
-						multiple
-						@change="uploadMs"
-					/>
-				</label>
-			</Button>
-		</div>
+		<PageSection>
+			<p>
+				A feltöltött fájlok eredeti neve megmarad, a szerveren levő azonos nevű fájl felül
+				lesz írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes
+				fájlnevekkel dolgozni. A konfigban a fájlnevet pontosan kell megadni, mappanevet nem
+				kell eléírni.
+			</p>
+			<p>
+				A képeket ajánlott feltöltés előtt 1200 pixel szélesre kicsinyíteni arányosan, JPG
+				formátumba menteni, és
+				<a
+					href="https://www.tinyjpg.com/"
+					target="_blank"
+					>TinyJPG</a
+				>
+				segítségével optimalizálni.
+			</p>
+			<template #actions>
+				<Button as-child>
+					<label class="cursor-pointer">
+						<Upload />
+						Feltöltés
+						<input
+							style="display: none"
+							type="file"
+							multiple
+							@change="uploadMs"
+						/>
+					</label>
+				</Button>
+			</template>
+		</PageSection>
 	</PageFrame>
 
 	<div class="container mx-auto px-16 my-16">

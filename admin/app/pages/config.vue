@@ -22,52 +22,55 @@ function uploadConfig(e: Event) {
 
 <template>
 	<PageFrame title="Konfiguráció">
-		<p>
-			Feltöltéskor a fájl neve mindegy, a szerveren levő
-			<code>config.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365 (<code>*.xlsx</code>)
-			fájlt kell feltölteni, melynek szerkezete követi a dokumentációban írtakat.
-		</p>
-		<div class="not-prose flex gap-8">
-			<Button
-				as-child
-				variant="secondary"
-			>
-				<a
-					download
-					href="/input/config.xlsx"
+		<PageSection>
+			<p>
+				Feltöltéskor a fájl neve mindegy, a szerveren levő
+				<code>config.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365
+				(<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete követi a
+				dokumentációban írtakat.
+			</p>
+			<template #actions>
+				<Button
+					as-child
+					variant="secondary"
 				>
-					<Download />
-					Letöltés
-				</a>
-			</Button>
-			<Button as-child>
-				<label class="cursor-pointer">
-					<Upload />
-					Feltöltés
-					<input
-						style="display: none"
-						type="file"
-						@change="uploadConfig"
-					/>
-				</label>
-			</Button>
-		</div>
-
-		<hr />
-
-		<p>
-			Új konfiguráció generálásakor a meglévő felülíródik: minden kézzel beírt érték törlődik,
-			és új tooltip munkalapok jönnek létre a <code>budget.xlsx</code>-nek megfelelően.
-		</p>
-		<div class="not-prose flex gap-8">
-			<Button
-				class="cursor-pointer"
-				variant="destructive"
-				@click="newConfig"
-			>
-				<Cog />
-				Új konfig
-			</Button>
-		</div>
+					<a
+						download
+						href="/input/config.xlsx"
+					>
+						<Download />
+						Letöltés
+					</a>
+				</Button>
+				<Button as-child>
+					<label class="cursor-pointer">
+						<Upload />
+						Feltöltés
+						<input
+							style="display: none"
+							type="file"
+							@change="uploadConfig"
+						/>
+					</label>
+				</Button>
+			</template>
+		</PageSection>
+		<PageSection>
+			<p>
+				Új konfiguráció generálásakor a meglévő felülíródik: minden kézzel beírt érték
+				törlődik, és új tooltip munkalapok jönnek létre a <code>budget.xlsx</code>-nek
+				megfelelően.
+			</p>
+			<template #actions>
+				<Button
+					class="cursor-pointer"
+					variant="destructive"
+					@click="newConfig"
+				>
+					<Cog />
+					Új konfig
+				</Button>
+			</template>
+		</PageSection>
 	</PageFrame>
 </template>

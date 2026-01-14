@@ -49,26 +49,28 @@ async function uploadLogo(e: Event, f: string) {
 </script>
 <template>
 	<PageFrame title="Logók">
-		<p>
-			A feltöltött fájlok neve mindegy, azonban a formátum kötött. A képeket feltöltés előtt
-			az ajánlott méretre kell alakítani, megfelelő formátumba menteni, és
-			<a
-				href="https://www.tinyjpg.com/"
-				target="_blank"
-				>TinyJPG</a
-			>
-			segítségével optimalizálni.
-		</p>
-		<p>
-			A Facebook bélyegkép cserélése és a site újragenerálása után a Facebook szervereit is
-			frissíteni kell, ez
-			<a
-				href="https://developers.facebook.com/tools/debug/"
-				target="_blank"
-				>itt</a
-			>
-			tehető meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.
-		</p>
+		<PageSection>
+			<p>
+				A feltöltött fájlok neve mindegy, azonban a formátum kötött. A képeket feltöltés
+				előtt az ajánlott méretre kell alakítani, megfelelő formátumba menteni, és
+				<a
+					href="https://www.tinyjpg.com/"
+					target="_blank"
+					>TinyJPG</a
+				>
+				segítségével optimalizálni.
+			</p>
+			<p>
+				A Facebook bélyegkép cserélése és a site újragenerálása után a Facebook szervereit
+				is frissíteni kell, ez
+				<a
+					href="https://developers.facebook.com/tools/debug/"
+					target="_blank"
+					>itt</a
+				>
+				tehető meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.
+			</p>
+		</PageSection>
 	</PageFrame>
 
 	<div class="container mx-auto px-16 my-16">

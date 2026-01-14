@@ -8,36 +8,38 @@ function uploadBudget(e: Event) {
 
 <template>
 	<PageFrame title="Költségvetés">
-		<p>
-			Feltöltéskor a fájl neve mindegy, a szerveren levő
-			<code>budget.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365 (<code>*.xlsx</code>)
-			fájlt kell feltölteni, melynek szerkezete követi a dokumentációban írtakat.
-		</p>
-		<div class="not-prose flex gap-8">
-			<Button
-				as-child
-				variant="secondary"
-			>
-				<a
-					download
-					href="/input/budget.xlsx"
+		<PageSection>
+			<p>
+				Feltöltéskor a fájl neve mindegy, a szerveren levő
+				<code>budget.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365
+				(<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete követi a
+				dokumentációban írtakat.
+			</p>
+			<template #actions>
+				<Button
+					as-child
+					variant="secondary"
 				>
-					<Download />
-					Letöltés
-				</a>
-			</Button>
-
-			<Button as-child>
-				<label class="cursor-pointer">
-					<Upload />
-					Feltöltés
-					<input
-						style="display: none"
-						type="file"
-						@change="uploadBudget"
-					/>
-				</label>
-			</Button>
-		</div>
+					<a
+						download
+						href="/input/budget.xlsx"
+					>
+						<Download />
+						Letöltés
+					</a>
+				</Button>
+				<Button as-child>
+					<label class="cursor-pointer">
+						<Upload />
+						Feltöltés
+						<input
+							style="display: none"
+							type="file"
+							@change="uploadBudget"
+						/>
+					</label>
+				</Button>
+			</template>
+		</PageSection>
 	</PageFrame>
 </template>
