@@ -4,7 +4,7 @@ import { CalendarDays, Globe, Image, Scale, Settings } from 'lucide-vue-next';
 const { data, pending, refresh } = await useBudgetData();
 
 const years = computed(() =>
-	Object.keys(data.value || {})
+	getYears(data.value)
 		.sort((a, b) => b.localeCompare(a))
 		.map((y) => ({
 			href: `/budget/${slugifyYear(y)}/`,

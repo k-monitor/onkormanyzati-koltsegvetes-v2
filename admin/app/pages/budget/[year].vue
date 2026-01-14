@@ -1,10 +1,7 @@
 <script setup lang="ts">
 const { data } = await useBudgetData();
-
 const slugifiedYear = useRoute().params.year as string;
-
-const years = computed(() => Object.keys(data.value || {}));
-const year = computed(() => deslugifyYear(slugifiedYear, years.value) || slugifiedYear);
+const year = computed(() => deslugifyYear(slugifiedYear, getYears(data.value)) || slugifiedYear);
 </script>
 
 <template>
