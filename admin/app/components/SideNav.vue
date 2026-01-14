@@ -7,7 +7,7 @@ const years = computed(() =>
 	Object.keys(data.value || {})
 		.sort((a, b) => b.localeCompare(a))
 		.map((y) => ({
-			href: `/budget/${y}/`, // FIXME probably need slugify
+			href: `/budget/${slugifyYear(y)}/`,
 			text: y,
 			icon: CalendarDays,
 		})),
