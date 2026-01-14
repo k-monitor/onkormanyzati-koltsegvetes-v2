@@ -319,7 +319,7 @@ Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a ta
 
 ## Ábrák beágyazása
 
-A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba. Ezekhez html kód az admin felület _Beágyazás_ menüpontjából érhető el.
+A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba. Ezekhez html kód az admin felület _Beágyazás_ menüpontjából is elérhető.
 
 Másolható embed kódok, ahol a `[koko-url]` helyettesítendő a használt kökö url-jével (például: `https://kozertheto.k-monitor.hu`):
 
