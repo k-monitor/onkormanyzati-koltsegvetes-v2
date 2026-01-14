@@ -25,7 +25,7 @@ onMounted(() => {
 					<p class="text-white font-weight-light mb-5">{{ CONFIG.header.headline }}</p>
 					<a
 						class="btn btn-primary btn-xl js-scroll-trigger"
-						:href="`#${year}/koszonto`"
+						:href="`#${slugify(year)}/koszonto`"
 						>{{ CONFIG.header.button }}</a
 					>
 				</div>

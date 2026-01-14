@@ -22,26 +22,29 @@ export default () => {
 		const hash = window.location.hash.slice(1);
 		if (!hash) return { year: null, section: null, milestoneId: null };
 
-		// Check if hash is just a year (e.g., #2024)
-		if (Object.hasOwn(DATA, hash)) {
-			return { year: hash, section: null, milestoneId: null };
+		// Check if hash is just a year (e.g., #2024 or #2024-kozponti)
+		const yearFromHash = s2y(hash);
+		if (yearFromHash) {
+			return { year: yearFromHash, section: null, milestoneId: null };
 		}
 
 		// Check if hash is year-section-milestoneId format (e.g., #2024-kozponti/fejlesztesek/m1)
 		const milestoneMatch = hash.match(/^([\w-]+)\/(fejlesztesek)\/(.+)$/);
 		if (milestoneMatch) {
 			const [, yearPart, , milestoneId] = milestoneMatch;
-			if (Object.hasOwn(DATA, yearPart)) {
-				return { year: s2y(yearPart), section: 'fejlesztesek', milestoneId };
+			const yearFromSlug = s2y(yearPart);
+			if (yearFromSlug) {
+				return { year: yearFromSlug, section: 'fejlesztesek', milestoneId };
 			}
 		}
 
-		// Check if hash is year-section format (e.g., #2024-fejlesztesek)
+		// Check if hash is year-section format (e.g., #2024/fejlesztesek)
 		const match = hash.match(/^([\w-]+)\/(.+)$/);
 		if (match) {
 			const [, yearPart, sectionPart] = match;
-			if (Object.hasOwn(DATA, yearPart)) {
-				return { year: s2y(yearPart), section: sectionPart, milestoneId: null };
+			const yearFromSlug = s2y(yearPart);
+			if (yearFromSlug) {
+				return { year: yearFromSlug, section: sectionPart, milestoneId: null };
 			}
 		}
 
@@ -50,9 +53,9 @@ export default () => {
 
 	function updateHash(newYear: string, section: string | null = null, milestoneId: string | null = null) {
 		if (typeof window === 'undefined') return;
-		let newHash = newYear;
+		let newHash = y2s(newYear);
 		if (section) {
-			newHash = `${y2s(newYear)}/${section}`;
+			newHash = `${newHash}/${section}`;
 			if (milestoneId) {
 				newHash = `${newHash}/${milestoneId}`;
 			}
