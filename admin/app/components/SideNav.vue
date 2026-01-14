@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Banknote, CalendarDays, Globe, Images, Settings } from 'lucide-vue-next';
+import { CalendarDays, Globe, Image, Scale, Settings } from 'lucide-vue-next';
 
 const { data, pending, refresh } = await useBudgetData();
 
@@ -15,10 +15,10 @@ const years = computed(() =>
 
 const links = computed(() => {
 	return [
-		{ href: '/budget/', text: 'Költségvetés', icon: Banknote, items: years.value },
+		{ href: '/budget/', text: 'Költségvetés', icon: Scale, items: years.value },
 		{ href: '/config/', text: 'Konfiguráció', icon: Settings },
-		{ href: '/logos/', text: 'Logók', icon: Images },
-		{ href: '/milestones/', text: 'Fejlesztéskártyák képei', icon: Images },
+		{ href: '/logos/', text: 'Logók', icon: Image },
+		{ href: '/milestones/', text: 'Fejlesztéskártyák képei', icon: Image },
 		{ href: '/site/', text: 'Weboldal', icon: Globe },
 	];
 });
