@@ -64,7 +64,7 @@ async function buildSite() {
 				>
 					<a
 						download
-						href="/api/zipSite"
+						href="/api/zip/site"
 					>
 						<Download />
 						Kész site
@@ -84,7 +84,7 @@ async function buildSite() {
 				>
 					<a
 						download
-						href="/api/zipCode"
+						href="/api/zip/code"
 					>
 						<Download />
 						Forráskód
