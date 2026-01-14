@@ -1,5 +1,8 @@
 <script setup lang="ts"></script>
 
 <template>
-	<PageFrame :title="`Költségvetés - ${$route.params.year}`"></PageFrame>
+	<PageFrame
+		:title="$route.params.year"
+		group-title="Költségvetés"
+	></PageFrame>
 </template>
