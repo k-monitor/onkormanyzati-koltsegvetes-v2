@@ -146,7 +146,7 @@ Object.keys(data).forEach((year) => {
 // milestones sheet
 
 const milestonesSheet = wb.addWorksheet('milestones');
-aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5], [10, 5, 20, 20, 20, 80]);
+aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5, 6, 7], [10, 5, 20, 20, 20, 80, 20, 20]);
 
 // functions sheet
 

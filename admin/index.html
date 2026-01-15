@@ -517,7 +517,7 @@
 										<input
 											type="text"
 											class="form-control font-monospace"
-											:value="getEmbedCode(embed.path)"
+											:value="getEmbedCode(embed.path, embed.maxHeight)"
 											readonly
 										/>
 										<button
@@ -640,6 +640,7 @@
 						{ name: 'Bevételek', path: '/bevetelek/' },
 						{ name: 'Kiadások', path: '/kiadasok/' },
 						{ name: 'Mérleg', path: '/merleg/' },
+						{ name: 'Térkép', path: '/terkep/', maxHeight: '970px' },
 					],
 					error: null,
 					errorType: null,
@@ -654,10 +655,10 @@
 						const path = '/assets/img';
 						return `${path}/${logo}`;
 					},
-					getEmbedCode(path) {
+					getEmbedCode(path, maxHeight) {
 						if (!this.publicUrl) return '';
 						const baseUrl = this.publicUrl.replace(/\/$/, '');
-						return `<iframe width="100%" height="1200px" src="${baseUrl}${path}" frameborder="0"></iframe>`;
+						return `<iframe width="100%" height="${maxHeight || '1200px'}" src="${baseUrl}${path}" frameborder="0"></iframe>`;
 					},
 					async copyToClipboard(path) {
 						const code = this.getEmbedCode(path);

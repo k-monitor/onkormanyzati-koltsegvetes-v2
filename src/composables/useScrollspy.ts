@@ -8,6 +8,7 @@ export default () => {
 		bevetel: 'income',
 		kiadas: 'expense',
 		fejlesztesek: 'milestones',
+		terkep: 'map',
 	};
 
 	// Element ID to section slug mapping (reverse)
@@ -17,6 +18,7 @@ export default () => {
 		income: 'bevetel',
 		expense: 'kiadas',
 		milestones: 'fejlesztesek',
+		map: 'terkep',
 	};
 
 	// Sections that should highlight the költségvetés nav item

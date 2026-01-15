@@ -25,6 +25,11 @@
 		"Fejlesztések szakasz megjelenítése? (1 = Igen, 0 = Nem)"
 	],
 	[
+		"modules.map",
+		1,
+		"Térkép szakasz megjelenítése? (1 = Igen, 0 = Nem) A fejlesztések térképen jelennek meg, ha vannak koordináták megadva."
+	],
+	[
 		"modules.pub",
 		1,
 		"Kiadványos szakasz megjelenítése? (1 = Igen, 0 = Nem)"
@@ -88,6 +93,11 @@
 		"navBar.milestones",
 		"Fejlesztések",
 		"Fejlesztések szakaszra mutató link szövege a felső navigációs sávban."
+	],
+	[
+		"navBar.map",
+		"Térkép",
+		"Térkép szakaszra mutató link szövege a felső navigációs sávban."
 	],
 	[
 		"navBar.moreInfo",
@@ -273,6 +283,11 @@
 		"milestones.title",
 		"Fejlesztések",
 		"Fejlesztések szakasz címsora."
+	],
+	[
+		"map.title",
+		"Fejlesztések térképen",
+		"Térkép szakasz címsora."
 	],
 	[
 		"feedback.title",

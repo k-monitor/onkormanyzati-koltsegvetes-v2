@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { canShowMilestones, year } = useYear();
+const { canShowMilestones, canShowMap, year } = useYear();
 const { setNavigationScroll, sectionToElementId } = useScrollspy();
 
 // Translate section slug to element ID
@@ -80,6 +80,10 @@ onMounted(() => {
 				v-if="canShowMilestones"
 				class="pb-0"
 				id="milestones"
+			/>
+			<MapSection
+				v-if="canShowMap"
+				id="map"
 			/>
 			<FeedbackSection v-if="CONFIG.modules.feedback" />
 			<slot />

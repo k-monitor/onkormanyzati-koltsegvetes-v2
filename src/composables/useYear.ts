@@ -89,6 +89,7 @@ export default () => {
 			'bevetel': 'income',
 			'koszonto': 'welcome',
 			'merleg': 'inex',
+			'terkep': 'map',
 		};
 		return translations[section] || section;
 	}
@@ -149,11 +150,20 @@ export default () => {
 		);
 	});
 
+	const canShowMap = computed(() => {
+		console.log(Object.values(MILESTONES).filter((m) => m.year == year.value && m.position));
+		return (
+			CONFIG.modules.map &&
+			Object.values(MILESTONES).filter((m) => m.year == year.value && m.position).length > 0
+		);
+	});
+
 	return {
 		year: readonly(year),
 		handleYearSelected,
 		handleMilestoneOpened,
 		handleMilestoneClosed,
 		canShowMilestones,
+		canShowMap,
 	};
 };

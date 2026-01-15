@@ -341,6 +341,12 @@ Mérleg:
 <iframe width="100%" height="1200px" src="[koko-url]/merleg" frameborder="0"></iframe>
 ```
 
+Térkép:
+
+```html
+<iframe width="100%" height="970px" src="[koko-url]/terkep" frameborder="0"></iframe>
+```
+
 ## Admin felület beüzemelése
 
 Magának a költségvetés site-nak a beüzemelése ezekből a fázisokból áll (ez van fentebb részletesebben):
