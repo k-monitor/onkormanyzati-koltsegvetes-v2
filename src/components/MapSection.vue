@@ -4,6 +4,7 @@ const { year, handleMilestoneOpened, handleMilestoneClosed } = useYear();
 const mapContainer = ref<HTMLElement | null>(null);
 const mapInstance = ref<any>(null);
 const markersLayer = ref<any>(null);
+const markersMap = ref<Map<string, any>>(new Map()); // Store markers by milestone ID
 
 // Get milestones with positions for current year
 const milestonesWithPosition = computed(() =>
@@ -19,6 +20,22 @@ const DEFAULT_ZOOM = 15;
 function openMilestoneModal(milestoneId: string) {
 	handleMilestoneOpened(milestoneId);
 	eventBus.emit('ms', milestoneId);
+}
+
+function openMarkerPopup(milestoneId: string) {
+	// Only open popup if the milestone exists in current year's data
+	const milestoneExists = milestonesWithPosition.value.some((m) => m.id === milestoneId);
+	if (!milestoneExists) return;
+
+	const marker = markersMap.value.get(milestoneId);
+	if (marker && mapInstance.value) {
+		// Close any existing popup first
+		mapInstance.value.closePopup();
+		// Pan to marker (smoother than setView) and open popup
+		const latLng = marker.getLatLng();
+		mapInstance.value.panTo(latLng);
+		marker.openPopup();
+	}
 }
 
 function initMap() {
@@ -58,8 +75,12 @@ function initMap() {
 function updateMarkers(L: any) {
 	if (!markersLayer.value || !mapInstance.value) return;
 
+	// Close any open popups before clearing markers
+	mapInstance.value.closePopup();
+
 	// Clear existing markers
 	markersLayer.value.clearLayers();
+	markersMap.value.clear();
 
 	const bounds: [number, number][] = [];
 
@@ -111,6 +132,7 @@ function updateMarkers(L: any) {
 		});
 
 		markersLayer.value.addLayer(marker);
+		markersMap.value.set(milestone.id, marker);
 	});
 
 	// Fit bounds if there are markers
@@ -131,6 +153,15 @@ watch(year, () => {
 		});
 	}
 });
+
+function getNextId(index: number): string {
+	return milestonesWithPosition.value[(index + 1) % milestonesWithPosition.value.length]?.id || '';
+}
+
+function getPrevId(index: number): string {
+	const length = milestonesWithPosition.value.length;
+	return milestonesWithPosition.value[(length + index - 1) % length]?.id || '';
+}
 
 const tag = ref<string | null>(null);
 
@@ -162,6 +193,8 @@ onMounted(() => {
 		if (modalId?.startsWith('milestone-modal-map-')) {
 			const milestoneId = modalId.replace('milestone-modal-map-', '');
 			handleMilestoneOpened(milestoneId);
+			// Open the corresponding marker popup on the map
+			openMarkerPopup(milestoneId);
 		}
 	});
 
@@ -187,19 +220,14 @@ onUnmounted(() => {
 		id="map"
 	>
 		<div class="container-fluid">
-					<!-- Modals for map-only milestones (hidden from grid but accessible from map) -->
 			<div
 				v-for="(m, i) in milestonesWithPosition"
 				:key="'mapmodal-' + m.id"
 			>
 				<Milestone
 					:milestone="m"
-					:nextId="milestonesWithPosition[(i + 1) % milestonesWithPosition.length]?.id || ''"
-					:prevId="
-						milestonesWithPosition[
-							(milestonesWithPosition.length + i - 1) % milestonesWithPosition.length
-						]?.id || ''
-					"
+					:nextId="getNextId(i)"
+					:prevId="getPrevId(i)"
 					:mapModal="true"
 				/>
 			</div>
