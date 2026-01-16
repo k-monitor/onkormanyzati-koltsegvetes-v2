@@ -14,7 +14,7 @@ const output = {
 
 json.forEach((row, id) => {
 	id = 'M' + id;
-	let { nodeId, year, imageFile, videoFile, title, descriptionInMarkdown, tags, pos } = row;
+	let { nodeId, year, imageFile, videoFile, title, descriptionInMarkdown, tags, pos, onlyOnMap } = row;
 	const nodeIds = (nodeId || '')
 		.split(',')
 		.map((id) => id.trim())
@@ -43,6 +43,7 @@ json.forEach((row, id) => {
 				.filter((t) => t.length),
 			nodeIds,
 			position,
+			onlyOnMap: onlyOnMap == '1',
 		};
 		output.rels[year] = output.rels[year] || {};
 		nodeIds.forEach((nodeId) => {

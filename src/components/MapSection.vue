@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { year, handleMilestoneOpened } = useYear();
+const { year, handleMilestoneOpened, handleMilestoneClosed } = useYear();
 
 const mapContainer = ref<HTMLElement | null>(null);
 const mapInstance = ref<any>(null);
@@ -12,10 +12,9 @@ const milestonesWithPosition = computed(() =>
 		.map(([id, m]) => ({ ...m, id }) as MilestoneWithId),
 );
 
-// Get default map center from config or use first milestone with position
-const defaultCenter = [47.4979, 19.0402];
-
-const defaultZoom = 13;
+// Default map center and zoom
+const DEFAULT_CENTER: [number, number] = [47.4979, 19.0402];
+const DEFAULT_ZOOM = 15;
 
 function openMilestoneModal(milestoneId: string) {
 	handleMilestoneOpened(milestoneId);
@@ -35,8 +34,8 @@ function initMap() {
 
 		// Initialize map
 		mapInstance.value = L.default.map(mapContainer.value!, {
-			center: defaultCenter.value,
-			zoom: defaultZoom.value,
+			center: DEFAULT_CENTER,
+			zoom: DEFAULT_ZOOM,
 		});
 
 		// Add OpenStreetMap tiles
@@ -117,7 +116,7 @@ function updateMarkers(L: any) {
 	// Fit bounds if there are markers
 	if (bounds.length > 0) {
 		if (bounds.length === 1) {
-			mapInstance.value.setView(bounds[0], defaultZoom.value);
+			mapInstance.value.setView(bounds[0], DEFAULT_ZOOM);
 		} else {
 			mapInstance.value.fitBounds(bounds, { padding: [50, 50] });
 		}
@@ -133,8 +132,45 @@ watch(year, () => {
 	}
 });
 
+const tag = ref<string | null>(null);
+
 onMounted(() => {
 	initMap();
+	const $ = window.$;
+
+	document.onkeyup = function (e) {
+		e = e || window.event;
+		if (e.keyCode == 37) {
+			$('.modal.show .prev').click();
+		} else if (e.keyCode == 39) {
+			$('.modal.show .next').click();
+		}
+	};
+
+	eventBus.on('ms', (id) => {
+		tag.value = null;
+		nextTick(() => {
+			const modal = $('#milestone-modal-map-' + id);
+			modal.modal('show');
+			handleMilestoneOpened(id);
+		});
+	});
+
+	// Listen for modal show/hide events to update URL hash
+	$(document).on('show.bs.modal', '.modal', function () {
+		const modalId = $(this).attr('id');
+		if (modalId?.startsWith('milestone-modal-map-')) {
+			const milestoneId = modalId.replace('milestone-modal-map-', '');
+			handleMilestoneOpened(milestoneId);
+		}
+	});
+
+	$(document).on('hide.bs.modal', '.modal', function () {
+		const modalId = $(this).attr('id');
+		if (modalId?.startsWith('milestone-modal-map-')) {
+			handleMilestoneClosed();
+		}
+	});
 });
 
 onUnmounted(() => {
@@ -151,6 +187,23 @@ onUnmounted(() => {
 		id="map"
 	>
 		<div class="container-fluid">
+					<!-- Modals for map-only milestones (hidden from grid but accessible from map) -->
+			<div
+				v-for="(m, i) in milestonesWithPosition"
+				:key="'mapmodal-' + m.id"
+			>
+				<Milestone
+					:milestone="m"
+					:nextId="milestonesWithPosition[(i + 1) % milestonesWithPosition.length]?.id || ''"
+					:prevId="
+						milestonesWithPosition[
+							(milestonesWithPosition.length + i - 1) % milestonesWithPosition.length
+						]?.id || ''
+					"
+					:mapModal="true"
+				/>
+			</div>
+
 			<div class="row">
 				<div class="col text-center">
 					<SectionHeading

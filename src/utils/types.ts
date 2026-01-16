@@ -36,6 +36,7 @@ export type Milestone = {
 	tags: string[];
 	nodeIds: string[];
 	position: { lat: number; lng: number } | null;
+	onlyOnMap: boolean;
 };
 
 export type MilestoneWithId = Milestone & { id: string };
