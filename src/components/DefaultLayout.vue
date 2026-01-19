@@ -2,6 +2,14 @@
 const { canShowMilestones, canShowMap, year } = useYear();
 const { setNavigationScroll, sectionToElementId } = useScrollspy();
 
+// Check if we have function data across multiple years
+const hasFunctionTimeSeries = computed(() => {
+	const yearsWithFunc = Object.keys(DATA).filter(
+		(y) => DATA[y]?.expense?.func || DATA[y]?.income?.func,
+	);
+	return yearsWithFunc.length > 1;
+});
+
 // Translate section slug to element ID
 function translateSection(section: string): string {
 	return sectionToElementId[section] || section;
@@ -75,6 +83,13 @@ onMounted(() => {
 				side="expense"
 				:text="CONFIG.vis.expenseText"
 				:title="CONFIG.vis.expense"
+			/>
+			<FunctionTimeSeriesSection
+				v-if="hasFunctionTimeSeries"
+				id="function-time-series"
+				side="expense"
+				title="Funkcionális kiadások idősorban"
+				text="**Segítünk értelmezni!** Ez a vizualizáció megmutatja, hogyan változtak az önkormányzat kiadásai funkcionális bontásban az évek során. Kattintson egy kategóriára a részletesebb bontás megtekintéséhez!"
 			/>
 			<MilestoneSection
 				v-if="canShowMilestones"
