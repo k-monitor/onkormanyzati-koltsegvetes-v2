@@ -188,6 +188,10 @@ onMounted(() => {
 		});
 	});
 
+	eventBus.on('jump-map', (milestoneId) => {
+		openMarkerPopup(milestoneId);
+	});
+
 	$(document).on('show.bs.modal', '.modal', function () {
 		const modalId = $(this).attr('id');
 		if (modalId?.startsWith('milestone-modal-map-')) {
