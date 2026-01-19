@@ -74,12 +74,12 @@ export default () => {
 		}
 	}
 
-	function handleMilestoneOpened(milestoneId: string) {
-		updateHash(year.value, 'fejlesztesek', milestoneId);
+	function handleMilestoneOpened(milestoneId: string, isMap=false) {
+		updateHash(year.value, isMap ? 'terkep' : 'fejlesztesek', milestoneId);
 	}
 
-	function handleMilestoneClosed() {
-		updateHash(year.value, 'fejlesztesek');
+	function handleMilestoneClosed(isMap=false) {
+		updateHash(year.value, isMap ? 'terkep' : 'fejlesztesek');
 	}
 
 	function translateSection(section: string): string {

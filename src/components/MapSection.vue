@@ -18,8 +18,8 @@ const DEFAULT_CENTER: [number, number] = [47.4979, 19.0402];
 const DEFAULT_ZOOM = 15;
 
 function openMilestoneModal(milestoneId: string) {
-	handleMilestoneOpened(milestoneId);
-	eventBus.emit('ms', milestoneId);
+	handleMilestoneOpened(milestoneId, true);
+	eventBus.emit('ms-map', milestoneId);
 }
 
 function openMarkerPopup(milestoneId: string) {
@@ -178,22 +178,21 @@ onMounted(() => {
 		}
 	};
 
-	eventBus.on('ms', (id) => {
+	eventBus.on('ms-map', (id) => {
 		tag.value = null;
 		nextTick(() => {
 			const modal = $('#milestone-modal-map-' + id);
-			modal.modal('show');
-			handleMilestoneOpened(id);
+			if (modal.length > 0) {
+				modal.modal('show');
+			}
 		});
 	});
 
-	// Listen for modal show/hide events to update URL hash
 	$(document).on('show.bs.modal', '.modal', function () {
 		const modalId = $(this).attr('id');
 		if (modalId?.startsWith('milestone-modal-map-')) {
 			const milestoneId = modalId.replace('milestone-modal-map-', '');
-			handleMilestoneOpened(milestoneId);
-			// Open the corresponding marker popup on the map
+			handleMilestoneOpened(milestoneId, true);
 			openMarkerPopup(milestoneId);
 		}
 	});
@@ -201,7 +200,7 @@ onMounted(() => {
 	$(document).on('hide.bs.modal', '.modal', function () {
 		const modalId = $(this).attr('id');
 		if (modalId?.startsWith('milestone-modal-map-')) {
-			handleMilestoneClosed();
+			handleMilestoneClosed(true);
 		}
 	});
 });
