@@ -23,12 +23,12 @@ export default () => {
 		if (!hash) return { year: null, section: null, milestoneId: null };
 
 		// Check if hash is year-section-milestoneId format (e.g., #2024-kozponti/fejlesztesek/m1)
-		const milestoneMatch = hash.match(/^([\w-]+)\/(fejlesztesek)\/(.+)$/);
+		const milestoneMatch = hash.match(/^([\w-]+)\/([\w-]+)\/(.+)$/);
 		if (milestoneMatch) {
-			const [, yearPart, , milestoneId] = milestoneMatch;
+			const [, yearPart, sectionPart, milestoneId] = milestoneMatch;
 			const yearFromSlug = s2y(yearPart);
 			if (yearFromSlug) {
-				return { year: yearFromSlug, section: 'fejlesztesek', milestoneId };
+				return { year: yearFromSlug, section: sectionPart, milestoneId };
 			}
 		}
 
