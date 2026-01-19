@@ -22,12 +22,6 @@ export default () => {
 		const hash = window.location.hash.slice(1);
 		if (!hash) return { year: null, section: null, milestoneId: null };
 
-		// Check if hash is just a year (e.g., #2024 or #2024-kozponti)
-		const yearFromHash = s2y(hash);
-		if (yearFromHash) {
-			return { year: yearFromHash, section: null, milestoneId: null };
-		}
-
 		// Check if hash is year-section-milestoneId format (e.g., #2024-kozponti/fejlesztesek/m1)
 		const milestoneMatch = hash.match(/^([\w-]+)\/(fejlesztesek)\/(.+)$/);
 		if (milestoneMatch) {
@@ -48,7 +42,13 @@ export default () => {
 			}
 		}
 
-		return { year: null, section: hash, milestoneId: null };
+		// Check if hash is just a year (e.g., #2024 or #2024-kozponti)
+		const yearFromHash = s2y(hash);
+		if (yearFromHash) {
+			return { year: yearFromHash, section: null, milestoneId: null };
+		}
+
+		return { year: null, section: null, milestoneId: null };
 	}
 
 	function updateHash(newYear: string, section: string | null = null, milestoneId: string | null = null) {
