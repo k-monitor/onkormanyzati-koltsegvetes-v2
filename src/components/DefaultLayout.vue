@@ -1,5 +1,21 @@
 <script setup lang="ts">
 const { canShowMilestones, year } = useYear();
+const { setNavigationScroll, sectionToElementId } = useScrollspy();
+
+// Translate section slug to element ID
+function translateSection(section: string): string {
+	return sectionToElementId[section] || section;
+}
+
+// Extract section from hash (e.g., "#2024/koszonto" -> "koszonto")
+function extractSectionFromHash(hash: string): string | null {
+	const hashContent = hash.slice(1); // Remove #
+	const match = hashContent.match(/^[\w-]+\/(.+)$/);
+	if (match) {
+		return match[1];
+	}
+	return null;
+}
 
 onMounted(() => {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
@@ -11,9 +27,14 @@ onMounted(() => {
 			location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') &&
 			location.hostname == this.hostname
 		) {
-			var target = $(this.hash);
+			// Extract section from the new URL format (e.g., #2024/koszonto)
+			const section = extractSectionFromHash(this.hash);
+			const elementId = section ? translateSection(section) : null;
+			var target = elementId ? $('#' + elementId) : $(this.hash);
 			target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
 			if (target.length) {
+				// Prevent scrollspy from updating URL during navigation scroll
+				setNavigationScroll();
 				scrollToElement(target, 72);
 				return false;
 			}
