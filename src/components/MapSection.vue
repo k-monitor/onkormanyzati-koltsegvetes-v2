@@ -254,7 +254,7 @@ onUnmounted(() => {
 
 <template>
 	<section
-		class="page-section bg-light"
+		class="page-section"
 		id="map"
 	>
 		<div class="container-fluid">
