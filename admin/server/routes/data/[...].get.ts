@@ -1,3 +1,3 @@
 export default defineEventHandler(async (event) => {
-	return serve(event, 'src/data');
+	return serve(event, DATA_DIR);
 });

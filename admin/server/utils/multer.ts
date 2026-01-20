@@ -1,16 +1,14 @@
 import multer from 'multer';
-
-export const INPUT_DIR = 'input';
-export const IMG_DIR = 'static/assets/img';
-export const MS_DIR = 'static/assets/ms';
+import path from 'path';
 
 export const XLSX_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 export function useMulter(dir: string, filename: string | null, filetypes: string[]) {
+	const fullDir = path.resolve(kokoDir(), dir);
 	return multer({
 		storage: multer.diskStorage({
 			destination: (req, file, cb) => {
-				cb(null, dir);
+				cb(null, fullDir);
 			},
 			filename: (req, file, cb) => {
 				cb(null, filename || file.originalname);
