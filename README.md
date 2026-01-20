@@ -309,6 +309,12 @@ Az oldalon megjelenő szövegeket és a SEO beállításokat (amik nem a `data.j
 
 A képeket (favicon, logók, fejlesztések képei, stb.) az admin felület segítségével lehet egyszerűen cserélni. Az admin felületet az `npm run admin` paranccsal lehet indítani és alapértelmezésként a http://localhost:8081/ címen lesz elérhető, "admin" felhasználónévvel és "admin" jelszóval.
 
+### Térkép
+
+A fejlesztések térképen való megjelenítéséhez a `config.xlsx` `milestones` lapján a pos oszlopban kell megadni a térképes koordinátákat (hosszúság és szélesség vesszővel elválasztva), pl.: `47.673333, 19.0725`. Ez ilyen formátumban egyszerűen másolható a [google térképek](https://www.google.com/maps/)-ből a kiválasztott pozíción jobb egérgombbal kattintva megnyíló menüből.
+
+Ha a fejlesztést nem szeretnénk megjeleníteni a fejlesztések közt, de a térképen igen, akkor az `onlyOnMap` oszlopban kell a megfelelő sorba `1` értéket tenni.
+
 ## Keresési napló
 
 Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a találatok számát. Mindezt a `search.log` fájlba menti ki, melynek formátuma TSV, oszlopai:
