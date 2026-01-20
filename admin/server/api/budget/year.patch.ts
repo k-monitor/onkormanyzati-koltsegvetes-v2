@@ -14,6 +14,5 @@ export default defineEventHandler(async (event) => {
 	renameSheet(wb, `${oldName} BEVÉTEL`, `${newName} BEVÉTEL`);
 	renameSheet(wb, `${oldName} KIADÁS`, `${newName} KIADÁS`);
 	writeXLSX(wb, file);
-
-	// FIXME need to call prepare script/logic in kokoDir and await it
+	await runPrepareScript();
 });
