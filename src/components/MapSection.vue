@@ -1,6 +1,11 @@
 <script setup lang="ts">
 const { year, handleMilestoneOpened, handleMilestoneClosed } = useYear();
 
+const { assetPrefix, detailsHandler } = defineProps<{
+	assetPrefix?: string;
+	detailsHandler?: (milestoneId: string) => void;
+}>();
+
 const mapContainer = ref<HTMLElement | null>(null);
 const mapInstance = ref<any>(null);
 const markersLayer = ref<any>(null);
@@ -105,7 +110,7 @@ function updateMarkers(L: any) {
 		// Create popup content
 		const popupContent = `
 			<div class="milestone-popup">
-				<div class="milestone-popup-image" style="background-image: url('${milestone.picture}')"></div>
+				<div class="milestone-popup-image" style="background-image: url('${assetPrefix || ''}${milestone.picture}')"></div>
 				<h5 class="milestone-popup-title">${milestone.title}</h5>
 				<button class="btn btn-sm btn-primary milestone-popup-btn" data-milestone-id="${milestone.id}">
 					<i class="far fa-hand-point-right mr-1"></i>
@@ -126,7 +131,11 @@ function updateMarkers(L: any) {
 			);
 			if (btn) {
 				btn.addEventListener('click', () => {
-					openMilestoneModal(milestone.id);
+					if (detailsHandler) {
+						detailsHandler(milestone.id);
+					} else {
+						openMilestoneModal(milestone.id);
+					}
 				});
 			}
 		});

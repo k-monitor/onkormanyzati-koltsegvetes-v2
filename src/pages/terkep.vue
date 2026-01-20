@@ -20,11 +20,16 @@ useHead({
 	],
 	title: CONFIG.inex.title + ' - ' + CONFIG.seo.pageTitle,
 });
+
+function openDetailsUrl(milestoneId: string) {
+	window.open('/#'+year.value+'/terkep/' + milestoneId, '_blank');
+}
+
 </script>
 
 <template>
 	<div :class="'theme-' + slugify(year)">
-		<MapSection />
+		<MapSection assetPrefix="../" :detailsHandler="openDetailsUrl" />
 	</div>
 </template>
 
