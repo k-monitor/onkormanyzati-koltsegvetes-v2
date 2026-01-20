@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { Eraser, Undo } from 'lucide-vue-next';
+// TODO LATER should we enforce 4 digits and space prefix?
+// TODO LATER we can actually see if newYear already exists
+// TODO LATER replace confirm with AlertDialog
+
+import { Pencil, Trash2, Undo } from 'lucide-vue-next';
 
 const { data, refresh } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
@@ -7,6 +11,12 @@ const year = computed(() => deslugifyYear(slugifiedYear, getYears(data.value)) |
 
 const newNameInput = ref(year.value);
 const newYear = computed(() => newNameInput.value.replaceAll(/\s+/g, ' ').trim());
+const alreadyExists = computed(
+	() => year.value !== newYear.value && getYears(data.value).includes(newYear.value),
+);
+const canRename = computed(
+	() => newYear.value.length > 4 && year.value !== newYear.value && !alreadyExists.value,
+);
 
 function resetNewName() {
 	newNameInput.value = year.value;
@@ -16,7 +26,7 @@ const loading = useLoading();
 const router = useRouter();
 
 async function handleRename() {
-	if (year.value === newYear.value) return;
+	if (!canRename.value) return;
 	if (!confirm('Biztosan átnevezed az évet?')) return;
 	loading.value = true;
 	try {
@@ -29,6 +39,25 @@ async function handleRename() {
 		});
 		await refresh();
 		await router.replace(`/budget/${slugifyYear(newYear.value)}/`);
+	} catch (e) {
+		alert('Nem sikerült! :c');
+	} finally {
+		loading.value = false;
+	}
+}
+
+async function handleDelete() {
+	if (!confirm('Biztosan törlöd az évet? Ez visszavonhatatlan művelet!')) return;
+	loading.value = true;
+	try {
+		await $fetch('/api/budget/year', {
+			method: 'DELETE',
+			body: {
+				name: year.value,
+			},
+		});
+		await refresh();
+		await router.replace('/budget/');
 	} catch (e) {
 		alert('Nem sikerült! :c');
 	} finally {
@@ -59,6 +88,12 @@ async function handleRename() {
 					<code>{{ year }} KIADÁS</code> → <code>{{ newYear }} KIADÁS</code>
 				</li>
 			</ul>
+			<p
+				v-if="alreadyExists"
+				class="text-destructive"
+			>
+				Ilyen év már létezik!
+			</p>
 			<template #actions>
 				<form @submit.prevent="handleRename">
 					<InputGroup>
@@ -79,10 +114,32 @@ async function handleRename() {
 					</InputGroup>
 				</form>
 				<Button
-					:disabled="year === newYear"
+					:disabled="!canRename"
 					@click="handleRename"
-					>Átnevezés</Button
 				>
+					<Pencil />
+					Átnevezés
+				</Button>
+			</template>
+		</PageSection>
+		<PageSection>
+			<p>Év törlésekor az alábbi munkalapok lesznek eltávolítva:</p>
+			<ul>
+				<li>
+					<code>{{ year }} BEVÉTEL</code>
+				</li>
+				<li>
+					<code>{{ year }} KIADÁS</code>
+				</li>
+			</ul>
+			<template #actions>
+				<Button
+					variant="destructive"
+					@click="handleDelete"
+				>
+					<Trash2 />
+					Törlés
+				</Button>
 			</template>
 		</PageSection>
 	</PageFrame>
