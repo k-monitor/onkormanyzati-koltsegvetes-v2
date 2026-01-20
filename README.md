@@ -145,6 +145,8 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
     - "title"
     - "descriptionInMarkdown"
     - "tags"
+    - "pos"
+    - "onlyOnMap"
 - a 2. sortól kezdve a fejlesztések adatai:
     - "nodeId" oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító). Több azonosító is megadható, vesszővel elválasztva. Opcionális.
     - "year" oszlop: azon év, amelyhez a fejlesztés tartozik
@@ -153,6 +155,8 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
     - "title" oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
     - "descriptionInMarkdown" oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
     - "tags" oszlop: a fejlesztés címkéi, vesszővel elválasztva
+    - "pos" oszlop: opcionális, itt adható meg térképes koordináta (hosszúság és szélesség vesszővel elválasztva), pl.: `47.673333, 19.0725`. Ez ilyen formátumban egyszerűen másolható a [google térképek](https://www.google.com/maps/)-ből a kiválasztott pozíción jobb egérgombbal kattintva megnyíló menüből.
+    - "onlyOnMap" oszlop: opcionális, ha itt `1` érték van megadva, akkor a fejlesztések szekcióban nem jelenik meg, csak a térképen
 
 #### A "functions munkalap formátuma:
 
@@ -308,12 +312,6 @@ Ha egy kategóriához nem szerepel tooltip szöveg ebben a fájlban, ott nem fog
 Az oldalon megjelenő szövegeket és a SEO beállításokat (amik nem a `data.json`-ból jönnek) az `input/config.xlsx` fájlban lehet szerkeszteni, mely tartalmazza az egyes mezők magyarázatait is.
 
 A képeket (favicon, logók, fejlesztések képei, stb.) az admin felület segítségével lehet egyszerűen cserélni. Az admin felületet az `npm run admin` paranccsal lehet indítani és alapértelmezésként a http://localhost:8081/ címen lesz elérhető, "admin" felhasználónévvel és "admin" jelszóval.
-
-### Térkép
-
-A fejlesztések térképen való megjelenítéséhez a `config.xlsx` `milestones` lapján a pos oszlopban kell megadni a térképes koordinátákat (hosszúság és szélesség vesszővel elválasztva), pl.: `47.673333, 19.0725`. Ez ilyen formátumban egyszerűen másolható a [google térképek](https://www.google.com/maps/)-ből a kiválasztott pozíción jobb egérgombbal kattintva megnyíló menüből.
-
-Ha a fejlesztést nem szeretnénk megjeleníteni a fejlesztések közt, de a térképen igen, akkor az `onlyOnMap` oszlopban kell a megfelelő sorba `1` értéket tenni.
 
 ## Keresési napló
 
