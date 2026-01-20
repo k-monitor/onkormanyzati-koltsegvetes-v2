@@ -5,20 +5,20 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url + 'inex',
+			href: CONFIG.url + 'map',
 		},
 	],
 	meta: [
 		{
 			property: 'og:title',
-			content: CONFIG.inex.title + ' - ' + CONFIG.seo.siteName,
+			content: CONFIG.map.title + ' - ' + CONFIG.seo.siteName,
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url + 'inex',
+			content: CONFIG.url + 'map',
 		},
 	],
-	title: CONFIG.inex.title + ' - ' + CONFIG.seo.pageTitle,
+	title: CONFIG.map.title + ' - ' + CONFIG.seo.pageTitle,
 });
 
 function openDetailsUrl(milestoneId: string) {
