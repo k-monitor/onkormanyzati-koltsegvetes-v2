@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { Copy } from 'lucide-vue-next';
+import { CircleAlert, Copy } from 'lucide-vue-next';
 
 const embeds = [
-	{ name: 'Bevételek', path: '/bevetelek/' },
-	{ name: 'Kiadások', path: '/kiadasok/' },
-	{ name: 'Mérleg', path: '/merleg/' },
+	{ name: 'Bevételek', path: 'bevetelek/' },
+	{ name: 'Kiadások', path: 'kiadasok/' },
+	{ name: 'Mérleg', path: 'merleg/' },
 ];
 
 const {
@@ -34,6 +34,20 @@ async function copyToClipboard(path: string) {
 				A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba az alábbi HTML
 				kódokkal.
 			</p>
+			<template #actions>
+				<Alert
+					v-if="!kokoUrl"
+					variant="destructive"
+				>
+					<CircleAlert />
+					<AlertTitle>
+						A <code>NUXT_KOKO_URL</code> környezeti változó nincs beállítva.</AlertTitle
+					>
+					<AlertDescription>
+						Állítsd be a KÖKÖ publikus URL-jére, majd indítsd újra az admin felületet.
+					</AlertDescription>
+				</Alert>
+			</template>
 		</PageSection>
 		<PageSection
 			v-for="embed in embeds"

@@ -3,7 +3,7 @@
 // TODO LATER we can actually see if newYear already exists
 // TODO LATER replace confirm with AlertDialog
 
-import { Pencil, Trash2, Undo } from 'lucide-vue-next';
+import { CircleAlert, Pencil, Trash2, Undo } from 'lucide-vue-next';
 
 const { data, refresh } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
@@ -88,12 +88,14 @@ async function handleDelete() {
 					<code>{{ year }} KIADÁS</code> → <code>{{ newYear }} KIADÁS</code>
 				</li>
 			</ul>
-			<p
+			<Alert
 				v-if="alreadyExists"
-				class="text-destructive"
+				class="not-prose mb-8"
+				variant="destructive"
 			>
-				Ilyen év már létezik!
-			</p>
+				<CircleAlert />
+				<AlertTitle> Ilyen év már létezik! </AlertTitle>
+			</Alert>
 			<template #actions>
 				<form @submit.prevent="handleRename">
 					<InputGroup>

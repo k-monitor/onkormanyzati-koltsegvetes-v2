@@ -4,6 +4,7 @@ import { Download, Upload } from 'lucide-vue-next';
 function uploadBudget(e: Event) {
 	upload('/api/budget', 'budget', e.target as HTMLInputElement);
 }
+// FIXME after upload, run prepare and refresh UI
 </script>
 
 <template>
