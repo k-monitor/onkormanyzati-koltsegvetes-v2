@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { year } = useYear();
+const { year, handleMilestoneOpened, handleMilestoneClosed } = useYear();
 
 const tag = ref<string | null>(null);
 
@@ -38,7 +38,27 @@ onMounted(() => {
 
 	eventBus.on('ms', (id) => {
 		tag.value = null;
-		nextTick(() => $('#milestone-modal-' + id).modal('show'));
+		nextTick(() => {
+			const modal = $('#milestone-modal-' + id);
+			modal.modal('show');
+			handleMilestoneOpened(id);
+		});
+	});
+
+	// Listen for modal show/hide events to update URL hash
+	$(document).on('show.bs.modal', '.modal', function () {
+		const modalId = $(this).attr('id');
+		if (modalId?.startsWith('milestone-modal-')) {
+			const milestoneId = modalId.replace('milestone-modal-', '');
+			handleMilestoneOpened(milestoneId);
+		}
+	});
+
+	$(document).on('hide.bs.modal', '.modal', function () {
+		const modalId = $(this).attr('id');
+		if (modalId?.startsWith('milestone-modal-')) {
+			handleMilestoneClosed();
+		}
 	});
 });
 </script>

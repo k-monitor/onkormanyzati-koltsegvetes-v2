@@ -7,17 +7,21 @@ const isBannerVisible = ref(true);
 const less = ref(true);
 
 const { canShowMilestones, handleYearSelected, year } = useYear();
+const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
+
+function scrollToTop() {
+	window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 onMounted(() => {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
-	// Activate scrollspy to add active class to navbar items on scroll
-	$('body').scrollspy({
-		target: '#mainNav',
-		offset: 75,
-	});
+	// Initialize custom scrollspy
+	if (!subpageMode) {
+		initScrollspy();
+	}
 
 	// Collapse Navbar
 	var navbarCollapse = function () {
@@ -40,6 +44,10 @@ onMounted(() => {
 	// Collapse the navbar when page is scrolled
 	$(window).scroll(navbarCollapse);
 });
+
+onUnmounted(() => {
+	destroyScrollspy();
+});
 </script>
 
 <template>
@@ -51,7 +59,8 @@ onMounted(() => {
 			<div class="container">
 				<a
 					class="navbar-brand js-scroll-trigger"
-					href="#page-top"
+					:href="`#${slugify(year)}/`"
+					v-on:click="scrollToTop()"
 				>
 					<img
 						class="mr-2"
@@ -94,7 +103,7 @@ onMounted(() => {
 						</li>
 						<li class="nav-item">
 							<a
-								href="#welcome"
+								:href="`#${slugify(year)}/koszonto`"
 								class="nav-link js-scroll-trigger"
 								>{{ CONFIG.navBar.welcome }}</a
 							>
@@ -102,12 +111,12 @@ onMounted(() => {
 						<li class="nav-item">
 							<a
 								:href="
-									'#' +
+									`#${slugify(year)}/` +
 									(CONFIG.modules.inex
-										? 'inex'
+										? 'merleg'
 										: CONFIG.modules.income
-											? 'income'
-											: 'expense')
+											? 'bevetel'
+											: 'kiadas')
 								"
 								class="nav-link js-scroll-trigger"
 								>{{ CONFIG.navBar.inex }}</a
@@ -118,7 +127,7 @@ onMounted(() => {
 							v-if="canShowMilestones"
 						>
 							<a
-								href="#milestones"
+								:href="`#${slugify(year)}/fejlesztesek`"
 								class="nav-link js-scroll-trigger"
 								>{{ CONFIG.navBar.milestones }}</a
 							>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CalendarDays, Globe, Image, Scale, Settings } from 'lucide-vue-next';
+import { CalendarDays, Globe, Image, PictureInPicture, Scale, Settings } from 'lucide-vue-next';
 
 const { data, pending, refresh } = await useBudgetData();
 
@@ -20,6 +20,7 @@ const links = computed(() => {
 		{ href: '/logos/', text: 'Logók', icon: Image },
 		{ href: '/milestones/', text: 'Fejlesztéskártyák képei', icon: Image },
 		{ href: '/site/', text: 'Weboldal', icon: Globe },
+		{ href: '/embed/', text: 'Beágyazás', icon: PictureInPicture },
 	];
 });
 

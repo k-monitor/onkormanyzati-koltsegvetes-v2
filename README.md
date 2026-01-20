@@ -326,6 +326,43 @@ Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a ta
 - keresőkifejezés
 - találatok száma
 
+## Ábrák beágyazása
+
+A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba az alábbi HTML kódokkal. A `[koko-url]` helyettesítendő a használt kökö url-jével (például: `https://kozertheto.k-monitor.hu`):
+
+Bevételek:
+
+```html
+<iframe
+	src="[koko-url]/bevetelek/"
+	width="100%"
+	height="1200px"
+	frameborder="0"
+></iframe>
+```
+
+Kiadások:
+
+```html
+<iframe
+	src="[koko-url]/kiadasok/"
+	width="100%"
+	height="1200px"
+	frameborder="0"
+></iframe>
+```
+
+Mérleg:
+
+```html
+<iframe
+	src="[koko-url]/merleg/"
+	width="100%"
+	height="1200px"
+	frameborder="0"
+></iframe>
+```
+
 ## Admin felület beüzemelése
 
 Magának a költségvetés site-nak a beüzemelése ezekből a fázisokból áll (ez van fentebb részletesebben):
