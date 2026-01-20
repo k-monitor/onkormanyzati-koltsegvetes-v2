@@ -140,7 +140,7 @@ function updateMarkers(L: any) {
 		if (bounds.length === 1) {
 			mapInstance.value.setView(bounds[0], DEFAULT_ZOOM);
 		} else {
-			mapInstance.value.fitBounds(bounds, { padding: [50, 50] });
+			mapInstance.value.fitBounds(bounds, { padding: [150, 150] });
 		}
 	}
 }
