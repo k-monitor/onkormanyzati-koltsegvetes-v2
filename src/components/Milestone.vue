@@ -38,6 +38,7 @@ function modalId(milestoneId: string, mapModal: boolean = false): string {
 			:modalId="modalId(milestone.id, mapModal)"
 			:nextModalId="modalId(nextId, mapModal)"
 			:prevModalId="modalId(prevId, mapModal)"
+			:mapModal="mapModal"
 		/>
 	</div>
 </template>
