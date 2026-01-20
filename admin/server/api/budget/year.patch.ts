@@ -12,9 +12,9 @@ export default defineEventHandler(async (event) => {
 	const { oldName, newName } = await readValidatedBody(event, bodySchema.parse);
 
 	const file = path.resolve(kokoDir(), 'input/budget.xlsx');
-	const wb = readXLSX(file);
+	const wb = await readXLSX(file);
 	renameSheet(wb, `${oldName} BEVÉTEL`, `${newName} BEVÉTEL`);
 	renameSheet(wb, `${oldName} KIADÁS`, `${newName} KIADÁS`);
-	writeXLSX(wb, file);
+	await writeXLSX(wb, file);
 	await runPrepareScript();
 });

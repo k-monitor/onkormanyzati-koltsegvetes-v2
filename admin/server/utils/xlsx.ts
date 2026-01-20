@@ -1,37 +1,29 @@
-import XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
-export function readXLSX(file: string) {
-	return XLSX.readFile(file);
+export async function readXLSX(file: string) {
+	const wb = new ExcelJS.Workbook();
+	await wb.xlsx.readFile(file);
+	return wb;
 }
 
-export function writeXLSX(wb: XLSX.WorkBook, file: string) {
-	XLSX.writeFile(wb, file);
+export async function writeXLSX(wb: ExcelJS.Workbook, file: string) {
+	await wb.xlsx.writeFile(file);
 }
 
-export function deleteSheet(wb: XLSX.WorkBook, name: string) {
+export function deleteSheet(wb: ExcelJS.Workbook, name: string) {
 	// TODO LATER return boolean indicating success/failure
 
-	const sheet = wb.Sheets[name];
+	const sheet = wb.getWorksheet(name);
 	if (!sheet) return;
-	delete wb.Sheets[name];
-
-	const index = wb.SheetNames.indexOf(name);
-	if (index === -1) return;
-	wb.SheetNames.splice(index, 1);
+	wb.removeWorksheet(sheet.id);
 }
 
-export function renameSheet(wb: XLSX.WorkBook, oldName: string, newName: string) {
+export function renameSheet(wb: ExcelJS.Workbook, oldName: string, newName: string) {
 	// TODO LATER return boolean indicating success/failure
 	// TODO LATER sanitize new name to be valid sheet name, and maybe return actual new name
 
-	if (wb.Sheets[newName] || wb.SheetNames.includes(newName)) return;
-
-	const sheet = wb.Sheets[oldName];
+	if (wb.getWorksheet(newName)) return;
+	const sheet = wb.getWorksheet(oldName);
 	if (!sheet) return;
-	wb.Sheets[newName] = sheet;
-	delete wb.Sheets[oldName];
-
-	const index = wb.SheetNames.indexOf(oldName);
-	if (index === -1) return;
-	wb.SheetNames[index] = newName;
+	sheet.name = newName;
 }
