@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { Eraser } from 'lucide-vue-next';
+import { Eraser, Undo } from 'lucide-vue-next';
 
 const { data, refresh } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
 const year = computed(() => deslugifyYear(slugifiedYear, getYears(data.value)) || slugifiedYear);
 
 const newNameInput = ref(year.value);
+const newYear = computed(() => newNameInput.value.replaceAll(/\s+/g, ' ').trim());
 
 function resetNewName() {
 	newNameInput.value = year.value;
@@ -15,6 +16,7 @@ const loading = useLoading();
 const router = useRouter();
 
 async function handleRename() {
+	if (year.value === newYear.value) return;
 	if (!confirm('Biztosan átnevezed az évet?')) return;
 	loading.value = true;
 	try {
@@ -22,11 +24,11 @@ async function handleRename() {
 			method: 'PATCH',
 			body: {
 				oldName: year.value,
-				newName: newNameInput.value,
+				newName: newYear.value,
 			},
 		});
 		await refresh();
-		await router.replace(`/budget/${slugifyYear(newNameInput.value)}/`);
+		await router.replace(`/budget/${slugifyYear(newYear.value)}/`);
 	} catch (e) {
 		alert('Nem sikerült! :c');
 	} finally {
@@ -48,10 +50,15 @@ async function handleRename() {
 			</p>
 		</PageSection>
 		<PageSection>
-			<p>
-				Év átnevezésekor a kiválasztott évhez tartozó bevétel és kiadás munkalapok nevei
-				módosulnak.
-			</p>
+			<p>Év átnevezésekor az alábbi munkalap átnevezések lesznek elvégezve:</p>
+			<ul>
+				<li>
+					<code>{{ year }} BEVÉTEL</code> → <code>{{ newYear }} BEVÉTEL</code>
+				</li>
+				<li>
+					<code>{{ year }} KIADÁS</code> → <code>{{ newYear }} KIADÁS</code>
+				</li>
+			</ul>
 			<template #actions>
 				<form @submit.prevent="handleRename">
 					<InputGroup>
@@ -65,18 +72,17 @@ async function handleRename() {
 									type="button"
 									@click="resetNewName"
 								>
-									<Eraser />
+									<Undo />
 								</button>
-							</InputGroupButton>
-							<InputGroupButton
-								as-child
-								variant="destructive"
-							>
-								<button type="submit">Átnevezés</button>
 							</InputGroupButton>
 						</InputGroupAddon>
 					</InputGroup>
 				</form>
+				<Button
+					:disabled="year === newYear"
+					@click="handleRename"
+					>Átnevezés</Button
+				>
 			</template>
 		</PageSection>
 	</PageFrame>
