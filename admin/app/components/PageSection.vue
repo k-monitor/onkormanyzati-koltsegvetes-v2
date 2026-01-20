@@ -1,5 +1,5 @@
 <template>
-	<div class="not-first-of-type:mt-12 not-first-of-type:border-t not-first-of-type:pt-4">
+	<ProseBlock>
 		<slot />
 		<div
 			v-if="$slots.actions"
@@ -7,5 +7,5 @@
 		>
 			<slot name="actions" />
 		</div>
-	</div>
+	</ProseBlock>
 </template>

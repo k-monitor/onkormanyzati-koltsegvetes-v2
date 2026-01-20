@@ -53,7 +53,7 @@ async function uploadLogo(e: Event, f: string) {
 </script>
 <template>
 	<PageFrame title="Logók">
-		<PageSection>
+		<PageSection class="border-0">
 			<p>
 				A feltöltött fájlok neve mindegy, azonban a formátum kötött. A képeket feltöltés
 				előtt az ajánlott méretre kell alakítani, megfelelő formátumba menteni, és
@@ -75,47 +75,49 @@ async function uploadLogo(e: Event, f: string) {
 				tehető meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.
 			</p>
 		</PageSection>
-	</PageFrame>
 
-	<div class="container mx-auto my-16 px-16">
-		<ItemGroup class="grid grid-cols-2 gap-4 md:grid-cols-3">
-			<Item
-				v-for="f in logos"
-				:key="f.name"
-				role="listitem"
-				variant="outline"
-			>
-				<ItemHeader>
-					<a
-						:href="logoUrl(f.name)"
-						class="bg-foreground/5 w-full rounded-sm"
-						:class="f.square ? 'h-24' : 'aspect-video'"
-						style="background-position: center; background-repeat: no-repeat"
-						:style="{
-							backgroundImage: `url(${logoUrl(f.name)}?${r})`,
-							backgroundSize: f.name.match(/face|favicon|logo/) ? '64px' : 'cover',
-						}"
-						target="_blank"
-						>&nbsp;
-					</a>
-				</ItemHeader>
-				<ItemContent>
-					<ItemTitle>{{ f.text }}</ItemTitle>
-					<ItemDescription v-html="f.format"></ItemDescription>
-				</ItemContent>
-				<ItemActions>
-					<Button as-child>
-						<label>
-							<Upload />
-							<input
-								style="display: none"
-								type="file"
-								@change="uploadLogo($event, f.name)"
-							/>
-						</label>
-					</Button>
-				</ItemActions>
-			</Item>
-		</ItemGroup>
-	</div>
+		<div class="container mx-auto px-16">
+			<ItemGroup class="grid grid-cols-2 gap-4 md:grid-cols-3">
+				<Item
+					v-for="f in logos"
+					:key="f.name"
+					role="listitem"
+					variant="outline"
+				>
+					<ItemHeader>
+						<a
+							:href="logoUrl(f.name)"
+							class="bg-foreground/5 w-full rounded-sm"
+							:class="f.square ? 'h-24' : 'aspect-video'"
+							style="background-position: center; background-repeat: no-repeat"
+							:style="{
+								backgroundImage: `url(${logoUrl(f.name)}?${r})`,
+								backgroundSize: f.name.match(/face|favicon|logo/)
+									? '64px'
+									: 'cover',
+							}"
+							target="_blank"
+							>&nbsp;
+						</a>
+					</ItemHeader>
+					<ItemContent>
+						<ItemTitle>{{ f.text }}</ItemTitle>
+						<ItemDescription v-html="f.format"></ItemDescription>
+					</ItemContent>
+					<ItemActions>
+						<Button as-child>
+							<label>
+								<Upload />
+								<input
+									style="display: none"
+									type="file"
+									@change="uploadLogo($event, f.name)"
+								/>
+							</label>
+						</Button>
+					</ItemActions>
+				</Item>
+			</ItemGroup>
+		</div>
+	</PageFrame>
 </template>

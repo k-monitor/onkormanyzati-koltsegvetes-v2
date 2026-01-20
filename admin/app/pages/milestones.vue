@@ -36,7 +36,7 @@ onMounted(async () => {
 
 <template>
 	<PageFrame title="Fejlesztéskártyák képei">
-		<PageSection>
+		<PageSection class="border-0">
 			<p>
 				A feltöltött fájlok eredeti neve megmarad, a szerveren levő azonos nevű fájl felül
 				lesz írva. Egyszerre több fájl is feltölthető. Ajánlott ékezet és szóköz mentes
@@ -68,44 +68,44 @@ onMounted(async () => {
 				</Button>
 			</template>
 		</PageSection>
-	</PageFrame>
 
-	<div class="container mx-auto my-16 px-16">
-		<ItemGroup class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-			<Item
-				v-for="f in ms"
-				:key="f"
-				role="listitem"
-				variant="outline"
-			>
-				<ItemHeader>
-					<a
-						:href="'/static/assets/ms/' + f"
-						class="bg-foreground/5 aspect-16/9 w-full rounded-sm"
-						style="
-							background-position: center;
-							background-repeat: no-repeat;
-							background-size: cover;
-						"
-						:style="{
-							backgroundImage: 'url(/static/assets/ms/' + f + ')',
-						}"
-						target="_blank"
-						>&nbsp;
-					</a>
-				</ItemHeader>
-				<ItemContent>
-					<ItemTitle>{{ f }}</ItemTitle>
-				</ItemContent>
-				<ItemActions>
-					<Button
-						variant="destructive"
-						@click="delMs(f)"
-					>
-						<Trash />
-					</Button>
-				</ItemActions>
-			</Item>
-		</ItemGroup>
-	</div>
+		<div class="container mx-auto px-16">
+			<ItemGroup class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+				<Item
+					v-for="f in ms"
+					:key="f"
+					role="listitem"
+					variant="outline"
+				>
+					<ItemHeader>
+						<a
+							:href="'/static/assets/ms/' + f"
+							class="bg-foreground/5 aspect-16/9 w-full rounded-sm"
+							style="
+								background-position: center;
+								background-repeat: no-repeat;
+								background-size: cover;
+							"
+							:style="{
+								backgroundImage: 'url(/static/assets/ms/' + f + ')',
+							}"
+							target="_blank"
+							>&nbsp;
+						</a>
+					</ItemHeader>
+					<ItemContent>
+						<ItemTitle>{{ f }}</ItemTitle>
+					</ItemContent>
+					<ItemActions>
+						<Button
+							variant="destructive"
+							@click="delMs(f)"
+						>
+							<Trash />
+						</Button>
+					</ItemActions>
+				</Item>
+			</ItemGroup>
+		</div>
+	</PageFrame>
 </template>

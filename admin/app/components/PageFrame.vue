@@ -11,14 +11,18 @@ useHead({
 </script>
 
 <template>
-	<main class="prose mx-auto my-8 w-[65ch] px-4 lg:px-0">
-		<p
-			v-if="groupTitle"
-			class="text-muted-foreground mb-2 text-lg font-medium"
-		>
-			{{ groupTitle }}
-		</p>
-		<h1>{{ title }}</h1>
-		<slot />
+	<main class="my-8">
+		<ProseBlock class="pb-8">
+			<p
+				v-if="groupTitle"
+				class="text-muted-foreground mb-2 text-lg font-medium"
+			>
+				{{ groupTitle }}
+			</p>
+			<h1>{{ title }}</h1>
+		</ProseBlock>
+		<div class="flex flex-col gap-8 divide-y [&>div]:pb-8">
+			<slot />
+		</div>
 	</main>
 </template>
