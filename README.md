@@ -344,7 +344,7 @@ Mérleg:
 Térkép:
 
 ```html
-<iframe width="100%" height="970px" src="[koko-url]/terkep" frameborder="0"></iframe>
+<iframe width="100%" height="620px" src="[koko-url]/terkep" frameborder="0"></iframe>
 ```
 
 ## Admin felület beüzemelése
