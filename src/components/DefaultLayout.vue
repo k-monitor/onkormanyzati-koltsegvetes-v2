@@ -99,6 +99,7 @@ onMounted(() => {
 			<MapSection
 				v-if="canShowMap"
 				id="map"
+				class="bg-light"
 			/>
 			<FeedbackSection v-if="CONFIG.modules.feedback" />
 			<slot />

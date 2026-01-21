@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import search from '../utils/search';
 
-const { milestone, modalId, nextModalId, prevModalId } = defineProps<{
+const { milestone, modalId, nextModalId, prevModalId, mapModal } = defineProps<{
 	milestone: MilestoneWithId;
 	modalId: string;
 	nextModalId: string;
 	prevModalId: string;
+	mapModal?: boolean;
 }>();
 
 const playing = ref(false);
@@ -40,7 +41,7 @@ function next() {
 	switchModal(nextModalId);
 }
 
-function jump(result) {
+function jumpBudget(result) {
 	// TODO LATER search result type
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
@@ -52,6 +53,21 @@ function jump(result) {
 	scrollToElement($('#' + result.side), 72);
 	setTimeout(function () {
 		eventBus.emit('jump', result);
+	}, 1000);
+}
+
+function jumpMap(result) {
+	// TODO LATER search result type
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
+	const $ = window.$;
+
+	// based on SearchModalContent.vue#jump
+	$('.modal').modal('hide');
+	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
+
+	scrollToElement($('#map'), 72);
+	setTimeout(function () {
+		eventBus.emit('jump-map', result);
 	}, 1000);
 }
 
@@ -133,10 +149,20 @@ onMounted(() => {
 							v-for="n in nodes"
 							:key="n.id"
 							class="btn btn-sm btn-primary mb-3 mb-md-2 mr-2 col-12 col-md-auto"
-							@click="jump(n)"
+							@click="jumpBudget(n)"
 						>
 							<i class="far fa-hand-point-right mr-2"></i>
 							{{ n.name }}
+						</button>
+					</div>
+					<div class="d-flex flex-wrap">
+						<button
+							v-if="milestone.position && !mapModal"
+							class="btn btn-sm btn-primary mb-3 mb-md-2 mr-2 col-12 col-md-auto"
+							@click="jumpMap(modalId.replace('milestone-modal-', ''))"
+						>
+							<i class="far fa-map mr-2"></i>
+							Térképen
 						</button>
 					</div>
 				</div>

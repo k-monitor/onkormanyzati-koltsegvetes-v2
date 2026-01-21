@@ -145,6 +145,8 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
     - "title"
     - "descriptionInMarkdown"
     - "tags"
+    - "pos"
+    - "onlyOnMap"
 - a 2. sortól kezdve a fejlesztések adatai:
     - "nodeId" oszlop: azon kategória azonosítója, amelyhez ez a fejlesztés tartozik (funkcionális bontásnál egy természetes szám, közgazdasági bontásnál a `B123` vagy a `K123` alakú azonosító). Több azonosító is megadható, vesszővel elválasztva. Opcionális.
     - "year" oszlop: azon év, amelyhez a fejlesztés tartozik
@@ -153,6 +155,8 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
     - "title" oszlop: a fejlesztés megnevezése, minél rövidebb, annál jobb
     - "descriptionInMarkdown" oszlop: a fejlesztés rövid leírása, Markdown formátum támogatott
     - "tags" oszlop: a fejlesztés címkéi, vesszővel elválasztva
+    - "pos" oszlop: opcionális, itt adható meg térképes koordináta (hosszúság és szélesség vesszővel elválasztva), pl.: `47.673333, 19.0725`. Ez ilyen formátumban egyszerűen másolható a [google térképek](https://www.google.com/maps/)-ből a kiválasztott pozíción jobb egérgombbal kattintva megnyíló menüből.
+    - "onlyOnMap" oszlop: opcionális, ha itt `1` érték van megadva, akkor a fejlesztések szekcióban nem jelenik meg, csak a térképen
 
 #### A "functions munkalap formátuma:
 
@@ -344,7 +348,7 @@ Mérleg:
 Térkép:
 
 ```html
-<iframe width="100%" height="970px" src="[koko-url]/terkep" frameborder="0"></iframe>
+<iframe width="100%" height="620px" src="[koko-url]/terkep" frameborder="0"></iframe>
 ```
 
 ## Admin felület beüzemelése

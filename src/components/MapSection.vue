@@ -1,10 +1,16 @@
 <script setup lang="ts">
 const { year, handleMilestoneOpened, handleMilestoneClosed } = useYear();
 
+const { assetPrefix, detailsHandler } = defineProps<{
+	assetPrefix?: string;
+	detailsHandler?: (milestoneId: string) => void;
+}>();
+
 const mapContainer = ref<HTMLElement | null>(null);
 const mapInstance = ref<any>(null);
 const markersLayer = ref<any>(null);
 const markersMap = ref<Map<string, any>>(new Map()); // Store markers by milestone ID
+let isUnmounted = false; // Track if component is unmounted
 
 // Get milestones with positions for current year
 const milestonesWithPosition = computed(() =>
@@ -23,6 +29,9 @@ function openMilestoneModal(milestoneId: string) {
 }
 
 function openMarkerPopup(milestoneId: string) {
+	// Check if component is unmounted or map is destroyed
+	if (isUnmounted || !mapInstance.value) return;
+
 	// Only open popup if the milestone exists in current year's data
 	const milestoneExists = milestonesWithPosition.value.some((m) => m.id === milestoneId);
 	if (!milestoneExists) return;
@@ -43,6 +52,9 @@ function initMap() {
 
 	// Dynamic import of Leaflet
 	import('leaflet').then((L) => {
+		// Check if component was unmounted during async import
+		if (isUnmounted || !mapContainer.value) return;
+
 		// If map already exists, just update markers
 		if (mapInstance.value) {
 			updateMarkers(L.default);
@@ -73,7 +85,7 @@ function initMap() {
 }
 
 function updateMarkers(L: any) {
-	if (!markersLayer.value || !mapInstance.value) return;
+	if (isUnmounted || !markersLayer.value || !mapInstance.value) return;
 
 	// Close any open popups before clearing markers
 	mapInstance.value.closePopup();
@@ -105,7 +117,7 @@ function updateMarkers(L: any) {
 		// Create popup content
 		const popupContent = `
 			<div class="milestone-popup">
-				<div class="milestone-popup-image" style="background-image: url('${milestone.picture}')"></div>
+				<div class="milestone-popup-image" style="background-image: url('${assetPrefix || ''}${milestone.picture}')"></div>
 				<h5 class="milestone-popup-title">${milestone.title}</h5>
 				<button class="btn btn-sm btn-primary milestone-popup-btn" data-milestone-id="${milestone.id}">
 					<i class="far fa-hand-point-right mr-1"></i>
@@ -126,7 +138,11 @@ function updateMarkers(L: any) {
 			);
 			if (btn) {
 				btn.addEventListener('click', () => {
-					openMilestoneModal(milestone.id);
+					if (detailsHandler) {
+						detailsHandler(milestone.id);
+					} else {
+						openMilestoneModal(milestone.id);
+					}
 				});
 			}
 		});
@@ -140,16 +156,18 @@ function updateMarkers(L: any) {
 		if (bounds.length === 1) {
 			mapInstance.value.setView(bounds[0], DEFAULT_ZOOM);
 		} else {
-			mapInstance.value.fitBounds(bounds, { padding: [50, 50] });
+			mapInstance.value.fitBounds(bounds, { padding: [150, 150] });
 		}
 	}
 }
 
 // Watch for year changes to update markers
 watch(year, () => {
-	if (mapInstance.value) {
+	if (mapInstance.value && !isUnmounted) {
 		import('leaflet').then((L) => {
-			updateMarkers(L.default);
+			if (!isUnmounted) {
+				updateMarkers(L.default);
+			}
 		});
 	}
 });
@@ -188,6 +206,10 @@ onMounted(() => {
 		});
 	});
 
+	eventBus.on('jump-map', (milestoneId) => {
+		openMarkerPopup(milestoneId);
+	});
+
 	$(document).on('show.bs.modal', '.modal', function () {
 		const modalId = $(this).attr('id');
 		if (modalId?.startsWith('milestone-modal-map-')) {
@@ -206,6 +228,23 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	isUnmounted = true;
+
+	// Clean up event listeners
+	eventBus.off('ms-map');
+	eventBus.off('jump-map');
+	document.onkeyup = null;
+
+	// Clean up jQuery event handlers
+	if (window.$) {
+		window.$(document).off('show.bs.modal', '.modal');
+		window.$(document).off('hide.bs.modal', '.modal');
+	}
+
+	// Clear markers map before removing the map
+	markersMap.value.clear();
+	markersLayer.value = null;
+
 	if (mapInstance.value) {
 		mapInstance.value.remove();
 		mapInstance.value = null;
@@ -215,7 +254,7 @@ onUnmounted(() => {
 
 <template>
 	<section
-		class="page-section bg-light"
+		class="page-section"
 		id="map"
 	>
 		<div class="container-fluid">
