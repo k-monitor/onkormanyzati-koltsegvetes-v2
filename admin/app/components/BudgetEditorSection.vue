@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { ArrowDownToDot, ArrowUpFromDot, ChartPie, Presentation } from 'lucide-vue-next';
+import {
+	ArrowDownToDot,
+	ArrowUpFromDot,
+	ChartPie,
+	CircleAlert,
+	Presentation,
+} from 'lucide-vue-next';
 import PageSection from './PageSection.vue';
 
 const { year } = defineProps<{
@@ -62,6 +68,14 @@ const budget = computed(() => {
 				</ToggleGroupItem>
 			</ToggleGroup>
 		</div>
+		<Alert
+			v-if="!budget"
+			class="not-prose"
+			variant="destructive"
+		>
+			<CircleAlert />
+			<AlertTitle>A <code>budget.xlsx</code> fájlban nincs ilyen adat jelenleg.</AlertTitle>
+		</Alert>
 	</PageSection>
 
 	<div class="prose mx-auto w-full px-4 lg:max-w-[90%] lg:px-0">
