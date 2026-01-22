@@ -31,8 +31,14 @@ function toggleSeriesVisibility(id: string, event: Event) {
 
 // Get all years that have data for this side and view
 const years = computed(() => {
+	// Parse allowed years from config (comma-separated string)
+	const allowedYears = CONFIG.timeseries?.years
+		? CONFIG.timeseries.years.split(',').map((y: string) => y.trim())
+		: null;
+
 	return Object.keys(DATA)
 		.filter((year) => DATA[year]?.[side]?.[view])
+		.filter((year) => !allowedYears || allowedYears.includes(year))
 		.sort();
 });
 
