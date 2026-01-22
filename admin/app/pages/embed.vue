@@ -34,21 +34,20 @@ async function copyToClipboard(path: string) {
 				A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba az alábbi HTML
 				kódokkal.
 			</p>
-			<template #actions>
-				<Alert
-					v-if="!kokoUrl"
-					variant="destructive"
+
+			<Alert
+				v-if="!kokoUrl"
+				class="not-prose"
+				variant="destructive"
+			>
+				<CircleAlert />
+				<AlertTitle>
+					A <code>NUXT_PUBLIC_URL</code> környezeti változó nincs beállítva.</AlertTitle
 				>
-					<CircleAlert />
-					<AlertTitle>
-						A <code>NUXT_PUBLIC_URL</code> környezeti változó nincs
-						beállítva.</AlertTitle
-					>
-					<AlertDescription>
-						Állítsd be a KÖKÖ publikus URL-jére, majd indítsd újra az admin felületet.
-					</AlertDescription>
-				</Alert>
-			</template>
+				<AlertDescription>
+					Állítsd be a KÖKÖ publikus URL-jére, majd indítsd újra az admin felületet.
+				</AlertDescription>
+			</Alert>
 		</PageSection>
 		<PageSection
 			v-for="embed in embeds"
