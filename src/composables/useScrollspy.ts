@@ -7,7 +7,8 @@ export default () => {
 		merleg: 'inex',
 		bevetel: 'income',
 		kiadas: 'expense',
-		funkciok: 'function-time-series',
+		'idosor-bevetel': 'time-series-income',
+		'idosor-kiadas': 'time-series-expense',
 		fejlesztesek: 'milestones',
 		terkep: 'map',
 	};
@@ -18,13 +19,14 @@ export default () => {
 		inex: 'merleg',
 		income: 'bevetel',
 		expense: 'kiadas',
-		'function-time-series': 'funkciok',
+		'time-series-income': 'idosor-bevetel',
+		'time-series-expense': 'idosor-kiadas',
 		milestones: 'fejlesztesek',
 		map: 'terkep',
 	};
 
 	// Sections that should highlight the költségvetés nav item
-	const budgetSections = ['inex', 'income', 'expense', 'function-time-series'];
+	const budgetSections = ['inex', 'income', 'expense', 'time-series-income', 'time-series-expense'];
 
 	// Track the current active section to avoid unnecessary URL updates
 	let currentActiveSection: string | null = null;

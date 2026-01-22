@@ -5,29 +5,29 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url + 'funkciok',
+			href: CONFIG.url + 'idosor',
 		},
 	],
 	meta: [
 		{
 			property: 'og:title',
-			content: 'Funkciók idősorban - ' + CONFIG.seo.siteName,
+			content: 'Idősor - ' + CONFIG.seo.siteName,
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url + 'funkciok',
+			content: CONFIG.url + 'idosor',
 		},
 	],
-	title: 'Funkciók idősorban - ' + CONFIG.seo.pageTitle,
+	title: 'Idősor - ' + CONFIG.seo.pageTitle,
 });
 </script>
 
 <template>
 	<div :class="'theme-' + slugify(year)">
-		<FunctionTimeSeriesSection
-			id="function-time-series"
+		<TimeSeriesSection
+			id="time-series-expense"
 			side="expense"
-			title="Funkcionális kiadások idősorban"
+			title="Kiadások idősorban"
 			text="**Segítünk értelmezni!** Ez a vizualizáció megmutatja, hogyan változtak az önkormányzat kiadásai funkcionális bontásban az évek során. Kattintson egy kategóriára a részletesebb bontás megtekintéséhez!"
 		/>
 	</div>

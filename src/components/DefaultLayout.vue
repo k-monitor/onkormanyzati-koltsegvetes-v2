@@ -3,9 +3,16 @@ const { canShowMilestones, canShowMap, year } = useYear();
 const { setNavigationScroll, sectionToElementId } = useScrollspy();
 
 // Check if we have function data across multiple years
-const hasFunctionTimeSeries = computed(() => {
+const hasTimeSeriesIncome = computed(() => {
 	const yearsWithFunc = Object.keys(DATA).filter(
-		(y) => DATA[y]?.expense?.func || DATA[y]?.income?.func,
+		(y) => DATA[y]?.income?.func || DATA[y]?.income?.econ,
+	);
+	return yearsWithFunc.length > 1;
+});
+
+const hasTimeSeriesExpense = computed(() => {
+	const yearsWithFunc = Object.keys(DATA).filter(
+		(y) => DATA[y]?.expense?.func || DATA[y]?.expense?.econ,
 	);
 	return yearsWithFunc.length > 1;
 });
@@ -84,12 +91,19 @@ onMounted(() => {
 				:text="CONFIG.vis.expenseText"
 				:title="CONFIG.vis.expense"
 			/>
-			<FunctionTimeSeriesSection
-				v-if="hasFunctionTimeSeries"
-				id="function-time-series"
+			<TimeSeriesSection
+				v-if="hasTimeSeriesIncome && CONFIG.modules.timeseries"
+				id="time-series-income"
+				side="income"
+				:title="CONFIG.timeSeries?.income || 'Bevételek idősorban'"
+				:text="CONFIG.timeSeries?.incomeText"
+			/>
+			<TimeSeriesSection
+				v-if="hasTimeSeriesExpense && CONFIG.modules.timeseries"
+				id="time-series-expense"
 				side="expense"
-				title="Funkcionális kiadások idősorban"
-				text="**Segítünk értelmezni!** Ez a vizualizáció megmutatja, hogyan változtak az önkormányzat kiadásai funkcionális bontásban az évek során. Kattintson egy kategóriára a részletesebb bontás megtekintéséhez!"
+				:title="CONFIG.timeSeries?.expense || 'Kiadások idősorban'"
+				:text="CONFIG.timeSeries?.expenseText"
 			/>
 			<MilestoneSection
 				v-if="canShowMilestones"

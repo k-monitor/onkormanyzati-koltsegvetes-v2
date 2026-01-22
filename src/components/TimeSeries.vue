@@ -1,23 +1,44 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
 
-const { side } = defineProps<{
+const { side, view = 'func' } = defineProps<{
 	side: 'expense' | 'income';
+	view?: 'func' | 'econ';
 }>();
 
 const path = ref<string[]>([]);
 const hovered = ref<string | null>(null);
+const hiddenSeries = ref<Set<string>>(new Set());
 
-// Get all years that have func data for this side
+// Reset path when view changes
+watch(() => view, () => {
+	path.value = [];
+	hovered.value = null;
+	hiddenSeries.value = new Set();
+});
+
+// Toggle series visibility
+function toggleSeriesVisibility(id: string, event: Event) {
+	event.stopPropagation();
+	const newSet = new Set(hiddenSeries.value);
+	if (newSet.has(id)) {
+		newSet.delete(id);
+	} else {
+		newSet.add(id);
+	}
+	hiddenSeries.value = newSet;
+}
+
+// Get all years that have data for this side and view
 const years = computed(() => {
 	return Object.keys(DATA)
-		.filter((year) => DATA[year]?.[side]?.func)
+		.filter((year) => DATA[year]?.[side]?.[view])
 		.sort();
 });
 
 // Get the root node for a specific year
 function getRootForYear(year: string): BudgetNode | null {
-	return DATA[year]?.[side]?.func || null;
+	return DATA[year]?.[side]?.[view] || null;
 }
 
 // Navigate to a node following the current path
@@ -42,6 +63,8 @@ const currentChildren = computed(() => {
 			return node.children
 				.filter((child) => !String(child.id).startsWith('F'))
 				.sort((a, b) => b.value - a.value);
+		} else {
+			return [node];
 		}
 	}
 	return [];
@@ -49,7 +72,7 @@ const currentChildren = computed(() => {
 
 // Build time series data for all children
 const timeSeriesData = computed(() => {
-	const result: Record<string, { id: string; name: string; values: Record<string, number> }> = {};
+	const result: Record<string, { id: string; name: string; values: Record<string, number>; names: Record<string, string> }> = {};
 
 	for (const child of currentChildren.value) {
 		const id = String(child.id);
@@ -57,6 +80,7 @@ const timeSeriesData = computed(() => {
 			id,
 			name: child.name,
 			values: {},
+			names: {},
 		};
 	}
 
@@ -68,6 +92,7 @@ const timeSeriesData = computed(() => {
 				const id = String(child.id);
 				if (result[id]) {
 					result[id].values[year] = child.value;
+					result[id].names[year] = child.name;
 				}
 			}
 		}
@@ -108,7 +133,7 @@ const padding = { top: 20, right: 30, bottom: 40, left: 80 };
 const innerWidth = chartWidth - padding.left - padding.right;
 const innerHeight = chartHeight - padding.top - padding.bottom;
 
-// Calculate stacked data - cumulative values for each year
+// Calculate stacked data - cumulative values for each year (excluding hidden series)
 const stackedData = computed(() => {
 	const result: {
 		id: string;
@@ -117,8 +142,9 @@ const stackedData = computed(() => {
 		stackedValues: Record<string, { y0: number; y1: number }>;
 	}[] = [];
 
-	// Initialize with raw values
+	// Initialize with raw values (only non-hidden series)
 	for (const series of timeSeriesData.value) {
+		if (hiddenSeries.value.has(series.id)) continue;
 		result.push({
 			...series,
 			stackedValues: {},
@@ -141,12 +167,13 @@ const stackedData = computed(() => {
 	return result;
 });
 
-// Scale calculations - max is now total of all series
+// Scale calculations - max is now total of all visible series
 const maxValue = computed(() => {
 	let max = 0;
 	for (const year of years.value) {
 		let total = 0;
 		for (const series of timeSeriesData.value) {
+			if (hiddenSeries.value.has(series.id)) continue;
 			total += series.values[year] || 0;
 		}
 		if (total > max) max = total;
@@ -160,47 +187,25 @@ const yScale = computed(() => {
 	};
 });
 
-const xScale = computed(() => {
+// Bar chart dimensions
+const barPadding = 0.2; // 20% padding between bar groups
+const barGroupWidth = computed(() => {
 	const count = years.value.length;
-	if (count <= 1) return () => innerWidth / 2;
-	return (index: number) => {
-		return (index / (count - 1)) * innerWidth;
-	};
+	if (count === 0) return 0;
+	return innerWidth / count;
 });
 
-// Generate stacked area path for a series
-function generateStackedAreaPath(series: {
-	stackedValues: Record<string, { y0: number; y1: number }>;
-}): string {
-	const topPoints: string[] = [];
-	const bottomPoints: string[] = [];
+const barWidth = computed(() => {
+	return barGroupWidth.value * (1 - barPadding);
+});
 
-	years.value.forEach((year, index) => {
-		const x = xScale.value(index);
-		const stacked = series.stackedValues[year] || { y0: 0, y1: 0 };
-		const y1 = yScale.value(stacked.y1);
-		const y0 = yScale.value(stacked.y0);
-
-		topPoints.push(`${index === 0 ? 'M' : 'L'} ${x} ${y1}`);
-		bottomPoints.unshift(`L ${x} ${y0}`);
-	});
-
-	return topPoints.join(' ') + ' ' + bottomPoints.join(' ') + ' Z';
-}
-
-// Generate top line path for a stacked series (for the stroke)
-function generateStackedLinePath(series: {
-	stackedValues: Record<string, { y0: number; y1: number }>;
-}): string {
-	const points: string[] = [];
-	years.value.forEach((year, index) => {
-		const x = xScale.value(index);
-		const stacked = series.stackedValues[year] || { y0: 0, y1: 0 };
-		const y = yScale.value(stacked.y1);
-		points.push(`${index === 0 ? 'M' : 'L'} ${x} ${y}`);
-	});
-	return points.join(' ');
-}
+const xScale = computed(() => {
+	const count = years.value.length;
+	if (count === 0) return () => 0;
+	return (index: number) => {
+		return (index + 0.5) * barGroupWidth.value;
+	};
+});
 
 // Color management - use parent color with gradients when drilling down
 function getColor(id: string): string {
@@ -310,10 +315,30 @@ function canDrillDown(id: string): boolean {
 	}
 	return false;
 }
+
+// Calculate delta (change from previous year)
+function getDelta(seriesId: string, year: string, yearIndex: number): { value: number; percent: number | null } | null {
+	if (yearIndex === 0) return null;
+	const series = timeSeriesData.value.find((s) => s.id === seriesId);
+	if (!series) return null;
+	const currentValue = series.values[year] || 0;
+	const prevYear = years.value[yearIndex - 1];
+	const prevValue = series.values[prevYear] || 0;
+	const delta = currentValue - prevValue;
+	const percent = prevValue !== 0 ? (delta / prevValue) * 100 : null;
+	return { value: delta, percent };
+}
+
+function formatDelta(delta: { value: number; percent: number | null } | null): string {
+	if (!delta) return '—';
+	if (delta.percent === null) return '—';
+	const sign = delta.percent >= 0 ? '+' : '';
+	return `${sign}${delta.percent.toFixed(1)}%`;
+}
 </script>
 
 <template>
-	<div class="function-time-series">
+	<div class="time-series">
 		<div
 			class="alert alert-info"
 			v-if="years.length === 0"
@@ -389,61 +414,30 @@ function canDrillDown(id: string): boolean {
 							</text>
 						</g>
 
-						<!-- Stacked area fills (rendered in reverse order so first is on top) -->
-						<g class="areas">
-							<path
-								v-for="series in [...stackedData].reverse()"
-								:key="'area-' + series.id"
-								:d="generateStackedAreaPath(series)"
-								:fill="bgColor(series.id, hovered === series.id, hovered !== null && hovered !== series.id)"
-								class="area"
-								:class="{ clickable: canDrillDown(series.id) }"
-								@mouseenter="hovered = series.id"
-								@mouseleave="hovered = null"
-								@click="drillDown(series.id)"
-							>
-								<title>{{ series.name }}</title>
-							</path>
-						</g>
-
-						<!-- Lines on top of stacked areas -->
-						<g class="lines">
-							<path
-								v-for="series in stackedData"
-								:key="'line-' + series.id"
-								:d="generateStackedLinePath(series)"
-								:stroke="strokeColor(series.id, hovered === series.id)"
-								:stroke-width="hovered === series.id ? 3 : 1"
-								fill="none"
-								class="line"
-								:class="{ highlighted: hovered === series.id, clickable: canDrillDown(series.id) }"
-								@mouseenter="hovered = series.id"
-								@mouseleave="hovered = null"
-								@click="drillDown(series.id)"
-							/>
-						</g>
-
-						<!-- Data points on the top line of each stacked area -->
-						<g class="points">
+						<!-- Stacked bars for each year -->
+						<g class="bars">
 							<template
-								v-for="series in stackedData"
-								:key="'points-' + series.id"
+								v-for="(year, yearIndex) in years"
+								:key="'year-' + year"
 							>
-								<circle
-									v-for="(year, index) in years"
-									:key="series.id + '-' + year"
-									:cx="xScale(index)"
-									:cy="yScale(series.stackedValues[year]?.y1 || 0)"
-									:r="hovered === series.id ? 6 : 4"
-									:fill="strokeColor(series.id, hovered === series.id)"
-									class="point"
-									:class="{ highlighted: hovered === series.id, clickable: canDrillDown(series.id) }"
+								<rect
+									v-for="series in stackedData"
+									:key="'bar-' + series.id + '-' + year"
+									:x="xScale(yearIndex) - barWidth / 2"
+									:y="yScale(series.stackedValues[year]?.y1 || 0)"
+									:width="barWidth"
+									:height="yScale(series.stackedValues[year]?.y0 || 0) - yScale(series.stackedValues[year]?.y1 || 0)"
+									:fill="bgColor(series.id, hovered === series.id, hovered !== null && hovered !== series.id)"
+									:stroke="strokeColor(series.id, hovered === series.id)"
+									:stroke-width="hovered === series.id ? 2 : 1"
+									class="bar"
+									:class="{ clickable: canDrillDown(series.id) }"
 									@mouseenter="hovered = series.id"
 									@mouseleave="hovered = null"
 									@click="drillDown(series.id)"
 								>
 									<title>{{ series.name }}: {{ groupNums(series.values[year] || 0) }} ({{ year }})</title>
-								</circle>
+								</rect>
 							</template>
 						</g>
 					</g>
@@ -460,17 +454,23 @@ function canDrillDown(id: string): boolean {
 						<thead>
 							<tr>
 								<th>Év</th>
+								<th>Név</th>
 								<th class="text-right">Összeg</th>
+								<th class="text-right">Változás</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr
-								v-for="year in years"
+								v-for="(year, index) in years"
 								:key="year"
 							>
 								<td>{{ year }}</td>
+								<td class="name-cell">{{ timeSeriesData.find((s) => s.id === hovered)?.names[year] || '—' }}</td>
 								<td class="text-right">
 									{{ groupNums(timeSeriesData.find((s) => s.id === hovered)?.values[year] || 0) }}
+								</td>
+								<td class="text-right delta" :class="{ positive: getDelta(hovered, year, index)?.value > 0, negative: getDelta(hovered, year, index)?.value < 0 }">
+									{{ formatDelta(getDelta(hovered, year, index)) }}
 								</td>
 							</tr>
 						</tbody>
@@ -488,6 +488,7 @@ function canDrillDown(id: string): boolean {
 						highlighted: hovered === series.id,
 						dimmed: hovered !== null && hovered !== series.id,
 						clickable: canDrillDown(series.id),
+						hidden: hiddenSeries.has(series.id),
 					}"
 					@mouseenter="hovered = series.id"
 					@mouseleave="hovered = null"
@@ -502,6 +503,14 @@ function canDrillDown(id: string): boolean {
 						v-if="canDrillDown(series.id)"
 						class="fas fa-fw fa-level-down-alt ml-1"
 					></i>
+					<button
+						class="toggle-visibility-btn"
+						:class="{ 'is-hidden': hiddenSeries.has(series.id) }"
+						@click="toggleSeriesVisibility(series.id, $event)"
+						:title="hiddenSeries.has(series.id) ? 'Megjelenítés' : 'Elrejtés'"
+					>
+						<i class="fas fa-fw" :class="hiddenSeries.has(series.id) ? 'fa-eye-slash' : 'fa-eye'"></i>
+					</button>
 				</div>
 			</div>
 
@@ -515,17 +524,23 @@ function canDrillDown(id: string): boolean {
 					<thead>
 						<tr>
 							<th>Év</th>
+							<th>Név</th>
 							<th class="text-right">Összeg</th>
+							<th class="text-right">Változás</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr
-							v-for="year in years"
+							v-for="(year, index) in years"
 							:key="year"
 						>
 							<td>{{ year }}</td>
+							<td class="name-cell">{{ timeSeriesData.find((s) => s.id === hovered)?.names[year] || '—' }}</td>
 							<td class="text-right">
 								{{ groupNums(timeSeriesData.find((s) => s.id === hovered)?.values[year] || 0) }}
+							</td>
+							<td class="text-right delta" :class="{ positive: getDelta(hovered, year, index)?.value > 0, negative: getDelta(hovered, year, index)?.value < 0 }">
+								{{ formatDelta(getDelta(hovered, year, index)) }}
 							</td>
 						</tr>
 					</tbody>
@@ -541,7 +556,7 @@ function canDrillDown(id: string): boolean {
 @import '../../node_modules/bootstrap/scss/variables';
 @import '../../node_modules/bootstrap/scss/mixins';
 
-.function-time-series {
+.time-series {
 	font-family: $vis-font-family;
 
 	.breadcrumb {
@@ -593,40 +608,11 @@ function canDrillDown(id: string): boolean {
 		fill: #666;
 	}
 
-	.area {
-		transition: opacity 0.2s ease;
-		opacity: 0.5;
+	.bar {
+		transition: all 0.2s ease;
 
 		&.clickable {
 			cursor: pointer;
-		}
-
-		&:hover {
-			opacity: 0.7;
-		}
-	}
-
-	.line {
-		transition: stroke-width 0.2s ease;
-
-		&.clickable {
-			cursor: pointer;
-		}
-
-		&.highlighted {
-			stroke-width: 3;
-		}
-	}
-
-	.point {
-		transition: r 0.2s ease;
-
-		&.clickable {
-			cursor: pointer;
-		}
-
-		&.highlighted {
-			r: 6;
 		}
 	}
 
@@ -660,8 +646,42 @@ function canDrillDown(id: string): boolean {
 				opacity: 0.5;
 			}
 
+			&.hidden {
+				opacity: 0.5;
+
+				.legend-color {
+					background-color: #ccc !important;
+				}
+
+				.legend-label {
+					text-decoration: line-through;
+					color: #999;
+				}
+			}
+
 			&:hover {
 				background-color: rgba(0, 0, 0, 0.05);
+			}
+		}
+
+		.toggle-visibility-btn {
+			background: none;
+			border: none;
+			padding: 0.125rem 0.25rem;
+			margin-left: 0.25rem;
+			cursor: pointer;
+			color: #666;
+			font-size: 0.75rem;
+			border-radius: 0.25rem;
+			transition: all 0.2s ease;
+
+			&:hover {
+				background-color: rgba(0, 0, 0, 0.1);
+				color: #333;
+			}
+
+			&.is-hidden {
+				color: #999;
 			}
 		}
 
@@ -694,11 +714,31 @@ function canDrillDown(id: string): boolean {
 
 		.table {
 			margin-bottom: 0;
-			font-size: 0.875rem;
+			font-size: 0.8rem;
 
 			th,
 			td {
-				padding: 0.35rem 0.5rem;
+				padding: 0.25rem 0.4rem;
+			}
+
+			.name-cell {
+				max-width: 150px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			.delta {
+				font-size: 0.75rem;
+				white-space: nowrap;
+
+				&.positive {
+					color: #28a745;
+				}
+
+				&.negative {
+					color: #dc3545;
+				}
 			}
 		}
 	}
@@ -711,8 +751,8 @@ function canDrillDown(id: string): boolean {
 			display: block;
 			position: absolute;
 			top: 0;
-			right: -290px;
-			width: 270px;
+			right: -420px;
+			width: 400px;
 			max-height: 400px;
 			overflow-y: auto;
 			z-index: 10;
