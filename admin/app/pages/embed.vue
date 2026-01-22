@@ -41,7 +41,8 @@ async function copyToClipboard(path: string) {
 				>
 					<CircleAlert />
 					<AlertTitle>
-						A <code>NUXT_KOKO_URL</code> környezeti változó nincs beállítva.</AlertTitle
+						A <code>NUXT_PUBLIC_URL</code> környezeti változó nincs
+						beállítva.</AlertTitle
 					>
 					<AlertDescription>
 						Állítsd be a KÖKÖ publikus URL-jére, majd indítsd újra az admin felületet.
