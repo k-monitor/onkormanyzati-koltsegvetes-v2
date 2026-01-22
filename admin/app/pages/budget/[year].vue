@@ -1,9 +1,16 @@
 <script setup lang="ts">
 // TODO LATER replace confirms with AlertDialogs
 
-const { data } = await useBudgetData();
+const loading = useLoading();
+loading.value = true;
+
+const { data, pending } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
 const year = computed(() => deslugifyYear(slugifiedYear, getYears(data.value)) || slugifiedYear);
+
+watchEffect(() => {
+	if (!pending.value) loading.value = false;
+});
 </script>
 
 <template>
@@ -11,6 +18,7 @@ const year = computed(() => deslugifyYear(slugifiedYear, getYears(data.value)) |
 		:title="year"
 		group-title="Költségvetés"
 	>
+		<BudgetEditorSection :year="year" />
 		<YearRenameSection :year="year" />
 		<YearDeleteSection :year="year" />
 	</PageFrame>

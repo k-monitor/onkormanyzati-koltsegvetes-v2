@@ -5,6 +5,7 @@ export default async () => {
 		'data-json',
 		(_nuxtApp, { signal }) => $fetch('/data/data.json', { signal }),
 	);
+
 	return {
 		data,
 		pending,
