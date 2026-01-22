@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CalendarDays, Globe, Image, PictureInPicture, Scale, Settings } from 'lucide-vue-next';
+import { cn } from '~/lib/utils';
 
 const { data, pending, refresh } = await useBudgetData();
 
@@ -45,7 +46,7 @@ onMounted(async () => {
 		</SidebarHeader>
 		<SidebarContent
 			class="transition-opacity"
-			:class="!mounted || pending ? 'pointer-events-none opacity-50 select-none' : ''"
+			:class="cn((!mounted || pending) && 'pointer-events-none opacity-50 select-none')"
 		>
 			<SidebarGroup>
 				<SidebarGroupContent>
