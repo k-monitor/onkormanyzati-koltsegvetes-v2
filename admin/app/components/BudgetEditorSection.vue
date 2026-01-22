@@ -30,7 +30,7 @@ const budget = computed(() => {
 </script>
 
 <template>
-	<PageSection>
+	<PageSection class="-mb-8 border-none pb-0!">
 		<div class="mb-8 flex flex-wrap justify-between gap-4">
 			<ToggleGroup
 				v-model="side"
@@ -62,11 +62,12 @@ const budget = computed(() => {
 				</ToggleGroupItem>
 			</ToggleGroup>
 		</div>
+	</PageSection>
 
+	<div class="prose mx-auto w-full px-4 lg:max-w-[90%] lg:px-0">
 		<template v-if="budget">
 			<BudgetEditorNode
-				hide-children
-				muted
+				is-summary
 				:node="budget"
 			/>
 			<BudgetEditorNode
@@ -75,5 +76,5 @@ const budget = computed(() => {
 				:node="c"
 			/>
 		</template>
-	</PageSection>
+	</div>
 </template>
