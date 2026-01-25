@@ -9,6 +9,7 @@ const { side, view = 'func' } = defineProps<{
 const path = ref<string[]>([]);
 const hovered = ref<string | null>(null);
 const hiddenSeries = ref<Set<string>>(new Set());
+const inflationAdjusted = ref(false);
 
 // Reset path when view changes
 watch(() => view, () => {
@@ -28,6 +29,26 @@ function toggleSeriesVisibility(id: string, event: Event) {
 	}
 	hiddenSeries.value = newSet;
 }
+
+// Check if inflation feature is enabled
+const inflationEnabled = computed(() => !!CONFIG.timeseries?.inflation);
+
+// Parse inflation percentages from config (comma-separated string)
+const inflationRates = computed(() => {
+	if (!CONFIG.timeseries?.inflationYears) return [];
+	return CONFIG.timeseries.inflationYears.split(',').map((r: string) => parseFloat(r.trim()));
+});
+
+// Calculate cumulative inflation multipliers (first year = 1.0, subsequent years adjusted)
+const inflationMultipliers = computed(() => {
+	const multipliers: number[] = [1]; // First year is base (multiplier = 1)
+	let cumulative = 1;
+	for (const rate of inflationRates.value) {
+		cumulative *= (1 + rate / 100);
+		multipliers.push(cumulative);
+	}
+	return multipliers;
+});
 
 // Get all years that have data for this side and view
 const years = computed(() => {
@@ -78,7 +99,7 @@ const currentChildren = computed(() => {
 
 // Build time series data for all children
 const timeSeriesData = computed(() => {
-	const result: Record<string, { id: string; name: string; values: Record<string, number>; names: Record<string, string> }> = {};
+	const result: Record<string, { id: string; name: string; values: Record<string, number>; adjustedValues: Record<string, number>; names: Record<string, string> }> = {};
 
 	for (const child of currentChildren.value) {
 		const id = String(child.id);
@@ -86,19 +107,23 @@ const timeSeriesData = computed(() => {
 			id,
 			name: child.name,
 			values: {},
+			adjustedValues: {},
 			names: {},
 		};
 	}
 
-	for (const year of years.value) {
+	for (let i = 0; i < years.value.length; i++) {
+		const year = years.value[i]!;
 		const root = getRootForYear(year);
 		const node = getNodeAtPath(root, path.value);
+		const multiplier = inflationMultipliers.value[i] || 1;
 		if (node?.children) {
 			for (const child of node.children) {
 				const id = String(child.id);
 				if (result[id]) {
-					result[id].values[year] = child.value;
-					result[id].names[year] = child.name;
+					result[id]!.values[year] = child.value;
+					result[id]!.adjustedValues[year] = child.value / multiplier;
+					result[id]!.names[year] = child.name;
 				}
 			}
 		}
@@ -106,6 +131,14 @@ const timeSeriesData = computed(() => {
 
 	return Object.values(result);
 });
+
+// Helper to get display value (raw or inflation-adjusted)
+function getDisplayValue(series: { values: Record<string, number>; adjustedValues: Record<string, number> }, year: string): number {
+	if (inflationAdjusted.value && inflationEnabled.value) {
+		return series.adjustedValues[year] || 0;
+	}
+	return series.values[year] || 0;
+}
 
 // Get current node name for breadcrumb
 const nodePath = computed(() => {
@@ -145,6 +178,7 @@ const stackedData = computed(() => {
 		id: string;
 		name: string;
 		values: Record<string, number>;
+		adjustedValues: Record<string, number>;
 		stackedValues: Record<string, { y0: number; y1: number }>;
 	}[] = [];
 
@@ -161,7 +195,7 @@ const stackedData = computed(() => {
 	for (const year of years.value) {
 		let cumulative = 0;
 		for (const series of result) {
-			const value = series.values[year] || 0;
+			const value = getDisplayValue(series, year);
 			series.stackedValues[year] = {
 				y0: cumulative,
 				y1: cumulative + value,
@@ -180,7 +214,7 @@ const maxValue = computed(() => {
 		let total = 0;
 		for (const series of timeSeriesData.value) {
 			if (hiddenSeries.value.has(series.id)) continue;
-			total += series.values[year] || 0;
+			total += getDisplayValue(series, year);
 		}
 		if (total > max) max = total;
 	}
@@ -233,7 +267,7 @@ const maxChildValue = computed(() => {
 	let max = 0;
 	for (const series of timeSeriesData.value) {
 		for (const year of years.value) {
-			const val = series.values[year] || 0;
+			const val = getDisplayValue(series, year);
 			if (val > max) max = val;
 		}
 	}
@@ -327,13 +361,17 @@ function getDelta(seriesId: string, year: string, yearIndex: number): { value: n
 	if (yearIndex === 0) return null;
 	const series = timeSeriesData.value.find((s) => s.id === seriesId);
 	if (!series) return null;
-	const currentValue = series.values[year] || 0;
+	const currentValue = getDisplayValue(series, year);
 	const prevYear = years.value[yearIndex - 1];
-	const prevValue = series.values[prevYear] || 0;
+	if (!prevYear) return null;
+	const prevValue = getDisplayValue(series, prevYear);
 	const delta = currentValue - prevValue;
 	const percent = prevValue !== 0 ? (delta / prevValue) * 100 : null;
 	return { value: delta, percent };
 }
+
+// Get the first year for inflation label
+const baseYear = computed(() => years.value[0] || '');
 
 function formatDelta(delta: { value: number; percent: number | null } | null): string {
 	if (!delta) return '—';
@@ -353,20 +391,36 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 		</div>
 
 		<template v-else>
-			<!-- Breadcrumb navigation -->
-			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb">
-					<li
-						v-for="(node, index) in nodePath"
-						:key="index"
-						class="breadcrumb-item"
-						:class="{ active: index === nodePath.length - 1 }"
-						@click="index < nodePath.length - 1 && navigateTo(index)"
+			<!-- Controls: Breadcrumb and Inflation toggle -->
+			<div class="controls-wrapper">
+				<!-- Breadcrumb navigation -->
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li
+							v-for="(node, index) in nodePath"
+							:key="index"
+							class="breadcrumb-item"
+							:class="{ active: index === nodePath.length - 1 }"
+							@click="index < nodePath.length - 1 && navigateTo(index)"
+						>
+							{{ node.name }}
+						</li>
+					</ol>
+				</nav>
+
+				<!-- Inflation toggle -->
+				<div v-if="inflationEnabled" class="inflation-toggle">
+					<button
+						class="btn btn-sm"
+						:class="inflationAdjusted ? 'btn-primary' : 'btn-outline-secondary'"
+						@click="inflationAdjusted = !inflationAdjusted"
+						:title="inflationAdjusted ? 'Nominális értékek megjelenítése' : `Infláció korrigált értékek (${baseYear}-es árszinten)`"
 					>
-						{{ node.name }}
-					</li>
-				</ol>
-			</nav>
+						<i class="fas fa-fw" :class="inflationAdjusted ? 'fa-check-square' : 'fa-square'"></i>
+						Infláció korrigált ({{ baseYear }})
+					</button>
+				</div>
+			</div>
 
 			<!-- Chart and Details wrapper -->
 			<div class="chart-details-wrapper">
@@ -442,7 +496,7 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 									@mouseleave="hovered = null"
 									@click="drillDown(series.id)"
 								>
-									<title>{{ series.name }}: {{ groupNums(series.values[year] || 0) }} ({{ year }})</title>
+									<title>{{ series.name }}: {{ groupNums(getDisplayValue(series, year)) }}{{ inflationAdjusted ? ` (${baseYear}-es árszinten)` : '' }} ({{ year }})</title>
 								</rect>
 							</template>
 						</g>
@@ -461,7 +515,7 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 							<tr>
 								<th>Év</th>
 								<th>Név</th>
-								<th class="text-right">Összeg</th>
+								<th class="text-right">Összeg{{ inflationAdjusted ? ` (${baseYear})` : '' }}</th>
 								<th class="text-right">Változás</th>
 							</tr>
 						</thead>
@@ -473,7 +527,7 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 								<td>{{ year }}</td>
 								<td class="name-cell">{{ timeSeriesData.find((s) => s.id === hovered)?.names[year] || '—' }}</td>
 								<td class="text-right">
-									{{ groupNums(timeSeriesData.find((s) => s.id === hovered)?.values[year] || 0) }}
+									{{ groupNums(getDisplayValue(timeSeriesData.find((s) => s.id === hovered) || { values: {}, adjustedValues: {} }, year)) }}
 								</td>
 								<td class="text-right delta" :class="{ positive: getDelta(hovered, year, index)?.value > 0, negative: getDelta(hovered, year, index)?.value < 0 }">
 									{{ formatDelta(getDelta(hovered, year, index)) }}
@@ -531,7 +585,7 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 						<tr>
 							<th>Év</th>
 							<th>Név</th>
-							<th class="text-right">Összeg</th>
+							<th class="text-right">Összeg{{ inflationAdjusted ? ` (${baseYear})` : '' }}</th>
 							<th class="text-right">Változás</th>
 						</tr>
 					</thead>
@@ -543,7 +597,7 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 							<td>{{ year }}</td>
 							<td class="name-cell">{{ timeSeriesData.find((s) => s.id === hovered)?.names[year] || '—' }}</td>
 							<td class="text-right">
-								{{ groupNums(timeSeriesData.find((s) => s.id === hovered)?.values[year] || 0) }}
+								{{ groupNums(getDisplayValue(timeSeriesData.find((s) => s.id === hovered) || { values: {}, adjustedValues: {} }, year)) }}
 							</td>
 							<td class="text-right delta" :class="{ positive: getDelta(hovered, year, index)?.value > 0, negative: getDelta(hovered, year, index)?.value < 0 }">
 								{{ formatDelta(getDelta(hovered, year, index)) }}
@@ -565,9 +619,35 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 .time-series {
 	font-family: $vis-font-family;
 
+	.controls-wrapper {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+
+		nav {
+			flex: 1;
+			min-width: 200px;
+		}
+	}
+
+	.inflation-toggle {
+		.btn {
+			white-space: nowrap;
+			font-size: 0.85rem;
+
+			i {
+				margin-right: 0.25rem;
+			}
+		}
+	}
+
 	.breadcrumb {
 		background-color: transparent;
 		padding-left: 0;
+		margin-bottom: 0;
 
 		.breadcrumb-item {
 			text-align: left;
