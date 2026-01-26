@@ -5,7 +5,7 @@ export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
 	css: ['~/assets/css/tailwind.css'],
 	devtools: { enabled: true },
-	modules: ['@vueuse/nuxt', 'shadcn-nuxt'],
+	modules: ['@nuxt/eslint', '@vueuse/nuxt', 'shadcn-nuxt'],
 	runtimeConfig: {
 		kokoDir: '', // NUXT_KOKO_DIR
 		admin: {
