@@ -1,5 +1,4 @@
 <script setup lang="ts">
-const { year } = useYear();
 </script>
 
 <template>
@@ -11,6 +10,6 @@ const { year } = useYear();
 		role="dialog"
 		tabindex="-1"
 	>
-		<SearchModalContent :year="year" />
+		<SearchModalContent />
 	</div>
 </template>

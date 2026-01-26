@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { year } = defineProps<{ year: string }>();
+const { year, handleYearSelected } = useYear();
 
 type Suffix = {
 	label: string;
@@ -28,7 +28,7 @@ const range = computed(() => {
 const results = computed(() => {
 	if (searchTerm.value.length < 3 && range.value.length == 0) return [];
 	const valueSearch = range.value.length > 0;
-	return search(year, searchTerm.value, range.value)
+	return search(undefined, searchTerm.value, range.value)
 		.filter((r) => r.side != 'income' || CONFIG.modules.income)
 		.sort(function (a, b) {
 			function score(r) {
@@ -50,6 +50,7 @@ const results = computed(() => {
 			});
 			return r;
 		})
+		.filter((r, i, arr) => arr.findIndex((a) => a.id === r.id) === i)
 		.slice(0, 5);
 });
 
@@ -62,7 +63,7 @@ watch(searchTerm, (term, oldTerm) => {
 		const prefix = savedSearchTerms.value.some((sst) => sst.indexOf(term) == 0);
 		if (!prefix) {
 			savedSearchTerms.value.push(term);
-			const url = `/track-search.php?t=${term}&r=${search(year, term).length}`;
+			const url = `/track-search.php?t=${term}&r=${search(year.value, term, []).length}`;
 			$.get(url);
 		}
 	}
@@ -81,6 +82,11 @@ watch(searchTerm, (term, oldTerm) => {
 function jump(result: SearchResult) {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
+
+	// Navigate to the correct year if result is from a different year
+	if (result.year && String(result.year) !== year.value) {
+		handleYearSelected(String(result.year));
+	}
 
 	$('#search-modal').modal('hide');
 	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
@@ -214,7 +220,10 @@ onMounted(() => {
 							</span>
 							<br />
 
-							<small class="text-muted">({{ CONFIG.search[r.type] }})</small>
+							<small class="text-muted"
+								>({{ CONFIG.search[r.type] }}<span v-if="r.year">, {{ r.year }}</span
+								>)</small
+							>
 							<br />
 							<span v-if="(r.tags || '').length > 0">
 								<span
