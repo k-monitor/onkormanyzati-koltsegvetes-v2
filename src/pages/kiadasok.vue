@@ -5,7 +5,7 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url + 'expense',
+			href: CONFIG.url + 'kiadasok',
 		},
 	],
 	meta: [
@@ -15,7 +15,7 @@ useHead({
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url + 'expense',
+			content: CONFIG.url + 'kiadasok',
 		},
 	],
 	title: CONFIG.vis.expense + ' - ' + CONFIG.seo.pageTitle,

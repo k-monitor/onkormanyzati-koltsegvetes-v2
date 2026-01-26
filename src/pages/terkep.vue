@@ -5,7 +5,7 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url + 'map',
+			href: CONFIG.url + 'terkep',
 		},
 	],
 	meta: [
@@ -15,7 +15,7 @@ useHead({
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url + 'map',
+			content: CONFIG.url + 'terkep',
 		},
 	],
 	title: CONFIG.map.title + ' - ' + CONFIG.seo.pageTitle,

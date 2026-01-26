@@ -5,7 +5,7 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url + 'income',
+			href: CONFIG.url + 'bevetelek',
 		},
 	],
 	meta: [
@@ -15,7 +15,7 @@ useHead({
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url + 'income',
+			content: CONFIG.url + 'bevetelek',
 		},
 	],
 	title: CONFIG.vis.income + ' - ' + CONFIG.seo.pageTitle,

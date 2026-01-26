@@ -5,7 +5,7 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url + 'inex',
+			href: CONFIG.url + 'merleg',
 		},
 	],
 	meta: [
@@ -15,7 +15,7 @@ useHead({
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url + 'inex',
+			content: CONFIG.url + 'merleg',
 		},
 	],
 	title: CONFIG.inex.title + ' - ' + CONFIG.seo.pageTitle,
