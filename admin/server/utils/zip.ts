@@ -1,6 +1,6 @@
 import archiver from 'archiver';
 import path from 'path';
-import { H3Event } from 'h3';
+import type { H3Event } from 'h3';
 
 export default (event: H3Event, filename: string, directories: string[], files: string[]) => {
 	setHeader(event, 'content-disposition', `attachment; filename=${filename}`);

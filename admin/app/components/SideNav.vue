@@ -31,6 +31,7 @@ onMounted(async () => {
 	mounted.value = true;
 });
 </script>
+
 <template>
 	<Sidebar>
 		<SidebarHeader>
@@ -61,8 +62,8 @@ onMounted(async () => {
 							>
 								<NuxtLink :to="link.href">
 									<component
-										v-if="link.icon"
 										:is="link.icon"
+										v-if="link.icon"
 									/>
 									{{ link.text }}
 								</NuxtLink>
@@ -78,8 +79,8 @@ onMounted(async () => {
 									>
 										<NuxtLink :to="item.href">
 											<component
-												v-if="item.icon"
 												:is="item.icon"
+												v-if="item.icon"
 											/>{{ item.text }}
 										</NuxtLink>
 									</SidebarMenuSubButton>

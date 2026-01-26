@@ -45,6 +45,7 @@ const budget = computed(() => {
 			>
 				<ToggleGroupItem
 					v-for="option in sides"
+					:key="option.key"
 					:value="option.key"
 					:aria-label="option.label"
 				>

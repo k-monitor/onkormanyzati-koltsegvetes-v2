@@ -51,6 +51,7 @@ async function uploadLogo(e: Event, f: string) {
 	r.value = Math.random(); // update logo on UI ;)
 }
 </script>
+
 <template>
 	<PageFrame title="Logók">
 		<PageSection class="border-0">
@@ -102,7 +103,7 @@ async function uploadLogo(e: Event, f: string) {
 					</ItemHeader>
 					<ItemContent>
 						<ItemTitle>{{ f.text }}</ItemTitle>
-						<ItemDescription v-html="f.format"></ItemDescription>
+						<ItemDescription v-html="f.format" />
 					</ItemContent>
 					<ItemActions>
 						<Button as-child>

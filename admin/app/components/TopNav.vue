@@ -19,6 +19,7 @@ if (kokoUrl) {
 	});
 }
 </script>
+
 <template>
 	<div class="flex items-center justify-between p-2">
 		<NavigationMenu>

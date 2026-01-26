@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CircleAlert, Pencil, Trash2, Undo } from 'lucide-vue-next';
+import { CircleAlert, Pencil, Undo } from 'lucide-vue-next';
 
 // TODO LATER should we enforce 4 digits and space prefix?
 
@@ -47,6 +47,7 @@ async function handleRename() {
 	}
 }
 </script>
+
 <template>
 	<PageSection>
 		<p>Év átnevezésekor az alábbi munkalap átnevezések lesznek elvégezve:</p>

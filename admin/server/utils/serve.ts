@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { H3Event } from 'h3';
+import type { H3Event } from 'h3';
 
 export default (event: H3Event, dir: 'input' | 'src/data' | 'static') => {
 	const baseDir = path.resolve(kokoDir());

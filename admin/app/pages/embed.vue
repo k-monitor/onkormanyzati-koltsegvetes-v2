@@ -27,6 +27,7 @@ async function copyToClipboard(path: string) {
 	}
 }
 </script>
+
 <template>
 	<PageFrame title="Beágyazás">
 		<PageSection>
