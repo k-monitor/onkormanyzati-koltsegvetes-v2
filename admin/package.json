@@ -3,8 +3,9 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"build": "nuxt build",
 		"dev": "nuxt dev",
+		"build": "nuxt build",
+		"start": "node --env-file=.env .output/server/index.mjs",
 		"postinstall": "nuxt prepare",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix"
