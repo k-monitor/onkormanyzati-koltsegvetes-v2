@@ -11,6 +11,7 @@ const mapInstance = ref<any>(null);
 const markersLayer = ref<any>(null);
 const markersMap = ref<Map<string, any>>(new Map()); // Store markers by milestone ID
 let isUnmounted = false; // Track if component is unmounted
+let pendingMilestoneId: string | null = null; // Store milestone ID to open after map init
 
 // Get milestones with positions for current year
 const milestonesWithPosition = computed(() =>
@@ -29,8 +30,14 @@ function openMilestoneModal(milestoneId: string) {
 }
 
 function openMarkerPopup(milestoneId: string) {
-	// Check if component is unmounted or map is destroyed
-	if (isUnmounted || !mapInstance.value) return;
+	// Check if component is unmounted
+	if (isUnmounted) return;
+
+	// If map is not ready yet, store the milestone ID to open later
+	if (!mapInstance.value || markersMap.value.size === 0) {
+		pendingMilestoneId = milestoneId;
+		return;
+	}
 
 	// Only open popup if the milestone exists in current year's data
 	const milestoneExists = milestonesWithPosition.value.some((m) => m.id === milestoneId);
@@ -81,6 +88,13 @@ function initMap() {
 
 		// Add markers
 		updateMarkers(L.default);
+
+		// Open pending milestone popup if any
+		if (pendingMilestoneId) {
+			const milestoneId = pendingMilestoneId;
+			pendingMilestoneId = null;
+			openMarkerPopup(milestoneId);
+		}
 	});
 }
 

@@ -71,6 +71,15 @@ function jumpMap(result) {
 	}, 1000);
 }
 
+function handleMarkdownClick(event: MouseEvent) {
+	// Close modal when clicking a link in the markdown content
+	const target = event.target as HTMLElement;
+	if (target.tagName === 'A') {
+		const $ = window.$;
+		$('.modal').modal('hide');
+	}
+}
+
 onMounted(() => {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
@@ -138,10 +147,10 @@ onMounted(() => {
 				</div>
 				<div class="m-3">
 					<p class="lead text-white">{{ milestone.title }}</p>
-					<div class="m-0 text-justify text-white-75">
+					<div class="m-0 text-justify text-white-75" @click="handleMarkdownClick">
 						<VueMarkdown
 							:source="milestone.description"
-							:anchorAttributes="{ target: '_blank' }"
+							:externalLinksNewTab="true"
 						/>
 					</div>
 					<div class="d-flex flex-wrap">
