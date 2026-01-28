@@ -20,9 +20,16 @@ const milestonesWithPosition = computed(() =>
 		.map(([id, m]) => ({ ...m, id }) as MilestoneWithId),
 );
 
-// Default map center and zoom
-const DEFAULT_CENTER: [number, number] = [47.4979, 19.0402];
-const DEFAULT_ZOOM = 15;
+// Default map center and zoom (can be overridden via config)
+// center format: "lat, lng" e.g. "47.4979, 19.0402"
+const DEFAULT_CENTER: [number, number] = (() => {
+	if (CONFIG.map?.center) {
+		const [lat, lng] = CONFIG.map.center.split(',').map((s: string) => parseFloat(s.trim()));
+		if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
+	}
+	return [47.4979, 19.0402];
+})();
+const DEFAULT_ZOOM = CONFIG.map?.zoom ?? 15;
 
 function openMilestoneModal(milestoneId: string) {
 	handleMilestoneOpened(milestoneId, true);
@@ -165,8 +172,8 @@ function updateMarkers(L: any) {
 		markersMap.value.set(milestone.id, marker);
 	});
 
-	// Fit bounds if there are markers
-	if (bounds.length > 0) {
+	// Fit bounds if there are markers and no default center is overridden
+	if (bounds.length > 0 && !CONFIG.map?.center) {
 		if (bounds.length === 1) {
 			mapInstance.value.setView(bounds[0], DEFAULT_ZOOM);
 		} else {
