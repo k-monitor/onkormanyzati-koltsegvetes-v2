@@ -9,7 +9,7 @@
 	"scripts": {
 		"dev": "nuxt dev",
 		"build": "nuxt generate",
-		"prepare": "node scripts/prepare",
+		"prepare": "tsx scripts/prepare.js",
 		"new-config": "node scripts/generate-config",
 		"dev:admin": "nuxt dev admin",
 		"build:admin": "nuxt build admin",
@@ -39,6 +39,7 @@
 		"eslint-typegen": "^2.3.0",
 		"excel4node": "^1.7.2",
 		"prettier": "^3.6.2",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
 		"xlsx": "^0.14.3"
 	}
