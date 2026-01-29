@@ -34,18 +34,16 @@ app.post('/budget', (req, res) => {
 
 app.post('/buildSite', (req, res) => {
 	exec('pnpm build', (error, stdout, stderr) => {
-		res.status(error ? 500 : 200).send(stderr);
+		if (error) {
+			res.status(500).send(stderr);
+		} else if (CONFIG.DEPLOY_CMD) {
+			exec(CONFIG.DEPLOY_CMD, (deployError, deployStdout, deployStderr) => {
+				res.status(deployError ? 500 : 200).send(stderr + '\n' + deployStderr);
+			});
+		} else {
+			res.status(200).send(stderr);
+		}
 	});
-});
-
-app.post('/deploySite', (req, res) => {
-	if (CONFIG.DEPLOY_CMD) {
-		exec(CONFIG.DEPLOY_CMD, (error, stdout, stderr) => {
-			res.status(error ? 500 : 200).send(stderr);
-		});
-	} else {
-		res.end();
-	}
 });
 
 app.post('/config', (req, res) => {
