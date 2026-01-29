@@ -29,7 +29,7 @@ export function parseBudget(workbook: XLSX.WorkBook, funcTreeTsv: string) {
 }
 
 function generateEconomicTree(matrixTsv: string) {
-	const nodes = {};
+	const nodes: Record<string, BudgetNode> = {};
 
 	// collecting all nodes
 
@@ -38,10 +38,11 @@ function generateEconomicTree(matrixTsv: string) {
 		.splice(2) // header is at least 2 rows
 		.filter((row) => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
 		.forEach((row, i) => {
-			let [_, descriptor, value] = row.split('\t'); // we need only the 2nd and 3rd column
-			let { id, name } = parseEconomicDescriptor(descriptor);
-			value = Number((value || '').replace(/[^0-9\-]+/g, ''));
-			if (id && id.indexOf('-') == -1) {
+			const [_, descriptor, rawValue] = row.split('\t'); // we need only the 2nd and 3rd column
+			const { id: rawId, name } = parseEconomicDescriptor(descriptor);
+			const value = Number((rawValue || '').replace(/[^0-9-]+/g, ''));
+			if (rawId && rawId.indexOf('-') == -1) {
+				let id = rawId;
 				if (name.startsWith('ebből:') || nodes[id]) {
 					id = `${id}:${i}`;
 				}
@@ -62,12 +63,13 @@ function generateEconomicTree(matrixTsv: string) {
 				nodes[parentId].children = nodes[parentId].children || [];
 				nodes[parentId].children.push(nodes[id]);
 			}
+			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 			delete nodes[id];
 		});
 
 	// transforming into tree / connecting parents with children
 	const sortedIds = Object.keys(nodes).sort();
-	const deletableIds = [];
+	const deletableIds: string[] = [];
 	for (let i = 0; i < sortedIds.length; i++) {
 		const id = sortedIds[i];
 		if (id.length == 2 || id.startsWith('F')) continue; // root nodes, incl. FH1, FH2, FT1, FT2
@@ -85,12 +87,15 @@ function generateEconomicTree(matrixTsv: string) {
 	// cleanup
 	Object.keys(nodes)
 		.filter((id) => deletableIds.includes(id))
-		.forEach((id) => delete nodes[id]);
+		.forEach((id) => {
+			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+			delete nodes[id];
+		});
 
 	// we dropped out total sum line (via id filter) so we calculate it
 	const children: BudgetNode[] = Object.values(nodes);
 	const value = children
-		.filter((n) => !n.id.startsWith('F')) // skipping FH1, FH2, FT1, FT2
+		.filter((n) => !String(n.id || '').startsWith('F')) // skipping FH1, FH2, FT1, FT2
 		.map((n) => n.value)
 		.reduce((sum, v) => sum + v, 0);
 	const root: BudgetNode = {
@@ -103,7 +108,7 @@ function generateEconomicTree(matrixTsv: string) {
 }
 
 function generateFunctionalTree(matrixTsv: string, funcTreeTsv: string) {
-	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv);
+	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv) as Record<number, BudgetNode>;
 
 	const rows = matrixTsv.split('\n');
 	const header = rows[1].split('\t').map((col) => Number(col.trim().split(' ')[0]));
@@ -137,11 +142,13 @@ function generateFunctionalTree(matrixTsv: string, funcTreeTsv: string) {
 		});
 
 		// transforming into tree
+		const deletableIds: unknown[] = [];
 		Object.values(nodes).forEach((node) => {
 			if (node.parent) {
-				if (nodes[node.parent]) {
-					nodes[node.parent].children = (nodes[node.parent].children || []).concat(node);
-					node.deletable = true;
+				const parentId = Number(node.parent);
+				if (nodes[parentId]) {
+					nodes[parentId].children = (nodes[parentId].children || []).concat(node);
+					deletableIds.push(node.id);
 				} else {
 					console.error(
 						'[KÖKÖ]',
@@ -152,15 +159,19 @@ function generateFunctionalTree(matrixTsv: string, funcTreeTsv: string) {
 			}
 		});
 		Object.values(nodes)
-			.filter((node) => node.deletable)
-			.forEach((node) => delete nodes[node.id]);
+			.filter((node) => deletableIds.includes(node.id))
+			.forEach((node) => {
+				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+				delete nodes[node.id as number];
+			});
 		const root: BudgetNode = {
 			name: 'Összesen',
 			children: Object.values(nodes) as BudgetNode[],
+			value: 0,
 		};
 
 		// calculating sums
-		function sumNode(node) {
+		function sumNode(node: BudgetNode) {
 			if (node.children) {
 				node.value = node.children
 					.map((n) => sumNode(n))
@@ -171,8 +182,7 @@ function generateFunctionalTree(matrixTsv: string, funcTreeTsv: string) {
 		sumNode(root);
 
 		// cleaning up
-		function cleanUp(node) {
-			delete node.deletable;
+		function cleanUp(node: BudgetNode) {
 			if (node.children) {
 				node.children = node.children.filter((n) => n.value && n.value > 0);
 				node.children.forEach(cleanUp);
