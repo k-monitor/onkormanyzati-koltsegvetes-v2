@@ -1,29 +1,14 @@
 import fs from 'fs';
-import fg from 'fast-glob';
-import { rimrafSync } from 'rimraf';
 import xlsx from 'xlsx';
 
-const rmrf = rimrafSync;
-
 const INPUT_FILE = './input/budget.xlsx';
-const INTERMEDIARY_JSON_GLOB = './src/data/2*/*.json';
+
 // main script
 
 (() => {
 	console.log(`Processing file: ${INPUT_FILE}`);
 	const workbook = xlsx.readFile(INPUT_FILE);
 	const funcTreeTsv = fs.readFileSync('./src/data/functions.tsv', 'utf-8');
-
-	// cleanup
-	fg.sync(INTERMEDIARY_JSON_GLOB).forEach((f) => {
-		fs.unlinkSync(f);
-	});
-	fs.readdirSync('./src/data').forEach((d) => {
-		const fd = './src/data/' + d;
-		if (d.match(/^2\d+$/) && fs.readdirSync(fd).length == 0) {
-			rmrf(fd);
-		}
-	});
 
 	const data = {};
 

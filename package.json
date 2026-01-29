@@ -38,9 +38,7 @@
 		"eslint": "^9.39.2",
 		"eslint-typegen": "^2.3.0",
 		"excel4node": "^1.7.2",
-		"fast-glob": "^3.0.3",
 		"prettier": "^3.6.2",
-		"rimraf": "^6.0.0",
 		"typescript": "^5.9.3",
 		"xlsx": "^0.14.3"
 	}
