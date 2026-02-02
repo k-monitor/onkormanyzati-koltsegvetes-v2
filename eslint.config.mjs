@@ -2,6 +2,9 @@ import withNuxt from './.nuxt/eslint.config.mjs';
 
 export default withNuxt([
 	{
+		ignores: ['admin/**'],
+	},
+	{
 		rules: {
 			'no-var': 'error',
 			'prefer-const': 'error',

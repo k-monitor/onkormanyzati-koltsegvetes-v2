@@ -678,11 +678,6 @@
 							r = await fetch('buildSite', { method: 'POST' });
 							e += await r.text();
 							if (r.status !== 200) throw '';
-
-							this.loading = 'Weboldal publikálása...';
-							r = await fetch('deploySite', { method: 'POST' });
-							e += await r.text();
-							if (r.status !== 200) throw '';
 						} catch (error) {
 							// actual build/deploy failure
 							failed = true;
