@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
 
-const { defaultMode, year, side } = defineProps<{
+const { defaultMode, year, side, height } = defineProps<{
 	defaultMode: number;
 	year: string;
 	side: 'expense' | 'income';
+	height?: number;
 }>();
 
 const curves = ref<string[]>([]);
@@ -275,6 +276,7 @@ onUpdated(regenerateTooltips);
 			class="d-flex border-top border-bottom vis"
 			ref="vis"
 			@mouseout="hovered = -1"
+			:style="height ? { '--vis-height': height + 'px' } : undefined"
 		>
 			<div class="d-flex left-column">
 				<div
@@ -485,7 +487,7 @@ onUpdated(regenerateTooltips);
 
 	.vis {
 		@include media-breakpoint-up(sm) {
-			height: 75vh;
+			height: var(--vis-height, 75vh);
 			min-height: 400px;
 		}
 		font-size: 90%;

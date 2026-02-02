@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
 
+const { height } = defineProps<{
+	height?: number;
+}>();
+
 const { year } = useYear();
 
 const less = ref(true);
@@ -106,7 +110,10 @@ onUpdated(regenerateTooltips);
 							</a>
 						</div>
 					</div>
-					<div class="d-flex border-top border-bottom mb-4 vis">
+					<div
+						class="d-flex border-top border-bottom mb-4 vis"
+						:style="height ? { '--vis-height': height + 'px' } : undefined"
+					>
 						<div class="bg-success side"></div>
 						<div class="d-flex flex-column left-column">
 							<div
@@ -188,7 +195,7 @@ onUpdated(regenerateTooltips);
 					a hasábon egy kis ideig.
 				</p>
 			</div>
-			<div class="row justify-content-center">
+			<div class="row justify-content-center" v-if="!height">
 				<div class="col-lg-8 text-center">
 					<VueMarkdown
 						:source="CONFIG.inex.text"
@@ -211,6 +218,14 @@ onUpdated(regenerateTooltips);
 							</span>
 						</button>
 					</div>
+				</div>
+			</div>
+			<div class="row justify-content-center mt-3" v-if="height">
+				<div class="col-lg-8 text-center">
+					<a :href="CONFIG.url" target="_blank" class="source-link">
+						<i class="fas fa-external-link-alt mr-1"></i>
+						{{ CONFIG.seo.siteName }} - {{ CONFIG.seo.pageTitle }}
+					</a>
 				</div>
 			</div>
 		</div>
@@ -259,12 +274,12 @@ onUpdated(regenerateTooltips);
 
 	.vis {
 		font-size: 90%;
-		height: 75vh;
+		height: var(--vis-height, 75vh);
 		line-height: 1.15;
 		min-height: 400px;
 
 		@include media-breakpoint-up(md) {
-			height: 50vh;
+			height: var(--vis-height, 50vh);
 			line-height: inherit;
 		}
 	}

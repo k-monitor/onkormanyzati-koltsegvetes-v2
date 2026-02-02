@@ -3,6 +3,7 @@ defineProps<{
 	side: 'income' | 'expense';
 	text: string;
 	title: string;
+	height?: number;
 }>();
 
 const { year } = useYear();
@@ -27,6 +28,7 @@ const { year } = useYear();
 						:id="side + '-vis'"
 						:year="year"
 						:side="side"
+						:height="height"
 					/>
 				</div>
 				<p class="d-md-none font-italic p-3 small text-center text-muted">
@@ -36,13 +38,24 @@ const { year } = useYear();
 			</div>
 			<div
 				class="row justify-content-center mt-5"
-				v-if="text"
+				v-if="text && !height"
 			>
 				<div class="col-lg-8 text-center">
 					<VueMarkdown
 						:source="text"
 						:anchorAttributes="{ target: '_blank' }"
 					/>
+				</div>
+			</div>
+			<div
+				class="row justify-content-center mt-3"
+				v-if="height"
+			>
+				<div class="col-lg-8 text-center">
+					<a :href="CONFIG.url" target="_blank" class="source-link">
+						<i class="fas fa-external-link-alt mr-1"></i>
+						{{ CONFIG.seo.siteName }} - {{ CONFIG.seo.pageTitle }}
+					</a>
 				</div>
 			</div>
 		</div>
