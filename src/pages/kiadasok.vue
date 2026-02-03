@@ -29,7 +29,7 @@ useHead({
 			side="expense"
 			:text="CONFIG.vis.expenseText"
 			:title="CONFIG.vis.expense"
-			:height="1500"
+			:height="1100"
 		/>
 	</div>
 </template>

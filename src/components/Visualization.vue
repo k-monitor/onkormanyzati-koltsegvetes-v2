@@ -213,6 +213,7 @@ onUpdated(regenerateTooltips);
 <template>
 	<div
 		class="visualization"
+		:class="{ 'embed-mode': height }"
 		ref="wrapper"
 	>
 		<div class="row justify-content-center">
@@ -274,9 +275,9 @@ onUpdated(regenerateTooltips);
 
 		<div
 			class="d-flex border-top border-bottom vis"
+			:class="{ 'embed-vis': height }"
 			ref="vis"
 			@mouseout="hovered = -1"
-			:style="height ? { '--vis-height': height + 'px' } : undefined"
 		>
 			<div class="d-flex left-column">
 				<div
@@ -399,6 +400,17 @@ onUpdated(regenerateTooltips);
 .visualization {
 	font-family: $vis-font-family;
 
+	&.embed-mode {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+
+		.vis {
+			flex: 1;
+			min-height: 0;
+		}
+	}
+
 	.left-column {
 		width: 35%;
 
@@ -491,6 +503,11 @@ onUpdated(regenerateTooltips);
 			min-height: 400px;
 		}
 		font-size: 90%;
+
+		&.embed-vis {
+			height: 100% !important;
+			min-height: 0;
+		}
 
 		& > div {
 			height: 100%;

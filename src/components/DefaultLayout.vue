@@ -76,7 +76,7 @@ onMounted(() => {
 		<div class="flex-grow-1">
 			<Welcome />
 			<PublicationSection v-if="CONFIG.modules.pub" />
-			<Inex v-if="CONFIG.modules.inex" />
+			<Inex class="bg-light" v-if="CONFIG.modules.inex" />
 			<VisualizationSection
 				v-if="CONFIG.modules.income"
 				id="income"

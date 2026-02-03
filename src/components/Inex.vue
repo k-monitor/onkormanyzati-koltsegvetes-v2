@@ -64,7 +64,9 @@ onUpdated(regenerateTooltips);
 <template>
 	<section
 		id="inex"
-		class="page-section bg-light"
+		class="page-section"
+		:class="{ 'embed-mode': height }"
+		:style="height ? { '--embed-height': height + 'px' } : undefined"
 	>
 		<div class="container">
 			<div class="row justify-content-center mb-5">
@@ -76,7 +78,7 @@ onUpdated(regenerateTooltips);
 					<hr class="divider my-4" />
 				</div>
 			</div>
-			<div class="row justify-content-center mb-5">
+			<div class="row justify-content-center mb-5 vis-row">
 				<div
 					class="col-lg-10 text-center"
 					id="inex-wrapper"
@@ -112,7 +114,7 @@ onUpdated(regenerateTooltips);
 					</div>
 					<div
 						class="d-flex border-top border-bottom mb-4 vis"
-						:style="height ? { '--vis-height': height + 'px' } : undefined"
+						:class="{ 'embed-vis': height }"
 					>
 						<div class="bg-success side"></div>
 						<div class="d-flex flex-column left-column">
@@ -220,7 +222,7 @@ onUpdated(regenerateTooltips);
 					</div>
 				</div>
 			</div>
-			<div class="row justify-content-center mt-3" v-if="height">
+			<div class="row justify-content-center mt-3 source-row" v-if="height">
 				<div class="col-lg-8 text-center">
 					<a :href="CONFIG.url" target="_blank" class="source-link">
 						<i class="fas fa-external-link-alt mr-1"></i>
@@ -239,6 +241,47 @@ onUpdated(regenerateTooltips);
 @import '../../node_modules/bootstrap/scss/mixins';
 
 #inex {
+	&.embed-mode {
+		height: var(--embed-height);
+		padding: 1rem 0 !important;
+		box-sizing: border-box;
+
+		.container {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.vis-row {
+			flex: 1;
+			min-height: 0;
+			margin-bottom: 0 !important;
+			display: flex;
+			flex-direction: column;
+
+			> .col-lg-10 {
+				flex: 1;
+				min-height: 0;
+			}
+		}
+
+		.source-row {
+			flex-shrink: 0;
+		}
+
+		#inex-wrapper {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.vis {
+			flex: 1;
+			min-height: 0;
+			height: auto !important;
+		}
+	}
+
 	.bar {
 		align-items: center;
 		display: flex;
@@ -274,13 +317,18 @@ onUpdated(regenerateTooltips);
 
 	.vis {
 		font-size: 90%;
-		height: var(--vis-height, 75vh);
+		height: 75vh;
 		line-height: 1.15;
 		min-height: 400px;
 
 		@include media-breakpoint-up(md) {
-			height: var(--vis-height, 50vh);
+			height: 50vh;
 			line-height: inherit;
+		}
+
+		&.embed-vis {
+			height: 100%;
+			min-height: 0;
 		}
 	}
 

@@ -10,7 +10,7 @@ const { year } = useYear();
 </script>
 
 <template>
-	<section class="page-section">
+	<section class="page-section" :class="{ 'embed-mode': height }" :style="height ? { '--embed-height': height + 'px' } : undefined">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
@@ -21,7 +21,7 @@ const { year } = useYear();
 					<hr class="divider my-4 mb-5" />
 				</div>
 			</div>
-			<div class="row justify-content-center">
+			<div class="row justify-content-center vis-row">
 				<div class="col-lg-8 text-center">
 					<Visualization
 						:defaultMode="side == 'expense' ? 1 : 0"
@@ -48,7 +48,7 @@ const { year } = useYear();
 				</div>
 			</div>
 			<div
-				class="row justify-content-center mt-3"
+				class="row justify-content-center mt-3 source-row"
 				v-if="height"
 			>
 				<div class="col-lg-8 text-center">
@@ -61,3 +61,48 @@ const { year } = useYear();
 		</div>
 	</section>
 </template>
+
+<style scoped lang="scss">
+.embed-mode {
+	height: var(--embed-height);
+	padding: 1rem 0 !important;
+	box-sizing: border-box;
+
+	:deep(.container) {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	:deep(.vis-row) {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+
+		> .col-lg-8 {
+			flex: 1;
+			min-height: 0;
+			display: flex;
+			flex-direction: column;
+		}
+	}
+
+	:deep(.source-row) {
+		flex-shrink: 0;
+	}
+
+	:deep(.visualization) {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+
+		.vis {
+			flex: 1;
+			min-height: 0;
+			height: auto !important;
+		}
+	}
+}
+</style>
