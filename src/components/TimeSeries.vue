@@ -33,20 +33,31 @@ function toggleSeriesVisibility(id: string, event: Event) {
 // Check if inflation feature is enabled
 const inflationEnabled = computed(() => !!CONFIG.timeseries?.inflation);
 
-// Parse inflation percentages from config (comma-separated string)
+// Get inflation rates from config object (timeseries.inflations.2020, timeseries.inflations.2021, etc.)
 const inflationRates = computed(() => {
-	if (!CONFIG.timeseries?.inflationYears) return [];
-	return CONFIG.timeseries.inflationYears.split(',').map((r: string) => parseFloat(r.trim()));
+	if (!CONFIG.inflations) return {};
+	return CONFIG.inflations as Record<string, number>;
 });
 
-// Calculate cumulative inflation multipliers (first year = 1.0, subsequent years adjusted)
+// Calculate cumulative inflation multipliers for each year
 const inflationMultipliers = computed(() => {
-	const multipliers: number[] = [1]; // First year is base (multiplier = 1)
+	const multipliers: Record<string, number> = {};
+	const rates = inflationRates.value;
+	
+	if (years.value.length === 0) return multipliers;
+	
+	// First year is base (multiplier = 1)
+	multipliers[years.value[0]!] = 1;
+	
+	// Calculate cumulative multipliers for subsequent years
 	let cumulative = 1;
-	for (const rate of inflationRates.value) {
+	for (let i = 1; i < years.value.length; i++) {
+		const prevYear = years.value[i - 1]!;
+		const rate = rates[prevYear] || 0;
 		cumulative *= (1 + rate / 100);
-		multipliers.push(cumulative);
+		multipliers[years.value[i]!] = cumulative;
 	}
+	
 	return multipliers;
 });
 
@@ -112,11 +123,10 @@ const timeSeriesData = computed(() => {
 		};
 	}
 
-	for (let i = 0; i < years.value.length; i++) {
-		const year = years.value[i]!;
+	for (const year of years.value) {
 		const root = getRootForYear(year);
 		const node = getNodeAtPath(root, path.value);
-		const multiplier = inflationMultipliers.value[i] || 1;
+		const multiplier = inflationMultipliers.value[year] || 1;
 		if (node?.children) {
 			for (const child of node.children) {
 				const id = String(child.id);
