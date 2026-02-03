@@ -2,10 +2,10 @@
 import { CalendarDays, Globe, Image, PictureInPicture, Scale, Settings } from 'lucide-vue-next';
 import { cn } from '~/lib/utils';
 
-const { data, pending, refresh } = await useBudgetData();
+const { data, pending } = await useBudgetData();
 
 const years = computed(() =>
-	getYears(data.value)
+	getYears(data.value || {})
 		.sort((a, b) => b.localeCompare(a))
 		.map((y) => ({
 			href: `/budget/${slugifyYear(y)}/`,
@@ -27,7 +27,6 @@ const links = computed(() => {
 
 const mounted = ref(false);
 onMounted(async () => {
-	await refresh();
 	mounted.value = true;
 });
 </script>
@@ -53,7 +52,7 @@ onMounted(async () => {
 				<SidebarGroupContent>
 					<SidebarMenu>
 						<SidebarMenuItem
-							v-for="(link, index) in links"
+							v-for="link in links"
 							:key="link.href"
 						>
 							<SidebarMenuButton

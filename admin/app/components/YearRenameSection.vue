@@ -7,13 +7,13 @@ const { year } = defineProps<{
 	year: string;
 }>();
 
-const { data, refresh } = await useBudgetData();
+const { data } = await useBudgetData();
 
 const newNameInput = ref(year);
 const newYear = computed(() => newNameInput.value.replaceAll(/\s+/g, ' ').trim());
 
 const alreadyExists = computed(
-	() => year !== newYear.value && getYears(data.value).includes(newYear.value),
+	() => year !== newYear.value && getYears(data.value || {}).includes(newYear.value),
 );
 const canRename = computed(
 	() => newYear.value.length >= 4 && year !== newYear.value && !alreadyExists.value,
@@ -31,14 +31,15 @@ async function handleRename() {
 	if (!confirm('Biztosan átnevezed az évet?')) return;
 	loading.value = true;
 	try {
-		await $fetch('/api/budget/year', {
+		// FIXME year rename on client side
+		/*await $fetch('/api/budget/year', {
 			method: 'PATCH',
 			body: {
 				oldName: year,
 				newName: newYear.value,
 			},
 		});
-		await refresh();
+		await refresh();*/
 		await router.replace(`/budget/${slugifyYear(newYear.value)}/`);
 	} catch (e) {
 		alert('Nem sikerült! :c');

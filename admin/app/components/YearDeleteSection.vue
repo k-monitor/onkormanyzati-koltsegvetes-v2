@@ -5,7 +5,8 @@ const { year } = defineProps<{
 	year: string;
 }>();
 
-const { refresh } = await useBudgetData();
+// FIXME year deletion on client side
+//const { refresh } = await useBudgetData();
 
 const loading = useLoading();
 const router = useRouter();
@@ -14,13 +15,13 @@ async function handleDelete() {
 	if (!confirm('Biztosan törlöd az évet? Ez visszavonhatatlan művelet!')) return;
 	loading.value = true;
 	try {
-		await $fetch('/api/budget/year', {
+		/*await $fetch('/api/budget/year', {
 			method: 'DELETE',
 			body: {
 				name: year,
 			},
 		});
-		await refresh();
+		await refresh();*/
 		await router.replace('/budget/');
 	} catch (e) {
 		alert('Nem sikerült! :c');
