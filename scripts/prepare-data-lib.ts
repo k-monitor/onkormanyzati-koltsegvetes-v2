@@ -1,25 +1,42 @@
 import type { BudgetData, BudgetNode } from '../src/utils/types.ts';
-import XLSX from 'xlsx';
+import type ExcelJS from 'exceljs';
 
-export function parseBudget(workbook: XLSX.WorkBook, funcTreeTsv: string) {
+export function sheetToMatrix(sheet: ExcelJS.Worksheet) {
+	const matrix: ExcelJS.CellValue[][] = [];
+	for (let ri = 1; ri <= sheet.rowCount; ri++) {
+		const row = sheet.getRow(ri);
+		const matrixRow: ExcelJS.CellValue[] = [];
+		for (let ci = 1; ci <= sheet.columnCount; ci++) {
+			const cell = row.getCell(ci);
+			const value = cell.result || cell.value;
+			matrixRow.push(value === null || value === undefined ? '' : value);
+		}
+		matrix.push(matrixRow);
+	}
+	return matrix;
+}
+
+export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 	const data: BudgetData = {};
 
-	workbook.SheetNames.forEach((sheetName) => {
+	workbook.eachSheet((sheet) => {
+		const sheetName = sheet.name;
 		console.log(`Reading sheet: ${sheetName}`);
-		const matrixTsv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 
 		const parsedSheetName = parseSheetName(sheetName);
 		if (parsedSheetName) {
 			const { year, side } = parsedSheetName;
 
+			const matrix = sheetToMatrix(sheet);
+
 			data[year] = data[year] || {};
 			data[year][side] = data[year][side] || {};
 
 			console.log('Generating economic tree');
-			data[year][side]['econ'] = generateEconomicTree(matrixTsv);
+			data[year][side]['econ'] = generateEconomicTree(matrix);
 
 			console.log('Generating functional tree');
-			data[year][side]['func'] = generateFunctionalTree(matrixTsv, funcTreeTsv);
+			data[year][side]['func'] = generateFunctionalTree(matrix, funcTreeTsv);
 		} else {
 			console.error('[KÖKÖ]', 'Érvénytelen munkalap név budget.xlsx-ben:', sheetName);
 		}
@@ -28,19 +45,18 @@ export function parseBudget(workbook: XLSX.WorkBook, funcTreeTsv: string) {
 	return data;
 }
 
-function generateEconomicTree(matrixTsv: string) {
+function generateEconomicTree(matrix: ExcelJS.CellValue[][]) {
 	const nodes: Record<string, BudgetNode> = {};
 
 	// collecting all nodes
 
-	matrixTsv
-		.split('\n')
+	[...matrix]
 		.splice(2) // header is at least 2 rows
-		.filter((row) => row.match(/^\d{2,}/)) // we need rows that start with valid economic category ID
+		.filter((row) => row[0]?.toString().match(/^\d{2,}/)) // we need rows that start with valid economic category ID
 		.forEach((row, i) => {
-			const [_, descriptor, rawValue] = row.split('\t'); // we need only the 2nd and 3rd column
-			const { id: rawId, name } = parseEconomicDescriptor(descriptor);
-			const value = Number((rawValue || '').replace(/[^0-9-]+/g, ''));
+			const [_, descriptor, rawValue] = row; // we need only the 2nd and 3rd column
+			const { id: rawId, name } = parseEconomicDescriptor(descriptor?.toString() || '');
+			const value = Number((rawValue?.toString() || '').replace(/[^0-9-]+/g, ''));
 			if (rawId && rawId.indexOf('-') == -1) {
 				let id = rawId;
 				if (name.startsWith('ebből:') || nodes[id]) {
@@ -107,17 +123,18 @@ function generateEconomicTree(matrixTsv: string) {
 	return root;
 }
 
-function generateFunctionalTree(matrixTsv: string, funcTreeTsv: string) {
+function generateFunctionalTree(matrix: ExcelJS.CellValue[][], funcTreeTsv: string) {
 	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv) as Record<number, BudgetNode>;
 
-	const rows = matrixTsv.split('\n');
-	const header = rows[1].split('\t').map((col) => Number(col.trim().split(' ')[0]));
+	const rows = [...matrix];
+
+	const header = rows[1].map((col) => Number(col?.toString().trim().split(' ')[0]));
 	if (header.length > 3) {
 		// finding the total row
 		let max = 0,
-			maxRow = '';
+			maxRow: ExcelJS.CellValue[] = [];
 		rows.forEach((row) => {
-			const sum = Number((row.split('\t')[2] || '0').replace(/\D+/g, ''));
+			const sum = Number((row[2]?.toString() || '0').replace(/\D+/g, ''));
 			if (sum > max) {
 				max = sum;
 				maxRow = row;
@@ -125,7 +142,7 @@ function generateFunctionalTree(matrixTsv: string, funcTreeTsv: string) {
 		});
 
 		// collecting total values for nodes
-		maxRow.split('\t').forEach((col, i) => {
+		maxRow.forEach((col, i) => {
 			if (i > 2 && i < header.length) {
 				const id = header[i];
 				if (!id) return;
@@ -137,7 +154,7 @@ function generateFunctionalTree(matrixTsv: string, funcTreeTsv: string) {
 					);
 					return;
 				}
-				nodes[id].value = Number(col.replace(/\D+/g, ''));
+				nodes[id].value = Number(col?.toString().replace(/\D+/g, ''));
 			}
 		});
 

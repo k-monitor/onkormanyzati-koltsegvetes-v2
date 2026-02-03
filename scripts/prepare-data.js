@@ -1,5 +1,5 @@
 import fs from 'fs';
-import xlsx from 'xlsx';
+import ExcelJS from 'exceljs';
 import { parseBudget } from './prepare-data-lib.ts';
 
 const FUNC_FILE = './src/data/functions.tsv';
@@ -8,9 +8,11 @@ const OUTPUT_FILE = './src/data/data.json';
 
 // main script
 
-(() => {
+(async () => {
 	console.log(`Processing file: ${INPUT_FILE}`);
-	const workbook = xlsx.readFile(INPUT_FILE);
+	const workbook = new ExcelJS.Workbook();
+	await workbook.xlsx.readFile(INPUT_FILE);
+
 	const funcTreeTsv = fs.readFileSync(FUNC_FILE, 'utf-8');
 
 	const data = parseBudget(workbook, funcTreeTsv);
