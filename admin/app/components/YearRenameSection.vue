@@ -7,7 +7,8 @@ const { year } = defineProps<{
 	year: string;
 }>();
 
-const { years } = await useBudgetData();
+const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook, years } =
+	await useBudgetData();
 
 const newNameInput = ref(year);
 const newYear = computed(() => newNameInput.value.replaceAll(/\s+/g, ' ').trim());
@@ -27,21 +28,18 @@ const loading = useLoading();
 const router = useRouter();
 
 async function handleRename() {
+	if (!workbook.value) return;
 	if (!canRename.value) return;
 	if (!confirm('Biztosan átnevezed az évet?')) return;
 	loading.value = true;
 	try {
-		// FIXME year rename on client side
-		/*await $fetch('/api/budget/year', {
-			method: 'PATCH',
-			body: {
-				oldName: year,
-				newName: newYear.value,
-			},
-		});
-		await refresh();*/
+		renameSheet(workbook.value, `${year} BEVÉTEL`, `${newYear.value} BEVÉTEL`);
+		renameSheet(workbook.value, `${year} KIADÁS`, `${newYear.value} KIADÁS`);
+		await uploadBudgetXlsxToServer();
+		await loadBudgetXlsxFromServer();
 		await router.replace(`/budget/${slugifyYear(newYear.value)}/`);
-	} catch (e) {
+	} catch (e: unknown) {
+		console.error(e);
 		alert('Nem sikerült! :c');
 	} finally {
 		loading.value = false;

@@ -5,25 +5,23 @@ const { year } = defineProps<{
 	year: string;
 }>();
 
-// FIXME year deletion on client side
-//const { refresh } = await useBudgetData();
+const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook } = await useBudgetData();
 
 const loading = useLoading();
 const router = useRouter();
 
 async function handleDelete() {
+	if (!workbook.value) return;
 	if (!confirm('Biztosan törlöd az évet? Ez visszavonhatatlan művelet!')) return;
 	loading.value = true;
 	try {
-		/*await $fetch('/api/budget/year', {
-			method: 'DELETE',
-			body: {
-				name: year,
-			},
-		});
-		await refresh();*/
+		deleteSheet(workbook.value, `${year} BEVÉTEL`);
+		deleteSheet(workbook.value, `${year} KIADÁS`);
+		await uploadBudgetXlsxToServer();
+		await loadBudgetXlsxFromServer();
 		await router.replace('/budget/');
-	} catch (e) {
+	} catch (e: unknown) {
+		console.error(e);
 		alert('Nem sikerült! :c');
 	} finally {
 		loading.value = false;

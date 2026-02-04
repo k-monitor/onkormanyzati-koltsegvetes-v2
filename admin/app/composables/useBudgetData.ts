@@ -126,11 +126,8 @@ export default createGlobalState(async () => {
 		}
 		pending.value = true;
 		data.value = parseBudget(workbook.value, functions.value);
-		// FIXME slow
 		pending.value = false;
 	}
-
-	// FIXME uploadBudgetXlsxToServer
 
 	onMounted(async () => {
 		if (!workbook.value) {

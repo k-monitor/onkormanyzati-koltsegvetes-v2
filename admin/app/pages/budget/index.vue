@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { Download, Upload } from 'lucide-vue-next';
 
-//const { refresh } = await useBudgetData();
+const { loadBudgetXlsxFromServer } = await useBudgetData();
 async function uploadBudget(e: Event) {
 	await upload('/api/budget', 'budget', e.target as HTMLInputElement);
-	//refresh();
-	// FIXME budget upload: prepare on client side
+	await loadBudgetXlsxFromServer();
 }
 </script>
 
