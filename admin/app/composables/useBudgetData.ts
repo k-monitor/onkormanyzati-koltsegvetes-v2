@@ -96,9 +96,6 @@ export default createGlobalState(async () => {
 		if (!functions.value) {
 			await loadFunctionsTsvFromServer();
 		}
-		if (!data.value) {
-			prepareBudgetData();
-		}
 	});
 
 	return {

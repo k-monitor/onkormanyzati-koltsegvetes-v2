@@ -4,7 +4,7 @@
 const loading = useLoading();
 loading.value = true;
 
-const { pending, years } = await useBudgetData();
+const { data, prepareBudgetData, pending, years } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
 const year = computed(
 	() => deslugifyYear(slugifiedYear, Object.keys(years.value)) || slugifiedYear,
@@ -12,6 +12,12 @@ const year = computed(
 
 watchEffect(() => {
 	if (!pending.value) loading.value = false;
+});
+
+onMounted(() => {
+	if (!data.value) {
+		prepareBudgetData();
+	}
 });
 </script>
 
