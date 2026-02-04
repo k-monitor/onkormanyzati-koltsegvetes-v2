@@ -26,7 +26,10 @@ onMounted(() => {
 		:title="year"
 		group-title="Költségvetés"
 	>
-		<BudgetEditorSection :year="year" />
+		<BudgetEditorSection
+			v-if="data"
+			:year="year"
+		/>
 		<YearRenameSection :year="year" />
 		<YearDeleteSection :year="year" />
 	</PageFrame>
