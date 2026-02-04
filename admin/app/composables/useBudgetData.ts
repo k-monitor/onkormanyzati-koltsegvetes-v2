@@ -60,6 +60,49 @@ export default createGlobalState(async () => {
 		}
 	}
 
+	async function downloadXlsxFromClient() {
+		if (!workbook.value) return;
+		const buffer = await workbook.value.xlsx.writeBuffer();
+		const blob = new Blob([buffer], {
+			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		});
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `budget-${new Date().toLocaleDateString().replaceAll(/\D/g, '')}.xlsx`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
+
+	async function uploadBudgetXlsxToServer() {
+		if (!workbook.value) return;
+		let success = false;
+		pending.value = true;
+		const buffer = await workbook.value.xlsx.writeBuffer();
+		const blob = new Blob([buffer], {
+			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		});
+		const formData = new FormData();
+		formData.append('budget', blob, 'budget.xlsx');
+		try {
+			const response = await fetch('/api/budget', {
+				method: 'POST',
+				body: formData,
+			});
+			if (!response.ok) {
+				throw new Error(`HTTP ${response.status}`);
+			}
+			success = true;
+		} catch (error) {
+			console.error('Error uploading workbook:', error);
+		} finally {
+			pending.value = false;
+		}
+		return success;
+	}
+
 	async function loadFunctionsTsvFromServer() {
 		pending.value = true;
 		try {
@@ -99,12 +142,14 @@ export default createGlobalState(async () => {
 	});
 
 	return {
+		data,
+		pending,
 		sheets,
 		workbook,
 		years,
 		loadBudgetXlsxFromServer,
+		downloadXlsxFromClient,
+		uploadBudgetXlsxToServer,
 		prepareBudgetData,
-		data,
-		pending,
 	};
 });
