@@ -2,12 +2,12 @@ import ExcelJS from 'exceljs';
 import type { BudgetData } from '../../../src/utils/types';
 import { parseBudget } from '../../../scripts/prepare-data-lib';
 
-export default async () => {
-	const workbook = useState<ExcelJS.Workbook | null>('budget.xlsx', () => null);
-	const functions = useState<string | null>('functions.tsv', () => null);
-	const data = useState<BudgetData | null>('budget-data', () => null);
+export default createGlobalState(async () => {
+	const workbook = shallowRef<ExcelJS.Workbook | null>(null);
+	const functions = shallowRef<string | null>(null);
+	const data = shallowRef<BudgetData | null>(null);
 
-	const pending = useState<boolean>('budget-data-pending', () => false);
+	const pending = ref(false);
 
 	async function loadBudgetXlsxFromServer() {
 		pending.value = true;
@@ -72,4 +72,4 @@ export default async () => {
 		data,
 		pending,
 	};
-};
+});
