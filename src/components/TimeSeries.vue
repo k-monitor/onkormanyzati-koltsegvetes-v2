@@ -39,23 +39,24 @@ const inflationRates = computed(() => {
 	return CONFIG.inflations as Record<string, number>;
 });
 
-// Calculate cumulative inflation multipliers for each year
+// Calculate cumulative inflation multipliers for each year (base = last/most recent year)
 const inflationMultipliers = computed(() => {
 	const multipliers: Record<string, number> = {};
 	const rates = inflationRates.value;
 	
 	if (years.value.length === 0) return multipliers;
 	
-	// First year is base (multiplier = 1)
-	multipliers[years.value[0]!] = 1;
+	// Last year is base (multiplier = 1)
+	const lastIndex = years.value.length - 1;
+	multipliers[years.value[lastIndex]!] = 1;
 	
-	// Calculate cumulative multipliers for subsequent years
+	// Calculate cumulative multipliers for earlier years (working backwards)
 	let cumulative = 1;
-	for (let i = 1; i < years.value.length; i++) {
-		const prevYear = years.value[i - 1]!;
-		const rate = rates[prevYear] || 0;
+	for (let i = lastIndex - 1; i >= 0; i--) {
+		const currentYear = years.value[i]!;
+		const rate = rates[currentYear] || 0;
 		cumulative *= (1 + rate / 100);
-		multipliers[years.value[i]!] = cumulative;
+		multipliers[currentYear] = cumulative;
 	}
 	
 	return multipliers;
@@ -132,7 +133,7 @@ const timeSeriesData = computed(() => {
 				const id = String(child.id);
 				if (result[id]) {
 					result[id]!.values[year] = child.value;
-					result[id]!.adjustedValues[year] = child.value / multiplier;
+					result[id]!.adjustedValues[year] = child.value * multiplier;
 					result[id]!.names[year] = child.name;
 				}
 			}
@@ -380,8 +381,8 @@ function getDelta(seriesId: string, year: string, yearIndex: number): { value: n
 	return { value: delta, percent };
 }
 
-// Get the first year for inflation label
-const baseYear = computed(() => years.value[0] || '');
+// Get the last (most recent) year for inflation label
+const baseYear = computed(() => years.value[years.value.length - 1] || '');
 
 function formatDelta(delta: { value: number; percent: number | null } | null): string {
 	if (!delta) return '—';
