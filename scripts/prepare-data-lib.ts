@@ -34,7 +34,7 @@ export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 	return data;
 }
 
-function generateEconomicTree(sheet: ExcelJS.Worksheet) {
+export function generateEconomicTree(sheet: ExcelJS.Worksheet) {
 	const nodes: Record<string, BudgetNode> = {};
 
 	// collecting all nodes
@@ -121,7 +121,10 @@ function generateEconomicTree(sheet: ExcelJS.Worksheet) {
 	return root;
 }
 
-function generateFunctionalTree(sheet: ExcelJS.Worksheet, nodes: Record<number, BudgetNode>) {
+export function generateFunctionalTree(
+	sheet: ExcelJS.Worksheet,
+	nodes: Record<number, BudgetNode>,
+) {
 	const headerRow = sheet.getRow(2);
 	if (headerRow.cellCount <= 3) return null;
 
@@ -227,7 +230,7 @@ function parseEconomicDescriptor(descriptor: string) {
 /**
  * @returns Functional tree nodes inside an object where key is the `id`
  */
-function parseFunctionalTreeDescriptor(tsv: string) {
+export function parseFunctionalTreeDescriptor(tsv: string) {
 	const nodes: Record<number, { id: number; name: string; parent: number | null }> = {};
 	tsv.split('\n').forEach((row) => {
 		if (!row.trim().length) return;
@@ -240,7 +243,7 @@ function parseFunctionalTreeDescriptor(tsv: string) {
 	return nodes;
 }
 
-function parseSheetName(sheetName: string) {
+export function parseSheetName(sheetName: string) {
 	/*
 		2020_kiadas
 		2020 KIADÁS
