@@ -11,6 +11,9 @@ const SUFFIX_1B: Suffix = { label: 'milliárd Ft', value: 1000000000 };
 const suffixes: Suffix[] = [SUFFIX_1K, SUFFIX_1M, SUFFIX_1B];
 const suffix = ref(SUFFIX_1M);
 
+const availableYears = computed(() => Object.keys(DATA).sort().reverse());
+const selectedYear = ref<string | undefined>(undefined); // undefined means all years
+
 const searchTerm = ref('');
 const savedSearchTerms = ref<string[]>([]);
 const valueTerm = ref('');
@@ -28,7 +31,7 @@ const range = computed(() => {
 const results = computed(() => {
 	if (searchTerm.value.length < 3 && range.value.length == 0) return [];
 	const valueSearch = range.value.length > 0;
-	return search(undefined, searchTerm.value, range.value)
+	return search(selectedYear.value, searchTerm.value, range.value)
 		.filter((r) => r.side != 'income' || CONFIG.modules.income)
 		.sort(function (a, b) {
 			function score(r) {
@@ -134,6 +137,30 @@ onMounted(() => {
 							type="text"
 							v-model="searchTerm"
 						/>
+					</div>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span
+								class="input-group-text"
+								id="yearSelect-label"
+								><i class="fas fa-fw fa-calendar-alt"></i
+							></span>
+						</div>
+						<select
+							aria-describedby="yearSelect-label"
+							aria-label="Év kiválasztása"
+							class="form-control"
+							v-model="selectedYear"
+						>
+							<option :value="undefined">Összes év</option>
+							<option
+								v-for="y in availableYears"
+								:key="y"
+								:value="y"
+							>
+								{{ y }}
+							</option>
+						</select>
 					</div>
 					<div class="input-group">
 						<div class="input-group-prepend">
