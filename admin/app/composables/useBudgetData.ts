@@ -1,11 +1,46 @@
 import ExcelJS from 'exceljs';
 import type { BudgetData } from '../../../src/utils/types';
-import { parseBudget } from '../../../scripts/prepare-data-lib';
+import { parseBudget, parseSheetName } from '../../../scripts/prepare-data-lib';
 
 export default createGlobalState(async () => {
 	const workbook = shallowRef<ExcelJS.Workbook | null>(null);
 	const functions = shallowRef<string | null>(null);
 	const data = shallowRef<BudgetData | null>(null);
+
+	const sheets = computed(() => {
+		if (!workbook.value) return [];
+		const r: { name: string; year: string; side: 'income' | 'expense' }[] = [];
+		workbook.value.eachSheet((sheet) => {
+			const parsed = parseSheetName(sheet.name);
+			if (!parsed) return;
+			r.push({
+				name: sheet.name,
+				year: parsed.year,
+				side: parsed.side,
+			});
+		});
+		return r;
+	});
+
+	const years = computed(() => {
+		const map = new Map<string, { incomeSheet: string; expenseSheet: string }>();
+		sheets.value.forEach((sheet) => {
+			if (!map.has(sheet.year)) {
+				map.set(sheet.year, { incomeSheet: '', expenseSheet: '' });
+			}
+			const entry = map.get(sheet.year)!;
+			if (sheet.side === 'income') {
+				entry.incomeSheet = sheet.name;
+			} else if (sheet.side === 'expense') {
+				entry.expenseSheet = sheet.name;
+			}
+		});
+		const r: Record<string, { incomeSheet: string; expenseSheet: string }> = {};
+		map.forEach((value, key) => {
+			r[key] = value;
+		});
+		return r;
+	});
 
 	const pending = ref(false);
 
@@ -67,6 +102,9 @@ export default createGlobalState(async () => {
 	});
 
 	return {
+		sheets,
+		workbook,
+		years,
 		loadBudgetXlsxFromServer,
 		prepareBudgetData,
 		data,

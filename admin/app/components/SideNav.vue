@@ -2,10 +2,10 @@
 import { CalendarDays, Globe, Image, PictureInPicture, Scale, Settings } from 'lucide-vue-next';
 import { cn } from '~/lib/utils';
 
-const { data, pending } = await useBudgetData();
+const { pending, years: yearsMap } = await useBudgetData();
 
 const years = computed(() =>
-	getYears(data.value || {})
+	Object.keys(yearsMap.value || {})
 		.sort((a, b) => b.localeCompare(a))
 		.map((y) => ({
 			href: `/budget/${slugifyYear(y)}/`,

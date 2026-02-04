@@ -7,13 +7,13 @@ const { year } = defineProps<{
 	year: string;
 }>();
 
-const { data } = await useBudgetData();
+const { years } = await useBudgetData();
 
 const newNameInput = ref(year);
 const newYear = computed(() => newNameInput.value.replaceAll(/\s+/g, ' ').trim());
 
 const alreadyExists = computed(
-	() => year !== newYear.value && getYears(data.value || {}).includes(newYear.value),
+	() => year !== newYear.value && Object.keys(years.value).includes(newYear.value),
 );
 const canRename = computed(
 	() => newYear.value.length >= 4 && year !== newYear.value && !alreadyExists.value,
