@@ -81,8 +81,26 @@ function searchNode(
 		range.length === 1 ||
 		(range.length === 2 && range[0]! <= node.value && node.value <= range[1]!);
 
+	// Check if term-based matching is satisfied (when a term is provided)
+	const hasSearchTerm = term.trim().length >= 3;
+	const matchesTerm = matchedTags.length > 0 || matchesInName > 0 || matchedId;
+
+	// Check if value-based matching is satisfied (when a range is provided)
+	const hasValueRange = range.length > 0;
+
+	// When both term and range are provided, require both to match
+	// When only term is provided, require term match
+	// When only range is provided, require value match
+	const matchesCriteria = hasSearchTerm && hasValueRange
+		? matchesTerm && matchedValue
+		: hasSearchTerm
+			? matchesTerm
+			: hasValueRange
+				? matchedValue
+				: false;
+
 	let results: Partial<SearchResult>[] = [];
-	if (node.id && (matchedTags.length > 0 || matchesInName > 0 || matchedId || matchedValue)) {
+	if (node.id && matchesCriteria) {
 		results.push({
 			id: String(node.id),
 			matchedId,
