@@ -19,6 +19,8 @@ export function sheetToMatrix(sheet: ExcelJS.Worksheet) {
 export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 	const data: BudgetData = {};
 
+	const emptyFuncTree = parseFunctionalTreeDescriptor(funcTreeTsv) as Record<number, BudgetNode>;
+
 	workbook.eachSheet((sheet) => {
 		const sheetName = sheet.name;
 		console.log(`Reading sheet: ${sheetName}`);
@@ -35,8 +37,10 @@ export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 			console.log('Generating economic tree');
 			data[year][side]['econ'] = generateEconomicTree(matrix);
 
+			const copyOfEmptyFuncTree = structuredClone(emptyFuncTree);
+
 			console.log('Generating functional tree');
-			data[year][side]['func'] = generateFunctionalTree(matrix, funcTreeTsv);
+			data[year][side]['func'] = generateFunctionalTree(matrix, copyOfEmptyFuncTree);
 		} else {
 			console.error('[KÖKÖ]', 'Érvénytelen munkalap név budget.xlsx-ben:', sheetName);
 		}
@@ -123,9 +127,7 @@ function generateEconomicTree(matrix: ExcelJS.CellValue[][]) {
 	return root;
 }
 
-function generateFunctionalTree(matrix: ExcelJS.CellValue[][], funcTreeTsv: string) {
-	const nodes = parseFunctionalTreeDescriptor(funcTreeTsv) as Record<number, BudgetNode>;
-
+function generateFunctionalTree(matrix: ExcelJS.CellValue[][], nodes: Record<number, BudgetNode>) {
 	const rows = [...matrix];
 
 	const header = rows[1].map((col) => Number(col?.toString().trim().split(' ')[0]));
