@@ -1,21 +1,6 @@
 import type { BudgetData, BudgetNode } from '../src/utils/types.ts';
 import type ExcelJS from 'exceljs';
 
-export function sheetToMatrix(sheet: ExcelJS.Worksheet) {
-	const matrix: ExcelJS.CellValue[][] = [];
-	for (let ri = 1; ri <= sheet.rowCount; ri++) {
-		const row = sheet.getRow(ri);
-		const matrixRow: ExcelJS.CellValue[] = [];
-		for (let ci = 1; ci <= sheet.columnCount; ci++) {
-			const cell = row.getCell(ci);
-			const value = cell.result || cell.value;
-			matrixRow.push(value === null || value === undefined ? '' : value);
-		}
-		matrix.push(matrixRow);
-	}
-	return matrix;
-}
-
 export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 	const data: BudgetData = {};
 
@@ -29,18 +14,18 @@ export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 		if (parsedSheetName) {
 			const { year, side } = parsedSheetName;
 
-			const matrix = sheetToMatrix(sheet);
-
 			data[year] = data[year] || {};
 			data[year][side] = data[year][side] || {};
 
 			console.log('Generating economic tree');
-			data[year][side]['econ'] = generateEconomicTree(matrix);
+			data[year][side]['econ'] = generateEconomicTree(sheet);
 
 			const copyOfEmptyFuncTree = structuredClone(emptyFuncTree);
 
 			console.log('Generating functional tree');
-			data[year][side]['func'] = generateFunctionalTree(matrix, copyOfEmptyFuncTree);
+			const func = generateFunctionalTree(sheet, copyOfEmptyFuncTree);
+			data[year][side]['func'] = func;
+			if (!func) console.log('No functional data found.');
 		} else {
 			console.error('[KÖKÖ]', 'Érvénytelen munkalap név budget.xlsx-ben:', sheetName);
 		}
@@ -49,30 +34,39 @@ export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 	return data;
 }
 
-function generateEconomicTree(matrix: ExcelJS.CellValue[][]) {
+function generateEconomicTree(sheet: ExcelJS.Worksheet) {
 	const nodes: Record<string, BudgetNode> = {};
 
 	// collecting all nodes
 
-	[...matrix]
-		.splice(2) // header is at least 2 rows
-		.filter((row) => row[0]?.toString().match(/^\d{2,}/)) // we need rows that start with valid economic category ID
-		.forEach((row, i) => {
-			const [_, descriptor, rawValue] = row; // we need only the 2nd and 3rd column
-			const { id: rawId, name } = parseEconomicDescriptor(descriptor?.toString() || '');
-			const value = Number((rawValue?.toString() || '').replace(/[^0-9-]+/g, ''));
-			if (rawId && rawId.indexOf('-') == -1) {
-				let id = rawId;
-				if (name.startsWith('ebből:') || nodes[id]) {
-					id = `${id}:${i}`;
-				}
-				nodes[id] = {
-					id,
-					name,
-					value,
-				};
+	let i = 0; // used in generated IDs for "ebből:" rows to be backward-compatible
+	for (let ri = 3; ri <= sheet.rowCount; ri++) {
+		// ^ index is 1-based, header is at least 2 rows
+		const row = sheet.getRow(ri);
+
+		const firstCell = row.getCell(1).value?.toString();
+		if (!firstCell?.match(/^\d{2,}/)) continue;
+		// we need rows that start with valid economic category ID
+
+		i++;
+		const descriptor = row.getCell(2).value?.toString() || '';
+		const valueCell = row.getCell(3);
+		const rawValue = (valueCell.result || valueCell.value)?.toString() || '';
+
+		const { id: rawId, name } = parseEconomicDescriptor(descriptor);
+		const value = Number(rawValue.replace(/[^0-9-]+/g, ''));
+		if (rawId && rawId.indexOf('-') == -1) {
+			let id = rawId;
+			if (name.startsWith('ebből:') || nodes[id]) {
+				id = `${id}:${i}`;
 			}
-		});
+			nodes[id] = {
+				id,
+				name,
+				value,
+			};
+		}
+	}
 
 	// transforming into tree / handling "ebből:" rows
 	Object.keys(nodes)
@@ -127,93 +121,88 @@ function generateEconomicTree(matrix: ExcelJS.CellValue[][]) {
 	return root;
 }
 
-function generateFunctionalTree(matrix: ExcelJS.CellValue[][], nodes: Record<number, BudgetNode>) {
-	const rows = [...matrix];
+function generateFunctionalTree(sheet: ExcelJS.Worksheet, nodes: Record<number, BudgetNode>) {
+	const headerRow = sheet.getRow(2);
+	if (headerRow.cellCount <= 3) return null;
 
-	const header = rows[1].map((col) => Number(col?.toString().trim().split(' ')[0]));
-	if (header.length > 3) {
-		// finding the total row
-		let max = 0,
-			maxRow: ExcelJS.CellValue[] = [];
-		rows.forEach((row) => {
-			const sum = Number((row[2]?.toString() || '0').replace(/\D+/g, ''));
-			if (sum > max) {
-				max = sum;
-				maxRow = row;
-			}
-		});
-
-		// collecting total values for nodes
-		maxRow.forEach((col, i) => {
-			if (i > 2 && i < header.length) {
-				const id = header[i];
-				if (!id) return;
-				if (!nodes[id]) {
-					console.error(
-						'[KÖKÖ]',
-						'Budget-ben szereplő ID hiányzik a funkcionális fából:',
-						id,
-					);
-					return;
-				}
-				nodes[id].value = Number(col?.toString().replace(/\D+/g, ''));
-			}
-		});
-
-		// transforming into tree
-		const deletableIds: unknown[] = [];
-		Object.values(nodes).forEach((node) => {
-			if (node.parent) {
-				const parentId = Number(node.parent);
-				if (nodes[parentId]) {
-					nodes[parentId].children = (nodes[parentId].children || []).concat(node);
-					deletableIds.push(node.id);
-				} else {
-					console.error(
-						'[KÖKÖ]',
-						'Szülő funkcionális kategória nem található:',
-						node.parent,
-					);
-				}
-			}
-		});
-		Object.values(nodes)
-			.filter((node) => deletableIds.includes(node.id))
-			.forEach((node) => {
-				// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-				delete nodes[node.id as number];
-			});
-		const root: BudgetNode = {
-			name: 'Összesen',
-			children: Object.values(nodes) as BudgetNode[],
-			value: 0,
-		};
-
-		// calculating sums
-		function sumNode(node: BudgetNode) {
-			if (node.children) {
-				node.value = node.children
-					.map((n) => sumNode(n))
-					.reduce((sum, node) => sum + (node.value || 0), 0);
-			}
-			return node;
+	// finding the total row (by econ values)
+	let max = 0;
+	let maxRow: ExcelJS.Row | null = null;
+	for (let ri = 3; ri <= sheet.rowCount; ri++) {
+		const row = sheet.getRow(ri);
+		const valueCell = row.getCell(3);
+		const valueStr = (valueCell.result || valueCell.value)?.toString() || '0';
+		const value = Number(valueStr.replace(/\D+/g, ''));
+		if (value > max) {
+			max = value;
+			maxRow = row;
 		}
-		sumNode(root);
-
-		// cleaning up
-		function cleanUp(node: BudgetNode) {
-			if (node.children) {
-				node.children = node.children.filter((n) => n.value && n.value > 0);
-				node.children.forEach(cleanUp);
-			}
-		}
-		cleanUp(root);
-
-		if (root.value > 0) return root;
 	}
 
-	console.log('No functional data found.');
-	return null;
+	if (!maxRow) return null;
+
+	// collecting total values for nodes
+	for (let ci = 4; ci <= headerRow.cellCount; ci++) {
+		// ^ index is 1-based, func values start at 4th column
+		const headerValue = headerRow.getCell(ci)?.value?.toString() || '';
+		const id = Number(headerValue.split(' ')[0]);
+		if (!id) continue;
+		if (!nodes[id]) {
+			console.error('[KÖKÖ]', 'Budget-ben szereplő ID hiányzik a funkcionális fából:', id);
+			continue;
+		}
+		const valueCell = maxRow.getCell(ci);
+		const valueStr = (valueCell.result || valueCell.value)?.toString() || '';
+		const value = Number(valueStr.replace(/\D+/g, ''));
+		nodes[id].value = value;
+	}
+
+	// transforming into tree
+	const deletableIds: unknown[] = [];
+	Object.values(nodes).forEach((node) => {
+		if (node.parent) {
+			const parentId = Number(node.parent);
+			if (nodes[parentId]) {
+				nodes[parentId].children = (nodes[parentId].children || []).concat(node);
+				deletableIds.push(node.id);
+			} else {
+				console.error('[KÖKÖ]', 'Szülő funkcionális kategória nem található:', node.parent);
+			}
+		}
+	});
+	Object.values(nodes)
+		.filter((node) => deletableIds.includes(node.id))
+		.forEach((node) => {
+			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+			delete nodes[node.id as number];
+		});
+	const root: BudgetNode = {
+		name: 'Összesen',
+		children: Object.values(nodes) as BudgetNode[],
+		value: 0,
+	};
+
+	// calculating sums
+	function sumNode(node: BudgetNode) {
+		if (node.children) {
+			node.value = node.children
+				.map((n) => sumNode(n))
+				.reduce((sum, node) => sum + (node.value || 0), 0);
+		}
+		return node;
+	}
+	sumNode(root);
+
+	// cleaning up
+	function cleanUp(node: BudgetNode) {
+		if (node.children) {
+			node.children = node.children.filter((n) => n.value && n.value > 0);
+			node.children.forEach(cleanUp);
+		}
+	}
+	cleanUp(root);
+
+	return root.value > 0 ? root : null;
 }
 
 function parseEconomicDescriptor(descriptor: string) {
