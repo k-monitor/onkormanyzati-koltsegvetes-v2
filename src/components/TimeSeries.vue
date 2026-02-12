@@ -40,23 +40,35 @@ const inflationRates = computed(() => {
 });
 
 // Calculate cumulative inflation multipliers for each year (base = last/most recent year)
+// Uses ALL inflation years from config (sorted), not just data years, to handle gaps correctly
 const inflationMultipliers = computed(() => {
 	const multipliers: Record<string, number> = {};
 	const rates = inflationRates.value;
 	
 	if (years.value.length === 0) return multipliers;
 	
-	// Last year is base (multiplier = 1)
-	const lastIndex = years.value.length - 1;
-	multipliers[years.value[lastIndex]!] = 1;
+	const firstYear = years.value[0]!;
+	const lastYear = years.value[years.value.length - 1]!;
 	
-	// Calculate cumulative multipliers for earlier years (working backwards)
+	// Last data year is base (multiplier = 1)
+	multipliers[lastYear] = 1;
+	
+	// Collect all inflation years between first and last data year (inclusive start, exclusive end)
+	// This accounts for skipped data years whose inflation still compounds
+	const allInflationYears = Object.keys(rates)
+		.filter(y => y >= firstYear && y < lastYear)
+		.sort();
+	
+	// Calculate cumulative multipliers working backwards through ALL intermediate years
 	let cumulative = 1;
-	for (let i = lastIndex - 1; i >= 0; i--) {
-		const currentYear = years.value[i]!;
-		const rate = rates[currentYear] || 0;
+	for (let i = allInflationYears.length - 1; i >= 0; i--) {
+		const y = allInflationYears[i]!;
+		const rate = rates[y] || 0;
 		cumulative *= (1 + rate / 100);
-		multipliers[currentYear] = cumulative;
+		// Only store multiplier for years that have data
+		if (years.value.includes(y)) {
+			multipliers[y] = cumulative;
+		}
 	}
 	
 	return multipliers;
