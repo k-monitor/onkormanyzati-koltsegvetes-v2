@@ -226,6 +226,7 @@ onUnmounted(() => {
 		<div
 			id="banner"
 			v-if="isBannerVisible && CONFIG.navBar.showBanner"
+			class="bg-primary"
 		>
 			<VueMarkdown
 				:source="CONFIG.navBar.bannerText"
