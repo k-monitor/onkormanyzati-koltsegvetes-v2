@@ -154,4 +154,30 @@ const header = ['id', 'name', 'parent'];
 const functionsSheet = wb.addWorksheet('functions');
 aoaTo3colSheet(functionsSheet, [header, ...FUNCTIONS_AOA], [], [20, 100, 20]);
 
+// kgr sheet - predefined list of IDs to show on time series (first column = code)
+
+const kgrIds = new Set();
+Object.keys(data).forEach((year) => {
+	['expense', 'income'].forEach((side) => {
+		if (data[year][side]) {
+			Object.values(data[year][side]).forEach((tree) => {
+				if (tree && tree.children) {
+					tree.children.forEach((child) => {
+						if (child.id && !String(child.id).startsWith('F')) {
+							kgrIds.add(String(child.id));
+						}
+					});
+				}
+			});
+		}
+	});
+});
+
+const kgrHeader = ['code', 'name'];
+const kgrRows = Array.from(kgrIds).sort().map((id) => {
+	return [id, topLevelIds[id] || ''];
+});
+const kgrSheet = wb.addWorksheet('kgr');
+aoaTo3colSheet(kgrSheet, [kgrHeader, ...kgrRows], [0, 1], [20, 80]);
+
 wb.write(OUTPUT_FILE);

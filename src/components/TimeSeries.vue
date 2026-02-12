@@ -92,6 +92,13 @@ function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode 
 	return current;
 }
 
+// Parse allowed IDs for time series filtering from config (kgr sheet)
+const kgrFilter = computed(() => {
+	if (!CONFIG.timeseries?.kgr) return null;
+	const ids = (CONFIG.timeseries.kgr as string).split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+	return ids.length > 0 ? new Set(ids) : null;
+});
+
 // Get children of current node (consistent across years)
 const currentChildren = computed(() => {
 	// Get children from the first year that has data at this path
@@ -101,6 +108,7 @@ const currentChildren = computed(() => {
 		if (node?.children && node.children.length > 0) {
 			return node.children
 				.filter((child) => !String(child.id).startsWith('F'))
+				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(String(child.id)))
 				.sort((a, b) => b.value - a.value);
 		} else {
 			return [node];
@@ -323,7 +331,9 @@ function strokeColor(id: string, isHovered: boolean): string {
 const yTicks = computed(() => {
 	const ticks: number[] = [];
 	const max = maxValue.value;
+	if (max <= 0) return ticks;
 	const step = Math.pow(10, Math.floor(Math.log10(max))) / 2;
+	if (step <= 0) return ticks;
 	for (let i = 0; i <= max; i += step) {
 		ticks.push(i);
 	}

@@ -41,4 +41,18 @@ json.forEach((row) => {
 	}
 });
 
+// Read 'kgr' sheet if it exists — first column contains allowed IDs for time series
+if (workbook.Sheets['kgr']) {
+	const kgrJson = xlsx.utils.sheet_to_json(workbook.Sheets['kgr'], { header: 1 });
+	const kgrIds = kgrJson
+		.slice(1) // skip header row
+		.map((row) => row[0])
+		.filter((id) => id !== undefined && id !== null && String(id).trim() !== '')
+		.map((id) => String(id).trim());
+	if (kgrIds.length > 0) {
+		configJson['timeseries'] = configJson['timeseries'] || {};
+		configJson['timeseries']['kgr'] = kgrIds.join(',');
+	}
+}
+
 fs.writeFileSync(OUTPUT_FILE, JSON.stringify(configJson));
