@@ -17,6 +17,9 @@ let resizeTimeout: number | undefined = undefined;
 const data = computed(() => DATA[year]?.[side] || { econ: null, func: null });
 const tooltips = computed(() => TOOLTIPS[year] || {});
 
+// round if sum is more than 1000 billion, otherwise show exact value
+const roundNums = data.value.econ && data.value.econ.value > 1000000000000 ? true : false;
+
 const children = computed(() => {
 	try {
 		return (node.value?.children || [])
@@ -269,7 +272,7 @@ onUpdated(regenerateTooltips);
 				>
 					{{ n.name }}
 				</li>
-				<div class="ml-auto subtotal">{{ groupNums(node?.value || 0) }}</div>
+				<div class="ml-auto subtotal">{{ groupNums(node?.value || 0, roundNums) }}</div>
 			</ol>
 		</nav>
 
@@ -317,7 +320,7 @@ onUpdated(regenerateTooltips);
 							<span class="d-inline d-sm-none font-weight-bold">{{
 								groupNums(n.value, true)
 							}}</span>
-							<span class="d-none d-sm-inline">{{ groupNums(n.value) }}</span>
+							<span class="d-none d-sm-inline">{{ groupNums(n.value, roundNums) }}</span>
 							<span class="d-none d-md-inline ml-1"
 								>({{ Math.round((n.value / (node?.value || 1)) * 100) }}%)</span
 							>
