@@ -17,6 +17,15 @@ const hasTimeSeriesExpense = computed(() => {
 	return yearsWithFunc.length > 1;
 });
 
+// Default module order
+const DEFAULT_ORDER = 'pub,inex,income,expense,timeseries-income,timeseries-expense,milestones,map,feedback';
+
+// Ordered list of modules to render
+const orderedModules = computed(() => {
+	const orderStr = CONFIG.modules?.order || DEFAULT_ORDER;
+	return orderStr.split(',').map((m: string) => m.trim()).filter(Boolean);
+});
+
 // Translate section slug to element ID
 function translateSection(section: string): string {
 	return sectionToElementId[section] || section;
@@ -75,47 +84,50 @@ onMounted(() => {
 		<MastHead />
 		<div class="flex-grow-1">
 			<Welcome />
-			<PublicationSection v-if="CONFIG.modules.pub" />
-			<Inex class="bg-light" v-if="CONFIG.modules.inex" />
-			<VisualizationSection
-				v-if="CONFIG.modules.income"
-				id="income"
-				side="income"
-				:text="CONFIG.vis.incomeText"
-				:title="CONFIG.vis.income"
-			/>
-			<VisualizationSection
-				class="bg-light"
-				id="expense"
-				side="expense"
-				:text="CONFIG.vis.expenseText"
-				:title="CONFIG.vis.expense"
-			/>
-			<TimeSeriesSection
-				v-if="hasTimeSeriesIncome && CONFIG.modules.timeseries"
-				id="time-series-income"
-				side="income"
-				:title="CONFIG.timeSeries?.income || 'Bevételek idősorban'"
-				:text="CONFIG.timeSeries?.incomeText"
-			/>
-			<TimeSeriesSection
-				v-if="hasTimeSeriesExpense && CONFIG.modules.timeseries"
-				id="time-series-expense"
-				side="expense"
-				:title="CONFIG.timeSeries?.expense || 'Kiadások idősorban'"
-				:text="CONFIG.timeSeries?.expenseText"
-			/>
-			<MilestoneSection
-				v-if="canShowMilestones"
-				class="pb-0"
-				id="milestones"
-			/>
-			<MapSection
-				v-if="canShowMap"
-				id="map"
-				class="bg-light"
-			/>
-			<FeedbackSection v-if="CONFIG.modules.feedback" />
+			<template v-for="mod in orderedModules" :key="mod">
+				<PublicationSection v-if="mod === 'pub' && CONFIG.modules.pub" />
+				<Inex class="bg-light" v-else-if="mod === 'inex' && CONFIG.modules.inex" />
+				<VisualizationSection
+					v-else-if="mod === 'income' && CONFIG.modules.income"
+					id="income"
+					side="income"
+					:text="CONFIG.vis.incomeText"
+					:title="CONFIG.vis.income"
+				/>
+				<VisualizationSection
+					v-else-if="mod === 'expense'"
+					class="bg-light"
+					id="expense"
+					side="expense"
+					:text="CONFIG.vis.expenseText"
+					:title="CONFIG.vis.expense"
+				/>
+				<TimeSeriesSection
+					v-else-if="mod === 'timeseries-income' && hasTimeSeriesIncome && CONFIG.modules.timeseries"
+					id="time-series-income"
+					side="income"
+					:title="CONFIG.timeSeries?.income || 'Bevételek idősorban'"
+					:text="CONFIG.timeSeries?.incomeText"
+				/>
+				<TimeSeriesSection
+					v-else-if="mod === 'timeseries-expense' && hasTimeSeriesExpense && CONFIG.modules.timeseries"
+					id="time-series-expense"
+					side="expense"
+					:title="CONFIG.timeSeries?.expense || 'Kiadások idősorban'"
+					:text="CONFIG.timeSeries?.expenseText"
+				/>
+				<MilestoneSection
+					v-else-if="mod === 'milestones' && canShowMilestones"
+					class="pb-0"
+					id="milestones"
+				/>
+				<MapSection
+					v-else-if="mod === 'map' && canShowMap"
+					id="map"
+					class="bg-light"
+				/>
+				<FeedbackSection v-else-if="mod === 'feedback' && CONFIG.modules.feedback" />
+			</template>
 			<slot />
 		</div>
 		<Footer />
