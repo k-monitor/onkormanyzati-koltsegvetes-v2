@@ -368,8 +368,7 @@ function formatValue(value: number): string {
 
 // Navigation
 function drillDown(id: string) {
-	const child = currentChildren.value.find((c) => String(c.id) === id);
-	if (child?.children && child.children.length > 0) {
+	if (canDrillDown(id)) {
 		path.value.push(id);
 	}
 }
@@ -383,7 +382,12 @@ function canDrillDown(id: string): boolean {
 		const root = getRootForYear(year);
 		const node = getNodeAtPath(root, [...path.value, id]);
 		if (node?.children && node.children.length > 0) {
-			return true;
+			const filtered = node.children
+				.filter((child) => !String(child.id).startsWith('F'))
+				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(String(child.id)));
+			if (filtered.length > 0) {
+				return true;
+			}
 		}
 	}
 	return false;
