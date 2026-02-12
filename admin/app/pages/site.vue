@@ -15,11 +15,6 @@ async function buildSite() {
 		r = await fetch('/api/buildSite', { method: 'POST' });
 		e += (await r.json()).stderr || '';
 		if (r.status >= 400) throw '';
-
-		loading.value = 'Weboldal publikálása...';
-		r = await fetch('/api/deploySite', { method: 'POST' });
-		e += (await r.json()).stderr || '';
-		if (r.status >= 400) throw '';
 	} catch (error) {
 		// actual build/deploy failure
 		failed = true;
