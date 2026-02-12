@@ -229,7 +229,7 @@ function generateFunctionalTree(matrixTsv, funcTreeTsv) {
 function parseEconomicDescriptor(descriptor) {
 	let id, m;
 
-	if ((m = descriptor.match(/ \(((B|K|FH|FT)[0-9\-]+)\)/))) {
+	if ((m = descriptor.match(/\(((B|K|FH|FT)[0-9\-]+)\)/))) {
 		id = m[1];
 	}
 
