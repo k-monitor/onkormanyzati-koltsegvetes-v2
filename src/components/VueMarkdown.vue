@@ -78,7 +78,7 @@ md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
 	return defaultLinkRenderer(tokens, idx, options, env, self);
 };
 
-let outHtml = md.render(source);
+const outHtml = computed(() => md.render(source));
 </script>
 
 <template>

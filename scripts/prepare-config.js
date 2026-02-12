@@ -23,4 +23,22 @@ json.forEach((row) => {
 	}
 });
 
+json.forEach((row) => {
+	const fullKey = row['key'];
+	const value = row['value'] || '';
+	if (!fullKey) return;
+	const keyParts = fullKey.split('\.');
+	if (keyParts.length === 3) {
+		const group1 = keyParts[0];
+		const group2 = keyParts[1];
+		const key = keyParts[2];
+		const defaultValue = configJson[group1][group2];
+		configJson[group1][group2] = {};
+		if (defaultValue) {
+			configJson[group1][group2]["default"] = defaultValue;
+		}
+		configJson[group1][group2][key] = value;
+	}
+});
+
 fs.writeFileSync(OUTPUT_FILE, JSON.stringify(configJson));

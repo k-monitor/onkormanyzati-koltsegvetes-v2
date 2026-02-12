@@ -169,23 +169,23 @@ function intro() {
 			<div class="container">
 				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
-						<h2>{{ CONFIG.welcome.title }}</h2>
+						<h2>{{ CONFIG.welcome.title[year] || CONFIG.welcome.title.default || CONFIG.welcome.title }}</h2>
 						<hr class="divider light my-4" />
 					</div>
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="CONFIG.welcome.leftBlock"
+							:source="CONFIG.welcome.leftBlock[year] || CONFIG.welcome.leftBlock.default || CONFIG.welcome.leftBlock"
 							:anchorAttributes="{ target: '_blank' }"
 						/>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="CONFIG.welcome.rightBlock"
+							:source="CONFIG.welcome.rightBlock[year] || CONFIG.welcome.rightBlock.default || CONFIG.welcome.rightBlock"
 							:anchorAttributes="{ target: '_blank' }"
 						/>
-						<p class="my-5">{{ CONFIG.welcome.aboveSignature }}</p>
+						<p class="my-5">{{ CONFIG.welcome.aboveSignature[year] || CONFIG.welcome.aboveSignature.default || CONFIG.welcome.aboveSignature }}</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
@@ -199,9 +199,9 @@ function intro() {
 							<div class="flex-grow-1 ml-5">
 								<p class="mt-4 mb-0">
 									<em>
-										{{ CONFIG.welcome.name }}
+										{{ CONFIG.welcome.name[year] || CONFIG.welcome.name.default || CONFIG.welcome.name }}
 										<br />
-										{{ CONFIG.welcome.role }}
+										{{ CONFIG.welcome.role[year] || CONFIG.welcome.role.default || CONFIG.welcome.role }}
 									</em>
 								</p>
 							</div>
