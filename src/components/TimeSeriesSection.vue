@@ -3,7 +3,13 @@ const props = defineProps<{
 	side: 'expense' | 'income';
 	title: string;
 	text?: string;
+	funcEnabled?: boolean;
+	econEnabled?: boolean;
 }>();
+
+// Default both to true if not provided
+const isFuncEnabled = computed(() => props.funcEnabled !== false);
+const isEconEnabled = computed(() => props.econEnabled !== false);
 
 const years = computed(() => Object.keys(DATA).sort());
 const yearsRange = computed(() => {
@@ -12,14 +18,14 @@ const yearsRange = computed(() => {
 	return `${years.value[0]} - ${years.value[years.value.length - 1]}`;
 });
 
-// Check if functional data is available
+// Check if functional data is available (and enabled by config)
 const hasFuncData = computed(() => {
-	return years.value.some((year) => DATA[year]?.expense?.func && props.side === 'expense' || DATA[year]?.income?.func && props.side === 'income');
+	return isFuncEnabled.value && years.value.some((year) => DATA[year]?.expense?.func && props.side === 'expense' || DATA[year]?.income?.func && props.side === 'income');
 });
 
-// Check if economic data is available
+// Check if economic data is available (and enabled by config)
 const hasEconData = computed(() => {
-	return years.value.some((year) => DATA[year]?.expense?.econ && props.side === 'expense' || DATA[year]?.income?.econ && props.side === 'income');
+	return isEconEnabled.value && years.value.some((year) => DATA[year]?.expense?.econ && props.side === 'expense' || DATA[year]?.income?.econ && props.side === 'income');
 });
 
 const activeView = ref<'func' | 'econ'>(hasFuncData.value ? 'func' : 'econ');

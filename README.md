@@ -126,6 +126,7 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
     - 1\. oszlop: kulcs, mely azonosítja a beállítást/szöveget a program számára
     - 2\. oszlop: testreszabható érték, bizonyos esetekben a Markdown formátum támogatott (ez a magyarázatban jelezve van)
     - 3\. oszlop: magyarázat
+- A `welcome` alatti (pl.: `welcome.title`) beállítások értékei felülírhatók kiválasztott évek esetében. Például a `welcome.title.2025` kulcsú sor hozzáadása 2025 esetében a megadott értéket használja, míg az összes többi évben a `welcome.title` sor értékét.
 
 #### A "tooltips <ÉVSZÁM>" munkalapok formátuma:
 
@@ -350,6 +351,16 @@ Térkép:
 ```html
 <iframe width="100%" height="620px" src="[koko-url]/terkep" frameborder="0"></iframe>
 ```
+
+## Idősor
+
+Az idősor a költségvetés tételeinek évek közti alakulását hivatott ábrázolni.
+
+Személyre szabás a `config.xlsx` fájl `config` lapján lehetséges.
+
+Az inflációszűrőhez szükséges értékek az `inflations.[év]` kezdetű sorokban adhatók meg. A funkció támogatja szöveget is tartalmazó évek ábrázolását, viszont ezekben az esetekben az ábrázolandó évek abc-rendjének és időbeli sorrendjének egyeznie kell. Kihagyott évek esetében a grafikonon a köztes infláció egyesítve lesz alkalmazva, ehhez viszont szükséges, hogy a köztes évek inflációs értékei is ki legyenek töltve.
+
+A `timeseries.kgrOnly` beállítás azt szabályozza, hogy a közgazdasági idősorban megjelenített tételek csak a kgr rovatkódok szintjéig menjenek-e le. Ha a rovatkódok évek közti kozisztenciája alacsonyabb szinteken is biztosítva van, ez kikapcsolható. Ezek a rovatkódok `config.xlsx` fájl `kgr` lapján vannak megadva. A kgr kódok változása esetén a lap tartalma frissítésre szorulhat.
 
 ## Admin felület beüzemelése
 

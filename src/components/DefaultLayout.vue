@@ -2,19 +2,27 @@
 const { canShowMilestones, canShowMap, year } = useYear();
 const { setNavigationScroll, sectionToElementId } = useScrollspy();
 
+// Whether func/econ views are enabled for timeseries (default: both enabled)
+const timeseriesFuncEnabled = computed(() => CONFIG.timeseries?.func == null || !!CONFIG.timeseries.func);
+const timeseriesEconEnabled = computed(() => CONFIG.timeseries?.econ == null || !!CONFIG.timeseries.econ);
+
 // Check if we have function data across multiple years
 const hasTimeSeriesIncome = computed(() => {
-	const yearsWithFunc = Object.keys(DATA).filter(
-		(y) => DATA[y]?.income?.func || DATA[y]?.income?.econ,
-	);
-	return yearsWithFunc.length > 1;
+	const yearsWithData = Object.keys(DATA).filter((y) => {
+		const funcOk = timeseriesFuncEnabled.value && DATA[y]?.income?.func;
+		const econOk = timeseriesEconEnabled.value && DATA[y]?.income?.econ;
+		return funcOk || econOk;
+	});
+	return yearsWithData.length > 1;
 });
 
 const hasTimeSeriesExpense = computed(() => {
-	const yearsWithFunc = Object.keys(DATA).filter(
-		(y) => DATA[y]?.expense?.func || DATA[y]?.expense?.econ,
-	);
-	return yearsWithFunc.length > 1;
+	const yearsWithData = Object.keys(DATA).filter((y) => {
+		const funcOk = timeseriesFuncEnabled.value && DATA[y]?.expense?.func;
+		const econOk = timeseriesEconEnabled.value && DATA[y]?.expense?.econ;
+		return funcOk || econOk;
+	});
+	return yearsWithData.length > 1;
 });
 
 // Default module order
@@ -103,18 +111,22 @@ onMounted(() => {
 					:title="CONFIG.vis.expense"
 				/>
 				<TimeSeriesSection
-					v-else-if="mod === 'timeseries-income' && hasTimeSeriesIncome && CONFIG.modules.timeseries"
+					v-else-if="mod === 'timeseries-income' && hasTimeSeriesIncome && CONFIG.modules['timeseries-income']"
 					id="time-series-income"
 					side="income"
-					:title="CONFIG.timeSeries?.income || 'Bevételek idősorban'"
-					:text="CONFIG.timeSeries?.incomeText"
+					:func-enabled="timeseriesFuncEnabled"
+					:econ-enabled="timeseriesEconEnabled"
+					:title="CONFIG.timeseries?.income || 'Bevételek idősorban'"
+					:text="CONFIG.timeseries?.incomeText"
 				/>
 				<TimeSeriesSection
-					v-else-if="mod === 'timeseries-expense' && hasTimeSeriesExpense && CONFIG.modules.timeseries"
+					v-else-if="mod === 'timeseries-expense' && hasTimeSeriesExpense && CONFIG.modules['timeseries-expense']"
 					id="time-series-expense"
 					side="expense"
-					:title="CONFIG.timeSeries?.expense || 'Kiadások idősorban'"
-					:text="CONFIG.timeSeries?.expenseText"
+					:func-enabled="timeseriesFuncEnabled"
+					:econ-enabled="timeseriesEconEnabled"
+					:title="CONFIG.timeseries?.expense || 'Kiadások idősorban'"
+					:text="CONFIG.timeseries?.expenseText"
 				/>
 				<MilestoneSection
 					v-else-if="mod === 'milestones' && canShowMilestones"
