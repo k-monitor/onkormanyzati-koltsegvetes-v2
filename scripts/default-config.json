@@ -1,367 +1,137 @@
-[
-	[
-		"key",
-		"value",
-		"help"
-	],
-	[
-		"url",
-		"https://kozertheto.k-monitor.hu/",
-		"A weboldal leendő URL-je. Keresőoptimalizálásnál és megosztásnál van szerepe."
-	],
-	[
-		"modules.income",
-		1,
-		"Bevételek szakasz megjelenítése? (1 = Igen, 0 = Nem) Ha ki van kapcsolva, akkor a költségvetés bemutatása a kiadásokkal indul. Automatikusan ki lesz kapcsolva, ha nincs bevételi adat."
-	],
-	[
-		"modules.inex",
-		1,
-		"Mérleg szakasz megjelenítése? (1 = Igen, 0 = Nem) Automatikusan kikapcsol, ha a \"modules.income\" ki van kapcsolva."
-	],
-	[
-		"modules.milestones",
-		1,
-		"Fejlesztések szakasz megjelenítése? (1 = Igen, 0 = Nem)"
-	],
-	[
-		"modules.map",
-		1,
-		"Térkép szakasz megjelenítése? (1 = Igen, 0 = Nem) A fejlesztések térképen jelennek meg, ha vannak koordináták megadva."
-	],
-	[
-		"modules.pub",
-		1,
-		"Kiadványos szakasz megjelenítése? (1 = Igen, 0 = Nem)"
-	],
-	[
-		"modules.feedback",
-		1,
-		"Visszajelzés szakasz/gomb megjelenítése? (1 = Igen, 0 = Nem)"
-	],
-	[
-		"modules.social",
-		1,
-		"Legyenek megosztás gombok? (1 = Igen, 0 = Nem)"
-	],
-	[
-		"defaultYear",
-		2021,
-		"Alapértelmezettként kiválasztott év."
-	],
-	[
-		"seo.siteName",
-		"Mintaváros",
-		"Böngészőablak címsorának 2. része. A teljes címsor max. 60 karakter lehet."
-	],
-	[
-		"seo.pageTitle",
-		"Költségvetés",
-		"Böngészőablak címsorának 2. része. A teljes címsor max. 60 karakter lehet."
-	],
-	[
-		"seo.ogTitle",
-		"MINTAVÁROS KÖLTSÉGVETÉSE",
-		"Facebook/Twitter megosztáskor az előnézeti kártya címsora."
-	],
-	[
-		"seo.description",
-		"Mintaváros költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, miből, mennyit és mire költünk.",
-		"Google találatban, ill. Facebook/Twitter megosztáskor az előnézeti kártyában megjelenő leírás. Max. 160 karakter."
-	],
-	[
-		"social.text",
-		"Mintaváros költségvetése",
-		"Megosztáskor a Twitter bejegyzés szövege, LinkedIn poszt vagy email tárgya."
-	],
-	[
-		"city",
-		"Mintaváros",
-		"Felső navigációs sáv bal oldalán megjelenő városnév."
-	],
-	[
-		"navBar.welcome",
-		"Köszöntő",
-		"Köszöntő szakaszra mutató link szövege a felső navigációs sávban."
-	],
-	[
-		"navBar.inex",
-		"Költségvetés",
-		"Költségvetés szakaszra mutató link szövege a felső navigációs sávban."
-	],
-	[
-		"navBar.milestones",
-		"Fejlesztések",
-		"Fejlesztések szakaszra mutató link szövege a felső navigációs sávban."
-	],
-	[
-		"navBar.map",
-		"Térkép",
-		"Térkép szakaszra mutató link szövege a felső navigációs sávban."
-	],
-	[
-		"navBar.moreInfo",
-		"A projektről",
-		"További információ ablakot előhívó link szövege a felső navigációs sávban."
-	],
-	[
-		"search.tooShort",
-		"Túl rövid keresőkifejezés!",
-		"Kereséskor megjelenő szöveg, ha túl rövid a keresőkifejezés."
-	],
-	[
-		"search.noResults",
-		"Nincs találat.",
-		"Kereséskor megjelenő szöveg, ha nincs találat."
-	],
-	[
-		"search.income",
-		"Bevételek",
-		"Keresési találatban megjelenő link szövege, mely a Bevételek szakaszra mutat."
-	],
-	[
-		"search.expense",
-		"Kiadások",
-		"Keresési találatban megjelenő link szövege, mely a Kiadások szakaszra mutat."
-	],
-	[
-		"search.milestones",
-		"Fejlesztések",
-		"Keresési találatban megjelenő link szövege, mely a Fejlesztések szakaszra mutat."
-	],
-	[
-		"search.econ",
-		"közgazdasági kategória",
-		"Keresési találatban megjelenő szöveg, ha az adott találat egy közgazdasági kategória."
-	],
-	[
-		"search.func",
-		"funkcionális kategória",
-		"Keresési találatban megjelenő szöveg, ha az adott találat egy funkcionális kategória."
-	],
-	[
-		"search.milestone",
-		"fejlesztés",
-		"Keresési találatban megjelenő szöveg, ha az adott találat egy fejlesztés."
-	],
-	[
-		"header.title",
-		"Mintaváros költségvetése",
-		"Fejléc szakaszban megjelenő főcím."
-	],
-	[
-		"header.headline",
-		"Ezen az oldalon megtekintheted Mintaváros költségvetését és fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!",
-		"Fejléc szakaszban megjelenő headline."
-	],
-	[
-		"header.button",
-		"Tovább",
-		"Fejléc szakaszban megjelenő Tovább gomb szövege."
-	],
-	[
-		"welcome.title",
-		"TISZTELT MINTAVÁROSI POLGÁROK!",
-		"Köszöntő szakasz címsora."
-	],
-	[
-		"welcome.leftBlock",
-		"Egy önkormányzat feladatai sokrétűek, állampolgári szemmel nehezen áttekinthetőek. Mintavárosban azonban nincs takargatni valónk, ezért úgy döntöttünk, hogy a modern technika segítségével bemutatjuk Önökek településünk gazdálkodását úgy, ahogyan azt korábban csak kevesek láthatták!\n\nA XXI. század embere joggal várhatja el egy önkormányzattól, hogy az interneten is utánanézhessen, mennyit költ a település oktatásra, egészségügyre vagy épp a parkok rendben tartására. A helyi demokráciára is igaz, kettőn áll a vásár. A tisztességes településvezetés mellé tájékozott polgárok is kellenek, akik nyomon követik a döntések ésszerűségét. A közpénzek átlátható felhasználásáért küzdő K-Monitor és a Költségvetési Felelősségi Intézet szakmai segítségével létrehozott alkalmazás, amit pillanatokon belül használatba vehet, Magyarországon elsőként arra törekszik, hogy mindenki számára könnyen befogadható és értelmezhető képet adjon az önkormányzat gazdálkodásáról.",
-		"Köszöntő szakasz bal oldali hasábjának szövege. Markdown jelölések használhatóak (pl. formázás, linkek)."
-	],
-	[
-		"welcome.rightBlock",
-		"A weboldal testre szabható és egyszerűen feltölthető bármely település adataival. Reméljük, Mintaváros igyekezete ragadós lesz és egyre többen teszik meg ezt az egyáltalán nem megerőltető, mégis fontos lépést az átláthatóság felé.",
-		"Köszöntő szakasz jobb oldali hasábjának szövege. Markdown jelölések használhatóak (pl. formázás, linkek)."
-	],
-	[
-		"welcome.aboveSignature",
-		"Kellemes böngészést kívánok,",
-		"Köszöntő szakasz aláírás feletti sorának szövege."
-	],
-	[
-		"welcome.name",
-		"Példa Imre",
-		"Köszöntő szakaszt aláíró személy neve."
-	],
-	[
-		"welcome.role",
-		"Mintaváros polgármestere",
-		"Köszöntő szakaszt aláíró személy tisztsége."
-	],
-	[
-		"tutorial.K1107",
-		"",
-		"Hasábokra von. tutorial lépések így szúrhatók be. A 2. oszlopba kell írni a szöveget."
-	],
-	[
-		"pub.lead",
-		"Lórum ipse - mint apacska - kató bosszúkás zerc, ahol tűsölő magyat, szelés, ciga, irség és más fekes zölék szervelít. Bord gális iheges nem házta a zsujdot izálnia, és kaszakrács lett.",
-		"Kiadvány szakasz szövege."
-	],
-	[
-		"pub.url",
-		"about:blank",
-		"Kiadvány szakasz gombja erre az URL-re linkel."
-	],
-	[
-		"moreInfo.title",
-		"A projektről",
-		"További információ ablak címsora."
-	],
-	[
-		"moreInfo.text",
-		"Lórum ipse természetesen szedősödik ámít a fegyező számára. Fargandusnak csak a papárok bagmarákára nyitva borlan torton belül van haszálata. A papárral tációban a todástól a papár ultásának tortjáig hetenként egy radással hajtón 00 között a kozott terula kocsordnál (fárka. Hájdás dolca bőgős zsírnök) lehet kabikát vigyogtannia.\n\nA kozott terula kocsord a képző tort csáralását faska golmaton a búgos fütyökben iséggel mesztes papárokat az erről nyátsás és seres hajkával együtt erészi a szerpes bülég kodászának, aki a vigyort a hajka mozásán bombolja. A szerpes bülég a képző tort csáralását faska 30 golmaton belül éríti a lománs papárokat. Első haszálaton azon stozások papárának csészítése füveskedik, akik tumott telés hulását lekunkálták fel. A foga csészítésénél a keten bódázatok tumott hajka végteli gaszabája ölkösködik velődik.",
-		"További információ ablak címsora. Markdown jelölések használhatóak (pl. formázás, linkek)."
-	],
-	[
-		"inex.title",
-		"Mérleg",
-		"Mérleg szakasz címsora."
-	],
-	[
-		"inex.subtitle",
-		"Mintaváros idei költségvetése:",
-		"Mérleg ábra fejléce."
-	],
-	[
-		"inex.expenseNodes",
-		"K1,K2,K3,K4,K5,FH1,FH2,K6,K7,K8",
-		"Mérleg ábra kiadási oldalán szereplő hasábok azonosítói vesszővel elválasztva."
-	],
-	[
-		"inex.incomeNodes",
-		"B1,B2,B3,B4,FT1,B5,B6,B7",
-		"Mérleg ábra bevételi oldalán szereplő hasábok azonosítói vesszővel elválasztva."
-	],
-	[
-		"inex.text",
-		"Lórum ipse természetesen szedősödik ámít a fegyező számára. Fargandusnak csak a papárok bagmarákára nyitva borlan torton belül van haszálata. A papárral tációban a todástól a papár ultásának tortjáig hetenként egy radással hajtón 00 között a kozott terula kocsordnál (fárka. Hájdás dolca bőgős zsírnök) lehet kabikát vigyogtannia. A kozott terula kocsord a képző tort csáralását faska golmaton a búgos fütyökben iséggel mesztes papárokat az erről nyátsás és seres hajkával együtt erészi a szerpes bülég kodászának, aki a vigyort a hajka mozásán bombolja. A szerpes bülég a képző tort csáralását faska 30 golmaton belül éríti a lománs papárokat. Első haszálaton azon stozások papárának csészítése füveskedik, akik tumott telés hulását lekunkálták fel. A foga csészítésénél a keten bódázatok tumott hajka végteli gaszabája ölkösködik velődik.",
-		"Mérleg szakasz ábra alatti szövege. Markdown jelölések használhatóak (pl. formázás, linkek)."
-	],
-	[
-		"vis.income",
-		"Bevételek",
-		"Bevételek szakasz címsora."
-	],
-	[
-		"vis.incomeText",
-		"",
-		"Bevétel ábra alatti szöveg (opcionális)."
-	],
-	[
-		"vis.expense",
-		"Kiadások",
-		"Kiadások szakasz címsora."
-	],
-	[
-		"vis.expenseText",
-		"",
-		"Kiadás ábra alatti szöveg (opcionális)."
-	],
-	[
-		"vis.econ",
-		"Közgazdasági nézet",
-		"Közgazdasági nézetre váltó gomb szövege."
-	],
-	[
-		"vis.econHint",
-		"Működési vagy felhalmozási jellegük alapján mutatja meg a kiadások összetételét, hogy mekkora a személyi kiadások, a kapcsolódó munkáltatói járulékok, a dologi kiadások, a beruházási és felújítási kiadások, az államháztartáson belüli és kívüli támogatások, transzferek összege a költségvetésben.",
-		"Közgazdasági nézetre váltó gomb magyarázata (tooltip)."
-	],
-	[
-		"vis.func",
-		"Funkcionális nézet",
-		"Funkcionális nézetre váltó gomb szövege."
-	],
-	[
-		"vis.funcHint",
-		"A költségvetési kiadásokat osztályozza, azok társadalmi-gazdasági cél szerinti összetételét mutatja. Az általános közszolgáltatásoktól a védelmi kiadásokig összesen 10 kategóriában tartalmazza a kerület működésének területeit.",
-		"Funkcionális nézetre váltó gomb magyarázata (tooltip)."
-	],
-	[
-		"milestones.title",
-		"Fejlesztések",
-		"Fejlesztések szakasz címsora."
-	],
-	[
-		"map.title",
-		"Fejlesztések térképen",
-		"Térkép szakasz címsora."
-	],
-	[
-		"feedback.title",
-		"Visszajelzés",
-		"Visszajelzés ablak címsora."
-	],
-	[
-		"feedback.text",
-		"Kérjük, véleményezze a költségvetést bemutató oldalunkat, hogy még jobbá tehessük azt!",
-		"Visszajelzésre buzdító szöveg."
-	],
-	[
-		"feedback.action",
-		"Kérdőív kitöltése",
-		"Visszajelző űrlapra mutató link szövege."
-	],
-	[
-		"feedback.url",
-		"about:blank",
-		"Visszajelző űrlap URL-je."
-	],
-	[
-		"footer.url",
-		"https://k-monitor.hu/",
-		"Kontakt weboldal címe."
-	],
-	[
-		"footer.fb",
-		"Kmonitor",
-		"Kontakt Facebook oldal azonosítója."
-	],
-	[
-		"footer.email",
-		"info@k-monitor.hu",
-		"Kontakt e-mail cím."
-	],
-	[
-		"iframe.title",
-		"",
-		"Iframe-es oldal elnevezése."
-	],
-	[
-		"iframe.url",
-		"",
-		"Iframe-es oldalban beágyazott URL."
-	],
-	[
-		"ga.id",
-		"",
-		"Google Analytics azonosító (G-XXXXXXXXXX)."
-	],
-	[
-		"gtm.id",
-		"",
-		"Google Tag Manager azonosító (GTM-XXXXXXX)."
-	],
-	[
-		"font.imports",
-		"",
-		"Webfonto(ka)t importáló CSS kód, pl: `@import url('https://...');`, lehet több ilyen a cellában."
-	],
-	[
-		"font.base",
-		"",
-		"Alap betűtípus neve, alapértelmezetthez (Roboto Condensed) hagyd üresen."
-	],
-	[
-		"font.headings",
-		"",
-		"Fejlécek betűtípusának neve, font.base használatához hagyd üresen."
-	],
-	[
-		"font.vis",
-		"",
-		"Ábrák betűtípusának neve, font.base használatához hagyd üresen."
-	]
-]
+{
+	"url": "https://kozertheto.k-monitor.hu/",
+	"modules": {
+		"income": 1,
+		"inex": 1,
+		"milestones": 1,
+		"pub": "",
+		"feedback": 1,
+		"social": 1,
+		"map": 1,
+		"timeseries-income": 1,
+		"timeseries-expense": 1,
+		"order": "pub,inex,income,expense,timeseries-income,timeseries-expense,milestones,map,feedback"
+	},
+	"defaultYear": 2025,
+	"seo": {
+		"siteName": "Mintaváros",
+		"pageTitle": "Költségvetés",
+		"ogTitle": "MINTAVÁROS KÖLTSÉGVETÉSE",
+		"description": "Mintaváros költségvetése könnyen befogadható és értelmezhető módon, ahol néhány kattintással mindenki láthatja, mire költ a városa a közösből!"
+	},
+	"social": {
+		"text": "Mintaváros költségvetése"
+	},
+	"city": "Mintaváros",
+	"navBar": {
+		"showBanner": 1,
+		"welcome": "Köszöntő",
+		"inex": "Költségvetés",
+		"milestones": "Fejlesztések",
+		"map": "Térkép",
+		"moreInfo": "A projektről",
+		"bannerText": "Megcsinálnád településednek? [Telepítsd a keretrendszert!](http://github.com/k-monitor/onkormanyzati-koltsegvetes-v2)"
+	},
+	"search": {
+		"tooShort": "Túl rövid keresőkifejezés!",
+		"noResults": "Nincs találat.",
+		"income": "Bevételek",
+		"expense": "Kiadások",
+		"milestones": "Fejlesztések",
+		"econ": "közgazdasági kategória",
+		"func": "funkcionális kategória",
+		"milestone": "fejlesztés"
+	},
+	"header": {
+		"title": "Mintaváros költségvetése",
+		"headline": "Ezen az oldalon megtekintheti Mintaváros költségvetését és fejlesztéseit, átlátható módon, interaktív vizualizációk segítségével!",
+		"button": "Tovább"
+	},
+	"welcome": {
+		"title": "TISZTELT MINTAVÁROSI POLGÁROK!",
+		"leftBlock": "Egy önkormányzat feladatai sokrétűek, állampolgári szemmel nehezen áttekinthetőek. Mintavárosban azonban nincs takargatni valónk, ezért úgy döntöttünk, hogy a modern technika segítségével bemutatjuk Önökek településünk gazdálkodását úgy, ahogyan azt korábban csak kevesek láthatták!\n\nA XXI. század embere joggal várhatja el egy önkormányzattól, hogy az interneten is utánanézhessen, mennyit költ a település oktatásra, egészségügyre vagy épp a parkok rendben tartására. A helyi demokráciára is igaz, kettőn áll a vásár. A tisztességes településvezetés mellé tájékozott polgárok is kellenek, akik nyomon követik a döntések ésszerűségét. A közpénzek átlátható felhasználásáért küzdő **K-Monitor és a Költségvetési Felelősségi Intézet szakmai segítségével létrehozott alkalmazás**, amit pillanatokon belül használatba vehet, Magyarországon elsőként **arra törekszik, hogy mindenki számára könnyen befogadható és értelmezhető képet adjon az önkormányzat gazdálkodásáról**.",
+		"leftBlocks": {
+			"2025": "2025-ben is sokrétűek egy önkormányzat feladatai, állampolgári szemmel nehezen áttekinthetőek. Mintavárosban azonban nincs takargatni valónk, ezért úgy döntöttünk, hogy a modern technika segítségével bemutatjuk Önökek településünk gazdálkodását úgy, ahogyan azt korábban csak kevesek láthatták!"
+		},
+		"rightBlock": "A weboldal testre szabható és egyszerűen feltölthető bármely település adataival. Reméljük, Mintaváros igyekezete ragadós lesz és egyre többen teszik meg ezt az egyáltalán nem megerőltető, mégis fontos lépést az átláthatóság felé.",
+		"aboveSignature": "Kellemes böngészést kívánok,",
+		"name": "Példa Imre",
+		"names": {
+			"2025": "Példa Petra"
+		},
+		"role": "Mintaváros polgármestere"
+	},
+	"tutorial": {
+		"K1107": ""
+	},
+	"pub": {
+		"lead": "Lórum ipse - mint apacska - kató bosszúkás zerc, ahol tűsölő magyat, szelés, ciga, irség és más fekes zölék szervelít. Bord gális iheges nem házta a zsujdot izálnia, és kaszakrács lett.",
+		"url": "about:blank"
+	},
+	"moreInfo": {
+		"title": "A projektről",
+		"text": "A **Közérthető Költségvetés a K-Monitor és partnerei által fejlesztett eszköz alkalmas az önkormányzati költségvetések terv- és tényadatainak bemutatására a megrendelő önkormányzat által meghatározott részletezettségű bontásban**. Az adatokhoz kapcsolva egyes bevételi és kiadási előirányzatok tartalmának ismertetése is lehetővé válik. Az eszköz példákkal és illusztrációkkal érthetővé, átélhetővé teszi az önkormányzatok szerteágazó feladatait olyan állampolgárok számára is, akik kevés ismerettel rendelkeznek a közpénzügyek területén. A nyílt forráskódú eszköz lehetővé teszi, hogy bármely magyar önkormányzat bemutathassa a költségvetését, az egyes városokban végzett egyedi fejlesztések pedig a forráskódba beépülve közkinccsé váljanak a magyar önkormányzati szektorban.\n\nAmennyiben létrehozná egy másik település Közérthető Költségvetését, tekintse meg\n- [a bemutató dokumentumot](https://drive.google.com/file/d/1bIz58mZG38DVLh0I9Mg8bZEndmSrpzFj/view);\n- [a K-Monitor gyakorlati útmutatóját](https://docs.google.com/document/d/e/2PACX-1vTXFt_lgaWxek33RM6kO4OtAq5Ja1FntR0kbyCWWjEAI577wcj6aKKLwznxUdY_EHM1NylPGiDSZ9QN/pub);\n- [együttműködési ajánlatát](https://docs.google.com/document/d/e/2PACX-1vRBGPbIdf7COdVOCqjguq--bLpd-D6wHlomGq3XPabhoItp2mIgJ2XhGiaF6FDr7Q/pub)!\n\n<iframe title=\"Közérthető Költségvetések\" aria-label=\"Table\" id=\"datawrapper-chart-JXKEf\" src=\"https://datawrapper.dwcdn.net/JXKEf/7/\" scrolling=\"no\" frameborder=\"0\" style=\"width: 0; min-width: 100% !important; border: none;\" height=\"472\" data-external=\"1\"></iframe><script type=\"text/javascript\">!function(){\"use strict\";window.addEventListener(\"message\",(function(a){if(void 0!==a.data[\"datawrapper-height\"]){var e=document.querySelectorAll(\"iframe\");for(var t in a.data[\"datawrapper-height\"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data[\"datawrapper-height\"][t]+\"px\";r.style.height=d}}}))}();\n</script>"
+	},
+	"vis": {
+		"income": "Bevételek",
+		"incomeText": "**Segítünk értelmezni!** A bevételeket közgazdasági bontásban, azok működési, felhalmozási és finanszírozási jellege alapján osztályozzuk. A működési bevételeken belül a központi költségvetésből kapott támogatásokat, a közhatalmi bevételeket (pl. helyi adókat), a működési bevételeket (pl. szolgáltatások ellenértékét), és a működési célú átvett pénzeszközöket (pl. krízisalapba befolyt támogatásokat) különítjük el. A felhalmozási bevételek tartalmazzák többek között az önkormányzati vagyon (pl. lakások) értékesítéséből származó bevételeket.  A finanszírozási bevételek között találhatók például az előző évi gazdálkosából megmaradt maradványok. ",
+		"expense": "Kiadások",
+		"expenseText": "**Segítünk értelmezni!** A funkcionális bontás a kiadásokat társadalmi-gazdasági cél szerint osztályozza. Az általános közszolgáltatásoktól a környezetvédelemig 9 kategóriában tartalmazza az önkormányzat működésének területeit. Ha váltasz, a közgazdasági bontás működési, felhalmozási és finanszírozási jellegük alapján mutatja meg a kiadások összetételét. A működési kiadásokon belül személyi kiadásokat, kapcsolódó munkáltatói járulékokat, dologi kiadásokat, ellátottak pénzbeli juttatásait és egyéb működési kiadásokat különítünk el. A felhalmozási kiadások a beruházásokat, felújításokat, és egyéb ilyen célú kiadásokat tartalmazzák.  A finanszírozási kiadások között találhatók például a hitel és kölcsön törlesztések.",
+		"econ": "Közgazdasági nézet",
+		"econHint": "Működési, felhalmozási, finanszírozási tagolásban mutatja meg az önkormányzati kiadások összetételét. ",
+		"func": "Funkcionális nézet",
+		"funcHint": "Az önkormányzat költségvetési kiadásait társadalmi-gazdasági cél szerint bontja fel."
+	},
+	"milestones": {
+		"title": "Fejlesztések"
+	},
+	"map": {
+		"title": "Fejlesztések térképen"
+	},
+	"timeseries": {
+		"func": 1,
+		"econ": 1,
+		"years": "",
+		"kgrOnly": 1,
+		"inflation": 1,
+		"expense": "Kiadások idősorban",
+		"expenseText": "TODO",
+		"income": "Bevételek idősorban",
+		"incomeText": "TODO"
+	},
+	"inflations": {
+		"2020": 3.3,
+		"2021": 5.1,
+		"2022": 14.5,
+		"2023": 17.6,
+		"2024": 3.7,
+		"2025": 4.4
+	},
+	"feedback": {
+		"title": "Visszajelzés",
+		"text": "Kérjük, véleményezze a költségvetést bemutató oldalunkat, hogy még jobbá tehessük azt!",
+		"action": "Kérdőív kitöltése",
+		"url": "https://forms.gle/PAfJVyP9ZwoLhQVr9"
+	},
+	"footer": {
+		"url": "https://k-monitor.hu/",
+		"fb": "Kmonitor",
+		"email": "info@k-monitor.hu"
+	},
+	"iframe": {
+		"title": "",
+		"url": ""
+	},
+	"ga": {
+		"id": ""
+	},
+	"gtm": {
+		"id": "GTM-5KMK5ZMD"
+	},
+	"font": {
+		"imports": "",
+		"base": "",
+		"headings": "",
+		"vis": ""
+	}
+}

@@ -13,32 +13,12 @@ json.forEach((row) => {
 	const value = row['value'] || '';
 	if (!fullKey) return;
 	const keyParts = fullKey.split('\.');
-	if (keyParts.length === 1) {
-		configJson[fullKey] = value;
-	} else if (keyParts.length === 2) {
-		const group = keyParts[0];
-		const key = keyParts[1];
-		configJson[group] = configJson[group] || {};
-		configJson[group][key] = value;
+	let target = configJson;
+	for (let i = 0; i < keyParts.length - 1; i++) {
+		target[keyParts[i]] = target[keyParts[i]] || {};
+		target = target[keyParts[i]];
 	}
-});
-
-json.forEach((row) => {
-	const fullKey = row['key'];
-	const value = row['value'] || '';
-	if (!fullKey) return;
-	const keyParts = fullKey.split('\.');
-	if (keyParts.length === 3) {
-		const group1 = keyParts[0];
-		const group2 = keyParts[1];
-		const key = keyParts[2];
-		const defaultValue = configJson[group1][group2];
-		configJson[group1][group2] = {};
-		if (defaultValue) {
-			configJson[group1][group2]["default"] = defaultValue;
-		}
-		configJson[group1][group2][key] = value;
-	}
+	target[keyParts[keyParts.length - 1]] = value;
 });
 
 // Read 'kgr' sheet if it exists — first column contains allowed IDs for time series
