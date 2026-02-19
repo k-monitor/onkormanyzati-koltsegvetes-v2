@@ -126,7 +126,14 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
     - 1\. oszlop: kulcs, mely azonosítja a beállítást/szöveget a program számára
     - 2\. oszlop: testreszabható érték, bizonyos esetekben a Markdown formátum támogatott (ez a magyarázatban jelezve van)
     - 3\. oszlop: magyarázat
-- A `welcome` alatti (pl.: `welcome.title`) beállítások értékei felülírhatók kiválasztott évek esetében. Például a `welcome.title.2025` kulcsú sor hozzáadása 2025 esetében a megadott értéket használja, míg az összes többi évben a `welcome.title` sor értékét.
+- A `welcome` alatti (pl.: `welcome.title`) beállítások értékei felülírhatók kiválasztott évek esetében. Például a `welcome.titles.2025` kulcsú sor hozzáadása 2025 esetében a megadott értéket használja, míg az összes többi évben a `welcome.title` sor értékét.
+  - A sorfelülírások:
+    - `welcome.title` -> `welcome.titles.[év]`
+    - `welcome.leftBlock` -> `welcome.leftBlocks.[év]`
+    - `welcome.rightBlock` -> `welcome.rightBlocks.[év]`
+    - `welcome.aboveSignature` -> `welcome.aboveSignatures.[év]`
+    - `welcome.name` -> `welcome.names.[év]`
+    - `welcome.role` -> `welcome.roles.[év]`
 
 #### A "tooltips <ÉVSZÁM>" munkalapok formátuma:
 
