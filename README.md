@@ -12,7 +12,7 @@ _Copyright &copy; 2025 K-Monitor_
 
 ## Változások korábbi verzióhoz képest
 
-- minimum Node verzió: v12 -> v20
+- minimum Node verzió: v12 -> v22
 - yarn -> pnpm
 - `src/favicon.png` -> `static/assets/img/favicon.png` (a program automatikusan átmozgatja)
 - az admin felületet build-elni kell indítás előtt: `cd admin && pnpm i && cd .. && pnpm build:admin && pnpm admin`
