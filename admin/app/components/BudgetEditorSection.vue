@@ -84,11 +84,15 @@ const budget = computed(() => {
 			<BudgetEditorNode
 				is-summary
 				:node="budget"
+				:side="side"
+				:year="year"
 			/>
 			<BudgetEditorNode
 				v-for="c in budget.children || []"
 				:key="c.id"
 				:node="c"
+				:side="side"
+				:year="year"
 			/>
 		</template>
 	</div>

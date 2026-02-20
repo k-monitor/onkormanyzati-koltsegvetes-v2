@@ -3,9 +3,11 @@ import { cn } from '~/lib/utils';
 import type { BudgetNode } from '../../../src/utils/types';
 import { ChevronDown, ChevronRight } from 'lucide-vue-next';
 
-const { isSummary, node } = defineProps<{
+const { isSummary, node, side, year } = defineProps<{
 	node: BudgetNode;
 	isSummary?: boolean;
+	side: 'income' | 'expense';
+	year: string;
 }>();
 
 const canShowChildren = computed(() => {
@@ -13,6 +15,8 @@ const canShowChildren = computed(() => {
 });
 
 const open = ref(false);
+
+const { readEconValue } = await useBudgetData();
 </script>
 
 <template>
@@ -51,6 +55,10 @@ const open = ref(false);
 			</ItemContent>
 			<ItemActions>
 				{{ node.value }}
+				<Input
+					type="number"
+					:value="readEconValue(year, side, node.id)"
+				/>
 			</ItemActions>
 		</Item>
 		<CollapsibleContent>
