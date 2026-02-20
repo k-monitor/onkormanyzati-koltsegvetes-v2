@@ -41,10 +41,11 @@ function build() {
 }
 
 function deploy() {
-	const { deployCmd } = useRuntimeConfig();
+	const { deployCmd } = useRuntimeConfig(); // NUXT_ prefixed overrides
+	const DEPLOY_CMD = deployCmd || process.env.DEPLOY_CMD || '';
 	return new Promise<{ error: ExecException | null; stderr: string }>((resolve) => {
-		if (!deployCmd) resolve({ error: null, stderr: '' });
-		exec(deployCmd, (error, _stdout, stderr) => {
+		if (!DEPLOY_CMD) resolve({ error: null, stderr: '' });
+		exec(DEPLOY_CMD, (error, _stdout, stderr) => {
 			resolve({
 				error,
 				stderr,

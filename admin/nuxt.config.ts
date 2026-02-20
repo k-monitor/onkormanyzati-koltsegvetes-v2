@@ -9,16 +9,16 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		kokoDir: '', // NUXT_KOKO_DIR
 		admin: {
-			user: '', // NUXT_ADMIN_USER
-			pass: '', // NUXT_ADMIN_PASS
+			user: process.env.ADMIN_USER || '', // NUXT_ADMIN_USER (or ADMIN_USER)
+			pass: process.env.ADMIN_PASS || '', // NUXT_ADMIN_PASS (or ADMIN_PASS)
 		},
 		second: {
-			user: '', // NUXT_SECOND_USER
-			pass: '', // NUXT_SECOND_PASS
+			user: process.env.SECOND_USER || '', // NUXT_SECOND_USER (or SECOND_USER)
+			pass: process.env.SECOND_PASS || '', // NUXT_SECOND_PASS (or SECOND_PASS)
 		},
-		deployCmd: '', // NUXT_DEPLOY_CMD
+		deployCmd: process.env.DEPLOY_CMD || '', // NUXT_DEPLOY_CMD (or DEPLOY_CMD)
 		public: {
-			url: '', // NUXT_PUBLIC_URL
+			url: process.env.PUBLIC_URL || '', // NUXT_PUBLIC_URL
 		},
 	},
 	shadcn: {

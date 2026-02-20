@@ -8,13 +8,11 @@ const links = [
 	},
 ];
 
-const {
-	public: { url: kokoUrl },
-} = useRuntimeConfig();
+const kokoUrl = await usePublicUrl();
 
-if (kokoUrl) {
+if (kokoUrl.value) {
 	links.push({
-		href: kokoUrl,
+		href: kokoUrl.value,
 		text: 'KÖKÖ',
 	});
 }

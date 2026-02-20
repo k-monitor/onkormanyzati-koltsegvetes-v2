@@ -7,12 +7,10 @@ const embeds = [
 	{ name: 'Mérleg', path: 'merleg/' },
 ];
 
-const {
-	public: { url: kokoUrl },
-} = useRuntimeConfig();
+const kokoUrl = await usePublicUrl();
 
 function getEmbedCode(path: string) {
-	const baseUrl = kokoUrl.replace(/\/$/, '');
+	const baseUrl = kokoUrl.value.replace(/\/$/, '');
 	const code = `<iframe src="${baseUrl}${path}" width="100%" height="1200px" frameborder="0"></iframe>`;
 	return code.replaceAll(/\s+/g, '\n\t').replace('><', '\n><');
 }

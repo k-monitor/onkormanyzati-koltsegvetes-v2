@@ -15,14 +15,8 @@ _Copyright &copy; 2025 K-Monitor_
 - minimum Node verzió: v12 -> v20
 - yarn -> pnpm
 - `src/favicon.png` -> `static/assets/img/favicon.png` (a program automatikusan átmozgatja)
-- az admin felületet build-elni kell: `pnpm build:admin`
+- az admin felületet build-elni kell indítás előtt: `cd admin && pnpm i && cd .. && pnpm build:admin && pnpm admin`
 - `ADMIN_PORT` -> `PORT`
-- `ADMIN_USER` -> `NUXT_ADMIN_USER`
-- `ADMIN_PASS` -> `NUXT_ADMIN_PASS`
-- `SECOND_USER` -> `NUXT_SECOND_USER`
-- `SECOND_PASS` -> `NUXT_SECOND_PASS`
-- `DEPLOY_CMD` -> `NUXT_DEPLOY_CMD`
-- `PUBLIC_URL` -> `NUXT_PUBLIC_URL`
 
 ## Beüzemelés
 
@@ -378,16 +372,15 @@ Admin beüzemelés lépései részletesen:
 1. Telepíts Node.js-t és PNPM-et, ezek adják az alapvető környezetet a projekthez.
 1. Lépj be az `admin` mappába.
 1. Futtasd le a `pnpm install` parancsot.
-1. Futtasd le a `pnpm build` parancsot.
 1. Készíts másolatot az `.env.example` fájlról `.env` néven.
 1. Szerkeszd az `.env` fájlt, hogy beállítsd az admin felületet:
     - `PORT=8081` - a port száma, amin a webes felület elérhető lesz
-    - `NUXT_ADMIN_USER=admin` - ezzel a felhasználónévvel lehet majd elérni az admin felületet
-    - `NUXT_ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
-    - `NUXT_SECOND_USER=user` - ezzel a felhasználónévvel is el lehet érni az admin felületet
-    - `NUXT_SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
-    - `NUXT_PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
-    - `NUXT_DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
+    - `ADMIN_USER=admin` - ezzel a felhasználónévvel lehet majd elérni az admin felületet
+    - `ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
+    - `SECOND_USER=user` - ezzel a felhasználónévvel is el lehet érni az admin felületet
+    - `SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
+    - `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
+    - `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
 1. Lépj vissza egy mappaszinttel fejlebb, a projekt mappájába.
 1. Futtasd le a `pnpm build:admin` parancsot.
 1. Az admin felület az `pnpm admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.

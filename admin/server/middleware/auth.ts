@@ -2,10 +2,11 @@ export default defineEventHandler((event) => {
 	// This file is a customized version of this middleware:
 	// https://github.com/kgierke/nuxt-basic-auth/blob/5c006223040862bfb3f0d0d3a7369a64f0941fe0/src/runtime/server/middleware/basic-auth.ts
 
-	const {
-		admin: { user: ADMIN_USER, pass: ADMIN_PASS },
-		second: { user: SECOND_USER, pass: SECOND_PASS },
-	} = useRuntimeConfig();
+	const { admin, second } = useRuntimeConfig(); // NUXT_ prefixed overrides
+	const ADMIN_USER = admin.user || process.env.ADMIN_USER;
+	const ADMIN_PASS = admin.pass || process.env.ADMIN_PASS;
+	const SECOND_USER = second.user || process.env.SECOND_USER;
+	const SECOND_PASS = second.pass || process.env.SECOND_PASS;
 
 	const users = [];
 	if (ADMIN_USER && ADMIN_PASS) {
