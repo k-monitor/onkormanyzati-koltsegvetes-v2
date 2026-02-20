@@ -1,13 +1,15 @@
 import fs from 'fs';
 
-const data = JSON.parse(fs.readFileSync('src/data/data.json', { encoding: 'utf8' }));
+export default () => {
+	const data = JSON.parse(fs.readFileSync('src/data/data.json', { encoding: 'utf8' }));
 
-Object.keys(data).forEach((year) => {
-	['expense', 'income'].forEach((side) => {
-		const root = data[year][side].econ;
-		validateSum(root, year);
+	Object.keys(data).forEach((year) => {
+		['expense', 'income'].forEach((side) => {
+			const root = data[year][side].econ;
+			validateSum(root, year);
+		});
 	});
-});
+};
 
 function validateSum(node, year) {
 	if (node.children && node.children.length) {
@@ -49,9 +51,9 @@ function print(...message) {
 function groupNums(v, ns, suffixes) {
 	// copy from main.js
 	suffixes = suffixes || ['', 'e', 'M', 'Mrd'];
-	var i = 0;
+	let i = 0;
 	v = Number(v);
-	var neg = v < 0;
+	const neg = v < 0;
 	v = Math.abs(v);
 	while (ns && i < suffixes.length - 1 && v > 1000) {
 		v /= 1000;
@@ -59,7 +61,7 @@ function groupNums(v, ns, suffixes) {
 	}
 	v = Math.round(v * 10) / 10;
 	if (ns) v = v.toFixed(1);
-	var vs = (v + '').replace(/\./g, ',').replace(/\d(?=(?:\d{3})+(?:,|$))/g, function ($0, i) {
+	const vs = (v + '').replace(/\./g, ',').replace(/\d(?=(?:\d{3})+(?:,|$))/g, function ($0, i) {
 		return $0 + ' ';
 	});
 	return (neg ? '-' : '') + (vs + ' ' + suffixes[i] + ' Ft').trim();
