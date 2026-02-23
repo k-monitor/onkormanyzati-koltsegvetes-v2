@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
-import type { BudgetData } from '../../../src/utils/types';
-import { parseBudget, parseSheetName } from '../../../scripts/prepare-data-lib';
+import { parseFunctionalTreeDescriptor, parseSheetName } from '../../../scripts/prepare-data-lib';
+import type { BudgetNode } from '../../../src/utils/types';
 
 export default createGlobalState(async () => {
 	// xlsx
@@ -97,13 +97,16 @@ export default createGlobalState(async () => {
 
 	// functions
 
-	const functions = shallowRef<string | null>(null);
+	const emptyFuncTree = shallowRef<Record<number, BudgetNode> | null>(null);
 
 	async function loadFunctionsTsvFromServer() {
 		pending.value = true;
 		try {
-			const tsvContent = await $fetch<string>('/data/functions.tsv');
-			functions.value = tsvContent;
+			const funcTreeTsv = await $fetch<string>('/data/functions.tsv');
+			emptyFuncTree.value = parseFunctionalTreeDescriptor(funcTreeTsv) as Record<
+				number,
+				BudgetNode
+			>;
 		} catch (error) {
 			console.error('Error loading functions.tsv from server:', error);
 		} finally {
@@ -111,41 +114,22 @@ export default createGlobalState(async () => {
 		}
 	}
 
-	// prepared budget data
-
-	const data = shallowRef<BudgetData | null>(null);
-
-	function prepareBudgetData() {
-		if (!workbook.value) {
-			console.log('Cannot prepare budget data as workbook is not loaded.');
-			return;
-		}
-		if (!functions.value) {
-			console.log('Cannot prepare budget data as functions are not loaded.');
-			return;
-		}
-		pending.value = true;
-		data.value = parseBudget(workbook.value, functions.value);
-		pending.value = false;
-	}
-
 	onMounted(async () => {
 		if (!workbook.value) {
 			await loadBudgetXlsxFromServer();
 		}
-		if (!functions.value) {
+		if (!emptyFuncTree.value) {
 			await loadFunctionsTsvFromServer();
 		}
 	});
 
 	return {
 		pending,
+		emptyFuncTree,
 		loadBudgetXlsxFromServer,
 		workbook,
 		downloadXlsxFromClient,
 		uploadBudgetXlsxToServer,
 		years,
-		prepareBudgetData,
-		data,
 	};
 });

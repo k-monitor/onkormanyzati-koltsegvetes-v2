@@ -4,11 +4,9 @@
 const loading = useLoading();
 loading.value = true;
 
-const { data, prepareBudgetData, pending, years } = await useBudgetData();
+const { pending, years } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
-const year = computed(
-	() => deslugifyYear(slugifiedYear, Object.keys(years.value || {})) || slugifiedYear,
-);
+const year = computed(() => deslugifyYear(slugifiedYear, Object.keys(years.value || {})) || null);
 
 watchEffect(() => {
 	if (!pending.value) loading.value = false;
@@ -24,14 +22,13 @@ watchEffect(() => {
 
 <template>
 	<PageFrame
-		:title="year"
+		:title="year || 'Betöltés...'"
 		group-title="Költségvetés"
 	>
-		<BudgetEditorSection
-			v-if="data"
-			:year="year"
-		/>
-		<YearRenameSection :year="year" />
-		<YearDeleteSection :year="year" />
+		<template v-if="year">
+			<BudgetEditorSection :year="year" />
+			<YearRenameSection :year="year" />
+			<YearDeleteSection :year="year" />
+		</template>
 	</PageFrame>
 </template>

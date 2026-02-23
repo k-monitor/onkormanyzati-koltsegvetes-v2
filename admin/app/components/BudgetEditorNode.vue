@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import type ExcelJS from 'exceljs';
-import { cn } from '~/lib/utils';
-import type { BudgetNode } from '../../../src/utils/types';
 import { ChevronDown, ChevronRight } from 'lucide-vue-next';
+import type { BudgetNode } from '../../../src/utils/types';
+import { cn } from '~/lib/utils';
 
-const { isSummary, node, side, year } = defineProps<{
+const { isSummary, node } = defineProps<{
 	node: BudgetNode;
 	isSummary?: boolean;
-	side: 'income' | 'expense';
-	year: string;
 }>();
 
 const canShowChildren = computed(() => {
@@ -16,16 +13,12 @@ const canShowChildren = computed(() => {
 });
 
 const open = ref(false);
-/*
-const { sheets, workbook } = await useBudgetData();
 
-function findSheet(year: string, side: 'income' | 'expense') {
-	if (!workbook.value) return null;
-	const sheetName = sheets.value.find((s) => s.year === year && s.side === side)?.name;
-	if (!sheetName) return null;
-	return workbook.value.getWorksheet(sheetName);
-}
-// FIXME memoize getSheet, clear cache when sheets changes
+// FIXME inject work sheet
+// FIXME implement node input read/write
+
+/*
+const { workbook } = await useBudgetData();
 
 function findEconRow(sheet: ExcelJS.Worksheet, nodeId: string | number) {
 	for (let ri = 3; ri <= sheet.rowCount; ri++) {

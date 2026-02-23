@@ -6,6 +6,8 @@ import {
 	CircleAlert,
 	Presentation,
 } from 'lucide-vue-next';
+import { generateEconomicTree, generateFunctionalTree } from '../../../scripts/prepare-data-lib';
+import type { BudgetNode } from '../../../src/utils/types';
 import PageSection from './PageSection.vue';
 
 const { year } = defineProps<{
@@ -26,12 +28,53 @@ const types = [
 type TypeKey = (typeof types)[number]['key'];
 const type = ref<TypeKey>('econ');
 
-const { data } = await useBudgetData();
-const budget = computed(() => {
-	const yearData = data.value?.[year];
-	const sideData = yearData?.[side.value];
-	const typeData = sideData?.[type.value];
-	return typeData || null;
+const { emptyFuncTree, workbook, years } = await useBudgetData();
+
+const sheetName = computed(() => {
+	const y = years.value?.[year];
+	if (!y) return null;
+	if (side.value === 'income') {
+		return y.incomeSheet;
+	} else {
+		return y.expenseSheet;
+	}
+});
+
+function prepareEconomicTree(sheetName: string) {
+	if (!workbook.value) return;
+	const sheet = workbook.value.getWorksheet(sheetName);
+	if (!sheet) return;
+
+	return generateEconomicTree(sheet);
+}
+
+function prepareFunctionalTree(sheetName: string) {
+	if (!emptyFuncTree.value) return;
+	if (!workbook.value) return;
+	const sheet = workbook.value.getWorksheet(sheetName);
+	if (!sheet) return;
+
+	const copyOfEmptyFuncTree = structuredClone(emptyFuncTree.value);
+	return generateFunctionalTree(sheet, copyOfEmptyFuncTree);
+}
+
+const budget = ref<BudgetNode | null | undefined>();
+
+function updateTree() {
+	if (!sheetName.value) return;
+	if (type.value === 'econ') {
+		budget.value = prepareEconomicTree(sheetName.value);
+	} else {
+		budget.value = prepareFunctionalTree(sheetName.value);
+	}
+}
+
+onMounted(() => {
+	updateTree();
+});
+
+watch([sheetName, type], () => {
+	updateTree();
 });
 </script>
 
@@ -84,15 +127,11 @@ const budget = computed(() => {
 			<BudgetEditorNode
 				is-summary
 				:node="budget"
-				:side="side"
-				:year="year"
 			/>
 			<BudgetEditorNode
 				v-for="c in budget.children || []"
 				:key="c.id"
 				:node="c"
-				:side="side"
-				:year="year"
 			/>
 		</template>
 	</div>
