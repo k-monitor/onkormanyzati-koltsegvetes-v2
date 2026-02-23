@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type ExcelJS from 'exceljs';
 import { cn } from '~/lib/utils';
 import type { BudgetNode } from '../../../src/utils/types';
 import { ChevronDown, ChevronRight } from 'lucide-vue-next';
@@ -15,8 +16,54 @@ const canShowChildren = computed(() => {
 });
 
 const open = ref(false);
+/*
+const { sheets, workbook } = await useBudgetData();
 
-const { readEconValue } = await useBudgetData();
+function findSheet(year: string, side: 'income' | 'expense') {
+	if (!workbook.value) return null;
+	const sheetName = sheets.value.find((s) => s.year === year && s.side === side)?.name;
+	if (!sheetName) return null;
+	return workbook.value.getWorksheet(sheetName);
+}
+// FIXME memoize getSheet, clear cache when sheets changes
+
+function findEconRow(sheet: ExcelJS.Worksheet, nodeId: string | number) {
+	for (let ri = 3; ri <= sheet.rowCount; ri++) {
+		// index is 1-based, header is at least 2 rows
+		const row = sheet.getRow(ri);
+		const cellValue = row.getCell(2).value?.toString() || '';
+		const needle = `(${nodeId})`;
+		if (cellValue.includes(needle)) {
+			return row;
+		}
+		// FIXME currently only finds top level nodes
+	}
+	return null;
+}
+
+function readEconValue(year: string, side: 'income' | 'expense', nodeId: string | number) {
+	const sheet = findSheet(year, side);
+	if (!sheet) return null;
+	const row = findEconRow(sheet, nodeId);
+	if (!row) return null;
+	const valueCell = row.getCell(3);
+	const rawValue = (valueCell.result || valueCell.value)?.toString() || '';
+	return Number(rawValue.replace(/[^0-9-]+/g, ''));
+}
+
+function writeEconValue(
+	year: string,
+	side: 'income' | 'expense',
+	nodeId: string | number,
+	value: number,
+) {
+	const sheet = findSheet(year, side);
+	if (!sheet) return;
+	const row = findEconRow(sheet, nodeId);
+	if (!row) return;
+	const valueCell = row.getCell(3);
+	valueCell.value = value;
+}*/
 </script>
 
 <template>
@@ -55,10 +102,10 @@ const { readEconValue } = await useBudgetData();
 			</ItemContent>
 			<ItemActions>
 				{{ node.value }}
-				<Input
+				<!-- <Input
 					type="number"
 					:value="readEconValue(year, side, node.id)"
-				/>
+				/> -->
 			</ItemActions>
 		</Item>
 		<CollapsibleContent>

@@ -2,10 +2,10 @@
 import { CalendarDays, Globe, Image, PictureInPicture, Scale, Settings } from 'lucide-vue-next';
 import { cn } from '~/lib/utils';
 
-const { pending, years: yearsMap } = await useBudgetData();
+const { pending, years } = await useBudgetData();
 
-const years = computed(() =>
-	Object.keys(yearsMap.value || {})
+const yearItems = computed(() =>
+	Object.keys(years.value || {})
 		.sort((a, b) => b.localeCompare(a))
 		.map((y) => ({
 			href: `/budget/${slugifyYear(y)}/`,
@@ -16,7 +16,7 @@ const years = computed(() =>
 
 const links = computed(() => {
 	return [
-		{ href: '/budget/', text: 'Költségvetés', icon: Scale, items: years.value },
+		{ href: '/budget/', text: 'Költségvetés', icon: Scale, items: yearItems.value },
 		{ href: '/config/', text: 'Konfiguráció', icon: Settings },
 		{ href: '/logos/', text: 'Logók', icon: Image },
 		{ href: '/milestones/', text: 'Fejlesztéskártyák képei', icon: Image },

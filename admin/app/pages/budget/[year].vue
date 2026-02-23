@@ -7,18 +7,19 @@ loading.value = true;
 const { data, prepareBudgetData, pending, years } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
 const year = computed(
-	() => deslugifyYear(slugifiedYear, Object.keys(years.value)) || slugifiedYear,
+	() => deslugifyYear(slugifiedYear, Object.keys(years.value || {})) || slugifiedYear,
 );
 
 watchEffect(() => {
 	if (!pending.value) loading.value = false;
 });
 
-onMounted(() => {
+// FIXME causes hydration warning
+/*onMounted(() => {
 	if (!data.value) {
 		prepareBudgetData();
 	}
-});
+});*/
 </script>
 
 <template>

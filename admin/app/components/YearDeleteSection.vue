@@ -5,7 +5,8 @@ const { year } = defineProps<{
 	year: string;
 }>();
 
-const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook } = await useBudgetData();
+const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook, years } =
+	await useBudgetData();
 
 const loading = useLoading();
 const router = useRouter();
@@ -15,8 +16,13 @@ async function handleDelete() {
 	if (!confirm('Biztosan törlöd az évet? Ez visszavonhatatlan művelet!')) return;
 	loading.value = true;
 	try {
-		deleteSheet(workbook.value, `${year} BEVÉTEL`);
-		deleteSheet(workbook.value, `${year} KIADÁS`);
+		const incomeSheet = years.value?.[year]?.incomeSheet;
+		const expenseSheet = years.value?.[year]?.expenseSheet;
+		if (!incomeSheet || !expenseSheet) {
+			throw new Error('Nem találhatók a munkalapok!');
+		}
+		deleteSheet(workbook.value, incomeSheet);
+		deleteSheet(workbook.value, expenseSheet);
 		await uploadBudgetXlsxToServer();
 		await loadBudgetXlsxFromServer();
 		await router.replace('/budget/');

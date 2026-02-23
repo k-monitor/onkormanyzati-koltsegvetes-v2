@@ -14,7 +14,7 @@ const newNameInput = ref(year);
 const newYear = computed(() => newNameInput.value.replaceAll(/\s+/g, ' ').trim());
 
 const alreadyExists = computed(
-	() => year !== newYear.value && Object.keys(years.value).includes(newYear.value),
+	() => year !== newYear.value && Object.keys(years.value || {}).includes(newYear.value),
 );
 const canRename = computed(
 	() => newYear.value.length >= 4 && year !== newYear.value && !alreadyExists.value,
@@ -33,8 +33,13 @@ async function handleRename() {
 	if (!confirm('Biztosan átnevezed az évet?')) return;
 	loading.value = true;
 	try {
-		renameSheet(workbook.value, `${year} BEVÉTEL`, `${newYear.value} BEVÉTEL`);
-		renameSheet(workbook.value, `${year} KIADÁS`, `${newYear.value} KIADÁS`);
+		const incomeSheet = years.value?.[year]?.incomeSheet;
+		const expenseSheet = years.value?.[year]?.expenseSheet;
+		if (!incomeSheet || !expenseSheet) {
+			throw new Error('Nem találhatók a munkalapok!');
+		}
+		renameSheet(workbook.value, incomeSheet, `${newYear.value} BEVÉTEL`);
+		renameSheet(workbook.value, expenseSheet, `${newYear.value} KIADÁS`);
 		await uploadBudgetXlsxToServer();
 		await loadBudgetXlsxFromServer();
 		await router.replace(`/budget/${slugifyYear(newYear.value)}/`);
