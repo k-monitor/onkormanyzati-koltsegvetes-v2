@@ -32,7 +32,7 @@ const { emptyFuncTree, workbook, years } = await useBudgetData();
 
 const sheetName = computed(() => {
 	const y = years.value?.[year];
-	if (!y) return null;
+	if (!y) return undefined;
 	if (side.value === 'income') {
 		return y.incomeSheet;
 	} else {
@@ -76,6 +76,8 @@ onMounted(() => {
 watch([sheetName, type], () => {
 	updateTree();
 });
+
+provide('sheet', workbook.value?.getWorksheet(sheetName.value));
 </script>
 
 <template>

@@ -2,6 +2,7 @@
 import { ChevronDown, ChevronRight } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 import { cn } from '~/lib/utils';
+import type { Worksheet } from 'exceljs';
 
 const { isSummary, node } = defineProps<{
 	node: BudgetNode;
@@ -14,7 +15,8 @@ const canShowChildren = computed(() => {
 
 const open = ref(false);
 
-// FIXME inject work sheet
+const sheet = inject<Worksheet | undefined>('sheet');
+
 // FIXME implement node input read/write
 
 /*
