@@ -6,6 +6,7 @@ import type { Worksheet } from 'exceljs';
 
 const { isSummary, node } = defineProps<{
 	node: BudgetNode;
+	isEditable?: boolean;
 	isSummary?: boolean;
 }>();
 
@@ -15,50 +16,48 @@ const canShowChildren = computed(() => {
 
 const open = ref(false);
 
-const sheet = inject<Worksheet | undefined>('sheet');
+const sheet = inject<Ref<Worksheet | undefined>>('sheet');
 
-// FIXME implement node input read/write
-
-/*
-const { workbook } = await useBudgetData();
-
-function findEconRow(sheet: ExcelJS.Worksheet, nodeId: string | number) {
-	for (let ri = 3; ri <= sheet.rowCount; ri++) {
+function findEconRow(nodeId: string | number) {
+	if (!sheet?.value) return null;
+	for (let ri = 3; ri <= sheet.value.rowCount; ri++) {
 		// index is 1-based, header is at least 2 rows
-		const row = sheet.getRow(ri);
+		const row = sheet.value.getRow(ri);
 		const cellValue = row.getCell(2).value?.toString() || '';
 		const needle = `(${nodeId})`;
 		if (cellValue.includes(needle)) {
 			return row;
 		}
-		// FIXME currently only finds top level nodes
 	}
 	return null;
 }
 
-function readEconValue(year: string, side: 'income' | 'expense', nodeId: string | number) {
-	const sheet = findSheet(year, side);
-	if (!sheet) return null;
-	const row = findEconRow(sheet, nodeId);
-	if (!row) return null;
+function readEconValue(nodeId: string | number) {
+	const row = findEconRow(nodeId);
+	if (!row) return undefined;
 	const valueCell = row.getCell(3);
 	const rawValue = (valueCell.result || valueCell.value)?.toString() || '';
 	return Number(rawValue.replace(/[^0-9-]+/g, ''));
 }
 
-function writeEconValue(
-	year: string,
-	side: 'income' | 'expense',
-	nodeId: string | number,
-	value: number,
-) {
-	const sheet = findSheet(year, side);
-	if (!sheet) return;
-	const row = findEconRow(sheet, nodeId);
+function writeEconValue(nodeId: string | number, value: number) {
+	const row = findEconRow(nodeId);
 	if (!row) return;
 	const valueCell = row.getCell(3);
 	valueCell.value = value;
-}*/
+}
+
+const cellValue = computed({
+	get() {
+		return readEconValue(node.id || '');
+	},
+	set(value: number) {
+		writeEconValue(node.id || '', value);
+	},
+});
+
+// FIXME mark workbook as changed - on input blur?
+// FIXME update tree - mitt event? - on input blur?
 </script>
 
 <template>
@@ -93,14 +92,15 @@ function writeEconValue(
 					</div>
 					{{ node.name }}
 				</ItemTitle>
-				<!-- <ItemDescription>{{ node.id }}</ItemDescription> -->
 			</ItemContent>
 			<ItemActions>
-				{{ node.value }}
-				<!-- <Input
+				<Input
+					v-if="isEditable && node.id"
+					v-model="cellValue"
+					class="text-right"
 					type="number"
-					:value="readEconValue(year, side, node.id)"
-				/> -->
+				/>
+				<div v-else>{{ node.value }}</div>
 			</ItemActions>
 		</Item>
 		<CollapsibleContent>
@@ -111,6 +111,7 @@ function writeEconValue(
 				<BudgetEditorNode
 					v-for="child in node.children"
 					:key="child.id"
+					:is-editable="isEditable"
 					:node="child"
 				/>
 			</div>

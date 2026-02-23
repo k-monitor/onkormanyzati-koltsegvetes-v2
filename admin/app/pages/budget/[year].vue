@@ -11,13 +11,6 @@ const year = computed(() => deslugifyYear(slugifiedYear, Object.keys(years.value
 watchEffect(() => {
 	if (!pending.value) loading.value = false;
 });
-
-// FIXME causes hydration warning
-/*onMounted(() => {
-	if (!data.value) {
-		prepareBudgetData();
-	}
-});*/
 </script>
 
 <template>

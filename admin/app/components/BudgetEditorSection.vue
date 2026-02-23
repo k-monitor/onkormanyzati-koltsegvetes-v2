@@ -77,7 +77,11 @@ watch([sheetName, type], () => {
 	updateTree();
 });
 
-provide('sheet', workbook.value?.getWorksheet(sheetName.value));
+const sheet = computed(() => {
+	if (!sheetName.value || !workbook.value) return undefined;
+	return workbook.value.getWorksheet(sheetName.value);
+});
+provide('sheet', sheet);
 </script>
 
 <template>
@@ -133,6 +137,7 @@ provide('sheet', workbook.value?.getWorksheet(sheetName.value));
 			<BudgetEditorNode
 				v-for="c in budget.children || []"
 				:key="c.id"
+				:is-editable="type === 'econ'"
 				:node="c"
 			/>
 		</template>
