@@ -77,6 +77,13 @@ watch([sheetName, type], () => {
 	updateTree();
 });
 
+const bus = useEventBus(CELL_CHANGED_EVENT);
+// called throttled from BudgetEditorNode when input changes
+bus.on(() => {
+	updateTree();
+	// FIXME mark workbook as changed - on input blur?
+});
+
 const sheet = computed(() => {
 	if (!sheetName.value || !workbook.value) return undefined;
 	return workbook.value.getWorksheet(sheetName.value);

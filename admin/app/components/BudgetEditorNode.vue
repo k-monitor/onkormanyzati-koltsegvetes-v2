@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronRight } from 'lucide-vue-next';
+import { ChevronDown, ChevronRight, Sigma } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 import { cn } from '~/lib/utils';
 import type { Worksheet } from 'exceljs';
@@ -12,6 +12,11 @@ const { isSummary, node } = defineProps<{
 
 const canShowChildren = computed(() => {
 	return !isSummary && node.children && node.children.length > 0;
+});
+
+const sum = computed(() => {
+	if (!node.children) return node.value || 0;
+	return node.children.reduce((acc, child) => acc + (child.value || 0), 0);
 });
 
 const open = ref(false);
@@ -47,17 +52,19 @@ function writeEconValue(nodeId: string | number, value: number) {
 	valueCell.value = value;
 }
 
-const cellValue = computed({
-	get() {
-		return readEconValue(node.id || '');
+const inputValue = ref(readEconValue(node.id || ''));
+const bus = useEventBus(CELL_CHANGED_EVENT);
+watchThrottled(
+	inputValue,
+	() => {
+		if (inputValue.value === undefined) return;
+		writeEconValue(node.id || '', inputValue.value);
+		bus.emit();
 	},
-	set(value: number) {
-		writeEconValue(node.id || '', value);
+	{
+		throttle: 500,
 	},
-});
-
-// FIXME mark workbook as changed - on input blur?
-// FIXME update tree - mitt event? - on input blur?
+);
 </script>
 
 <template>
@@ -93,14 +100,23 @@ const cellValue = computed({
 					{{ node.name }}
 				</ItemTitle>
 			</ItemContent>
-			<ItemActions>
-				<Input
-					v-if="isEditable && node.id"
-					v-model="cellValue"
-					class="text-right"
-					type="number"
-				/>
-				<div v-else>{{ node.value }}</div>
+			<ItemActions class="flex flex-col items-end">
+				<div>
+					<Input
+						v-if="isEditable && node.id"
+						v-model="inputValue"
+						class="text-right"
+						type="number"
+					/>
+					<div v-else>{{ node.value }}</div>
+				</div>
+				<div
+					v-if="node.value !== sum"
+					:class="cn('text-destructive flex gap-4', isEditable && 'pr-8')"
+				>
+					<Sigma class="size-5" />
+					{{ sum }}
+				</div>
 			</ItemActions>
 		</Item>
 		<CollapsibleContent>
