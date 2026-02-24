@@ -23,5 +23,6 @@ watchEffect(() => {
 			<YearRenameSection :year="year" />
 			<YearDeleteSection :year="year" />
 		</template>
+		<BudgetSaveBanner />
 	</PageFrame>
 </template>

@@ -28,7 +28,7 @@ const types = [
 type TypeKey = (typeof types)[number]['key'];
 const type = ref<TypeKey>('econ');
 
-const { emptyFuncTree, workbook, years } = await useBudgetData();
+const { emptyFuncTree, markModified, workbook, years } = await useBudgetData();
 
 const sheetName = computed(() => {
 	const y = years.value?.[year];
@@ -81,7 +81,7 @@ const bus = useEventBus(CELL_CHANGED_EVENT);
 // called throttled from BudgetEditorNode when input changes
 bus.on(() => {
 	updateTree();
-	// FIXME mark workbook as changed - on input blur?
+	markModified();
 });
 
 const sheet = computed(() => {

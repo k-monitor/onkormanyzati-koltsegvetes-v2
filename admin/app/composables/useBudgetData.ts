@@ -3,9 +3,18 @@ import { parseFunctionalTreeDescriptor, parseSheetName } from '../../../scripts/
 import type { BudgetNode } from '../../../src/utils/types';
 
 export default createGlobalState(async () => {
+	const pending = ref(false);
+
+	// modified state
+
+	const isModified = ref(false);
+
+	function markModified() {
+		isModified.value = true;
+	}
+
 	// xlsx
 
-	const pending = ref(false);
 	const workbook = shallowRef<ExcelJS.Workbook | null>(null);
 
 	async function loadBudgetXlsxFromServer() {
@@ -17,6 +26,7 @@ export default createGlobalState(async () => {
 			const wb = new ExcelJS.Workbook();
 			await wb.xlsx.load(buffer);
 			workbook.value = wb;
+			isModified.value = false;
 		} catch (error) {
 			console.error('Error loading budget.xlsx from server:', error);
 		} finally {
@@ -114,6 +124,8 @@ export default createGlobalState(async () => {
 		}
 	}
 
+	// mount logic
+
 	onMounted(async () => {
 		if (!workbook.value) {
 			await loadBudgetXlsxFromServer();
@@ -131,5 +143,7 @@ export default createGlobalState(async () => {
 		downloadXlsxFromClient,
 		uploadBudgetXlsxToServer,
 		years,
+		isModified: readonly(isModified),
+		markModified,
 	};
 });

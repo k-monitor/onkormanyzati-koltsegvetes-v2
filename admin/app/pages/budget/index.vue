@@ -43,5 +43,6 @@ async function uploadBudget(e: Event) {
 				</Button>
 			</template>
 		</PageSection>
+		<BudgetSaveBanner />
 	</PageFrame>
 </template>
