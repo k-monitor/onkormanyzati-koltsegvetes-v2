@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { CalendarDays, Globe, Image, PictureInPicture, Scale, Settings } from 'lucide-vue-next';
+import {
+	CalendarDays,
+	CircleAlert,
+	Globe,
+	Image,
+	PictureInPicture,
+	Scale,
+	Settings,
+} from 'lucide-vue-next';
 import { cn } from '~/lib/utils';
 
-const { pending, years } = await useBudgetData();
+const { isModified, pending, years } = await useBudgetData();
 
 const yearItems = computed(() =>
 	Object.keys(years.value || {})
@@ -16,7 +24,13 @@ const yearItems = computed(() =>
 
 const links = computed(() => {
 	return [
-		{ href: '/budget/', text: 'Költségvetés', icon: Scale, items: yearItems.value },
+		{
+			href: '/budget/',
+			text: 'Költségvetés',
+			icon: Scale,
+			items: yearItems.value,
+			warning: isModified.value,
+		},
 		{ href: '/config/', text: 'Konfiguráció', icon: Settings },
 		{ href: '/logos/', text: 'Logók', icon: Image },
 		{ href: '/milestones/', text: 'Fejlesztéskártyák képei', icon: Image },
@@ -65,6 +79,10 @@ onMounted(async () => {
 										v-if="link.icon"
 									/>
 									{{ link.text }}
+									<CircleAlert
+										v-if="link.warning"
+										class="text-destructive ml-auto"
+									/>
 								</NuxtLink>
 							</SidebarMenuButton>
 							<SidebarMenuSub v-if="link.items">
