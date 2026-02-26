@@ -58,29 +58,37 @@ function prepareFunctionalTree(sheetName: string) {
 	return generateFunctionalTree(sheet, copyOfEmptyFuncTree);
 }
 
-const budget = ref<BudgetNode | null | undefined>();
-
-function updateTree() {
-	if (!sheetName.value) return;
+const econTree = ref<BudgetNode | null | undefined>();
+const funcTree = computed(() =>
+	sheetName.value ? prepareFunctionalTree(sheetName.value) : undefined,
+);
+const visibleTree = computed(() => {
 	if (type.value === 'econ') {
-		budget.value = prepareEconomicTree(sheetName.value);
+		return econTree.value;
 	} else {
-		budget.value = prepareFunctionalTree(sheetName.value);
+		return funcTree.value;
 	}
+});
+
+function updateEconTree() {
+	if (!sheetName.value) return;
+	econTree.value = prepareEconomicTree(sheetName.value);
 }
 
 onMounted(() => {
-	updateTree();
+	// init
+	updateEconTree();
 });
 
-watch([sheetName, type], () => {
-	updateTree();
+watch(sheetName, () => {
+	// side changed
+	updateEconTree();
 });
 
-const bus = useEventBus(CELL_CHANGED_EVENT);
-// called throttled from BudgetEditorNode when input changes
+const bus = useEventBus(CELL_CHANGED_EVENT); // called throttled from BudgetEditorNode
 bus.on(() => {
-	updateTree();
+	// values changed
+	updateEconTree();
 	markModified();
 });
 
@@ -132,7 +140,7 @@ provide('sheet', sheet);
 			</ToggleGroup>
 		</div>
 		<Alert
-			v-if="!budget"
+			v-if="!visibleTree"
 			class="not-prose"
 			variant="destructive"
 		>
@@ -142,13 +150,13 @@ provide('sheet', sheet);
 	</PageSection>
 
 	<div class="prose mx-auto w-full px-4 lg:max-w-[90%] lg:px-0">
-		<template v-if="budget">
+		<template v-if="visibleTree">
 			<BudgetEditorNode
 				is-summary
-				:node="budget"
+				:node="visibleTree"
 			/>
 			<BudgetEditorNode
-				v-for="c in budget.children || []"
+				v-for="c in visibleTree.children || []"
 				:key="c.id"
 				:is-editable="type === 'econ'"
 				:node="c"
