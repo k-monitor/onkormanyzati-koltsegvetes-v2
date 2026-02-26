@@ -103,20 +103,26 @@ watchThrottled(
 			</ItemContent>
 			<ItemActions class="flex flex-col items-end">
 				<div>
-					<Input
+					<NumberField
 						v-if="isEditable && node.id"
 						v-model="inputValue"
-						class="text-right"
-						type="number"
-					/>
-					<div v-else>{{ node.value }}</div>
+						locale="hu"
+						:min="0"
+					>
+						<NumberFieldContent>
+							<NumberFieldDecrement />
+							<NumberFieldInput />
+							<NumberFieldIncrement />
+						</NumberFieldContent>
+					</NumberField>
+					<div v-else>{{ Number(node.value).toLocaleString('hu') }}</div>
 				</div>
 				<div
 					v-if="node.value !== sum"
-					:class="cn('text-destructive flex gap-4', isEditable && 'pr-8')"
+					:class="cn('text-destructive flex items-center gap-3', isEditable && 'pr-11')"
 				>
-					<Sigma class="size-5" />
-					{{ sum }}
+					<Sigma class="size-4" />
+					{{ Number(sum).toLocaleString('hu') }}
 				</div>
 			</ItemActions>
 		</Item>
