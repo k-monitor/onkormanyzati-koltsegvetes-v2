@@ -11,6 +11,21 @@ export default createGlobalState(async () => {
 		isModified.value = true;
 	}
 
+	const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
+		event.preventDefault();
+		event.returnValue = true;
+	};
+
+	watch(isModified, (newValue) => {
+		if (newValue) {
+			console.log('ADDING beforeunload listener');
+			window.addEventListener('beforeunload', beforeUnloadHandler);
+		} else {
+			console.log('REMOVING beforeunload listener');
+			window.removeEventListener('beforeunload', beforeUnloadHandler);
+		}
+	});
+
 	// xlsx
 
 	const workbook = shallowRef<ExcelJS.Workbook | null>(null);
