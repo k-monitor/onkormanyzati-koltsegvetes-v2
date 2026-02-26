@@ -24,14 +24,13 @@ function resetNewName() {
 	newNameInput.value = year;
 }
 
-const loading = useLoading();
 const router = useRouter();
 
 async function handleRename() {
 	if (!workbook.value) return;
 	if (!canRename.value) return;
 	if (!confirm('Biztosan átnevezed az évet?')) return;
-	loading.value = true;
+
 	try {
 		const incomeSheet = years.value?.[year]?.incomeSheet;
 		const expenseSheet = years.value?.[year]?.expenseSheet;
@@ -46,8 +45,6 @@ async function handleRename() {
 	} catch (e: unknown) {
 		console.error(e);
 		alert('Nem sikerült! :c');
-	} finally {
-		loading.value = false;
 	}
 }
 </script>

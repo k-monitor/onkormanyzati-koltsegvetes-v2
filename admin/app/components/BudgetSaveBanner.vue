@@ -2,18 +2,14 @@
 import { CircleAlert } from 'lucide-vue-next';
 
 const { isModified, loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } = await useBudgetData();
-const loading = useLoading();
 async function save() {
 	if (!isModified.value) return;
-	loading.value = true;
 	try {
 		await uploadBudgetXlsxToServer();
 		await loadBudgetXlsxFromServer();
 	} catch (e: unknown) {
 		console.error(e);
 		alert('Nem sikerült! :c');
-	} finally {
-		loading.value = false;
 	}
 }
 </script>

@@ -1,21 +1,14 @@
 <script setup lang="ts">
 // TODO LATER replace confirms with AlertDialogs
 
-const loading = useLoading();
-loading.value = true;
-
-const { pending, years } = await useBudgetData();
+const { years } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
 const year = computed(() => deslugifyYear(slugifiedYear, Object.keys(years.value || {})) || null);
-
-watchEffect(() => {
-	if (!pending.value) loading.value = false;
-});
 </script>
 
 <template>
 	<PageFrame
-		:title="year || 'Betöltés...'"
+		:title="year || slugifiedYear"
 		group-title="Költségvetés"
 	>
 		<template v-if="year">

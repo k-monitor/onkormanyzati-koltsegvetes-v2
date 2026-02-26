@@ -146,6 +146,11 @@ export default createGlobalState(async () => {
 
 	const pending = computed(() => workbookPending.value || functionsPending.value);
 
+	const loading = useLoading();
+	watch(pending, (newValue) => {
+		loading.value = newValue;
+	});
+
 	// mount logic
 
 	onMounted(async () => {

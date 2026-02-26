@@ -8,13 +8,12 @@ const { year } = defineProps<{
 const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook, years } =
 	await useBudgetData();
 
-const loading = useLoading();
 const router = useRouter();
 
 async function handleDelete() {
 	if (!workbook.value) return;
 	if (!confirm('Biztosan törlöd az évet? Ez visszavonhatatlan művelet!')) return;
-	loading.value = true;
+
 	try {
 		const incomeSheet = years.value?.[year]?.incomeSheet;
 		const expenseSheet = years.value?.[year]?.expenseSheet;
@@ -29,8 +28,6 @@ async function handleDelete() {
 	} catch (e: unknown) {
 		console.error(e);
 		alert('Nem sikerült! :c');
-	} finally {
-		loading.value = false;
 	}
 }
 </script>
