@@ -16,6 +16,7 @@ const canShowChildren = computed(() => {
 
 const sum = computed(() => {
 	if (!node.children) return node.value || 0;
+	if (!node.id || String(node.id).startsWith('F')) return node.value || 0; // matching prepare logic
 	return node.children.reduce((acc, child) => acc + (child.value || 0), 0);
 });
 
