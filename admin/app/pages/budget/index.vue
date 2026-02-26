@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Download, Upload } from 'lucide-vue-next';
+import { Download, Undo, Upload } from 'lucide-vue-next';
 
-const { loadBudgetXlsxFromServer } = await useBudgetData();
+const { downloadXlsxFromClient, isModified, loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } =
+	await useBudgetData();
 async function uploadBudget(e: Event) {
 	await upload('/api/budget', 'budget', e.target as HTMLInputElement);
 	await loadBudgetXlsxFromServer();
@@ -10,12 +11,40 @@ async function uploadBudget(e: Event) {
 
 <template>
 	<PageFrame title="Költségvetés">
+		<PageSection v-if="isModified">
+			<p class="text-destructive *:text-destructive">
+				<strong>A költségvetés módosult, de még nem lett mentve</strong>
+				(feltöltve) a szerveren levő <code>budget.xlsx</code> fájlba. A
+				<strong>KÖKÖ Admin</strong>
+				bezárásakor vagy újratöltésekor a módosítások elvesznek. Az alábbi gombokkal
+				kezelheted az elvégzett módosításokat.
+			</p>
+			<template #actions>
+				<Button
+					variant="secondary"
+					@click="downloadXlsxFromClient"
+				>
+					<Download />
+					Letöltés
+				</Button>
+				<Button @click="uploadBudgetXlsxToServer">
+					<Upload />
+					Mentés
+				</Button>
+				<Button
+					class="ml-auto"
+					variant="destructive"
+					@click="loadBudgetXlsxFromServer"
+				>
+					<Undo />
+					Elvetés
+				</Button>
+			</template>
+		</PageSection>
 		<PageSection>
 			<p>
-				Feltöltéskor a fájl neve mindegy, a szerveren levő
-				<code>budget.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365
-				(<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete követi a
-				dokumentációban írtakat.
+				Itt tudod letölteni a szerveren levő <code>budget.xlsx</code> fájlt. Ez nem
+				tartalmazza az admin felületen végzett módosításokat.
 			</p>
 			<template #actions>
 				<Button
@@ -30,7 +59,20 @@ async function uploadBudget(e: Event) {
 						Letöltés
 					</a>
 				</Button>
-				<Button as-child>
+			</template>
+		</PageSection>
+		<PageSection>
+			<p>
+				Az alábbi gombbal tudsz feltölteni új <code>budget.xlsx</code> fájlt, felülírva a
+				szerveren levő változatot, illetve elvetve az admin felületen végzett módosításokat
+				is. Excel 2007-O365 (<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete
+				követi a dokumentációban írtakat.
+			</p>
+			<template #actions>
+				<Button
+					as-child
+					:variant="isModified ? 'destructive' : undefined"
+				>
 					<label>
 						<Upload />
 						Feltöltés
@@ -43,6 +85,5 @@ async function uploadBudget(e: Event) {
 				</Button>
 			</template>
 		</PageSection>
-		<BudgetSaveBanner />
 	</PageFrame>
 </template>
