@@ -43,8 +43,10 @@ async function uploadBudget(e: Event) {
 		</PageSection>
 		<PageSection>
 			<p>
-				Itt tudod letölteni a szerveren levő <code>budget.xlsx</code> fájlt. Ez nem
-				tartalmazza az admin felületen végzett módosításokat.
+				Itt tudod letölteni a szerveren levő <code>budget.xlsx</code> fájlt.
+				<template v-if="isModified">
+					Ez nem tartalmazza az admin felületen végzett és még nem mentett módosításokat.
+				</template>
 			</p>
 			<template #actions>
 				<Button
@@ -64,8 +66,14 @@ async function uploadBudget(e: Event) {
 		<PageSection>
 			<p>
 				Az alábbi gombbal tudsz feltölteni új <code>budget.xlsx</code> fájlt, felülírva a
-				szerveren levő változatot, illetve elvetve az admin felületen végzett módosításokat
-				is. Excel 2007-O365 (<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete
+				szerveren levő változatot.
+				<strong
+					v-if="isModified"
+					class="text-destructive"
+				>
+					A módosításaid el fognak veszni!
+				</strong>
+				Excel 2007-O365 (<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete
 				követi a dokumentációban írtakat.
 			</p>
 			<template #actions>
