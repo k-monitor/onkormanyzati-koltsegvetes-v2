@@ -3,8 +3,6 @@ import { parseFunctionalTreeDescriptor, parseSheetName } from '../../../scripts/
 import type { BudgetNode } from '../../../src/utils/types';
 
 export default createGlobalState(async () => {
-	const pending = ref(false);
-
 	// modified state
 
 	const isModified = ref(false);
@@ -16,9 +14,11 @@ export default createGlobalState(async () => {
 	// xlsx
 
 	const workbook = shallowRef<ExcelJS.Workbook | null>(null);
+	const workbookPending = ref(false);
 
 	async function loadBudgetXlsxFromServer() {
-		pending.value = true;
+		if (workbookPending.value) return;
+		workbookPending.value = true;
 		try {
 			const buffer = await $fetch<ArrayBuffer>('/input/budget.xlsx', {
 				responseType: 'arrayBuffer',
@@ -30,7 +30,7 @@ export default createGlobalState(async () => {
 		} catch (error) {
 			console.error('Error loading budget.xlsx from server:', error);
 		} finally {
-			pending.value = false;
+			workbookPending.value = false;
 		}
 	}
 
@@ -51,9 +51,10 @@ export default createGlobalState(async () => {
 	}
 
 	async function uploadBudgetXlsxToServer() {
+		if (workbookPending.value) return;
 		if (!workbook.value) return;
 		let success = false;
-		pending.value = true;
+		workbookPending.value = true;
 		const buffer = await workbook.value.xlsx.writeBuffer();
 		const blob = new Blob([buffer], {
 			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -72,7 +73,7 @@ export default createGlobalState(async () => {
 		} catch (error) {
 			console.error('Error uploading workbook:', error);
 		} finally {
-			pending.value = false;
+			workbookPending.value = false;
 		}
 		return success;
 	}
@@ -108,9 +109,11 @@ export default createGlobalState(async () => {
 	// functions
 
 	const emptyFuncTree = shallowRef<Record<number, BudgetNode> | null>(null);
+	const functionsPending = ref(false);
 
 	async function loadFunctionsTsvFromServer() {
-		pending.value = true;
+		if (functionsPending.value) return;
+		functionsPending.value = true;
 		try {
 			const funcTreeTsv = await $fetch<string>('/data/functions.tsv');
 			emptyFuncTree.value = parseFunctionalTreeDescriptor(funcTreeTsv) as Record<
@@ -120,29 +123,36 @@ export default createGlobalState(async () => {
 		} catch (error) {
 			console.error('Error loading functions.tsv from server:', error);
 		} finally {
-			pending.value = false;
+			functionsPending.value = false;
 		}
 	}
+
+	// loading state
+
+	const pending = computed(() => workbookPending.value || functionsPending.value);
 
 	// mount logic
 
 	onMounted(async () => {
-		if (!workbook.value) {
-			await loadBudgetXlsxFromServer();
-		}
-		if (!emptyFuncTree.value) {
-			await loadFunctionsTsvFromServer();
-		}
+		const promises: Promise<void>[] = [];
+		if (!workbook.value) promises.push(loadBudgetXlsxFromServer());
+		if (!emptyFuncTree.value) promises.push(loadFunctionsTsvFromServer());
+		if (promises.length > 0) await Promise.all(promises);
 	});
 
 	return {
-		pending,
-		emptyFuncTree,
+		// loading state
+		pending: readonly(pending),
+
+		// input data
+		emptyFuncTree: computed(() => emptyFuncTree.value),
 		loadBudgetXlsxFromServer,
-		workbook,
+		workbook: computed(() => workbook.value),
 		downloadXlsxFromClient,
 		uploadBudgetXlsxToServer,
-		years,
+
+		// derived data
+		years: readonly(years),
 		isModified: readonly(isModified),
 		markModified,
 	};
