@@ -26,7 +26,9 @@ function build() {
 			'pnpm build',
 			{
 				env: {
-					...process.env,
+					...process.env, // needed for NVM to work
+					NUXT_APP_BASE_URL: '/', // Nuxt default so don't pass what admin got
+					// TODO LATER ^ consider using config value here
 					NODE_ENV: 'production',
 				},
 			},
