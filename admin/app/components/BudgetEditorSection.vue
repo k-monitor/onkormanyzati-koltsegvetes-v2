@@ -97,6 +97,11 @@ const sheet = computed(() => {
 	return workbook.value.getWorksheet(sheetName.value);
 });
 provide('sheet', sheet);
+
+const isEconAndFuncTotalDiffer = computed(() => {
+	if (!econTree.value || !funcTree.value) return false;
+	return econTree.value.value !== funcTree.value.value;
+});
 </script>
 
 <template>
@@ -141,11 +146,19 @@ provide('sheet', sheet);
 		</div>
 		<Alert
 			v-if="!visibleTree"
-			class="not-prose"
+			class="not-prose mb-8"
 			variant="destructive"
 		>
 			<CircleAlert />
 			<AlertTitle>A <code>budget.xlsx</code> fájlban nincs ilyen adat jelenleg.</AlertTitle>
+		</Alert>
+		<Alert
+			v-if="isEconAndFuncTotalDiffer"
+			class="not-prose mb-8"
+			variant="destructive"
+		>
+			<CircleAlert />
+			<AlertTitle>A közgazdasági és funkcionális főösszeg nem egyezik meg.</AlertTitle>
 		</Alert>
 	</PageSection>
 
