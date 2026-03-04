@@ -10,6 +10,9 @@ export default defineNuxtConfig({
 		public: 'static',
 	},
 	modules: ['@nuxt/eslint', '@nuxt/scripts'],
+	routeRules: {
+		'/terkep': { ssr: false },
+	},
 	nitro: {
 		output: {
 			dir: 'dist/.nitro',

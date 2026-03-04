@@ -11,14 +11,14 @@ useHead({
 	meta: [
 		{
 			property: 'og:title',
-			content: CONFIG.map.title + ' - ' + CONFIG.seo.siteName,
+			content: (CONFIG.map?.title ?? '') + ' - ' + CONFIG.seo.siteName,
 		},
 		{
 			property: 'og:url',
 			content: CONFIG.url + 'map',
 		},
 	],
-	title: CONFIG.map.title + ' - ' + CONFIG.seo.pageTitle,
+	title: (CONFIG.map?.title ?? '') + ' - ' + CONFIG.seo.pageTitle,
 });
 
 function openDetailsUrl(milestoneId: string) {
