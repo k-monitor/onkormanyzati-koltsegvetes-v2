@@ -29,7 +29,9 @@ function openDetailsUrl(milestoneId: string) {
 
 <template>
 	<div :class="'theme-' + slugify(year)">
-		<MapSection assetPrefix="../" :detailsHandler="openDetailsUrl" />
+		<ClientOnly>
+			<MapSection assetPrefix="../" :detailsHandler="openDetailsUrl" />
+		</ClientOnly>
 	</div>
 </template>
 
