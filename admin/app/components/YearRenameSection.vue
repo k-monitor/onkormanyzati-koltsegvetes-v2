@@ -71,7 +71,10 @@ async function handleRename() {
 		<template #actions>
 			<form @submit.prevent="handleRename">
 				<InputGroup>
-					<InputGroupInput v-model="newNameInput" />
+					<InputGroupInput
+						v-model="newNameInput"
+						required
+					/>
 					<InputGroupAddon align="inline-end">
 						<InputGroupButton
 							as-child

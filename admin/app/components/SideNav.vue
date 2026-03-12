@@ -5,6 +5,7 @@ import {
 	Globe,
 	Image,
 	PictureInPicture,
+	Plus,
 	Scale,
 	Settings,
 } from 'lucide-vue-next';
@@ -28,7 +29,14 @@ const links = computed(() => {
 			href: '/budget/',
 			text: 'Költségvetés',
 			icon: Scale,
-			items: yearItems.value,
+			items: [
+				{
+					href: '/budget/addyear/',
+					text: 'Év hozzáadása',
+					icon: Plus,
+				},
+				...yearItems.value,
+			],
 			warning: isModified.value,
 		},
 		{ href: '/config/', text: 'Konfiguráció', icon: Settings },
