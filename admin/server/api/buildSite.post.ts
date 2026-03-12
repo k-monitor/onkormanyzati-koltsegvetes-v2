@@ -3,6 +3,7 @@ import { exec, type ExecException } from 'child_process';
 export default defineEventHandler(async (event) => {
 	const buildResult = await build();
 	if (buildResult.error) {
+		console.log('Build failed:', buildResult.error);
 		setResponseStatus(event, 500);
 		return buildResult;
 	}
@@ -12,6 +13,7 @@ export default defineEventHandler(async (event) => {
 
 	const deployResult = await deploy();
 	if (deployResult.error) {
+		console.log('Deploy failed:', deployResult.error);
 		setResponseStatus(event, 500);
 	}
 	return {
@@ -22,9 +24,11 @@ export default defineEventHandler(async (event) => {
 
 function build() {
 	return new Promise<{ error: ExecException | null; stderr: string }>((resolve) => {
+		console.log('Building site...');
 		exec(
 			'pnpm build',
 			{
+				cwd: kokoDir(),
 				env: {
 					...process.env, // needed for NVM to work
 					NUXT_APP_BASE_URL: '/', // Nuxt default so don't pass what admin got
@@ -46,12 +50,18 @@ function deploy() {
 	const { deployCmd } = useRuntimeConfig(); // NUXT_ prefixed overrides
 	const DEPLOY_CMD = deployCmd || process.env.DEPLOY_CMD || '';
 	return new Promise<{ error: ExecException | null; stderr: string }>((resolve) => {
-		if (!DEPLOY_CMD) resolve({ error: null, stderr: '' });
-		exec(DEPLOY_CMD, (error, _stdout, stderr) => {
-			resolve({
-				error,
-				stderr,
-			});
-		});
+		if (!DEPLOY_CMD) return resolve({ error: null, stderr: '' });
+		exec(
+			DEPLOY_CMD,
+			{
+				cwd: kokoDir(),
+			},
+			(error, _stdout, stderr) => {
+				resolve({
+					error,
+					stderr,
+				});
+			},
+		);
 	});
 }
