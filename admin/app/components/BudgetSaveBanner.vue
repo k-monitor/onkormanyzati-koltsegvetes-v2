@@ -27,8 +27,8 @@ async function save() {
 			<CircleAlert />
 			<AlertTitle>Nem mentett költségvetés módosítások!</AlertTitle>
 			<AlertDescription class="max-w-[80ch]">
-				Ha nem mented őket a szerverre, akkor a KÖKÖ&nbsp;Admin bezárása vagy újratöltése
-				esetén elvesznek.
+				Ha nem mented őket a szerverre, akkor a KÖKÖ&nbsp;Admin bezárása vagy újratöltése,
+				valamint év hozzáadás, átnevezés vagy törlés esetén elvesznek.
 			</AlertDescription>
 		</Alert>
 		<Button @click="save">Mentés</Button>

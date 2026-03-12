@@ -80,12 +80,12 @@ async function handleRename() {
 							as-child
 							variant="secondary"
 						>
-							<button
+							<Button
 								type="button"
 								@click="resetNewName"
 							>
 								<Undo />
-							</button>
+							</Button>
 						</InputGroupButton>
 					</InputGroupAddon>
 				</InputGroup>

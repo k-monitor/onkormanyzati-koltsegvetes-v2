@@ -16,6 +16,7 @@ const year = computed(() => deslugifyYear(slugifiedYear, Object.keys(years.value
 			<YearRenameSection :year="year" />
 			<YearDeleteSection :year="year" />
 		</template>
-		<BudgetSaveBanner />
 	</PageFrame>
+	<!-- eslint-disable-next-line vue/no-multiple-template-root -->
+	<BudgetSaveBanner />
 </template>

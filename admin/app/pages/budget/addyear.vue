@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { CircleAlert, Plus, Undo } from 'lucide-vue-next';
 
-const { years } = await useBudgetData();
+const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook, years } =
+	await useBudgetData();
 
 const newNameEl = useTemplateRef('newNameEl');
 onMounted(() => {
@@ -17,27 +18,51 @@ function resetNewName() {
 	newNameInput.value = '';
 }
 
-const canAddNewYear = computed(() => newYear.value.length >= 4 && !alreadyExists.value);
-
-const MODE_EMPTY = 'EMPTY';
-const MODE_FULL = 'FULL';
-const modeOptions = computed(() => [
-	{ value: MODE_EMPTY, label: 'Maradjanak üresen' },
-	{ value: MODE_FULL, label: 'Teljes közgazdasági fa 0 értékekkel' },
-	...Object.keys(years.value || {})
-		.reverse()
-		.map((y) => ({
-			value: y,
-			label: `Másolás innen: ${y}`,
-		})),
+const copyOptions = computed(() => [
+	{ value: 'NOTHING' as const, label: 'Maradjanak üresen' },
+	{ value: 'FULLTREE' as const, label: 'Teljes közgazdasági fa 0 értékekkel' },
+	{ value: 'EXISTING' as const, label: 'Másolás innen:' },
 ]);
+const copy = ref<(typeof copyOptions.value)[number]['value']>();
+const yearOptions = computed(() => Object.keys(years.value || {}).reverse());
+const sourceYear = ref(yearOptions.value[0] || '');
 
-function handleAdd() {
+const canAddNewYear = computed(
+	() =>
+		newYear.value.length >= 4 &&
+		!alreadyExists.value &&
+		!!copy.value &&
+		(copy.value !== 'EXISTING' || !!sourceYear.value),
+);
+
+const router = useRouter();
+
+async function handleAdd() {
+	if (!workbook.value) return;
 	if (!canAddNewYear.value) return;
 
-	// FIXME add year to workbook
-	// FIXME upload to server
-	// FIXME load from server
+	try {
+		if (copy.value === 'EXISTING') {
+			const sourceIncomeSheet = years.value?.[sourceYear.value]?.incomeSheet;
+			const sourceExpenseSheet = years.value?.[sourceYear.value]?.expenseSheet;
+			if (!sourceIncomeSheet || !sourceExpenseSheet) {
+				throw new Error('Nem találhatók a forrás év munkalapjai!');
+			}
+			cloneSheet(workbook.value, sourceIncomeSheet, `${newYear.value} BEVÉTEL`);
+			cloneSheet(workbook.value, sourceExpenseSheet, `${newYear.value} KIADÁS`);
+		} else {
+			throw new Error('NOT YET IMPLEMENTED');
+			// FIXME implement empty sheet gen
+			// FIXME implement full tree sheet gen
+		}
+
+		await uploadBudgetXlsxToServer();
+		await loadBudgetXlsxFromServer();
+		await router.replace(`/budget/${slugifyYear(newYear.value)}/`);
+	} catch (e: unknown) {
+		console.error(e);
+		alert('Nem sikerült! :c');
+	}
 }
 </script>
 
@@ -46,7 +71,11 @@ function handleAdd() {
 		<form @submit.prevent="handleAdd">
 			<PageSection>
 				<div class="not-prose mb-4">
-					<Label for="newNameEl">Új év elnevezése:</Label>
+					<Label
+						class="mb-2"
+						for="newNameEl"
+						>Új év elnevezése:</Label
+					>
 					<InputGroup>
 						<InputGroupInput
 							id="newNameEl"
@@ -59,12 +88,12 @@ function handleAdd() {
 								as-child
 								variant="secondary"
 							>
-								<button
+								<Button
 									type="button"
 									@click="resetNewName"
 								>
 									<Undo />
-								</button>
+								</Button>
 							</InputGroupButton>
 						</InputGroupAddon>
 					</InputGroup>
@@ -90,9 +119,9 @@ function handleAdd() {
 
 				<p>Milyen költségvetési sorokkal legyenek feltöltve az új munkalapok?</p>
 				<div class="not-prose mb-12">
-					<RadioGroup>
+					<RadioGroup v-model="copy">
 						<div
-							v-for="o in modeOptions"
+							v-for="o in copyOptions"
 							:key="o.value"
 							class="flex items-center space-x-2"
 						>
@@ -101,6 +130,25 @@ function handleAdd() {
 								:value="o.value"
 							/>
 							<Label :for="o.value">{{ o.label }}</Label>
+							<template v-if="o.value === 'EXISTING'">
+								<Select
+									v-model="sourceYear"
+									:disabled="copy !== 'EXISTING'"
+								>
+									<SelectTrigger>
+										<SelectValue placeholder="Válassz ki egy évet" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem
+											v-for="y in Object.keys(years || {}).reverse()"
+											:key="y"
+											:value="y"
+										>
+											{{ y }}
+										</SelectItem>
+									</SelectContent>
+								</Select>
+							</template>
 						</div>
 					</RadioGroup>
 				</div>
@@ -117,4 +165,6 @@ function handleAdd() {
 			</PageSection>
 		</form>
 	</PageFrame>
+	<!-- eslint-disable-next-line vue/no-multiple-template-root -->
+	<BudgetSaveBanner />
 </template>
