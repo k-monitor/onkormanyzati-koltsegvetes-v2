@@ -88,18 +88,19 @@ async function buildSite() {
 		</PageSection>
 	</PageFrame>
 
+	<!-- eslint-disable-next-line vue/no-multiple-template-root -->
 	<Dialog v-model:open="dialogOpened">
 		<DialogContent
-			class="min-w-3/4"
+			class="flex max-h-[80vh] min-w-[75%] flex-col"
 			@interact-outside.prevent
 			@escape-key-down.prevent
 		>
 			<DialogHeader>
 				<DialogTitle>{{ errorType }}</DialogTitle>
-				<DialogDescription class="prose max-h-[75vh] max-w-full overflow-y-scroll">
-					<pre class="text-left text-lg">{{ error }}</pre>
-				</DialogDescription>
 			</DialogHeader>
+			<div class="prose min-h-0 max-w-full overflow-y-auto pr-8">
+				<pre class="w-full overflow-x-auto text-lg">{{ error }}</pre>
+			</div>
 		</DialogContent>
 	</Dialog>
 </template>
