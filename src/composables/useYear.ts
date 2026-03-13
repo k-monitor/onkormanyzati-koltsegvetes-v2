@@ -43,7 +43,7 @@ export default () => {
 		}
 
 		// Check if hash is just a year (e.g., #2024 or #2024-kozponti)
-		const yearFromHash = s2y(hash);
+		const yearFromHash = s2y(hash.replace(/\/.*$/, '')); // Remove any trailing section/milestone part
 		if (yearFromHash) {
 			return { year: yearFromHash, section: null, milestoneId: null };
 		}
