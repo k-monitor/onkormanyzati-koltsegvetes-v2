@@ -1,9 +1,9 @@
 import type ExcelJS from 'exceljs';
 
 export function cloneSheet(wb: ExcelJS.Workbook, sourceName: string, targetName: string) {
-	if (wb.getWorksheet(targetName)) return false;
+	if (wb.getWorksheet(targetName)) return undefined;
 	const source = wb.getWorksheet(sourceName);
-	if (!source) return false;
+	if (!source) return undefined;
 	const target = wb.addWorksheet(targetName);
 	target.model = { ...source.model, name: targetName };
 	target.properties = { ...source.properties };
@@ -16,7 +16,25 @@ export function cloneSheet(wb: ExcelJS.Workbook, sourceName: string, targetName:
 		});
 		targetRow.commit();
 	});
-	return true;
+	return target;
+}
+
+export function createSheet(
+	wb: ExcelJS.Workbook,
+	name: string,
+	rows: Array<Array<ExcelJS.CellValue>>,
+) {
+	if (wb.getWorksheet(name)) return undefined;
+	const sheet = wb.addWorksheet(name);
+	rows.forEach((rowValues, rowIndex) => {
+		const row = sheet.getRow(rowIndex + 1);
+		rowValues.forEach((cellValue, colIndex) => {
+			const cell = row.getCell(colIndex + 1);
+			cell.value = cellValue;
+		});
+		row.commit();
+	});
+	return sheet;
 }
 
 export function deleteSheet(wb: ExcelJS.Workbook, name: string) {

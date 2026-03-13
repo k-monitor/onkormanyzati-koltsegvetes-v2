@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import type ExcelJS from 'exceljs';
 import { CircleAlert, Plus, Undo } from 'lucide-vue-next';
+import defaultEconNodeList from '~/assets/default-econ-node-list.tsv?raw';
 
 const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook, years } =
 	await useBudgetData();
@@ -43,17 +45,51 @@ async function handleAdd() {
 
 	try {
 		if (copy.value === 'EXISTING') {
-			const sourceIncomeSheet = years.value?.[sourceYear.value]?.incomeSheet;
-			const sourceExpenseSheet = years.value?.[sourceYear.value]?.expenseSheet;
-			if (!sourceIncomeSheet || !sourceExpenseSheet) {
-				throw new Error('Nem találhatók a forrás év munkalapjai!');
+			const names = [
+				{
+					source: years.value?.[sourceYear.value]?.incomeSheet,
+					target: `${newYear.value} BEVÉTEL`,
+				},
+				{
+					source: years.value?.[sourceYear.value]?.expenseSheet,
+					target: `${newYear.value} KIADÁS`,
+				},
+			];
+			for (const { source, target } of names) {
+				if (!source || !workbook.value.getWorksheet(source)) {
+					throw new Error(`A munkalap nem található: ${source}`);
+				}
+				if (workbook.value.getWorksheet(target)) {
+					throw new Error(`A munkalap már létezik: ${target}`);
+				}
+
+				const newSheet = cloneSheet(workbook.value, source, target);
+				if (!newSheet) {
+					throw new Error(`Nem sikerült klónozni a munkalapot: ${source} -> ${target}`);
+				}
+				newSheet.getCell('A1').value = target;
 			}
-			cloneSheet(workbook.value, sourceIncomeSheet, `${newYear.value} BEVÉTEL`);
-			cloneSheet(workbook.value, sourceExpenseSheet, `${newYear.value} KIADÁS`);
 		} else {
-			throw new Error('NOT YET IMPLEMENTED');
-			// FIXME implement empty sheet gen
-			// FIXME implement full tree sheet gen
+			const sheets = [
+				{ name: `${newYear.value} BEVÉTEL`, nodeIdPrefix: 'B' },
+				{ name: `${newYear.value} KIADÁS`, nodeIdPrefix: 'K' },
+			];
+			for (const { name, nodeIdPrefix } of sheets) {
+				const rows: Array<Array<ExcelJS.CellValue>> = [
+					[name],
+					['#', 'Megnevezés', 'Összeg'],
+				];
+				if (copy.value === 'FULLTREE') {
+					const tsvLines = defaultEconNodeList.split('\n');
+					for (const line of tsvLines) {
+						const [id, label] = line.split('\t');
+						if (id?.startsWith(nodeIdPrefix) && label) {
+							rows.push([99, `${label} (${id})`, 0]);
+						}
+					}
+				}
+				createSheet(workbook.value, name, rows);
+			}
 		}
 
 		await uploadBudgetXlsxToServer();
@@ -154,10 +190,7 @@ async function handleAdd() {
 				</div>
 
 				<template #actions>
-					<Button
-						:disabled="!canAddNewYear"
-						@click="handleAdd"
-					>
+					<Button :disabled="!canAddNewYear">
 						<Plus />
 						Hozzáadás
 					</Button>

@@ -1,0 +1,235 @@
+B1	Működési célú támogatások államháztartáson belülről
+B11	Önkormányzatok működési támogatásai
+B111	Helyi önkormányzatok működésének általános támogatása
+B112	Települési önkormányzatok egyes köznevelési feladatainak támogatása
+B113	Települési önkormányzatok szociális, gyermekjóléti és gyermekétkeztetési feladatainak támogatása
+B1131	Települési önkormányzatok egyes szociális és gyermekjóléti feladatainak támogatása
+B1132	Települési önkormányzatok gyermekétkeztetési feladatainak támogatása
+B114	Települési önkormányzatok kulturális feladatainak támogatása
+B115	Működési célú költségvetési támogatások és kiegészítő támogatások
+B116	Elszámolásból származó bevételek
+B12	Elvonások és befizetések bevételei
+B13	Működési célú garancia- és kezességvállalásból származó megtérülések államháztartáson belülről
+B14	Működési célú visszatérítendő támogatások, kölcsönök visszatérülése államháztartáson belülről
+B15	Működési célú visszatérítendő támogatások, kölcsönök igénybevétele államháztartáson belülről
+B16	Egyéb működési célú támogatások bevételei államháztartáson belülről
+B2	Felhalmozási célú támogatások államháztartáson belülről
+B21	Felhalmozási célú önkormányzati támogatások
+B22	Felhalmozási célú garancia- és kezességvállalásból származó megtérülések államháztartáson belülről
+B23	Felhalmozási célú visszatérítendő támogatások, kölcsönök visszatérülése államháztartáson belülről
+B24	Felhalmozási célú visszatérítendő támogatások, kölcsönök igénybevétele államháztartáson belülről
+B25	Egyéb felhalmozási célú támogatások bevételei államháztartáson belülről
+B3	Közhatalmi bevételek
+B31	Jövedelemadók
+B311	Magánszemélyek jövedelemadói
+B312	Társaságok jövedelemadói
+B32	Szociális hozzájárulási adó és járulékok
+B33	Bérhez és foglalkoztatáshoz kapcsolódó adók
+B34	Vagyoni típusú adók
+B34	ebből: építményadó
+B34	ebből: magánszemélyek kommunális adója
+B34	ebből: telekadó
+B34	ebből: cégautóadó
+B34	ebből: közművezetékek adója
+B34	ebből: öröklési és ajándékozási illeték
+B35	Termékek és szolgáltatások adói
+B351	Értékesítési és forgalmi adók
+B352	Fogyasztási adók
+B353	Pénzügyi monopóliumok nyereségét terhelő adók
+B354	Gépjárműadók
+B355	Egyéb áruhasználati és szolgáltatási adók
+B36	Egyéb közhatalmi bevételek
+B4	Működési bevételek
+B401	Készletértékesítés ellenértéke
+B402	Szolgáltatások ellenértéke
+B403	Közvetített szolgáltatások ellenértéke
+B404	Tulajdonosi bevételek
+B405	Ellátási díjak
+B406	Kiszámlázott általános forgalmi adó
+B407	Általános forgalmi adó visszatérítése
+B408	Kamatbevételek és más nyereségjellegű bevételek
+B4081	Befektetett pénzügyi eszközökből származó bevételek
+B4082	Egyéb kapott (járó) kamatok és kamatjellegű bevételek
+B409	Egyéb pénzügyi műveletek bevételei
+B4091	Részesedésekből származó pénzügyi műveletek bevételei
+B4092	Más egyéb pénzügyi műveletek bevételei
+B410	Biztosító által fizetett kártérítés
+B411	Egyéb működési bevételek
+B5	Felhalmozási bevételek
+B51	Immateriális javak értékesítése
+B52	Ingatlanok értékesítése
+B53	Egyéb tárgyi eszközök értékesítése
+B54	Részesedések értékesítése
+B55	Részesedések megszűnéséhez kapcsolódó bevételek
+B6	Működési célú átvett pénzeszközök
+B61	Működési célú garancia- és kezességvállalásból származó megtérülések államháztartáson kívülről
+B62	Működési célú visszatérítendő támogatások, kölcsönök visszatérülése az Európai Uniótól
+B63	Működési célú visszatérítendő támogatások, kölcsönök visszatérülése kormányoktól és más nemzetközi szervezetektől
+B64	Működési célú visszatérítendő támogatások, kölcsönök visszatérülése államháztartáson kívülről
+B65	Egyéb működési célú átvett pénzeszközök
+B7	Felhalmozási célú átvett pénzeszközök
+B71	Felhalmozási célú garancia- és kezességvállalásból származó megtérülések államháztartáson kívülről
+B72	Felhalmozási célú visszatérítendő támogatások, kölcsönök visszatérülése az Európai Uniótól
+B73	Felhalmozási célú visszatérítendő támogatások, kölcsönök visszatérülése kormányoktól és más nemzetközi szervezetektől
+B74	Felhalmozási célú visszatérítendő támogatások, kölcsönök visszatérülése államháztartáson kívülről
+B75	Egyéb felhalmozási célú átvett pénzeszközök
+B8	Finanszírozási bevételek
+B81	Belföldi finanszírozás bevételei
+B811	Hitel-, kölcsönfelvétel pénzügyi vállalkozástól
+B8111	Hosszú lejáratú hitelek, kölcsönök felvétele pénzügyi vállalkozástól
+B8112	Likviditási célú hitelek, kölcsönök felvétele pénzügyi vállalkozástól
+B8113	Rövid lejáratú hitelek, kölcsönök felvétele pénzügyi vállalkozástól
+B812	Belföldi értékpapírok bevételei
+B8121	Forgatási célú belföldi értékpapírok beváltása, értékesítése
+B8122	Forgatási célú belföldi értékpapírok kibocsátása
+B8123	Befektetési célú belföldi értékpapírok beváltása, értékesítése
+B8124	Éven túli lejáratú belföldi értékpapírok kibocsátása
+B813	Maradvány igénybevétele
+B8131	Előző év költségvetési maradványának igénybevétele
+B8132	Előző év vállalkozási maradványának igénybevétele
+B814	Államháztartáson belüli megelőlegezések
+B815	Államháztartáson belüli megelőlegezések törlesztése
+B816	Központi, irányító szervi támogatás
+B817	Lekötött bankbetétek megszüntetése
+B818	Központi költségvetés sajátos finanszírozási bevételei
+B819	Tulajdonosi kölcsönök bevételei
+B8191	Hosszú lejáratú tulajdonosi kölcsönök bevételei
+B8192	Rövid lejáratú tulajdonosi kölcsönök bevételei
+B82	Külföldi finanszírozás bevételei
+B821	Forgatási célú külföldi értékpapírok beváltása, értékesítése
+B822	Befektetési célú külföldi értékpapírok beváltása értékesítése
+B823	Külföldi értékpapírok kibocsátása
+B824	Hitelek, kölcsönök felvétele külföldi kormányoktól és nemzetközi szervezetektől
+B825	Hitelek, kölcsönök felvétele külföldi pénzintézetektől
+B83	Adóssághoz nem kapcsolódó származékos ügyletek bevételei
+B84	Váltóbevételek
+K1	Személyi juttatások
+K11	Foglalkoztatottak személyi juttatásai
+K1101	Törvény szerinti illetmények, munkabérek
+K1102	Normatív jutalmak
+K1103	Céljuttatás, projektprémium
+K1104	Készenléti, ügyeleti, helyettesítési díj, túlóra, túlszolgálat
+K1105	Végkielégítés
+K1106	Jubileumi jutalom
+K1107	Béren kívüli juttatások
+K1108	Ruházati költségtérítés
+K1109	Közlekedési költségtérítés
+K1110	Egyéb költségtérítések
+K1111	Lakhatási támogatások
+K1112	Szociális támogatások
+K1113	Foglalkoztatottak egyéb személyi juttatásai
+K12	Külső személyi juttatások
+K121	Választott tisztségviselők juttatásai
+K122	Munkavégzésre irányuló egyéb jogviszonyban nem saját foglalkoztatottaknak fizetett juttatások
+K123	Egyéb külső személyi juttatások
+K2	Munkaadókat terhelő járulékok és szociális hozzájárulási adó
+K3	Dologi kiadások
+K31	Készletbeszerzés
+K311	Szakmai anyagok beszerzése
+K312	Üzemeltetési anyagok beszerzése
+K313	Árubeszerzés
+K32	Kommunikációs szolgáltatások
+K321	Informatikai szolgáltatások igénybevétele
+K322	Egyéb kommunikációs szolgáltatások
+K33	Szolgáltatási kiadások
+K331	Közüzemi díjak
+K3311	Villamosenergia szolgáltatás díja
+K3312	Gázenergia szolgáltatás díja
+K3313	Távhő- és melegvíz szolgáltatás díja
+K3314	Víz- és csatorna szolgáltatás díja
+K332	Vásárolt élelmezés
+K333	Bérleti és lízing díjak
+K334	Karbantartási, kisjavítási szolgáltatások
+K335	Közvetített szolgáltatások
+K336	Szakmai tevékenységet segítő szolgáltatások
+K337	Egyéb szolgáltatások
+K34	Kiküldetések, reklám- és propagandakiadások
+K341	Kiküldetések kiadásai
+K342	Reklám- és propagandakiadások
+K35	Különféle befizetések és egyéb dologi kiadások
+K351	Működési célú előzetesen felszámított általános forgalmi adó
+K352	Fizetendő általános forgalmi adó
+K353	Kamatkiadások
+K354	Egyéb pénzügyi műveletek kiadásai
+K355	Egyéb dologi kiadások
+K4	Ellátottak pénzbeli juttatásai
+K41	Társadalombiztosítási ellátások
+K42	Családi támogatások
+K43	Pénzbeli kárpótlások, kártérítések
+K44	Betegséggel kapcsolatos (nem társadalombiztosítási) ellátások
+K45	Foglalkoztatással, munkanélküliséggel kapcsolatos ellátások
+K46	Lakhatással kapcsolatos ellátások
+K47	Intézményi ellátottak pénzbeli juttatásai
+K48	Egyéb nem intézményi ellátások
+K5	Egyéb működési célú kiadások
+K501	Nemzetközi kötelezettségek
+K502	Elvonások és befizetések
+K5021	A helyi önkormányzatok előző évi elszámolásából származó kiadások
+K5022	A helyi önkormányzatok törvényi előíráson alapuló befizetései
+K5023	Egyéb elvonások, befizetések
+K503	Működési célú garancia- és kezességvállalásból származó kifizetés államháztartáson belülre
+K504	Működési célú visszatérítendő támogatások, kölcsönök nyújtása államháztartáson belülre
+K505	Működési célú visszatérítendő támogatások, kölcsönök törlesztése államháztartáson belülre
+K506	Egyéb működési célú támogatások államháztartáson belülre
+K507	Működési célú garancia- és kezességvállalásból származó kifizetés államháztartáson kívülre
+K508	Működési célú visszatérítendő támogatások, kölcsönök nyújtása államháztartáson kívülre
+K509	Árkiegészítések, ártámogatások
+K510	Kamattámogatások
+K511	Működési célú támogatások az Európai Uniónak
+K512	Egyéb működési célú támogatások államháztartáson kívülre
+K513	Tartalékok
+K51301	Működési céltartalék
+K51302	Felhalmozási céltartalék
+K6	Beruházások
+K61	Immateriális javak beszerzése, létesítése
+K62	Ingatlanok beszerzése, létesítése
+K63	Informatikai eszközök beszerzése, létesítése
+K64	Egyéb tárgyi eszközök beszerzése, létesítése
+K65	Részesedések beszerzése
+K66	Meglévő részesedések növeléséhez kapcsolódó kiadások
+K67	Beruházási célú előzetesen felszámított általános forgalmi adó
+K7	Felújítások
+K71	Ingatlanok felújítása
+K72	Informatikai eszközök felújítása
+K73	Egyéb tárgyi eszközök felújítása
+K74	Felújítási célú előzetesen felszámított általános forgalmi adó
+K8	Egyéb felhalmozási célú kiadások
+K81	Felhalmozási célú garancia- és kezességvállalásból származó kifizetés államháztartáson belülre
+K82	Felhalmozási célú visszatérítendő támogatások, kölcsönök nyújtása államháztartáson belülre
+K83	Felhalmozási célú visszatérítendő támogatások, kölcsönök törlesztése államháztartáson belülre
+K84	Egyéb felhalmozási célú támogatások államháztartáson belülre
+K85	Felhalmozási célú garancia- és kezességvállalásból származó kifizetés államháztartáson kívülre
+K86	Felhalmozási célú visszatérítendő támogatások, kölcsönök nyújtása államháztartáson kívülre
+K87	Lakástámogatás
+K88	Felhalmozási célú támogatások az Európai Uniónak
+K89	Egyéb felhalmozási célú támogatások államháztartáson kívülre
+K9	Finanszírozási kiadások
+K91	Belföldi finanszírozás kiadásai
+K911	Hitel-, kölcsöntörlesztés államháztartáson kívülre
+K9111	Hosszú lejáratú hitelek, kölcsönök törlesztése pénzügyi vállalkozásnak
+K9112	Likviditási célú hitelek, kölcsönök törlesztése pénzügyi vállalkozásnak
+K9113	Rövid lejáratú hitelek, kölcsönök törlesztése pénzügyi vállalkozásnak
+K912	Belföldi értékpapírok kiadásai
+K9121	Forgatási célú belföldi értékpapírok vásárlása
+K9122	Befektetési célú belföldi értékpapírok vásárlása
+K9123	Kincstárjegyek beváltása
+K9124	Éven belüli lejáratú belföldi értékpapírok beváltása
+K9125	Belföldi kötvények beváltása
+K9126	Éven túli lejáratú belföldi értékpapírok beváltása
+K913	Államháztartáson belüli megelőlegezések folyósítása
+K914	Államháztartáson belüli megelőlegezések visszafizetése
+K915	Központi, irányító szervi támogatás folyósítása
+K916	Pénzeszközök lekötött bankbetétként elhelyezése
+K917	Pénzügyi lízing kiadásai
+K918	Központi költségvetés sajátos finanszírozási kiadásai
+K919	Tulajdonosi kölcsönök kiadásai
+K9191	Hosszú lejáratú tulajdonosi kölcsönök kiadásai
+K9192	Rövid lejáratú tulajdonosi kölcsönök kiadásai
+K92	Külföldi finanszírozás kiadásai
+K921	Forgatási célú külföldi értékpapírok vásárlása
+K922	Befektetési célú külföldi értékpapírok vásárlása
+K923	Külföldi értékpapírok beváltása
+K924	Hitelek, kölcsönök törlesztése külföldi kormányoknak és nemzetközi szervezeteknek
+K925	Hitelek, kölcsönök törlesztése külföldi pénzintézeteknek
+K93	Adóssághoz nem kapcsolódó származékos ügyletek kiadásai
+K94	Váltókiadások
