@@ -112,7 +112,7 @@ export default () => {
 			setTimeout(() => {
 				scrollToSection(section);
 				if (milestoneId) {
-					eventBus.emit(section === 'terkep' ? 'jump-map' : 'ms', milestoneId);
+					eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
 				}
 			}, 100);
 		}
@@ -130,7 +130,7 @@ export default () => {
 				setTimeout(() => {
 					scrollToSection(section, true);
 					if (milestoneId) {
-						eventBus.emit(section === 'terkep' ? 'jump-map' : 'ms', milestoneId);
+						eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
 					}
 				}, 100);
 			}

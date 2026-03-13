@@ -67,7 +67,7 @@ function jumpMap(result) {
 
 	scrollToElement($('#map'), 72);
 	setTimeout(function () {
-		eventBus.emit('jump-map', result);
+		eventBus.emit('jump_map', result);
 	}, 1000);
 }
 

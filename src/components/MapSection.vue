@@ -33,7 +33,7 @@ const DEFAULT_ZOOM = CONFIG.map?.zoom ?? 15;
 
 function openMilestoneModal(milestoneId: string) {
 	handleMilestoneOpened(milestoneId, true);
-	eventBus.emit('ms-map', milestoneId);
+	eventBus.emit('ms_map', milestoneId);
 }
 
 function openMarkerPopup(milestoneId: string) {
@@ -217,7 +217,7 @@ onMounted(() => {
 		}
 	};
 
-	eventBus.on('ms-map', (id) => {
+	eventBus.on('ms_map', (id) => {
 		tag.value = null;
 		nextTick(() => {
 			const modal = $('#milestone-modal-map-' + id);
@@ -227,7 +227,7 @@ onMounted(() => {
 		});
 	});
 
-	eventBus.on('jump-map', (milestoneId) => {
+	eventBus.on('jump_map', (milestoneId) => {
 		openMarkerPopup(milestoneId);
 	});
 
@@ -252,8 +252,8 @@ onUnmounted(() => {
 	isUnmounted = true;
 
 	// Clean up event listeners
-	eventBus.off('ms-map');
-	eventBus.off('jump-map');
+	eventBus.off('ms_map');
+	eventBus.off('jump_map');
 	document.onkeyup = null;
 
 	// Clean up jQuery event handlers
