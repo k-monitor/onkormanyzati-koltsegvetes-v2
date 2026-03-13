@@ -151,7 +151,6 @@ export default () => {
 	});
 
 	const canShowMap = computed(() => {
-		console.log(Object.values(MILESTONES).filter((m) => m.year == year.value && m.position));
 		return (
 			CONFIG.modules.map &&
 			Object.values(MILESTONES).filter((m) => m.year == year.value && m.position).length > 0
