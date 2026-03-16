@@ -145,10 +145,10 @@ watchThrottled(
 							{{ Number(sum).toLocaleString('hu') }}
 						</div>
 					</NumberField>
-					<!-- func: not editable -->
+					<!-- summary row & func: not editable -->
 					<div
 						v-else
-						class="text-right"
+						:class="cn('text-right', isSummary && 'font-bold')"
 					>
 						{{ Number(node.value).toLocaleString('hu') }}
 						<div
