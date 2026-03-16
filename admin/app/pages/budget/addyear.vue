@@ -106,6 +106,7 @@ async function handleAdd() {
 	<PageFrame title="Év hozzáadása">
 		<form @submit.prevent="handleAdd">
 			<PageSection>
+				<p>Év hozzáadását Excel-ben javasoljuk, de itt is lehetőség van rá.</p>
 				<div class="not-prose mb-4">
 					<Label
 						class="mb-2"
