@@ -100,11 +100,13 @@ watchThrottled(
 			<ItemContent>
 				<ItemTitle :class="cn(isSummary && 'font-bold')">
 					<CollapsibleTrigger
-						v-if="canShowChildren"
+						v-if="!isSummary"
 						as-child
 					>
 						<Button
 							class="cursor-pointer"
+							:class="cn(!canShowChildren && 'invisible')"
+							:disabled="!canShowChildren"
 							size="sm"
 							variant="ghost"
 						>
@@ -112,14 +114,6 @@ watchThrottled(
 							<ChevronDown v-else />
 						</Button>
 					</CollapsibleTrigger>
-					<Button
-						v-else
-						class="cursor-pointer"
-						size="sm"
-						variant="ghost"
-					>
-						<Plus />
-					</Button>
 
 					<div
 						v-if="node.id"
@@ -127,7 +121,15 @@ watchThrottled(
 					>
 						{{ node.id }}
 					</div>
-					{{ node.name }}
+					<div>{{ node.name }}</div>
+					<Button
+						v-if="!node.children?.length && isEditable"
+						class="cursor-pointer"
+						size="sm"
+						variant="secondary"
+					>
+						<Plus /> Alábontás
+					</Button>
 				</ItemTitle>
 			</ItemContent>
 			<ItemActions class="flex flex-col items-end">
@@ -179,6 +181,17 @@ watchThrottled(
 				:is-editable="isEditable"
 				:node="child"
 			/>
+			<Item
+				v-if="isEditable"
+				class="-mt-2"
+			>
+				<Button
+					class="cursor-pointer"
+					variant="secondary"
+				>
+					<Plus /> Új sor hozzáadása
+				</Button>
+			</Item>
 		</CollapsibleContent>
 	</Collapsible>
 </template>
