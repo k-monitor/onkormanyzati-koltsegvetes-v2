@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronRight, Sigma } from 'lucide-vue-next';
+import { ChevronDown, ChevronRight, Plus, Sigma } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 import { cn } from '~/lib/utils';
 import type { Worksheet } from 'exceljs';
@@ -100,13 +100,11 @@ watchThrottled(
 			<ItemContent>
 				<ItemTitle :class="cn(isSummary && 'font-bold')">
 					<CollapsibleTrigger
-						v-if="!isSummary"
+						v-if="canShowChildren"
 						as-child
 					>
 						<Button
 							class="cursor-pointer"
-							:class="cn(!canShowChildren && 'invisible')"
-							:disabled="!canShowChildren"
 							size="sm"
 							variant="ghost"
 						>
@@ -114,6 +112,15 @@ watchThrottled(
 							<ChevronDown v-else />
 						</Button>
 					</CollapsibleTrigger>
+					<Button
+						v-else
+						class="cursor-pointer"
+						size="sm"
+						variant="ghost"
+					>
+						<Plus />
+					</Button>
+
 					<div
 						v-if="node.id"
 						class="text-muted-foreground text-xs font-bold"
@@ -162,18 +169,16 @@ watchThrottled(
 				</div>
 			</ItemActions>
 		</Item>
-		<CollapsibleContent>
-			<div
-				v-if="canShowChildren"
-				class="mx-8 mb-8"
-			>
-				<BudgetEditorNode
-					v-for="child in node.children"
-					:key="child.id"
-					:is-editable="isEditable"
-					:node="child"
-				/>
-			</div>
+		<CollapsibleContent
+			v-if="canShowChildren"
+			class="mx-8 mb-8"
+		>
+			<BudgetEditorNode
+				v-for="child in node.children"
+				:key="child.id"
+				:is-editable="isEditable"
+				:node="child"
+			/>
 		</CollapsibleContent>
 	</Collapsible>
 </template>
