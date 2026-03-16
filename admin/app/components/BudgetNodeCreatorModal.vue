@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { CircleAlert } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
+
+const DEFAULT_ID_LENGTH = 2;
 
 const dialogOpened = ref(false);
 const parentNode = ref<BudgetNode | undefined>();
@@ -9,6 +12,26 @@ bus.on(({ parentNode: _parentNode }) => {
 	parentNode.value = _parentNode;
 	dialogOpened.value = true;
 });
+
+const existingChildIds = computed(() => {
+	if (!parentNode.value) return [];
+	const parentId = String(parentNode.value.id);
+	const children = parentNode.value.children || [];
+	return children.map((c) => String(c.id)).filter(id => id.startsWith(parentId));
+	// filtering out F... IDs
+});
+
+const idLength = computed(() => {
+	const childIds = [...existingChildIds.value];
+	if (!childIds.length) return DEFAULT_ID_LENGTH;
+	const lowestChildId: string = childIds.sort((a, b) => a.localeCompare(b))[0]!;
+	const trailingZeros = lowestChildId.match(/0*[1-9]$/);
+	return trailingZeros ? trailingZeros[0].length : 1;
+});
+
+const maxNewChildren = computed(() =>
+	idLength.value < 1 ? 0 : 10 ** idLength.value - existingChildIds.value.length - 1,
+);
 
 const textarea = ref('');
 
@@ -78,6 +101,16 @@ function save() {
 
 				<div class="mb-6">
 					<p class="mb-2">Az alábbi sorok lesznek hozzáadva:</p>
+					<Alert
+						v-if="!maxNewChildren"
+						class="not-prose mb-8"
+						variant="destructive"
+					>
+						<CircleAlert />
+						<AlertTitle
+							>Ehhez a szülő kategóriához nem adható újabb alkategória.</AlertTitle
+						>
+					</Alert>
 				</div>
 
 				<DialogFooter class="[&>button]:cursor-pointer">

@@ -45,7 +45,10 @@ function prepareEconomicTree(sheetName: string) {
 	const sheet = workbook.value.getWorksheet(sheetName);
 	if (!sheet) return;
 
-	return generateEconomicTree(sheet);
+	const root = generateEconomicTree(sheet);
+	if (side.value === 'expense') root.id = 'K';
+	if (side.value === 'income') root.id = 'B';
+	return root;
 }
 
 function prepareFunctionalTree(sheetName: string) {

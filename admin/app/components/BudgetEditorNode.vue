@@ -121,7 +121,7 @@ function handleAdd() {
 					</CollapsibleTrigger>
 
 					<div
-						v-if="node.id"
+						v-if="node.id && !isSummary"
 						class="text-muted-foreground text-xs font-bold"
 					>
 						{{ node.id }}
@@ -142,7 +142,7 @@ function handleAdd() {
 				<div>
 					<!-- econ: editable -->
 					<NumberField
-						v-if="isEditable && node.id"
+						v-if="isEditable && node.id && !isSummary"
 						v-model="inputValue"
 						locale="hu"
 						:min="0"
