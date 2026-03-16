@@ -10,8 +10,8 @@ const { isSummary, node } = defineProps<{
 	isSummary?: boolean;
 }>();
 
-const canShowChildren = computed(() => {
-	return !isSummary && node.children && node.children.length > 0;
+const hasChildren = computed(() => {
+	return node.children && node.children.length > 0;
 });
 
 const sum = computed(() => {
@@ -32,7 +32,7 @@ const showChildrenSumWarning = computed(() => {
 	return node.value !== sum.value;
 });
 
-const open = ref(false);
+const open = ref(isSummary);
 
 const sheet = inject<Ref<Worksheet | undefined>>('sheet');
 
@@ -98,15 +98,15 @@ watchThrottled(
 			variant="outline"
 		>
 			<ItemContent>
-				<ItemTitle :class="cn(isSummary && 'font-bold')">
+				<ItemTitle :class="cn('w-full', isSummary && 'font-bold')">
 					<CollapsibleTrigger
 						v-if="!isSummary"
 						as-child
 					>
 						<Button
 							class="cursor-pointer"
-							:class="cn(!canShowChildren && 'invisible')"
-							:disabled="!canShowChildren"
+							:class="cn(!hasChildren && 'invisible')"
+							:disabled="!hasChildren"
 							size="sm"
 							variant="ghost"
 						>
@@ -121,7 +121,7 @@ watchThrottled(
 					>
 						{{ node.id }}
 					</div>
-					<div>{{ node.name }}</div>
+					<div class="grow">{{ node.name }}</div>
 					<Button
 						v-if="!node.children?.length && isEditable"
 						class="cursor-pointer"
@@ -172,8 +172,8 @@ watchThrottled(
 			</ItemActions>
 		</Item>
 		<CollapsibleContent
-			v-if="canShowChildren"
-			class="mx-8 mb-8"
+			v-if="hasChildren"
+			:class="cn('mb-8', isSummary || 'mx-8')"
 		>
 			<BudgetEditorNode
 				v-for="child in node.children"
@@ -189,7 +189,7 @@ watchThrottled(
 					class="cursor-pointer"
 					variant="secondary"
 				>
-					<Plus /> Új sor hozzáadása
+					<Plus /> Új sor
 				</Button>
 			</Item>
 		</CollapsibleContent>

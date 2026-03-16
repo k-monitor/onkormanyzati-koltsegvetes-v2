@@ -165,14 +165,9 @@ const isEconAndFuncTotalDiffer = computed(() => {
 	<div class="prose mx-auto w-full px-4 lg:max-w-[90%] lg:px-0">
 		<template v-if="visibleTree">
 			<BudgetEditorNode
+				:is-editable="type === 'econ'"
 				is-summary
 				:node="visibleTree"
-			/>
-			<BudgetEditorNode
-				v-for="c in visibleTree.children || []"
-				:key="c.id"
-				:is-editable="type === 'econ'"
-				:node="c"
 			/>
 		</template>
 	</div>
