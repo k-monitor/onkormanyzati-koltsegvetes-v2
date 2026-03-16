@@ -88,6 +88,11 @@ watchThrottled(
 		throttle: 500,
 	},
 );
+
+const nodeCreatorBus = useNodeCreatorEventBus();
+function handleAdd() {
+	nodeCreatorBus.emit({ parentNode: node });
+}
 </script>
 
 <template>
@@ -127,6 +132,7 @@ watchThrottled(
 						class="cursor-pointer"
 						size="sm"
 						variant="secondary"
+						@click="handleAdd"
 					>
 						<Plus /> Alábontás
 					</Button>
@@ -188,6 +194,7 @@ watchThrottled(
 				<Button
 					class="cursor-pointer"
 					variant="secondary"
+					@click="handleAdd"
 				>
 					<Plus /> Új sor
 				</Button>

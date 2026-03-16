@@ -171,4 +171,6 @@ const isEconAndFuncTotalDiffer = computed(() => {
 			/>
 		</template>
 	</div>
+
+	<BudgetNodeCreatorModal />
 </template>
