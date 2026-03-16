@@ -85,7 +85,7 @@ watch(sheetName, () => {
 	updateEconTree();
 });
 
-const bus = useEventBus(CELL_CHANGED_EVENT); // called throttled from BudgetEditorNode
+const bus = useCellChangedEvent(); // called throttled from BudgetEditorNode
 bus.on(() => {
 	// values changed
 	updateEconTree();
@@ -172,5 +172,5 @@ const isEconAndFuncTotalDiffer = computed(() => {
 		</template>
 	</div>
 
-	<BudgetNodeCreatorModal />
+	<BudgetNodeCreatorModal @added-nodes="bus.emit" />
 </template>

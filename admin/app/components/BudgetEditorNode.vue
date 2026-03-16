@@ -76,7 +76,7 @@ function writeEconValue(id: string | number, name: string, value: number) {
 }
 
 const inputValue = ref(readEconValue(node.id || '', node.name || ''));
-const bus = useEventBus(CELL_CHANGED_EVENT);
+const bus = useCellChangedEvent();
 watchThrottled(
 	inputValue,
 	() => {
@@ -89,7 +89,7 @@ watchThrottled(
 	},
 );
 
-const nodeCreatorBus = useNodeCreatorEventBus();
+const nodeCreatorBus = useNodeCreatorEvent();
 function handleAdd() {
 	nodeCreatorBus.emit({ parentNode: node });
 }
