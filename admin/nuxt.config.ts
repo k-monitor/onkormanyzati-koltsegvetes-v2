@@ -18,7 +18,7 @@ export default defineNuxtConfig({
 		},
 		deployCmd: process.env.DEPLOY_CMD || '', // NUXT_DEPLOY_CMD (or DEPLOY_CMD)
 		public: {
-			url: process.env.PUBLIC_URL || '', // NUXT_PUBLIC_URL
+			url: process.env.PUBLIC_URL || '', // NUXT_PUBLIC_URL (or PUBLIC_URL)
 		},
 	},
 	shadcn: {

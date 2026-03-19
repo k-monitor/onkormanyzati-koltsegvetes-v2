@@ -8,7 +8,7 @@ const links = [
 	},
 ];
 
-const kokoUrl = await usePublicUrl();
+const kokoUrl = usePublicUrl();
 
 if (kokoUrl.value) {
 	links.push({

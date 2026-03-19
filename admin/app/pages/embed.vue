@@ -7,7 +7,7 @@ const embeds = [
 	{ name: 'Mérleg', path: '/merleg/' },
 ];
 
-const kokoUrl = await usePublicUrl();
+const kokoUrl = usePublicUrl();
 
 function getEmbedCode(path: string) {
 	const baseUrl = kokoUrl.value.replace(/\/$/, '');
