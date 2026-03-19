@@ -2,9 +2,9 @@
 import { CircleAlert, Copy } from 'lucide-vue-next';
 
 const embeds = [
-	{ name: 'Bevételek', path: 'bevetelek/' },
-	{ name: 'Kiadások', path: 'kiadasok/' },
-	{ name: 'Mérleg', path: 'merleg/' },
+	{ name: 'Bevételek', path: '/bevetelek/' },
+	{ name: 'Kiadások', path: '/kiadasok/' },
+	{ name: 'Mérleg', path: '/merleg/' },
 ];
 
 const kokoUrl = await usePublicUrl();
@@ -23,6 +23,7 @@ async function copyToClipboard(path: string) {
 	} catch {
 		alert('Nem sikerült a másolás!');
 	}
+	// TODO LATER toasts instead of alerts
 }
 </script>
 
