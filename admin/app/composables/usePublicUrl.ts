@@ -1,5 +1,5 @@
 export default () => {
-	const NUXT_PUBLIC_URL = useRuntimeConfig().public.url;
-	const PUBLIC_URL = import.meta.server ? process.env.PUBLIC_URL || '' : '';
-	return useState('publicUrl', () => NUXT_PUBLIC_URL || PUBLIC_URL);
+	const publicUrl = useConfig().publicUrl;
+	// only has value on the server, useState passes it to client
+	return useState('publicUrl', () => publicUrl);
 };

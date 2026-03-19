@@ -4,7 +4,7 @@ import path from 'path';
 export const XLSX_MIME_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 export function useMulter(dir: string, filename: string | null, filetypes: string[]) {
-	const fullDir = path.resolve(kokoDir(), dir);
+	const fullDir = path.resolve(useConfig().kokoDir, dir);
 	return multer({
 		storage: multer.diskStorage({
 			destination: (req, file, cb) => {

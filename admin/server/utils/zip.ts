@@ -15,7 +15,7 @@ export default (event: H3Event, filename: string, directories: string[], files: 
 		throw err;
 	});
 
-	const dir = kokoDir();
+	const dir = useConfig().kokoDir;
 	directories.forEach((d) => archive.directory(path.resolve(dir, d), d));
 	files.forEach((f) => archive.file(path.resolve(dir, f), { name: path.basename(f) }));
 

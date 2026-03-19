@@ -5,7 +5,7 @@ export default () => {
 		exec(
 			'pnpm prepare',
 			{
-				cwd: kokoDir(),
+				cwd: useConfig().kokoDir,
 			},
 			resolve,
 		);

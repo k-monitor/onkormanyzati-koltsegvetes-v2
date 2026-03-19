@@ -28,7 +28,7 @@ function build() {
 		exec(
 			'pnpm build',
 			{
-				cwd: kokoDir(),
+				cwd: useConfig().kokoDir,
 				env: {
 					...process.env, // needed for NVM to work
 					NUXT_APP_BASE_URL: '/', // Nuxt default so don't pass what admin got
@@ -47,14 +47,13 @@ function build() {
 }
 
 function deploy() {
-	const NUXT_DEPLOY_CMD = useRuntimeConfig().deployCmd;
-	const deployCmd = NUXT_DEPLOY_CMD || process.env.DEPLOY_CMD || '';
+	const deployCmd = useConfig().deployCmd;
 	return new Promise<{ error: ExecException | null; stderr: string }>((resolve) => {
 		if (!deployCmd) return resolve({ error: null, stderr: '' });
 		exec(
 			deployCmd,
 			{
-				cwd: kokoDir(),
+				cwd: useConfig().kokoDir,
 			},
 			(error, _stdout, stderr) => {
 				resolve({
