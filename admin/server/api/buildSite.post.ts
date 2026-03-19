@@ -47,12 +47,12 @@ function build() {
 }
 
 function deploy() {
-	const { deployCmd } = useRuntimeConfig(); // NUXT_ prefixed overrides
-	const DEPLOY_CMD = deployCmd || process.env.DEPLOY_CMD || '';
+	const NUXT_DEPLOY_CMD = useRuntimeConfig().deployCmd;
+	const deployCmd = NUXT_DEPLOY_CMD || process.env.DEPLOY_CMD || '';
 	return new Promise<{ error: ExecException | null; stderr: string }>((resolve) => {
-		if (!DEPLOY_CMD) return resolve({ error: null, stderr: '' });
+		if (!deployCmd) return resolve({ error: null, stderr: '' });
 		exec(
-			DEPLOY_CMD,
+			deployCmd,
 			{
 				cwd: kokoDir(),
 			},
