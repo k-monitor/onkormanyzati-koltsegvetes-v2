@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CircleAlert, Copy } from 'lucide-vue-next';
+import { joinURL } from 'ufo';
 
 const embeds = [
 	{ name: 'Bevételek', path: '/bevetelek/' },
@@ -10,8 +11,8 @@ const embeds = [
 const kokoUrl = usePublicUrl();
 
 function getEmbedCode(path: string) {
-	const baseUrl = kokoUrl.value.replace(/\/$/, '');
-	const code = `<iframe src="${baseUrl}${path}" width="100%" height="1200px" frameborder="0"></iframe>`;
+	const embedUrl = joinURL(kokoUrl.value, path);
+	const code = `<iframe src="${embedUrl}" width="100%" height="1200px" frameborder="0"></iframe>`;
 	return code.replaceAll(/\s+/g, '\n\t').replace('><', '\n><');
 }
 
