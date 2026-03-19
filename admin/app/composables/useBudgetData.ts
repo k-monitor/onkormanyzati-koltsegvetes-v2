@@ -77,13 +77,10 @@ export default createGlobalState(async () => {
 		const formData = new FormData();
 		formData.append('budget', blob, 'budget.xlsx');
 		try {
-			const response = await fetch('/api/budget', {
+			await $fetch('/api/budget', {
 				method: 'POST',
 				body: formData,
 			});
-			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}`);
-			}
 			success = true;
 		} catch (error) {
 			console.error('Error uploading workbook:', error);

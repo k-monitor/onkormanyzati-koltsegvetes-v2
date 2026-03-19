@@ -40,10 +40,10 @@ const logos = [
 ];
 
 const r = ref(0);
+const serverUrl = useServerUrl();
 
 function logoUrl(logo: string) {
-	const path = '/static/assets/img';
-	return `${path}/${logo}`;
+	return serverUrl(`/static/assets/img/${logo}`);
 }
 
 async function uploadLogo(e: Event, f: string) {

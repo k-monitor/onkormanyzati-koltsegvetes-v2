@@ -2,11 +2,11 @@
 import { Trash, Upload } from 'lucide-vue-next';
 
 const loading = useLoading();
+const serverUrl = useServerUrl();
 
 const ms = ref<string[]>();
 async function updateMs() {
-	const r = await fetch('/api/ms');
-	ms.value = await r.json();
+	ms.value = await $fetch<string[]>('/api/ms');
 }
 
 async function uploadMs(e: Event) {
@@ -18,7 +18,7 @@ async function delMs(f: string) {
 	if (!confirm(`Biztosan törlöd ezt a fájlt? (${f})`)) return;
 	loading.value = true;
 	try {
-		await fetch('/api/ms/' + f, { method: 'DELETE' });
+		await $fetch('/api/ms/' + f, { method: 'DELETE' });
 		await updateMs();
 	} catch {
 		alert('Nem sikerült! :C');
@@ -79,7 +79,7 @@ onMounted(async () => {
 				>
 					<ItemHeader>
 						<a
-							:href="'/static/assets/ms/' + f"
+							:href="serverUrl('/static/assets/ms/' + f)"
 							class="bg-foreground/5 aspect-16/9 w-full rounded-sm"
 							style="
 								background-position: center;
@@ -87,7 +87,7 @@ onMounted(async () => {
 								background-size: cover;
 							"
 							:style="{
-								backgroundImage: 'url(/static/assets/ms/' + f + ')',
+								backgroundImage: `url(${serverUrl('/static/assets/ms/' + f)})`,
 							}"
 							target="_blank"
 							>&nbsp;

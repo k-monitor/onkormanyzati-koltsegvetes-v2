@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { Download, Undo, Upload } from 'lucide-vue-next';
 
+const serverUrl = useServerUrl();
+
 const { downloadXlsxFromClient, isModified, loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } =
 	await useBudgetData();
+
 async function uploadBudget(e: Event) {
 	await upload('/api/budget', 'budget', e.target as HTMLInputElement);
 	await loadBudgetXlsxFromServer();
@@ -55,7 +58,7 @@ async function uploadBudget(e: Event) {
 				>
 					<a
 						download
-						href="/input/budget.xlsx"
+						:href="serverUrl('/input/budget.xlsx')"
 					>
 						<Download />
 						Letöltés

@@ -2,6 +2,8 @@
 import { Cog, Download } from 'lucide-vue-next';
 
 const loading = useLoading();
+const serverUrl = useServerUrl();
+
 const error = ref('');
 const errorType = ref('');
 const dialogOpened = ref(false);
@@ -58,7 +60,7 @@ async function buildSite() {
 				>
 					<a
 						download
-						href="/api/zip/site"
+						:href="serverUrl('/api/zip/site')"
 					>
 						<Download />
 						Kész site
@@ -78,7 +80,7 @@ async function buildSite() {
 				>
 					<a
 						download
-						href="/api/zip/code"
+						:href="serverUrl('/api/zip/code')"
 					>
 						<Download />
 						Forráskód

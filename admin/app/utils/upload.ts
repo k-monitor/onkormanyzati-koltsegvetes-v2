@@ -9,7 +9,7 @@ export default async (endpoint: string, field: string, ref: HTMLInputElement) =>
 		body.append(field, ref.files[i]!);
 	}
 	try {
-		await fetch(endpoint, { method: 'POST', body });
+		await $fetch(endpoint, { method: 'POST', body });
 	} catch {
 		alert('Nem sikerült! :C');
 	} finally {

@@ -2,12 +2,13 @@
 import { Cog, Download, Upload } from 'lucide-vue-next';
 
 const loading = useLoading();
+const serverUrl = useServerUrl();
 
 async function newConfig() {
 	if (!confirm('Biztosan felülírod az aktuális konfigot egy új, üres konfiggal?')) return;
 	loading.value = 'Új konfig generálása...';
 	try {
-		await fetch('/api/newConfig', { method: 'POST' });
+		await $fetch('/api/newConfig', { method: 'POST' });
 	} catch {
 		alert('Nem sikerült! :C');
 	} finally {
@@ -36,7 +37,7 @@ function uploadConfig(e: Event) {
 				>
 					<a
 						download
-						href="/input/config.xlsx"
+						:href="serverUrl('/input/config.xlsx')"
 					>
 						<Download />
 						Letöltés
