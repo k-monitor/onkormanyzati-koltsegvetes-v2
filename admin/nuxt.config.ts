@@ -13,6 +13,17 @@ export default defineNuxtConfig({
 		prefix: '',
 	},
 	vite: {
+		optimizeDeps: {
+			include: [
+				'class-variance-authority',
+				'clsx',
+				'exceljs', // CJS
+				'lucide-vue-next',
+				'reka-ui',
+				'slugify', // CJS
+				'tailwind-merge',
+			],
+		},
 		plugins: [tailwindcss()],
 	},
 });

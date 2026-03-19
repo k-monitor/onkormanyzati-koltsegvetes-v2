@@ -17,7 +17,7 @@
 		"exceljs": "^4.4.0",
 		"lucide-vue-next": "^0.577.0",
 		"multer": "^2.1.1",
-		"nuxt": "^4.2.2",
+		"nuxt": "^4.4.2",
 		"reka-ui": "^2.9.2",
 		"shadcn-nuxt": "2.4.3",
 		"slugify": "^1.6.8",
