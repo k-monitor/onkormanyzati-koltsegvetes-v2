@@ -6,6 +6,11 @@ const serverUrl = useServerUrl();
 const { downloadXlsxFromClient, isModified, loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } =
 	await useBudgetData();
 
+function revertChanges() {
+	if (!confirm('Biztosan el akarod vetni a módosításokat?')) return;
+	return loadBudgetXlsxFromServer();
+}
+
 async function uploadBudget(e: Event) {
 	await upload('/api/budget', 'budget', e.target as HTMLInputElement);
 	await loadBudgetXlsxFromServer();
@@ -17,10 +22,9 @@ async function uploadBudget(e: Event) {
 		<PageSection v-if="isModified">
 			<p class="text-destructive *:text-destructive">
 				<strong>A költségvetés módosult, de még nem lett mentve</strong>
-				(feltöltve) a szerveren levő <code>budget.xlsx</code> fájlba. A
-				<strong>KÖKÖ Admin</strong>
-				bezárásakor vagy újratöltésekor a módosítások elvesznek. Az alábbi gombokkal
-				kezelheted az elvégzett módosításokat.
+				(feltöltve) a szerveren levő <code>budget.xlsx</code> fájlba. A módosítások
+				elvesznek a böngészőlap bezárásakor, újratöltésekor, új költségvetés feltöltésekor,
+				valamint évek hozzáadása, átnevezése vagy törlése esetén.
 			</p>
 			<template #actions>
 				<Button
@@ -37,7 +41,7 @@ async function uploadBudget(e: Event) {
 				<Button
 					class="ml-auto"
 					variant="destructive"
-					@click="loadBudgetXlsxFromServer"
+					@click="revertChanges"
 				>
 					<Undo />
 					Elvetés
