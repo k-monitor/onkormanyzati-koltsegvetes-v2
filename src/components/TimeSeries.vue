@@ -9,7 +9,8 @@ const { side, view = 'func' } = defineProps<{
 const path = ref<string[]>([]);
 const hovered = ref<string | null>(null);
 const hiddenSeries = ref<Set<string>>(new Set());
-const inflationAdjusted = ref(false);
+// mode: 'regular' | 'inflation' | 'gdp'
+const mode = ref<'regular' | 'inflation' | 'gdp'>('regular');
 
 // Reset path when view changes
 watch(() => view, () => {
@@ -32,6 +33,15 @@ function toggleSeriesVisibility(id: string, event: Event) {
 
 // Check if inflation feature is enabled
 const inflationEnabled = computed(() => !!CONFIG.timeseries?.inflation);
+
+// GDP feature enabled if yearly GDP data exists
+const gdpEnabled = computed(() => !!CONFIG.gdp);
+
+// Get GDP values from config (should be { year: value })
+const gdpValues = computed(() => {
+	if (!CONFIG.gdp) return {};
+	return CONFIG.gdp as Record<string, number>;
+});
 
 // Get inflation rates from config object (timeseries.inflations.2020, timeseries.inflations.2021, etc.)
 const inflationRates = computed(() => {
@@ -163,10 +173,18 @@ const timeSeriesData = computed(() => {
 	return Object.values(result);
 });
 
-// Helper to get display value (raw or inflation-adjusted)
+// Helper to get display value (raw, inflation-adjusted, or GDP-adjusted)
 function getDisplayValue(series: { values: Record<string, number>; adjustedValues: Record<string, number> }, year: string): number {
-	if (inflationAdjusted.value && inflationEnabled.value) {
+	if (mode.value === 'inflation' && inflationEnabled.value) {
 		return series.adjustedValues[year] || 0;
+	}
+	if (mode.value === 'gdp' && gdpEnabled.value) {
+		const gdp = gdpValues.value[year];
+		if (gdp && gdp > 0) {
+			// Show as percentage of GDP
+			return ((series.values[year] || 0) / gdp) * 100;
+		}
+		return 0;
 	}
 	return series.values[year] || 0;
 }
@@ -352,8 +370,11 @@ const yTicks = computed(() => {
 	return ticks;
 });
 
-// Format large numbers
+// Format large numbers or percent
 function formatValue(value: number): string {
+	if (mode.value === 'gdp') {
+		return value.toFixed(2) + ' %';
+	}
 	if (value >= 1e9) {
 		return (value / 1e9).toFixed(1) + ' mrd';
 	}
@@ -460,17 +481,39 @@ const hoveredSeries = computed(() => {
 					</ol>
 				</nav>
 
-				<!-- Inflation toggle -->
-				<div v-if="inflationEnabled" class="inflation-toggle">
-					<button
-						class="btn btn-sm"
-						:class="inflationAdjusted ? 'btn-primary' : 'btn-outline-secondary'"
-						@click="inflationAdjusted = !inflationAdjusted"
-						:title="inflationAdjusted ? 'Nominális értékek megjelenítése' : `Infláció korrigált értékek (${baseYear}-es árszinten)`"
-					>
-						<i class="fas fa-fw" :class="inflationAdjusted ? 'fa-check-square' : 'fa-square'"></i>
-						Infláció korrigált ({{ baseYear }})
-					</button>
+				<!-- Mode chooser: regular, inflation, GDP -->
+				<div v-if="inflationEnabled || gdpEnabled" class="mode-toggle">
+					<div class="btn-group btn-group-sm" role="group">
+						<button
+							class="btn"
+							:class="mode === 'regular' ? 'btn-primary' : 'btn-outline-secondary'"
+							@click="mode = 'regular'"
+							title="Nominális értékek megjelenítése"
+						>
+							<i class="fas fa-fw" :class="mode === 'regular' ? 'fa-check-square' : 'fa-square'"></i>
+							Nominál
+						</button>
+						<button
+							v-if="inflationEnabled"
+							class="btn"
+							:class="mode === 'inflation' ? 'btn-primary' : 'btn-outline-secondary'"
+							@click="mode = 'inflation'"
+							:title="`Infláció korrigált értékek (${baseYear}-es árszinten)`"
+						>
+							<i class="fas fa-fw" :class="mode === 'inflation' ? 'fa-check-square' : 'fa-square'"></i>
+							Infláció korrigált ({{ baseYear }})
+						</button>
+						<button
+							v-if="gdpEnabled"
+							class="btn"
+							:class="mode === 'gdp' ? 'btn-primary' : 'btn-outline-secondary'"
+							@click="mode = 'gdp'"
+							title="Értékek az éves GDP %-ában"
+						>
+							<i class="fas fa-fw" :class="mode === 'gdp' ? 'fa-check-square' : 'fa-square'"></i>
+							GDP arány
+						</button>
+					</div>
 				</div>
 			</div>
 
@@ -548,7 +591,11 @@ const hoveredSeries = computed(() => {
 									@mouseleave="hovered = null"
 									@click="drillDown(series.id)"
 								>
-									<title>{{ series.name }}: {{ groupNums(getDisplayValue(series, year)) }}{{ inflationAdjusted ? ` (${baseYear}-es árszinten)` : '' }} ({{ year }})</title>
+									<title>{{ series.name }}: {{ groupNums(getDisplayValue(series, year)) }}
+										<template v-if="mode === 'inflation'"> ({{ baseYear }}-es árszinten)</template>
+										<template v-if="mode === 'gdp'"> (% GDP)</template>
+										({{ year }})
+									</title>
 								</rect>
 							</template>
 						</g>
@@ -566,7 +613,11 @@ const hoveredSeries = computed(() => {
 						<thead>
 							<tr>
 								<th>Év</th>
-								<th class="text-right">Összeg{{ inflationAdjusted ? ` (${baseYear})` : '' }}</th>
+								<th class="text-right">
+									Összeg
+									<template v-if="mode === 'inflation'"> ({{ baseYear }})</template>
+									<template v-if="mode === 'gdp'"> (% GDP)</template>
+								</th>
 								<th class="text-right">Változás</th>
 							</tr>
 						</thead>
@@ -635,7 +686,11 @@ const hoveredSeries = computed(() => {
 						<tr>
 							<th>Év</th>
 							<th>Név</th>
-							<th class="text-right">Összeg{{ inflationAdjusted ? ` (${baseYear})` : '' }}</th>
+							<th class="text-right">
+								Összeg
+								<template v-if="mode === 'inflation'"> ({{ baseYear }})</template>
+								<template v-if="mode === 'gdp'"> (% GDP)</template>
+							</th>
 							<th class="text-right">Változás</th>
 						</tr>
 					</thead>
