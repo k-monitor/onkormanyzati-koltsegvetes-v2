@@ -23,50 +23,56 @@ const existingChildIds = computed(() => {
 	// so here we filter out F... IDs
 });
 
-const DEFAULT_SUB_ID_LENGTH = 2;
-const subIdLength = computed(() => {
-	const childIds = [...existingChildIds.value];
-	if (!childIds.length) return DEFAULT_SUB_ID_LENGTH;
-	const lowestChildId: string = childIds.sort((a, b) => a.localeCompare(b))[0]!;
-	const trailingZeros = lowestChildId.match(/0*[1-9]$/);
-	return trailingZeros ? trailingZeros[0].length : 1;
-	// B101 -> children ID = 01 -> subIdLength = 2
-	// B11 -> children ID = 1 -> subIdLength = 1
-	// B1 -> children ID = 1 -> subIdLength = 1
-	// (no children) -> subIdLength = DEFAULT_SUB_ID_LENGTH
-});
-const newIdMask = computed(() => parentNode.value.id + `0`.repeat(subIdLength.value));
-
-const maxNewChildren = computed(() =>
-	subIdLength.value < 1 ? 0 : 10 ** subIdLength.value - existingChildIds.value.length - 1,
-);
-
-const nodesToAdd = computed<BudgetNode[]>(() => {
+const parsedInputRows = computed<BudgetNode[]>(() => {
 	const lines = textarea.value
 		.trim()
 		.split('\n')
 		.map((l) => l.trim())
 		.filter((l) => l);
-	if (!lines.length) return [];
-
-	const rows = flexiParse(lines).map((r) => {
+	return flexiParse(lines).map((r) => {
 		const fullName = r.name;
 		// if it ends with "([BKF][A-Z0-9]+)$", split it into label and id
 		const idMatch = fullName.match(/(.*)\s+\(([BKF][A-Z0-9]+)\)$/);
 		return {
 			id: idMatch?.[2]?.trim() || '',
 			name: idMatch?.[1]?.trim() || fullName,
-			amount: r.amount,
+			value: r.amount,
 		};
 	});
-	// FIXME generate ids
-	return rows
-		.map((r) => ({
-			id: r.id || 'TODO',
-			name: r.name,
-			value: r.amount,
-		}))
-		.slice(0, maxNewChildren.value);
+});
+
+const DEFAULT_SUB_ID_LENGTH = 2;
+const subIdLength = computed(() => {
+	if (existingChildIds.value.length) {
+		// if there are children, they dictate ID length
+		const childIds = [...existingChildIds.value];
+		const lowestChildId: string = childIds.sort((a, b) => a.localeCompare(b))[0]!;
+		const trailingZeros = lowestChildId.match(/0*[1-9]$/);
+		return trailingZeros ? trailingZeros[0].length : 1;
+		// B101 -> children ID = 01 -> subIdLength = 2
+		// B11 -> children ID = 1 -> subIdLength = 1
+		// B1 -> children ID = 1 -> subIdLength = 1
+	}
+
+	// if there are no children, input can dictate ID length
+	const parentId = String(parentNode.value?.id || '');
+	const firstInputId = String(parsedInputRows.value.find((r) => r.id)?.id || '');
+	if (!firstInputId) return DEFAULT_SUB_ID_LENGTH; // no input ID
+	return Math.max(1, firstInputId.length - parentId.length);
+	// here we need the sub ID length only, e.g. B101 - B1 = 2
+});
+
+const newIdMask = computed(() =>
+	parentNode.value ? parentNode.value.id + '0'.repeat(subIdLength.value) : '',
+);
+
+const maxNewChildren = computed(() =>
+	subIdLength.value < 1 ? 0 : 10 ** subIdLength.value - existingChildIds.value.length - 1,
+);
+
+const nodesToAdd = computed<BudgetNode[]>(() => {
+	// FIXME use subIdLength to generate IDs, filter out invalids, slice
+	return parsedInputRows.value.slice(0, maxNewChildren.value);
 });
 
 const canSave = computed(() => nodesToAdd.value.length > 0);
