@@ -15,7 +15,7 @@ const nodes = computed(() => {
 	// TODO LATER search result type
 	const nodes = [];
 	milestone.nodeIds.forEach((id) => {
-		const results = search(milestone.year, id).filter((r) => r.matchedId);
+		const results = search(milestone.year, id, []).filter((r) => r.matchedId);
 		if (results.length) nodes.push(results[0]);
 	});
 	return nodes;

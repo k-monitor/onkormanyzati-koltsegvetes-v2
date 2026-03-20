@@ -20,12 +20,12 @@ const yearsRange = computed(() => {
 
 // Check if functional data is available (and enabled by config)
 const hasFuncData = computed(() => {
-	return isFuncEnabled.value && years.value.some((year) => DATA[year]?.expense?.func && props.side === 'expense' || DATA[year]?.income?.func && props.side === 'income');
+	return isFuncEnabled.value && years.value.some((year) => (DATA[year]?.expense?.func && props.side === 'expense') || (DATA[year]?.income?.func && props.side === 'income'));
 });
 
 // Check if economic data is available (and enabled by config)
 const hasEconData = computed(() => {
-	return isEconEnabled.value && years.value.some((year) => DATA[year]?.expense?.econ && props.side === 'expense' || DATA[year]?.income?.econ && props.side === 'income');
+	return isEconEnabled.value && years.value.some((year) => (DATA[year]?.expense?.econ && props.side === 'expense') || (DATA[year]?.income?.econ && props.side === 'income'));
 });
 
 const activeView = ref<'func' | 'econ'>(hasFuncData.value ? 'func' : 'econ');

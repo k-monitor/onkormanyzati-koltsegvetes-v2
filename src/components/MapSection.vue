@@ -204,18 +204,20 @@ function getPrevId(index: number): string {
 
 const tag = ref<string | null>(null);
 
+function handleKeyup(e: KeyboardEvent) {
+	const $ = window.$;
+	if (e.key === 'ArrowLeft') {
+		$('.modal.show .prev').click();
+	} else if (e.key === 'ArrowRight') {
+		$('.modal.show .next').click();
+	}
+}
+
 onMounted(() => {
 	initMap();
 	const $ = window.$;
 
-	document.onkeyup = function (e) {
-		e = e || window.event;
-		if (e.keyCode == 37) {
-			$('.modal.show .prev').click();
-		} else if (e.keyCode == 39) {
-			$('.modal.show .next').click();
-		}
-	};
+	document.addEventListener('keyup', handleKeyup);
 
 	eventBus.on('ms_map', (id) => {
 		tag.value = null;
@@ -254,7 +256,7 @@ onUnmounted(() => {
 	// Clean up event listeners
 	eventBus.off('ms_map');
 	eventBus.off('jump_map');
-	document.onkeyup = null;
+	document.removeEventListener('keyup', handleKeyup);
 
 	// Clean up jQuery event handlers
 	if (window.$) {

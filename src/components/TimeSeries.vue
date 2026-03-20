@@ -123,7 +123,7 @@ const currentChildren = computed(() => {
 				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(String(child.id)))
 				.sort((a, b) => b.value - a.value);
 		} else {
-			return [node];
+			return node ? [node] : [];
 		}
 	}
 	return [];
@@ -290,7 +290,7 @@ function getColor(id: string): string {
 
 	// If we're deeper, use the first-level parent's color
 	const parentId = path.value[0];
-	return colors[parentId] || defaultColor;
+	return parentId ? colors[parentId] || defaultColor : defaultColor;
 }
 
 // Get the max value among current children for calculating opacity gradient
@@ -416,6 +416,21 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 	const sign = delta.percent >= 0 ? '+' : '';
 	return `${sign}${delta.percent.toFixed(1)}%`;
 }
+
+function isDeltaPositive(seriesId: string, year: string, yearIndex: number): boolean {
+	const delta = getDelta(seriesId, year, yearIndex);
+	return !!delta && delta.value > 0;
+}
+
+function isDeltaNegative(seriesId: string, year: string, yearIndex: number): boolean {
+	const delta = getDelta(seriesId, year, yearIndex);
+	return !!delta && delta.value < 0;
+}
+
+const hoveredSeries = computed(() => {
+	if (!hovered.value) return null;
+	return timeSeriesData.value.find((s) => s.id === hovered.value) || null;
+});
 </script>
 
 <template>
@@ -543,10 +558,10 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 
 				<!-- Details panel showing current hovered item (desktop: right side) -->
 				<div
-					v-if="hovered"
+					v-if="hoveredSeries"
 					class="details-panel details-panel-desktop"
 				>
-					<h5>{{ timeSeriesData.find((s) => s.id === hovered)?.name }}</h5>
+					<h5>{{ hoveredSeries.name }}</h5>
 					<table class="table table-sm">
 						<thead>
 							<tr>
@@ -562,12 +577,12 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 								:key="year"
 							>
 								<td>{{ year }}</td>
-								<td class="name-cell">{{ timeSeriesData.find((s) => s.id === hovered)?.names[year] || '—' }}</td>
+								<td class="name-cell">{{ hoveredSeries.names[year] || '—' }}</td>
 								<td class="text-right">
-									{{ groupNums(getDisplayValue(timeSeriesData.find((s) => s.id === hovered) || { values: {}, adjustedValues: {} }, year)) }}
+									{{ groupNums(getDisplayValue(hoveredSeries, year)) }}
 								</td>
-								<td class="text-right delta" :class="{ positive: getDelta(hovered, year, index)?.value > 0, negative: getDelta(hovered, year, index)?.value < 0 }">
-									{{ formatDelta(getDelta(hovered, year, index)) }}
+								<td class="text-right delta" :class="{ positive: isDeltaPositive(hoveredSeries.id, year, index), negative: isDeltaNegative(hoveredSeries.id, year, index) }">
+									{{ formatDelta(getDelta(hoveredSeries.id, year, index)) }}
 								</td>
 							</tr>
 						</tbody>
@@ -613,10 +628,10 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 
 			<!-- Details panel for mobile (below legend) -->
 			<div
-				v-if="hovered"
+				v-if="hoveredSeries"
 				class="details-panel details-panel-mobile"
 			>
-				<h5>{{ timeSeriesData.find((s) => s.id === hovered)?.name }}</h5>
+				<h5>{{ hoveredSeries.name }}</h5>
 				<table class="table table-sm">
 					<thead>
 						<tr>
@@ -632,12 +647,12 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 							:key="year"
 						>
 							<td>{{ year }}</td>
-							<td class="name-cell">{{ timeSeriesData.find((s) => s.id === hovered)?.names[year] || '—' }}</td>
+							<td class="name-cell">{{ hoveredSeries.names[year] || '—' }}</td>
 							<td class="text-right">
-								{{ groupNums(getDisplayValue(timeSeriesData.find((s) => s.id === hovered) || { values: {}, adjustedValues: {} }, year)) }}
+								{{ groupNums(getDisplayValue(hoveredSeries, year)) }}
 							</td>
-							<td class="text-right delta" :class="{ positive: getDelta(hovered, year, index)?.value > 0, negative: getDelta(hovered, year, index)?.value < 0 }">
-								{{ formatDelta(getDelta(hovered, year, index)) }}
+							<td class="text-right delta" :class="{ positive: isDeltaPositive(hoveredSeries.id, year, index), negative: isDeltaNegative(hoveredSeries.id, year, index) }">
+								{{ formatDelta(getDelta(hoveredSeries.id, year, index)) }}
 							</td>
 						</tr>
 					</tbody>
