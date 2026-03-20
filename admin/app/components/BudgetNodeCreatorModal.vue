@@ -16,8 +16,9 @@ const existingChildIds = computed(() => {
 	const parentId = String(parentNode.value.id);
 	const children = parentNode.value.children || [];
 	return children.map((c) => String(c.id)).filter((id) => id.startsWith(parentId));
+	// we can only work with the prefixed ID system
 	// root nodes have either "B" or "K" virtual IDs
-	// so here I'm filtering out F... IDs
+	// so here we filter out F... IDs
 });
 
 const DEFAULT_ID_LENGTH = 2;
@@ -107,9 +108,10 @@ function save() {
 				<div class="mb-6">
 					<p class="mb-2">
 						Az alábbi többsoros beviteli mezőbe írhatóak be az új költségvetési sorok.
-						Egy sorban két információt kell feltüntetni: név és összeg. Ezek sorrendje
-						és az elválasztó karakter is tetszőleges, de a soroknak egységesnek kell
-						lenniük.
+						Egy sorban két információt kell feltüntetni: <strong>név és összeg</strong>.
+						Ezek sorrendje tetszőleges, az elválasztó karakter <code>|</code>, tabulátor
+						vagy <code>;</code> lehet. A program az első sorból állapítja meg a
+						formátumot és csak az érvényes sorokat dolgozza fel.
 					</p>
 					<Textarea v-model="textarea" />
 				</div>
