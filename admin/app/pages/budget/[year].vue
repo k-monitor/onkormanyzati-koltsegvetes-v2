@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// TODO LATER replace confirms with AlertDialogs
-
 const { years } = await useBudgetData();
 const slugifiedYear = useRoute().params.year as string;
 const year = computed(() => deslugifyYear(slugifiedYear, Object.keys(years.value || {})) || null);

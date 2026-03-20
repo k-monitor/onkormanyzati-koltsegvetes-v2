@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { CircleAlert, Pencil, Undo } from 'lucide-vue-next';
 
-// TODO LATER should we enforce 4 digits and space prefix?
-
 const { year } = defineProps<{
 	year: string;
 }>();
