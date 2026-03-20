@@ -566,7 +566,6 @@ const hoveredSeries = computed(() => {
 						<thead>
 							<tr>
 								<th>Év</th>
-								<th>Név</th>
 								<th class="text-right">Összeg{{ inflationAdjusted ? ` (${baseYear})` : '' }}</th>
 								<th class="text-right">Változás</th>
 							</tr>
@@ -577,7 +576,6 @@ const hoveredSeries = computed(() => {
 								:key="year"
 							>
 								<td>{{ year }}</td>
-								<td class="name-cell">{{ hoveredSeries.names[year] || '—' }}</td>
 								<td class="text-right">
 									{{ groupNums(getDisplayValue(hoveredSeries, year)) }}
 								</td>
@@ -837,26 +835,26 @@ const hoveredSeries = computed(() => {
 	}
 
 	.details-panel {
-		padding: 1rem;
+		padding: 0.5rem 0.75rem;
 		background-color: #fff;
 		border: 1px solid #dee2e6;
 		border-radius: 0.25rem;
 		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
 		h5 {
-			margin-bottom: 0.75rem;
-			padding-bottom: 0.5rem;
+			margin-bottom: 0.4rem;
+			padding-bottom: 0.3rem;
 			border-bottom: 1px solid #dee2e6;
-			font-size: 1rem;
+			font-size: 0.85rem;
 		}
 
 		.table {
 			margin-bottom: 0;
-			font-size: 0.8rem;
+			font-size: 0.7rem;
 
 			th,
 			td {
-				padding: 0.25rem 0.4rem;
+				padding: 0.15rem 0.3rem;
 			}
 
 			.name-cell {
@@ -867,7 +865,7 @@ const hoveredSeries = computed(() => {
 			}
 
 			.delta {
-				font-size: 0.75rem;
+				font-size: 0.65rem;
 				white-space: nowrap;
 
 				&.positive {
@@ -889,9 +887,9 @@ const hoveredSeries = computed(() => {
 			display: block;
 			position: absolute;
 			top: 0;
-			right: -420px;
-			width: 400px;
-			max-height: 400px;
+			right: -350px;
+			width: 330px;
+			max-height: 350px;
 			overflow-y: auto;
 			z-index: 10;
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
