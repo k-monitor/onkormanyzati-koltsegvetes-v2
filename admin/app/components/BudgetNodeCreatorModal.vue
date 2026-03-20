@@ -17,7 +17,7 @@ const existingChildIds = computed(() => {
 	if (!parentNode.value) return [];
 	const parentId = String(parentNode.value.id);
 	const children = parentNode.value.children || [];
-	return children.map((c) => String(c.id)).filter(id => id.startsWith(parentId));
+	return children.map((c) => String(c.id)).filter((id) => id.startsWith(parentId));
 	// filtering out F... IDs
 });
 
@@ -36,7 +36,20 @@ const maxNewChildren = computed(() =>
 const textarea = ref('');
 
 const nodesToAdd = computed<BudgetNode[]>(() => {
-	return [];
+	const lines = textarea.value
+		.trim()
+		.split('\n')
+		.map((l) => l.trim())
+		.filter((l) => l);
+	if (!lines.length) return [];
+
+	const parsedRows = flexiParse(lines);
+	// FIXME generate ids
+	return parsedRows.map((r, i) => ({
+		id: 'TODO',
+		name: r.name,
+		value: r.amount,
+	}));
 });
 
 const canSave = computed(() => nodesToAdd.value.length > 0);
@@ -111,6 +124,29 @@ function save() {
 							>Ehhez a szülő kategóriához nem adható újabb alkategória.</AlertTitle
 						>
 					</Alert>
+					<Item
+						v-for="(n, i) in nodesToAdd"
+						:key="i"
+						class="mb-2"
+						variant="outline"
+					>
+						<ItemContent>
+							<ItemTitle class="min-w-full">
+								<div
+									v-if="n.id"
+									class="text-muted-foreground text-xs font-bold"
+								>
+									{{ n.id }}
+								</div>
+								<div class="grow">{{ n.name }}</div>
+							</ItemTitle>
+						</ItemContent>
+						<ItemActions class="flex flex-col items-end">
+							<div class="text-right">
+								{{ Number(n.value).toLocaleString('hu') }}
+							</div>
+						</ItemActions>
+					</Item>
 				</div>
 
 				<DialogFooter class="[&>button]:cursor-pointer">
