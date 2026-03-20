@@ -2,8 +2,6 @@
 import { CircleAlert } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 
-const DEFAULT_ID_LENGTH = 2;
-
 const dialogOpened = ref(false);
 const parentNode = ref<BudgetNode | undefined>();
 
@@ -18,15 +16,19 @@ const existingChildIds = computed(() => {
 	const parentId = String(parentNode.value.id);
 	const children = parentNode.value.children || [];
 	return children.map((c) => String(c.id)).filter((id) => id.startsWith(parentId));
-	// filtering out F... IDs
+	// root nodes have either "B" or "K" virtual IDs
+	// so here I'm filtering out F... IDs
 });
 
+const DEFAULT_ID_LENGTH = 2;
 const idLength = computed(() => {
 	const childIds = [...existingChildIds.value];
 	if (!childIds.length) return DEFAULT_ID_LENGTH;
 	const lowestChildId: string = childIds.sort((a, b) => a.localeCompare(b))[0]!;
 	const trailingZeros = lowestChildId.match(/0*[1-9]$/);
 	return trailingZeros ? trailingZeros[0].length : 1;
+	// B101 -> children ID = 01 -> idLength = 2
+	// B11 -> children ID = 1 -> idLength = 1
 });
 
 const maxNewChildren = computed(() =>
