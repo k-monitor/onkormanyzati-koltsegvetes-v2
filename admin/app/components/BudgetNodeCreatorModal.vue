@@ -4,10 +4,12 @@ import type { BudgetNode } from '../../../src/utils/types';
 
 const dialogOpened = ref(false);
 const parentNode = ref<BudgetNode | undefined>();
+const textarea = ref('');
 
 const bus = useNodeCreatorEvent();
 bus.on(({ parentNode: _parentNode }) => {
 	parentNode.value = _parentNode;
+	textarea.value = '';
 	dialogOpened.value = true;
 });
 
@@ -21,22 +23,23 @@ const existingChildIds = computed(() => {
 	// so here we filter out F... IDs
 });
 
-const DEFAULT_ID_LENGTH = 2;
-const idLength = computed(() => {
+const DEFAULT_SUB_ID_LENGTH = 2;
+const subIdLength = computed(() => {
 	const childIds = [...existingChildIds.value];
-	if (!childIds.length) return DEFAULT_ID_LENGTH;
+	if (!childIds.length) return DEFAULT_SUB_ID_LENGTH;
 	const lowestChildId: string = childIds.sort((a, b) => a.localeCompare(b))[0]!;
 	const trailingZeros = lowestChildId.match(/0*[1-9]$/);
 	return trailingZeros ? trailingZeros[0].length : 1;
-	// B101 -> children ID = 01 -> idLength = 2
-	// B11 -> children ID = 1 -> idLength = 1
+	// B101 -> children ID = 01 -> subIdLength = 2
+	// B11 -> children ID = 1 -> subIdLength = 1
+	// B1 -> children ID = 1 -> subIdLength = 1
+	// (no children) -> subIdLength = DEFAULT_SUB_ID_LENGTH
 });
+const newIdMask = computed(() => parentNode.value.id + `0`.repeat(subIdLength.value));
 
 const maxNewChildren = computed(() =>
-	idLength.value < 1 ? 0 : 10 ** idLength.value - existingChildIds.value.length - 1,
+	subIdLength.value < 1 ? 0 : 10 ** subIdLength.value - existingChildIds.value.length - 1,
 );
-
-const textarea = ref('');
 
 const nodesToAdd = computed<BudgetNode[]>(() => {
 	const lines = textarea.value
@@ -46,13 +49,24 @@ const nodesToAdd = computed<BudgetNode[]>(() => {
 		.filter((l) => l);
 	if (!lines.length) return [];
 
-	const parsedRows = flexiParse(lines);
+	const rows = flexiParse(lines).map((r) => {
+		const fullName = r.name;
+		// if it ends with "([BKF][A-Z0-9]+)$", split it into label and id
+		const idMatch = fullName.match(/(.*)\s+\(([BKF][A-Z0-9]+)\)$/);
+		return {
+			id: idMatch?.[2]?.trim() || '',
+			name: idMatch?.[1]?.trim() || fullName,
+			amount: r.amount,
+		};
+	});
 	// FIXME generate ids
-	return parsedRows.map((r, i) => ({
-		id: 'TODO',
-		name: r.name,
-		value: r.amount,
-	}));
+	return rows
+		.map((r) => ({
+			id: r.id || 'TODO',
+			name: r.name,
+			value: r.amount,
+		}))
+		.slice(0, maxNewChildren.value);
 });
 
 const canSave = computed(() => nodesToAdd.value.length > 0);
@@ -117,7 +131,10 @@ function save() {
 				</div>
 
 				<div class="mb-6">
-					<p class="mb-2">Az alábbi sorok lesznek hozzáadva:</p>
+					<p class="mb-2">
+						Az alábbi sorok lesznek hozzáadva (<code>{{ newIdMask }}</code> azonosító
+						formátummal, a meglévő {{ existingChildIds.length }} db alkategória után):
+					</p>
 					<Alert
 						v-if="!maxNewChildren"
 						class="not-prose mb-8"
