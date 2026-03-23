@@ -43,6 +43,7 @@ const parsedInputRows = computed<BudgetNode[]>(() => {
 
 const DEFAULT_SUB_ID_LENGTH = 2;
 const subIdLength = computed(() => {
+	// TODO LATER move to util, write test cases
 	if (existingChildIds.value.length) {
 		// if there are children, they dictate ID length
 		const childIds = [...existingChildIds.value];
@@ -71,8 +72,13 @@ const maxNewChildren = computed(() =>
 );
 
 const nodesToAdd = computed<BudgetNode[]>(() => {
-	// FIXME use subIdLength to generate IDs, filter out invalids, slice
-	return parsedInputRows.value.slice(0, maxNewChildren.value);
+	return fillIds(
+		parsedInputRows.value,
+		existingChildIds.value,
+		'' + (parentNode.value?.id || ''),
+		subIdLength.value,
+		maxNewChildren.value,
+	);
 });
 
 const canSave = computed(() => nodesToAdd.value.length > 0);
