@@ -31,8 +31,7 @@ const parsedInputRows = computed<BudgetNode[]>(() => {
 		.filter((l) => l);
 	return flexiParse(lines).map((r) => {
 		const fullName = r.name;
-		// if it ends with "([BKF][A-Z0-9]+)$", split it into label and id
-		const idMatch = fullName.match(/(.*)\s+\(([BKF][A-Z0-9]+)\)$/);
+		const idMatch = fullName.match(/(.*)\s+\(([BKF][A-Z]*[0-9]+)\)$/);
 		return {
 			id: idMatch?.[2]?.trim() || '',
 			name: idMatch?.[1]?.trim() || fullName,

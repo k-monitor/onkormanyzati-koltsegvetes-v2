@@ -26,6 +26,7 @@ export default (
 			id &&
 			id.length === fullIdLength &&
 			id.startsWith(parentId) &&
+			id.substring(parentId.length).match(/^\d+$/) &&
 			!existingChildIds.includes(id) &&
 			!receivedValidIds.has(id)
 		) {
