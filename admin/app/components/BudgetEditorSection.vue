@@ -19,7 +19,7 @@ const sides = [
 	{ key: 'expense' as const, label: 'Kiadások', icon: ArrowUpFromDot },
 ];
 type SideKey = (typeof sides)[number]['key'];
-const side = ref<SideKey>('income');
+const side = ref<SideKey>('expense');
 
 const types = [
 	{ key: 'econ' as const, label: 'Közgazdasági', icon: ChartPie },
