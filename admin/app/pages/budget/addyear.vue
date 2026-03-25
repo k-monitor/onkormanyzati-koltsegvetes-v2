@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type ExcelJS from 'exceljs';
-import { CircleAlert, Plus, Undo } from 'lucide-vue-next';
+import { CircleAlert, Plus } from 'lucide-vue-next';
 import defaultEconNodeList from '~/assets/default-econ-node-list.tsv?raw';
 
 const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook, years } =
@@ -14,11 +14,8 @@ onMounted(() => {
 const newNameInput = ref('');
 const newYear = computed(() => newNameInput.value.replaceAll(/\s+/g, ' ').trim());
 
+const isValid = computed(() => isValidYear(newYear.value));
 const alreadyExists = computed(() => Object.keys(years.value || {}).includes(newYear.value));
-
-function resetNewName() {
-	newNameInput.value = '';
-}
 
 const copyOptions = computed(() => [
 	{ value: 'NOTHING' as const, label: 'Maradjanak üresen' },
@@ -31,7 +28,7 @@ const sourceYear = ref(yearOptions.value[0] || '');
 
 const canAddNewYear = computed(
 	() =>
-		newYear.value.length >= 4 &&
+		isValid.value &&
 		!alreadyExists.value &&
 		!!copy.value &&
 		(copy.value !== 'EXISTING' || !!sourceYear.value),
@@ -107,34 +104,18 @@ async function handleAdd() {
 		<form @submit.prevent="handleAdd">
 			<PageSection>
 				<p>Év hozzáadását Excel-ben javasoljuk, de itt is lehetőség van rá.</p>
-				<div class="not-prose mb-4">
-					<Label
-						class="mb-2"
-						for="newNameEl"
-						>Új év elnevezése:</Label
-					>
-					<InputGroup>
-						<InputGroupInput
-							id="newNameEl"
-							ref="newNameEl"
-							v-model="newNameInput"
-							required
-						/>
-						<InputGroupAddon align="inline-end">
-							<InputGroupButton
-								as-child
-								variant="secondary"
-							>
-								<Button
-									type="button"
-									@click="resetNewName"
-								>
-									<Undo />
-								</Button>
-							</InputGroupButton>
-						</InputGroupAddon>
-					</InputGroup>
-				</div>
+				<NewYearInput
+					v-model="newNameInput"
+					:default-year="''"
+				/>
+				<Alert
+					v-if="!isValid"
+					class="not-prose mb-8"
+					variant="destructive"
+				>
+					<CircleAlert />
+					<AlertTitle>Az év elnevezésének 4 számjeggyel kell kezdődnie!</AlertTitle>
+				</Alert>
 				<Alert
 					v-if="alreadyExists"
 					class="not-prose mb-8"
@@ -144,51 +125,54 @@ async function handleAdd() {
 					<AlertTitle>Ilyen év már létezik!</AlertTitle>
 				</Alert>
 
-				<p>Az alábbi munkalapok fognak létrejönni a <code>budget.xlsx</code> fájlban:</p>
-				<ul>
-					<li>
-						<code>{{ newYear }} BEVÉTEL</code>
-					</li>
-					<li>
-						<code>{{ newYear }} KIADÁS</code>
-					</li>
-				</ul>
-
-				<p>Milyen költségvetési sorokkal legyenek feltöltve az új munkalapok?</p>
-				<div class="not-prose mb-12">
-					<RadioGroup v-model="copy">
-						<div
-							v-for="o in copyOptions"
-							:key="o.value"
-							class="flex items-center space-x-2"
-						>
-							<RadioGroupItem
-								:id="o.value"
-								:value="o.value"
-							/>
-							<Label :for="o.value">{{ o.label }}</Label>
-							<template v-if="o.value === 'EXISTING'">
-								<Select
-									v-model="sourceYear"
-									:disabled="copy !== 'EXISTING'"
-								>
-									<SelectTrigger>
-										<SelectValue placeholder="Válassz ki egy évet" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem
-											v-for="y in Object.keys(years || {}).reverse()"
-											:key="y"
-											:value="y"
-										>
-											{{ y }}
-										</SelectItem>
-									</SelectContent>
-								</Select>
-							</template>
-						</div>
-					</RadioGroup>
-				</div>
+				<template v-if="isValid && !alreadyExists">
+					<p>
+						Az alábbi munkalapok fognak létrejönni a <code>budget.xlsx</code> fájlban:
+					</p>
+					<ul>
+						<li>
+							<code>{{ newYear }} BEVÉTEL</code>
+						</li>
+						<li>
+							<code>{{ newYear }} KIADÁS</code>
+						</li>
+					</ul>
+					<p>Milyen költségvetési sorokkal legyenek feltöltve az új munkalapok?</p>
+					<div class="not-prose mb-12">
+						<RadioGroup v-model="copy">
+							<div
+								v-for="o in copyOptions"
+								:key="o.value"
+								class="flex items-center space-x-2"
+							>
+								<RadioGroupItem
+									:id="o.value"
+									:value="o.value"
+								/>
+								<Label :for="o.value">{{ o.label }}</Label>
+								<template v-if="o.value === 'EXISTING'">
+									<Select
+										v-model="sourceYear"
+										:disabled="copy !== 'EXISTING'"
+									>
+										<SelectTrigger>
+											<SelectValue placeholder="Válassz ki egy évet" />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem
+												v-for="y in Object.keys(years || {}).reverse()"
+												:key="y"
+												:value="y"
+											>
+												{{ y }}
+											</SelectItem>
+										</SelectContent>
+									</Select>
+								</template>
+							</div>
+						</RadioGroup>
+					</div>
+				</template>
 
 				<template #actions>
 					<Button :disabled="!canAddNewYear">

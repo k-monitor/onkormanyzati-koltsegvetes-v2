@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CircleAlert, Pencil, Undo } from 'lucide-vue-next';
+import { CircleAlert, Pencil } from 'lucide-vue-next';
 
 const { year } = defineProps<{
 	year: string;
@@ -11,16 +11,9 @@ const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook, years } =
 const newNameInput = ref(year);
 const newYear = computed(() => newNameInput.value.replaceAll(/\s+/g, ' ').trim());
 
-const alreadyExists = computed(
-	() => year !== newYear.value && Object.keys(years.value || {}).includes(newYear.value),
-);
-const canRename = computed(
-	() => newYear.value.length >= 4 && year !== newYear.value && !alreadyExists.value,
-);
-
-function resetNewName() {
-	newNameInput.value = year;
-}
+const isValid = computed(() => isValidYear(newYear.value));
+const alreadyExists = computed(() => Object.keys(years.value || {}).includes(newYear.value));
+const canRename = computed(() => isValid.value && year !== newYear.value && !alreadyExists.value);
 
 const router = useRouter();
 
@@ -49,45 +42,40 @@ async function handleRename() {
 
 <template>
 	<PageSection>
-		<p>Év átnevezésekor az alábbi munkalap átnevezések lesznek elvégezve:</p>
-		<ul>
-			<li>
-				<code>{{ year }} BEVÉTEL</code> → <code>{{ newYear }} BEVÉTEL</code>
-			</li>
-			<li>
-				<code>{{ year }} KIADÁS</code> → <code>{{ newYear }} KIADÁS</code>
-			</li>
-		</ul>
+		<p>Év átnevezése:</p>
+		<NewYearInput
+			v-model="newNameInput"
+			:default-year="year"
+		/>
+
+		<template v-if="canRename">
+			<p>Az alábbi munkalap átnevezések lesznek elvégezve:</p>
+			<ul>
+				<li>
+					<code>{{ year }} BEVÉTEL</code> → <code>{{ newYear }} BEVÉTEL</code>
+				</li>
+				<li>
+					<code>{{ year }} KIADÁS</code> → <code>{{ newYear }} KIADÁS</code>
+				</li>
+			</ul>
+		</template>
+		<Alert
+			v-if="!isValid"
+			class="not-prose mb-8"
+			variant="destructive"
+		>
+			<CircleAlert />
+			<AlertTitle>Az év elnevezésének 4 számjeggyel kell kezdődnie!</AlertTitle>
+		</Alert>
 		<Alert
 			v-if="alreadyExists"
 			class="not-prose mb-8"
 			variant="destructive"
 		>
 			<CircleAlert />
-			<AlertTitle> Ilyen év már létezik! </AlertTitle>
+			<AlertTitle>Ilyen év már létezik!</AlertTitle>
 		</Alert>
 		<template #actions>
-			<form @submit.prevent="handleRename">
-				<InputGroup>
-					<InputGroupInput
-						v-model="newNameInput"
-						required
-					/>
-					<InputGroupAddon align="inline-end">
-						<InputGroupButton
-							as-child
-							variant="secondary"
-						>
-							<Button
-								type="button"
-								@click="resetNewName"
-							>
-								<Undo />
-							</Button>
-						</InputGroupButton>
-					</InputGroupAddon>
-				</InputGroup>
-			</form>
 			<Button
 				:disabled="!canRename"
 				@click="handleRename"
