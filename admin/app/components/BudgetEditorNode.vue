@@ -89,6 +89,13 @@ watchThrottled(
 	},
 );
 
+const { workbook } = await useBudgetData();
+watch(workbook, () => {
+	// file reloaded, e.g. on revert
+	inputValue.value = readEconValue(node.id || '', node.name || '');
+	// FIXME above watcher emit cell change, no need now, we are just reverting
+});
+
 const nodeCreatorBus = useNodeCreatorEvent();
 function handleAdd() {
 	nodeCreatorBus.emit({ parentNode: node, sheet: sheet?.value });
