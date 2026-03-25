@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
 	if (!tryStartBuildSite()) {
 		setResponseStatus(event, 503);
 		return {
-			error: 'A build folyamat mar fut.',
+			error: 'A generálás épp folyamatban van.',
 		};
 	}
 

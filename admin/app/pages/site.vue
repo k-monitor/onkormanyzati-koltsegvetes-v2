@@ -72,10 +72,11 @@ async function buildSite() {
 	} catch (e) {
 		stopPolling();
 		loading.value = false;
-		const maybeError = e as { data?: { error?: string }; message?: string };
-		error.value = maybeError.data?.error || maybeError.message || String(e);
-		errorType.value = 'Nem sikerült!';
-		dialogOpened.value = true;
+		//const maybeError = e as { data?: { error?: string }; message?: string };
+		//error.value = maybeError.data?.error || maybeError.message || String(e);
+		//errorType.value = 'Nem sikerült!';
+		//dialogOpened.value = true;
+		toast.error('Nem sikerült elindítani a generálást.');
 	}
 }
 
