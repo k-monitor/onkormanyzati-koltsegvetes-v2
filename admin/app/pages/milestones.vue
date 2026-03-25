@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Trash, Upload } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 const loading = useLoading();
 const serverUrl = useServerUrl();
@@ -20,8 +21,10 @@ async function delMs(f: string) {
 	try {
 		await $fetch('/api/ms/' + f, { method: 'DELETE' });
 		await updateMs();
-	} catch {
-		alert('Nem sikerült! :C');
+		toast.success('Fájl sikeresen törölve!');
+	} catch (e: unknown) {
+		console.error(e);
+		toast.error('Nem sikerült törölni a fájlt.');
 	} finally {
 		loading.value = false;
 	}

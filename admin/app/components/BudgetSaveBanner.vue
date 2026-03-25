@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CircleAlert } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 const { isModified, loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } = await useBudgetData();
 
@@ -13,9 +14,10 @@ async function save() {
 	try {
 		await uploadBudgetXlsxToServer();
 		await loadBudgetXlsxFromServer();
+		toast.success('Költségvetés sikeresen elmentve!');
 	} catch (e: unknown) {
 		console.error(e);
-		alert('Nem sikerült! :c');
+		toast.error('Nem sikerült elmenteni a költségvetést.');
 	}
 }
 </script>

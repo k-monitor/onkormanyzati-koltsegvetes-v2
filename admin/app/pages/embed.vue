@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { CircleAlert, Copy } from 'lucide-vue-next';
 import { joinURL } from 'ufo';
+import { toast } from 'vue-sonner';
 
 const embeds = [
 	{ name: 'Bevételek', path: '/bevetelek/' },
@@ -20,11 +21,11 @@ async function copyToClipboard(path: string) {
 	const code = getEmbedCode(path);
 	try {
 		await navigator.clipboard.writeText(code);
-		alert('Vágólapra másolva!');
-	} catch {
-		alert('Nem sikerült a másolás!');
+		toast.info('Beágyazó kód vágólapra másolva!');
+	} catch (e: unknown) {
+		console.error(e);
+		toast.error('Nem sikerült a másolás!');
 	}
-	// TODO LATER toasts instead of alerts
 }
 </script>
 

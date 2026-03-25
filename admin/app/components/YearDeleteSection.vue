@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Trash2 } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 const { year } = defineProps<{
 	year: string;
@@ -25,9 +26,10 @@ async function handleDelete() {
 		await uploadBudgetXlsxToServer();
 		await loadBudgetXlsxFromServer();
 		await router.replace('/budget/');
+		toast.success('Év sikeresen törölve!');
 	} catch (e: unknown) {
 		console.error(e);
-		alert('Nem sikerült! :c');
+		toast.error('Nem sikerült törölni az évet.');
 	}
 }
 </script>

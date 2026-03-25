@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type ExcelJS from 'exceljs';
 import { CircleAlert, Plus } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 import defaultEconNodeList from '~/assets/default-econ-node-list.tsv?raw';
 
 const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer, workbook, years } =
@@ -92,9 +93,10 @@ async function handleAdd() {
 		await uploadBudgetXlsxToServer();
 		await loadBudgetXlsxFromServer();
 		await router.replace(`/budget/${slugifyYear(newYear.value)}/`);
+		toast.success('Év sikeresen hozzáadva!');
 	} catch (e: unknown) {
 		console.error(e);
-		alert('Nem sikerült! :c');
+		toast.error('Nem sikerült hozzáadni az évet.');
 	}
 }
 </script>

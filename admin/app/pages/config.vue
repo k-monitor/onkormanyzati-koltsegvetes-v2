@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Cog, Download, Upload } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 const loading = useLoading();
 const serverUrl = useServerUrl();
@@ -9,8 +10,10 @@ async function newConfig() {
 	loading.value = 'Új konfig generálása...';
 	try {
 		await $fetch('/api/newConfig', { method: 'POST' });
-	} catch {
-		alert('Nem sikerült! :C');
+		toast.success('Új konfig sikeresen generálva!');
+	} catch (e: unknown) {
+		console.error(e);
+		toast.error('Nem sikerült új konfigot generálni.');
 	} finally {
 		loading.value = false;
 	}

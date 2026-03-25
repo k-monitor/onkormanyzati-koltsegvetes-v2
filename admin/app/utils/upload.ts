@@ -1,3 +1,5 @@
+import { toast } from 'vue-sonner';
+
 export default async (endpoint: string, field: string, ref: HTMLInputElement) => {
 	if (!ref.files) return;
 	const loading = useLoading(); // maybe it's not elegant calling composable from util?
@@ -10,8 +12,10 @@ export default async (endpoint: string, field: string, ref: HTMLInputElement) =>
 	}
 	try {
 		await $fetch(endpoint, { method: 'POST', body });
-	} catch {
-		alert('Nem sikerült! :C');
+		toast.success('Fájl(ok) sikeresen feltöltve!');
+	} catch (e: unknown) {
+		console.error(e);
+		toast.error('Nem sikerült feltölteni a fájl(oka)t.');
 	} finally {
 		ref.value = '';
 		loading.value = false;

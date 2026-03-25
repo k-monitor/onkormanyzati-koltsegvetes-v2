@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { CircleAlert, Pencil } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 const { year } = defineProps<{
 	year: string;
@@ -33,9 +34,10 @@ async function handleRename() {
 		await uploadBudgetXlsxToServer();
 		await loadBudgetXlsxFromServer();
 		await router.replace(`/budget/${slugifyYear(newYear.value)}/`);
+		toast.success('Év sikeresen átnevezve!');
 	} catch (e: unknown) {
 		console.error(e);
-		alert('Nem sikerült! :c');
+		toast.error('Nem sikerült átnevezni az évet.');
 	}
 }
 </script>
