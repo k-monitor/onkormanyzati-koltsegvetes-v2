@@ -18,10 +18,8 @@ export default createGlobalState(async () => {
 
 	watch(isModified, (newValue) => {
 		if (newValue) {
-			console.log('ADDING beforeunload listener');
 			window.addEventListener('beforeunload', beforeUnloadHandler);
 		} else {
-			console.log('REMOVING beforeunload listener');
 			window.removeEventListener('beforeunload', beforeUnloadHandler);
 		}
 	});
