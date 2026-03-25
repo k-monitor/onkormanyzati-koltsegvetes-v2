@@ -1,14 +1,21 @@
 <script setup lang="ts">
+import type { Worksheet } from 'exceljs';
 import { CircleAlert } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 
 const dialogOpened = ref(false);
 const parentNode = ref<BudgetNode | undefined>();
+const sheet = ref<Worksheet | undefined>();
 const textarea = ref('');
 
 const bus = useNodeCreatorEvent();
-bus.on(({ parentNode: _parentNode }) => {
+bus.on(({ parentNode: _parentNode, sheet: _sheet }) => {
+	if (!_sheet) {
+		console.error('No sheet provided in creator event.');
+		return;
+	}
 	parentNode.value = _parentNode;
+	sheet.value = _sheet;
 	textarea.value = '';
 	dialogOpened.value = true;
 });
@@ -82,13 +89,40 @@ const nodesToAdd = computed<BudgetNode[]>(() => {
 
 const canSave = computed(() => nodesToAdd.value.length > 0);
 
+function findLastEconRowIndex(id: string) {
+	if (!sheet.value) return -1;
+	let ri = sheet.value.rowCount;
+	for (; ri >= 3; ri--) {
+		const row = sheet.value.getRow(ri);
+		const cellValue = (row.getCell(2).value?.toString() || '').trim();
+		const needle = `(${id})`;
+		if (cellValue.endsWith(needle)) {
+			return ri;
+		}
+	}
+	return -1;
+}
+
 const emit = defineEmits<{
 	(e: 'addedNodes'): void;
 }>();
 
 function save() {
-	console.log('save()');
-	// FIXME implement
+	if (!sheet.value || !parentNode.value) return;
+
+	const lastChildId = existingChildIds.value.slice(-1)[0] || String(parentNode.value.id || '');
+
+	let ri = findLastEconRowIndex(lastChildId);
+	if (ri === -1 || !lastChildId) {
+		console.warn('Could not find last child row in sheet, appending to the end.');
+		ri = sheet.value.rowCount;
+	}
+
+	sheet.value.insertRows(
+		ri + 1,
+		nodesToAdd.value.map((n) => [99, n.name + ` (${n.id})`, n.value]),
+	);
+
 	emit('addedNodes');
 	dialogOpened.value = false;
 }

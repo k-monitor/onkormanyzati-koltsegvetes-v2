@@ -91,7 +91,7 @@ watchThrottled(
 
 const nodeCreatorBus = useNodeCreatorEvent();
 function handleAdd() {
-	nodeCreatorBus.emit({ parentNode: node });
+	nodeCreatorBus.emit({ parentNode: node, sheet: sheet?.value });
 }
 </script>
 
