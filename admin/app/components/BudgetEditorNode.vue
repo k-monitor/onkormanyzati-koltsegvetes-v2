@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { throttleFilter } from '@vueuse/core';
+import type { Worksheet } from 'exceljs';
 import { ChevronDown, ChevronRight, Plus, Sigma } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 import { cn } from '~/lib/utils';
-import type { Worksheet } from 'exceljs';
 
 const { isSummary, node } = defineProps<{
 	node: BudgetNode;
@@ -77,7 +78,7 @@ function writeEconValue(id: string | number, name: string, value: number) {
 
 const inputValue = ref(readEconValue(node.id || '', node.name || ''));
 const bus = useCellChangedEvent();
-watchThrottled(
+const { ignoreUpdates } = watchIgnorable(
 	inputValue,
 	() => {
 		if (inputValue.value === undefined) return;
@@ -85,15 +86,16 @@ watchThrottled(
 		bus.emit();
 	},
 	{
-		throttle: 500,
+		eventFilter: throttleFilter(500),
 	},
 );
 
 const { workbook } = await useBudgetData();
 watch(workbook, () => {
 	// file reloaded, e.g. on revert
-	inputValue.value = readEconValue(node.id || '', node.name || '');
-	// FIXME above watcher emit cell change, no need now, we are just reverting
+	ignoreUpdates(() => {
+		inputValue.value = readEconValue(node.id || '', node.name || '');
+	});
 });
 
 const nodeCreatorBus = useNodeCreatorEvent();

@@ -83,6 +83,12 @@ onMounted(() => {
 	updateEconTree();
 });
 
+watch(workbook, () => {
+	// file loaded, e.g. revert
+	// need to update total sum
+	updateEconTree();
+});
+
 watch(sheetName, () => {
 	// side changed
 	updateEconTree();
