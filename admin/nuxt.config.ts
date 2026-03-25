@@ -22,6 +22,7 @@ export default defineNuxtConfig({
 				'reka-ui',
 				'slugify', // CJS
 				'tailwind-merge',
+				'vue-sonner',
 			],
 		},
 		plugins: [tailwindcss()],
