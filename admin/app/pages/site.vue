@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Cog, Download } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 const loading = useLoading();
 const serverUrl = useServerUrl();
@@ -7,30 +8,80 @@ const serverUrl = useServerUrl();
 const error = ref('');
 const errorType = ref('');
 const dialogOpened = ref(false);
+const pollingId = ref<ReturnType<typeof setInterval> | null>(null);
+const pollingInFlight = ref(false);
 
-async function buildSite() {
-	let r,
-		e = '',
-		failed = false;
-	try {
-		loading.value = 'Weboldal generálása...';
-		r = await $fetch('/api/buildSite', { method: 'POST' });
-		e += r.stderr || '';
-	} catch (error) {
-		// actual build/deploy failure
-		failed = true;
-		e += error;
-	} finally {
-		console.error(e);
-		error.value = e;
-		errorType.value = failed ? 'Nem sikerült!' : 'Nem stimmelnek az adatok';
-		if (failed || e.includes('[KÖKÖ]')) {
-			// acutal failure OR invalid data (which is HTTP 200)
-			dialogOpened.value = true;
-		}
-		loading.value = false;
+type BuildStatusResponse = {
+	status: 'idle' | 'running' | 'success' | 'failed';
+	stderr: string;
+	error: string;
+	startedAt: string | null;
+	finishedAt: string | null;
+};
+
+function stopPolling() {
+	if (!pollingId.value) return;
+	clearInterval(pollingId.value);
+	pollingId.value = null;
+}
+
+function showResultDialog(result: BuildStatusResponse) {
+	const output = [result.error, result.stderr].filter(Boolean).join('\n');
+	error.value = output;
+
+	if (result.status === 'failed') {
+		errorType.value = 'Nem sikerült!';
+		dialogOpened.value = true;
+		return;
+	}
+
+	errorType.value = 'Nem stimmelnek az adatok';
+	if (output.includes('[KÖKÖ]')) {
+		dialogOpened.value = true;
 	}
 }
+
+async function pollBuildStatus() {
+	if (pollingInFlight.value) return;
+	pollingInFlight.value = true;
+
+	let result: BuildStatusResponse;
+	try {
+		result = await $fetch<BuildStatusResponse>('/api/buildSite');
+	} finally {
+		pollingInFlight.value = false;
+	}
+
+	if (result.status === 'running') return;
+
+	stopPolling();
+	loading.value = false;
+	showResultDialog(result);
+}
+
+async function buildSite() {
+	try {
+		loading.value = 'Weboldal generálása...';
+		dialogOpened.value = false;
+		await $fetch('/api/buildSite', { method: 'POST' });
+		stopPolling();
+		pollingId.value = setInterval(() => {
+			void pollBuildStatus();
+		}, 3000);
+		await pollBuildStatus();
+	} catch (e) {
+		stopPolling();
+		loading.value = false;
+		const maybeError = e as { data?: { error?: string }; message?: string };
+		error.value = maybeError.data?.error || maybeError.message || String(e);
+		errorType.value = 'Nem sikerült!';
+		dialogOpened.value = true;
+	}
+}
+
+onBeforeUnmount(() => {
+	stopPolling();
+});
 </script>
 
 <template>
