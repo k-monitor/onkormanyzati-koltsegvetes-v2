@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { throttleFilter } from '@vueuse/core';
 import type { Worksheet } from 'exceljs';
-import { ChevronDown, ChevronRight, Plus, Sigma } from 'lucide-vue-next';
+import { ChevronDown, ChevronRight, Plus, Sigma, Trash2 } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 import { cn } from '~/lib/utils';
 
@@ -102,6 +102,19 @@ const nodeCreatorBus = useNodeCreatorEvent();
 function handleAdd() {
 	nodeCreatorBus.emit({ parentNode: node, sheet: sheet?.value });
 }
+
+const canBeDeleted = computed(() => (node.children || []).length === 0);
+function handleDelete() {
+	if (!sheet?.value) return;
+	if (!canBeDeleted.value) return;
+	if (!confirm('Biztosan törlöd a sort?')) return;
+
+	const row = findEconRow(node.id || '', node.name || '');
+	if (row) {
+		sheet.value.spliceRows(row.number, 1);
+		bus.emit();
+	}
+}
 </script>
 
 <template>
@@ -144,6 +157,15 @@ function handleAdd() {
 						@click="handleAdd"
 					>
 						<Plus /> Alábontás
+					</Button>
+					<Button
+						v-if="canBeDeleted && isEditable"
+						class="cursor-pointer"
+						size="sm"
+						variant="destructive"
+						@click="handleDelete"
+					>
+						<Trash2 />
 					</Button>
 				</ItemTitle>
 			</ItemContent>

@@ -96,7 +96,7 @@ watch(sheetName, () => {
 
 const cellChanged = useCellChangedEvent(); // called throttled from BudgetEditorNode
 cellChanged.on(() => {
-	// values changed
+	// value change, rows added or row deleted
 	updateEconTree();
 	markModified();
 });
