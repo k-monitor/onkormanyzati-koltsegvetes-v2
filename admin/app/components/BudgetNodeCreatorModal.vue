@@ -170,7 +170,10 @@ function save() {
 						Egy sorban két információt kell feltüntetni: <strong>név és összeg</strong>.
 						Ezek sorrendje tetszőleges, az elválasztó karakter <code>|</code>, tabulátor
 						vagy <code>;</code> lehet. A program az első sorból állapítja meg a
-						formátumot és csak az érvényes sorokat dolgozza fel.
+						formátumot és csak az érvényes sorokat dolgozza fel. A név végén
+						opcionálisan szerepelhet azonosító is, zárójelben (pl.
+						<code>Alkategória neve (B101)</code>), hosszának egyeznie kell már meglévő
+						alkategóriák azonosítóival.
 					</p>
 					<Textarea v-model="textarea" />
 				</div>
