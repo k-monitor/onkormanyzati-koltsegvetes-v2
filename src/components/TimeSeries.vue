@@ -35,12 +35,12 @@ function toggleSeriesVisibility(id: string, event: Event) {
 const inflationEnabled = computed(() => !!CONFIG.timeseries?.inflation);
 
 // GDP feature enabled if yearly GDP data exists
-const gdpEnabled = computed(() => !!CONFIG.gdp);
+const gdpEnabled = computed(() => !!CONFIG.timeseries?.gdp);
 
 // Get GDP values from config (should be { year: value })
 const gdpValues = computed(() => {
-	if (!CONFIG.gdp) return {};
-	return CONFIG.gdp as Record<string, number>;
+	if (!CONFIG.gdps) return {};
+	return CONFIG.gdps as Record<string, number>;
 });
 
 // Get inflation rates from config object (timeseries.inflations.2020, timeseries.inflations.2021, etc.)
@@ -457,8 +457,8 @@ const hoveredSeries = computed(() => {
 <template>
 	<div class="time-series">
 		<div
-			class="alert alert-info"
 			v-if="years.length === 0"
+			class="alert alert-info"
 		>
 			Nincs elérhető funkcionális adat ehhez a kategóriához.
 		</div>
@@ -487,30 +487,30 @@ const hoveredSeries = computed(() => {
 						<button
 							class="btn"
 							:class="mode === 'regular' ? 'btn-primary' : 'btn-outline-secondary'"
-							@click="mode = 'regular'"
 							title="Nominális értékek megjelenítése"
+							@click="mode = 'regular'"
 						>
-							<i class="fas fa-fw" :class="mode === 'regular' ? 'fa-check-square' : 'fa-square'"></i>
+							<i class="fas fa-fw" :class="mode === 'regular' ? 'fa-check-square' : 'fa-square'"/>
 							Nominál
 						</button>
 						<button
 							v-if="inflationEnabled"
 							class="btn"
 							:class="mode === 'inflation' ? 'btn-primary' : 'btn-outline-secondary'"
-							@click="mode = 'inflation'"
 							:title="`Infláció korrigált értékek (${baseYear}-es árszinten)`"
+							@click="mode = 'inflation'"
 						>
-							<i class="fas fa-fw" :class="mode === 'inflation' ? 'fa-check-square' : 'fa-square'"></i>
+							<i class="fas fa-fw" :class="mode === 'inflation' ? 'fa-check-square' : 'fa-square'"/>
 							Infláció korrigált ({{ baseYear }})
 						</button>
 						<button
 							v-if="gdpEnabled"
 							class="btn"
 							:class="mode === 'gdp' ? 'btn-primary' : 'btn-outline-secondary'"
-							@click="mode = 'gdp'"
 							title="Értékek az éves GDP %-ában"
+							@click="mode = 'gdp'"
 						>
-							<i class="fas fa-fw" :class="mode === 'gdp' ? 'fa-check-square' : 'fa-square'"></i>
+							<i class="fas fa-fw" :class="mode === 'gdp' ? 'fa-check-square' : 'fa-square'"/>
 							GDP arány
 						</button>
 					</div>
@@ -658,19 +658,19 @@ const hoveredSeries = computed(() => {
 					<span
 						class="legend-color"
 						:style="{ backgroundColor: bgColor(series.id, false, false) }"
-					></span>
+					/>
 					<span class="legend-label">{{ series.name }}</span>
 					<i
 						v-if="canDrillDown(series.id)"
 						class="fas fa-fw fa-level-down-alt ml-1"
-					></i>
+					/>
 					<button
 						class="toggle-visibility-btn"
 						:class="{ 'is-hidden': hiddenSeries.has(series.id) }"
-						@click="toggleSeriesVisibility(series.id, $event)"
 						:title="hiddenSeries.has(series.id) ? 'Megjelenítés' : 'Elrejtés'"
+						@click="toggleSeriesVisibility(series.id, $event)"
 					>
-						<i class="fas fa-fw" :class="hiddenSeries.has(series.id) ? 'fa-eye-slash' : 'fa-eye'"></i>
+						<i class="fas fa-fw" :class="hiddenSeries.has(series.id) ? 'fa-eye-slash' : 'fa-eye'"/>
 					</button>
 				</div>
 			</div>
