@@ -40,7 +40,14 @@ const gdpEnabled = computed(() => !!CONFIG.timeseries?.gdp);
 // Get GDP values from config (should be { year: value })
 const gdpValues = computed(() => {
 	if (!CONFIG.gdps) return {};
-	return CONFIG.gdps as Record<string, number>;
+	const normalized: Record<string, number> = {};
+	for (const [year, rawValue] of Object.entries(CONFIG.gdps as Record<string, unknown>)) {
+		const value = typeof rawValue === 'number' ? rawValue : Number(rawValue);
+		if (Number.isFinite(value)) {
+			normalized[year] = value;
+		}
+	}
+	return normalized;
 });
 
 // Get inflation rates from config object (timeseries.inflations.2020, timeseries.inflations.2021, etc.)
@@ -90,10 +97,12 @@ const years = computed(() => {
 	const allowedYears = CONFIG.timeseries?.years
 		? CONFIG.timeseries.years.split(',').map((y: string) => y.trim())
 		: null;
+	const gdp = gdpValues.value;
 
 	return Object.keys(DATA)
 		.filter((year) => DATA[year]?.[side]?.[view])
 		.filter((year) => !allowedYears || allowedYears.includes(year))
+		.filter((year) => mode.value !== 'gdp' || (typeof gdp[year] === 'number' && gdp[year] > 0))
 		.sort();
 });
 
