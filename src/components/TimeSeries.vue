@@ -499,7 +499,6 @@ const hoveredSeries = computed(() => {
 							title="Nominális értékek megjelenítése"
 							@click="mode = 'regular'"
 						>
-							<i class="fas fa-fw" :class="mode === 'regular' ? 'fa-check-square' : 'fa-square'"/>
 							Nominál
 						</button>
 						<button
@@ -509,7 +508,6 @@ const hoveredSeries = computed(() => {
 							:title="`Infláció korrigált értékek (${baseYear}-es árszinten)`"
 							@click="mode = 'inflation'"
 						>
-							<i class="fas fa-fw" :class="mode === 'inflation' ? 'fa-check-square' : 'fa-square'"/>
 							Infláció korrigált ({{ baseYear }})
 						</button>
 						<button
@@ -519,7 +517,6 @@ const hoveredSeries = computed(() => {
 							title="Értékek az éves GDP %-ában"
 							@click="mode = 'gdp'"
 						>
-							<i class="fas fa-fw" :class="mode === 'gdp' ? 'fa-check-square' : 'fa-square'"/>
 							GDP arány
 						</button>
 					</div>
@@ -747,14 +744,10 @@ const hoveredSeries = computed(() => {
 		}
 	}
 
-	.inflation-toggle {
+	.mode-toggle {
 		.btn {
 			white-space: nowrap;
 			font-size: 0.85rem;
-
-			i {
-				margin-right: 0.25rem;
-			}
 		}
 	}
 
