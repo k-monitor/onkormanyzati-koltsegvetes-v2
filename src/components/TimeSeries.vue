@@ -198,6 +198,23 @@ function getDisplayValue(series: { values: Record<string, number>; adjustedValue
 	return series.values[year] || 0;
 }
 
+// Helper to get string value (raw, inflation-adjusted, or GDP-adjusted)
+function getStringValue(series: { values: Record<string, number>; adjustedValues: Record<string, number> }, year: string): string {
+	if (mode.value === 'inflation' && inflationEnabled.value) {
+		return groupNums(series.adjustedValues[year] || 0);
+	}
+	if (mode.value === 'gdp' && gdpEnabled.value) {
+		const gdp = gdpValues.value[year];
+		if (gdp && gdp > 0) {
+			// Show as percentage of GDP
+			return ((series.values[year] || 0) / gdp * 100).toFixed(2) + ' %';
+		}
+		return '0 %';
+	}
+	return groupNums(series.values[year] || 0);
+}
+
+
 // Get current node name for breadcrumb
 const nodePath = computed(() => {
 	const result: { id: string; name: string }[] = [{ id: '', name: 'Összesen' }];
@@ -340,8 +357,8 @@ function bgColor(id: string, isHovered: boolean, isOther: boolean): string {
 	if (path.value.length > 0) {
 		const series = timeSeriesData.value.find((s) => s.id === id);
 		if (series && maxChildValue.value > 0) {
-			// Get average value across years for this series
-			const values = Object.values(series.values);
+			// Keep opacity scaling consistent with active mode (regular/inflation/gdp)
+			const values = years.value.map((year) => getDisplayValue(series, year));
 			const avgValue = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
 			// Scale opacity from 0.4 to 1.0 based on value
 			baseOpacity = 0.4 + 0.6 * (avgValue / maxChildValue.value);
@@ -634,7 +651,7 @@ const hoveredSeries = computed(() => {
 							>
 								<td>{{ year }}</td>
 								<td class="text-right">
-									{{ groupNums(getDisplayValue(hoveredSeries, year)) }}
+									{{ getStringValue(hoveredSeries, year) }}
 								</td>
 								<td class="text-right delta" :class="{ positive: isDeltaPositive(hoveredSeries.id, year, index), negative: isDeltaNegative(hoveredSeries.id, year, index) }">
 									{{ formatDelta(getDelta(hoveredSeries.id, year, index)) }}
@@ -708,7 +725,7 @@ const hoveredSeries = computed(() => {
 							<td>{{ year }}</td>
 							<td class="name-cell">{{ hoveredSeries.names[year] || '—' }}</td>
 							<td class="text-right">
-								{{ groupNums(getDisplayValue(hoveredSeries, year)) }}
+								{{ getStringValue(hoveredSeries, year) }}
 							</td>
 							<td class="text-right delta" :class="{ positive: isDeltaPositive(hoveredSeries.id, year, index), negative: isDeltaNegative(hoveredSeries.id, year, index) }">
 								{{ formatDelta(getDelta(hoveredSeries.id, year, index)) }}

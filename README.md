@@ -367,7 +367,7 @@ Személyre szabás a `config.xlsx` fájl `config` lapján lehetséges.
 
 Az inflációszűrőhez szükséges értékek az `inflations.[év]` kezdetű sorokban adhatók meg. A funkció támogatja szöveget is tartalmazó évek ábrázolását, viszont ezekben az esetekben az ábrázolandó évek abc-rendjének és időbeli sorrendjének egyeznie kell. Kihagyott évek esetében a grafikonon a köztes infláció egyesítve lesz alkalmazva, ehhez viszont szükséges, hogy a köztes évek inflációs értékei is ki legyenek töltve.
 
-Hasonlóan, a GDP arányú megjelenítés opciójához a `gdps.[év]` sorokat kell kitölteni. Azoknál az éveknél, ahol nem elérhető GDP adat, az adott év nem jelenik meg a diagram GDP nézetén.
+Hasonlóan, a GDP arányú megjelenítés opciójához a `gdps.[év]` sorokat kell kitölteni az évek GDP adataival Forintban. Azoknál az éveknél, ahol nem elérhető GDP adat, az adott év nem jelenik meg a diagram GDP nézetén.
 
 A `timeseries.kgrOnly` beállítás azt szabályozza, hogy a közgazdasági idősorban megjelenített tételek csak a kgr rovatkódok szintjéig menjenek-e le. Ha a rovatkódok évek közti kozisztenciája alacsonyabb szinteken is biztosítva van, ez kikapcsolható. Ezek a rovatkódok `config.xlsx` fájl `kgr` lapján vannak megadva. A kgr kódok változása esetén a lap tartalma frissítésre szorulhat.
 
