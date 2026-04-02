@@ -505,10 +505,10 @@ const hoveredSeries = computed(() => {
 							v-if="inflationEnabled"
 							class="btn"
 							:class="mode === 'inflation' ? 'btn-primary' : 'btn-outline-secondary'"
-							:title="`Infláció korrigált értékek (${baseYear}-es árszinten)`"
+							title="Infláció korrigált értékek"
 							@click="mode = 'inflation'"
 						>
-							Infláció korrigált ({{ baseYear }})
+							Infláció korrigált
 						</button>
 						<button
 							v-if="gdpEnabled"
