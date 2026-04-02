@@ -614,7 +614,7 @@ const hoveredSeries = computed(() => {
 									@mouseleave="hovered = null"
 									@click="drillDown(series.id)"
 								>
-									<title>{{ series.name }}: {{ groupNums(getDisplayValue(series, year)) }}
+									<title>{{ series.name }}: {{ getStringValue(series, year) }}
 										<template v-if="mode === 'inflation'"> ({{ baseYear }}-es árszinten)</template>
 										<template v-if="mode === 'gdp'"> (% GDP)</template>
 										({{ year }})
