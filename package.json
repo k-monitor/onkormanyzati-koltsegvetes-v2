@@ -10,7 +10,7 @@
 		"dev": "nuxt dev",
 		"build": "nuxt generate",
 		"prepare": "tsx scripts/prepare.js",
-		"new-config": "node scripts/generate-config",
+		"new-config": "tsx scripts/generate-config",
 		"dev:admin": "nuxt dev admin",
 		"build:admin": "nuxt build admin",
 		"admin": "node --env-file=admin/.env admin/.output/server/index.mjs"
