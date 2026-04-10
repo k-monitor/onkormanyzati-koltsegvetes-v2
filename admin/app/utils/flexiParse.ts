@@ -33,9 +33,9 @@ export default (lines: string[]): ParsedRow[] => {
 		return v;
 	}
 
-	// Amount: digits with optional thousand separators (spaces or commas)
-	// Valid examples: "1000", "1 000", "1,000", "1 000 000"
-	const AMOUNT_RE = /^[\d]+(?:[,\s]\d{3})*$/;
+	// Amount: digits with optional thousand separators (spaces or commas), and optional currency at the end
+	// Valid examples: "1000", "1 000", "1,000", "1 000 000", "1000 Ft", "1 000Ft"
+	const AMOUNT_RE = /^[\d]+(?:[,\s]\d{3})*(?:\s*[a-zA-Z]+)?$/;
 
 	function isAmount(value: string): boolean {
 		return AMOUNT_RE.test(value);
