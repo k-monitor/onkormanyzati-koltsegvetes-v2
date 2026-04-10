@@ -61,7 +61,7 @@ async function runBuildAndDeploy() {
 	try {
 		const buildResult = await runBuildStep('pnpm build', {
 			...process.env,
-			NUXT_APP_BASE_URL: '/',
+			NUXT_APP_BASE_URL: '/', // TODO not elegant here, remove when meta admin gets fixed
 			NODE_ENV: 'production',
 		});
 
