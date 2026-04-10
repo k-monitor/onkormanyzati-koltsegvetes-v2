@@ -1,8 +1,20 @@
-.text-white-75 a {
-	color: white;
+.text-white-75 a:not(.btn) {
+	color: white !important;
 	text-decoration: underline;
 
 	&:hover {
+		color: rgba(255, 255, 255, 0.75) !important;
+		text-decoration: none;
+	}
+}
+
+// Links in dark modals
+.modal-content.bg-dark a:not(.btn) {
+	color: white !important;
+	text-decoration: underline;
+
+	&:hover {
+		color: rgba(255, 255, 255, 0.75) !important;
 		text-decoration: none;
 	}
 }

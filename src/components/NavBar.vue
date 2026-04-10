@@ -6,7 +6,7 @@ const { subpageMode } = defineProps<{
 const isBannerVisible = ref(true);
 const less = ref(true);
 
-const { canShowMilestones, handleYearSelected, year } = useYear();
+const { canShowMilestones, canShowMap, handleYearSelected, year } = useYear();
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
 
@@ -133,6 +133,16 @@ onUnmounted(() => {
 							>
 						</li>
 						<li
+							class="nav-item"
+							v-if="canShowMap"
+						>
+							<a
+								:href="`#${slugify(year)}/terkep`"
+								class="nav-link js-scroll-trigger"
+								>{{ CONFIG.navBar.map }}</a
+							>
+						</li>
+						<li
 							class="nav-item dropdown highlight"
 							v-if="years.length > 1"
 						>
@@ -216,6 +226,7 @@ onUnmounted(() => {
 		<div
 			id="banner"
 			v-if="isBannerVisible && CONFIG.navBar.showBanner"
+			class="bg-primary"
 		>
 			<VueMarkdown
 				:source="CONFIG.navBar.bannerText"

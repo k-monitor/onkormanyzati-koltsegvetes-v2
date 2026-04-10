@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
 
-const { defaultMode, year, side } = defineProps<{
+const { defaultMode, year, side, height } = defineProps<{
 	defaultMode: number;
 	year: string;
 	side: 'expense' | 'income';
+	height?: number;
 }>();
 
 const curves = ref<string[]>([]);
@@ -15,6 +16,9 @@ let resizeTimeout: number | undefined = undefined;
 
 const data = computed(() => DATA[year]?.[side] || { econ: null, func: null });
 const tooltips = computed(() => TOOLTIPS[year] || {});
+
+// round if sum is more than 1000 billion, otherwise show exact value
+const roundNums = data.value.econ && data.value.econ.value > 1000000000000 ? true : false;
 
 const children = computed(() => {
 	try {
@@ -212,6 +216,7 @@ onUpdated(regenerateTooltips);
 <template>
 	<div
 		class="visualization"
+		:class="{ 'embed-mode': height }"
 		ref="wrapper"
 	>
 		<div class="row justify-content-center">
@@ -267,12 +272,13 @@ onUpdated(regenerateTooltips);
 				>
 					{{ n.name }}
 				</li>
-				<div class="ml-auto subtotal">{{ groupNums(node?.value || 0) }}</div>
+				<div class="ml-auto subtotal">{{ groupNums(node?.value || 0, roundNums) }}</div>
 			</ol>
 		</nav>
 
 		<div
 			class="d-flex border-top border-bottom vis"
+			:class="{ 'embed-vis': height }"
 			ref="vis"
 			@mouseout="hovered = -1"
 		>
@@ -314,7 +320,7 @@ onUpdated(regenerateTooltips);
 							<span class="d-inline d-sm-none font-weight-bold">{{
 								groupNums(n.value, true)
 							}}</span>
-							<span class="d-none d-sm-inline">{{ groupNums(n.value) }}</span>
+							<span class="d-none d-sm-inline">{{ groupNums(n.value, roundNums) }}</span>
 							<span class="d-none d-md-inline ml-1"
 								>({{ Math.round((n.value / (node?.value || 1)) * 100) }}%)</span
 							>
@@ -396,6 +402,17 @@ onUpdated(regenerateTooltips);
 
 .visualization {
 	font-family: $vis-font-family;
+
+	&.embed-mode {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+
+		.vis {
+			flex: 1;
+			min-height: 0;
+		}
+	}
 
 	.left-column {
 		width: 35%;
@@ -485,10 +502,15 @@ onUpdated(regenerateTooltips);
 
 	.vis {
 		@include media-breakpoint-up(sm) {
-			height: 75vh;
+			height: var(--vis-height, 75vh);
 			min-height: 400px;
 		}
 		font-size: 90%;
+
+		&.embed-vis {
+			height: 100% !important;
+			min-height: 0;
+		}
 
 		& > div {
 			height: 100%;

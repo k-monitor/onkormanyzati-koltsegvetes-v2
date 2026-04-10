@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import search from '../utils/search';
 
-const { milestone, modalId, nextModalId, prevModalId } = defineProps<{
+const { milestone, modalId, nextModalId, prevModalId, mapModal } = defineProps<{
 	milestone: MilestoneWithId;
 	modalId: string;
 	nextModalId: string;
 	prevModalId: string;
+	mapModal?: boolean;
 }>();
 
 const playing = ref(false);
@@ -14,7 +15,7 @@ const nodes = computed(() => {
 	// TODO LATER search result type
 	const nodes = [];
 	milestone.nodeIds.forEach((id) => {
-		const results = search(milestone.year, id).filter((r) => r.matchedId);
+		const results = search(milestone.year, id, []).filter((r) => r.matchedId);
 		if (results.length) nodes.push(results[0]);
 	});
 	return nodes;
@@ -40,7 +41,7 @@ function next() {
 	switchModal(nextModalId);
 }
 
-function jump(result) {
+function jumpBudget(result) {
 	// TODO LATER search result type
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
@@ -53,6 +54,30 @@ function jump(result) {
 	setTimeout(function () {
 		eventBus.emit('jump', result);
 	}, 1000);
+}
+
+function jumpMap(result) {
+	// TODO LATER search result type
+	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
+	const $ = window.$;
+
+	// based on SearchModalContent.vue#jump
+	$('.modal').modal('hide');
+	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
+
+	scrollToElement($('#map'), 72);
+	setTimeout(function () {
+		eventBus.emit('jump_map', result);
+	}, 1000);
+}
+
+function handleMarkdownClick(event: MouseEvent) {
+	// Close modal when clicking a link in the markdown content
+	const target = event.target as HTMLElement;
+	if (target.tagName === 'A') {
+		const $ = window.$;
+		$('.modal').modal('hide');
+	}
 }
 
 onMounted(() => {
@@ -122,10 +147,10 @@ onMounted(() => {
 				</div>
 				<div class="m-3">
 					<p class="lead text-white">{{ milestone.title }}</p>
-					<div class="m-0 text-justify text-white-75">
+					<div class="m-0 text-justify text-white-75" @click="handleMarkdownClick">
 						<VueMarkdown
 							:source="milestone.description"
-							:anchorAttributes="{ target: '_blank' }"
+							:externalLinksNewTab="true"
 						/>
 					</div>
 					<div class="d-flex flex-wrap">
@@ -133,10 +158,20 @@ onMounted(() => {
 							v-for="n in nodes"
 							:key="n.id"
 							class="btn btn-sm btn-primary mb-3 mb-md-2 mr-2 col-12 col-md-auto"
-							@click="jump(n)"
+							@click="jumpBudget(n)"
 						>
 							<i class="far fa-hand-point-right mr-2"></i>
 							{{ n.name }}
+						</button>
+					</div>
+					<div class="d-flex flex-wrap">
+						<button
+							v-if="milestone.position && !mapModal"
+							class="btn btn-sm btn-primary mb-3 mb-md-2 mr-2 col-12 col-md-auto"
+							@click="jumpMap(modalId.replace('milestone-modal-', ''))"
+						>
+							<i class="far fa-map mr-2"></i>
+							Térképen
 						</button>
 					</div>
 				</div>

@@ -211,7 +211,7 @@ export function generateFunctionalTree(
 function parseEconomicDescriptor(descriptor: string) {
 	let id, m;
 
-	if ((m = descriptor.match(/ \(((B|K|FH|FT)[0-9-]+)\)/))) {
+	if ((m = descriptor.match(/\(((B|K|FH|FT)[0-9-]+)\)/))) {
 		id = m[1];
 	}
 

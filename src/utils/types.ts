@@ -35,6 +35,8 @@ export type Milestone = {
 	vid: string | null;
 	tags: string[];
 	nodeIds: string[];
+	position: { lat: number; lng: number } | null;
+	onlyOnMap: boolean;
 };
 
 export type MilestoneWithId = Milestone & { id: string };
@@ -55,4 +57,5 @@ export type SearchResult = {
 	tags: string[];
 	type: 'econ' | 'func' | 'milestone';
 	value: number;
+	year?: string | number;
 };

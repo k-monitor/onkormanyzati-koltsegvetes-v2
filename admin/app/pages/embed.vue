@@ -4,21 +4,22 @@ import { joinURL } from 'ufo';
 import { toast } from 'vue-sonner';
 
 const embeds = [
-	{ name: 'Bevételek', path: '/bevetelek/' },
-	{ name: 'Kiadások', path: '/kiadasok/' },
+	{ name: 'Bevételek', path: '/bevetelek/', maxHeight: '1100px' },
+	{ name: 'Kiadások', path: '/kiadasok/', maxHeight: '1100px' },
 	{ name: 'Mérleg', path: '/merleg/' },
+	{ name: 'Térkép', path: '/terkep/', maxHeight: '620px' },
 ];
 
 const kokoUrl = usePublicUrl();
 
-function getEmbedCode(path: string) {
+function getEmbedCode(path: string, maxHeight = '1200px') {
 	const embedUrl = joinURL(kokoUrl.value, path);
-	const code = `<iframe src="${embedUrl}" width="100%" height="1200px" frameborder="0"></iframe>`;
+	const code = `<iframe src="${embedUrl}" width="100%" height="${maxHeight}" frameborder="0"></iframe>`;
 	return code.replaceAll(/\s+/g, '\n\t').replace('><', '\n><');
 }
 
-async function copyToClipboard(path: string) {
-	const code = getEmbedCode(path);
+async function copyToClipboard(path: string, maxHeight = '1200px') {
+	const code = getEmbedCode(path, maxHeight);
 	try {
 		await navigator.clipboard.writeText(code);
 		toast.info('Beágyazó kód vágólapra másolva!');
@@ -56,9 +57,9 @@ async function copyToClipboard(path: string) {
 			:key="embed.path"
 		>
 			<p>{{ embed.name }}</p>
-			<pre>{{ getEmbedCode(embed.path) }}</pre>
+			<pre>{{ getEmbedCode(embed.path, embed.maxHeight) }}</pre>
 			<template #actions>
-				<Button @click="copyToClipboard(embed.path)">
+				<Button @click="copyToClipboard(embed.path, embed.maxHeight)">
 					<Copy />
 					Másolás
 				</Button>
