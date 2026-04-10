@@ -72,7 +72,7 @@ async function handleAdd() {
 					throw new Error(`A munkalap már létezik: ${target}`);
 				}
 
-				const newSheet = cloneSheet(workbook.value, source, target);
+				const newSheet = cloneSheet(workbook.value, source, target, 3);
 				if (!newSheet) {
 					throw new Error(`Nem sikerült klónozni a munkalapot: ${source} -> ${target}`);
 				}

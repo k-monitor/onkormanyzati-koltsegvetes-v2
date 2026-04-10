@@ -1,19 +1,28 @@
 import type ExcelJS from 'exceljs';
 
-export function cloneSheet(wb: ExcelJS.Workbook, sourceName: string, targetName: string) {
+export function cloneSheet(
+	wb: ExcelJS.Workbook,
+	sourceName: string,
+	targetName: string,
+	colCountLimit = 0,
+) {
 	if (wb.getWorksheet(targetName)) return undefined;
 	const source = wb.getWorksheet(sourceName);
 	if (!source) return undefined;
 	const target = wb.addWorksheet(targetName);
 	target.model = { ...source.model, name: targetName };
+	if (colCountLimit > 0) {
+		target.spliceColumns(colCountLimit + 1, target.columnCount - colCountLimit);
+	}
 	target.properties = { ...source.properties };
 	source.eachRow({ includeEmpty: true }, (row, rowNumber) => {
 		const targetRow = target.getRow(rowNumber);
-		row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+		const colCount = colCountLimit > 0 ? colCountLimit : row.cellCount;
+		for (let colNumber = 1; colNumber <= colCount; colNumber++) {
 			const targetCell = targetRow.getCell(colNumber);
-			targetCell.style = cell.style;
-			targetCell.value = cell.value;
-		});
+			targetCell.style = row.getCell(colNumber).style;
+			targetCell.value = row.getCell(colNumber).value;
+		}
 		targetRow.commit();
 	});
 	return target;
