@@ -27,6 +27,17 @@ const copy = ref<(typeof copyOptions.value)[number]['value']>();
 const yearOptions = computed(() => Object.keys(years.value || {}).reverse());
 const sourceYear = ref(yearOptions.value[0] || '');
 
+const hasSourceYearGotFunc = computed(() => {
+	if (!sourceYear.value) return false;
+	const incomeSheet = years.value?.[sourceYear.value]?.incomeSheet;
+	const expenseSheet = years.value?.[sourceYear.value]?.expenseSheet;
+	return [incomeSheet, expenseSheet].some((sheet) => {
+		const headerValue = String(workbook.value?.getWorksheet(sheet)?.getCell('D2')?.value || '');
+		const id = Number(headerValue.split(' ')[0]);
+		return !!id;
+	});
+});
+
 const canAddNewYear = computed(
 	() =>
 		isValid.value &&
@@ -116,7 +127,9 @@ async function handleAdd() {
 					variant="destructive"
 				>
 					<CircleAlert />
-					<AlertTitle>Az év elnevezésének 4 számjeggyel kell kezdődnie!</AlertTitle>
+					<AlertDescription>
+						Az év elnevezésének 4 számjeggyel kell kezdődnie!
+					</AlertDescription>
 				</Alert>
 				<Alert
 					v-if="alreadyExists"
@@ -124,7 +137,7 @@ async function handleAdd() {
 					variant="destructive"
 				>
 					<CircleAlert />
-					<AlertTitle>Ilyen év már létezik!</AlertTitle>
+					<AlertDescription>Ilyen év már létezik!</AlertDescription>
 				</Alert>
 
 				<template v-if="isValid && !alreadyExists">
@@ -173,6 +186,17 @@ async function handleAdd() {
 								</template>
 							</div>
 						</RadioGroup>
+						<Alert
+							v-if="copy === 'EXISTING' && hasSourceYearGotFunc"
+							class="not-prose mt-8"
+							variant="destructive"
+						>
+							<CircleAlert />
+							<AlertDescription>
+								A forrás évnek van funkcionális bontása, de ez nem kerül másolásra,
+								és az admin felületen nem lesz szerkeszthető.
+							</AlertDescription>
+						</Alert>
 					</div>
 				</template>
 
