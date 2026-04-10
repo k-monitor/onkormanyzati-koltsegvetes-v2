@@ -208,7 +208,7 @@ export function generateFunctionalTree(
 	return root.value > 0 ? root : null;
 }
 
-function parseEconomicDescriptor(descriptor: string) {
+export function parseEconomicDescriptor(descriptor: string) {
 	let id, m;
 
 	if ((m = descriptor.match(/\(((B|K|FH|FT)[0-9-]+)\)/))) {

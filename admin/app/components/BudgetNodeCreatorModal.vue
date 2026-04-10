@@ -2,6 +2,7 @@
 import type { Worksheet } from 'exceljs';
 import { CircleAlert } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
+import { parseEconomicDescriptor } from '../../../scripts/prepare-data-lib';
 
 const dialogOpened = ref(false);
 const parentNode = ref<BudgetNode | undefined>();
@@ -38,10 +39,10 @@ const parsedInputRows = computed<BudgetNode[]>(() => {
 		.filter((l) => l);
 	return flexiParse(lines).map((r) => {
 		const fullName = r.name;
-		const idMatch = fullName.match(/(.*)\s+\(([BKF][A-Z]*[0-9]+)\)$/);
+		const { id, name } = parseEconomicDescriptor(fullName);
 		return {
-			id: idMatch?.[2]?.trim() || '',
-			name: idMatch?.[1]?.trim() || fullName,
+			id: id || '',
+			name: name,
 			value: r.amount,
 		};
 	});
