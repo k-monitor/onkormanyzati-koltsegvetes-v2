@@ -20,8 +20,11 @@ const tags = computed(() => {
 });
 
 const filteredMilestones = computed(() => {
-	return milestones.value.filter((m) => !tag.value || (m.tags || []).includes(tag.value));
+	return milestones.value.filter(
+		(m) => !m.onlyOnMap && (!tag.value || (m.tags || []).includes(tag.value)),
+	);
 });
+
 
 onMounted(() => {
 	// TODO LATER eliminate jQuery
@@ -113,6 +116,7 @@ onMounted(() => {
 								(filteredMilestones.length + i - 1) % filteredMilestones.length
 							]?.id || ''
 						"
+						:mapModal="false"
 					/>
 				</div>
 			</div>

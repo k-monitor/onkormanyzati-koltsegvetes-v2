@@ -5,32 +5,33 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url + 'income',
+			href: CONFIG.url + 'map',
 		},
 	],
 	meta: [
 		{
 			property: 'og:title',
-			content: CONFIG.vis.income + ' - ' + CONFIG.seo.siteName,
+			content: (CONFIG.map?.title ?? '') + ' - ' + CONFIG.seo.siteName,
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url + 'income',
+			content: CONFIG.url + 'map',
 		},
 	],
-	title: CONFIG.vis.income + ' - ' + CONFIG.seo.pageTitle,
+	title: (CONFIG.map?.title ?? '') + ' - ' + CONFIG.seo.pageTitle,
 });
+
+function openDetailsUrl(milestoneId: string) {
+	window.open('/#'+year.value+'/terkep/' + milestoneId, '_blank');
+}
+
 </script>
 
 <template>
 	<div :class="'theme-' + slugify(year)">
-		<VisualizationSection
-			id="income"
-			side="income"
-			:text="CONFIG.vis.incomeText"
-			:title="CONFIG.vis.income"
-			:height="1100"
-		/>
+		<ClientOnly>
+			<MapSection assetPrefix="../" :detailsHandler="openDetailsUrl" />
+		</ClientOnly>
 	</div>
 </template>
 
@@ -48,15 +49,5 @@ html {
 h1,
 h2 {
 	text-transform: uppercase;
-}
-
-hr.divider {
-	max-width: 3.25rem;
-	border-width: 0.2rem;
-	border-color: $primary;
-}
-
-.page-section {
-	padding: 2rem 0;
 }
 </style>

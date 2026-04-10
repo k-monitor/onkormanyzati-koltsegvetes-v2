@@ -1,7 +1,9 @@
 import fs from 'fs';
 import xl from 'excel4node';
-import defaultConfig from './default-config.json';
-import defaultMilestones from './default-milestones.json';
+import defaultConfig from './default-config.json' with { type: 'json' };
+import defaultConfigHelp from './default-config-help.json' with { type: 'json' };
+import defaultMilestones from './default-milestones.json' with { type: 'json' };
+import defaultKgr from './default-kgr.json' with { type: 'json' };
 import './prepare-functions.js'; // required by prepare-data
 import './prepare-data.js'; // required for theme colors & tooltips generation
 
@@ -20,6 +22,38 @@ const FUNCTIONS_AOA = FUNCTIONS_TSV.trim()
 const OUTPUT_FILE = 'input/config.xlsx';
 const blue = '#00396C';
 const yellow = '#FFE7A4';
+
+function flattenConfig(obj, prefix = '', helpMap = {}) {
+	const rows = [];
+	for (const [key, value] of Object.entries(obj)) {
+		const fullKey = prefix ? `${prefix}.${key}` : key;
+		if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+			rows.push(...flattenConfig(value, fullKey, helpMap));
+		} else {
+			rows.push([fullKey, typeof value === 'number' ? value : String(value ?? ''), helpMap[fullKey] || '']);
+		}
+	}
+	return rows;
+}
+
+function flattenConfigWithBlanks(obj, helpMap = {}) {
+	const rows = [];
+	const keys = Object.keys(obj);
+	keys.forEach((key, i) => {
+		const value = obj[key];
+		if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+			rows.push(...flattenConfig(value, key, helpMap));
+		} else {
+			rows.push([key, typeof value === 'number' ? value : String(value ?? ''), helpMap[key] || '']);
+		}
+		if (i < keys.length - 1) {
+			rows.push(['', '', '']);
+		}
+	});
+	return rows;
+}
+
+const defaultConfigRows = flattenConfigWithBlanks(defaultConfig, defaultConfigHelp);
 
 const wb = new xl.Workbook();
 
@@ -72,9 +106,11 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 
 // config sheet
 
-const yearColors = Object.keys(data).map((year) => [
+const colors = ["#C0D1E3", "#C03B1A", "#0363A0"];
+
+const yearColors = Object.keys(data).map((year, index) => [
 	`theme.${year}`,
-	'royalblue',
+	colors[index % colors.length],
 	`CSS szín ehhez az évhez: ${year}`,
 ]);
 
@@ -98,7 +134,7 @@ const visColors = Object.keys(topLevelIds)
 const configSheet = wb.addWorksheet('config');
 aoaTo3colSheet(
 	configSheet,
-	defaultConfig.concat(yearColors).concat(inexColors).concat(visColors),
+	[["key", "value", "help"], ...defaultConfigRows.concat(yearColors).concat(inexColors).concat(visColors)],
 	[1],
 	[25, 40, 100],
 );
@@ -146,12 +182,19 @@ Object.keys(data).forEach((year) => {
 // milestones sheet
 
 const milestonesSheet = wb.addWorksheet('milestones');
-aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5], [10, 5, 20, 20, 20, 80]);
+aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5, 6, 7], [10, 5, 20, 20, 20, 80, 20, 20]);
 
 // functions sheet
 
 const header = ['id', 'name', 'parent'];
 const functionsSheet = wb.addWorksheet('functions');
 aoaTo3colSheet(functionsSheet, [header, ...FUNCTIONS_AOA], [], [20, 100, 20]);
+
+// kgr sheet
+
+const kgrRows = Array.from(defaultKgr).map((code) => [code]);
+const kgrSheet = wb.addWorksheet('kgr');
+
+aoaTo3colSheet(kgrSheet, [['code'], ...kgrRows], [0, 1], [20, 80]);
 
 wb.write(OUTPUT_FILE);

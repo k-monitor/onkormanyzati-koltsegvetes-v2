@@ -3,41 +3,42 @@ defineProps<{
 	milestone: MilestoneWithId;
 	nextId: string;
 	prevId: string;
+	mapModal?: boolean;
 }>();
 
-function modalId(milestoneId: string) {
-	return 'milestone-modal-' + milestoneId;
+function modalId(milestoneId: string, mapModal: boolean = false): string {
+	return 'milestone-modal-' + (mapModal ? 'map-' : '') + milestoneId;
 }
 </script>
 
 <template>
-	<div>
-		<div
-			class="milestone d-flex flex-column align-items-end w-100"
-			data-toggle="modal"
-			:data-target="'#' + modalId(milestone.id)"
-		>
-			<div class="embed-responsive embed-responsive-16by9">
-				<div
-					class="embed-responsive-item milestone-picture"
-					:class="{ overlay: milestone.overlay }"
-					:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
-				></div>
-			</div>
-			<h5 class="bg-white milestone-title px-2 text-center w-100">{{ milestone.title }}</h5>
+	<div
+		class="milestone d-flex flex-column align-items-end w-100"
+		data-toggle="modal"
+		:data-target="'#' + modalId(milestone.id, mapModal )"
+		v-if="!mapModal"
+	>
+		<div class="embed-responsive embed-responsive-16by9">
+			<div
+				class="embed-responsive-item milestone-picture"
+				:class="{ overlay: milestone.overlay }"
+				:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+			></div>
 		</div>
+		<h5 class="bg-white milestone-title px-2 text-center w-100">{{ milestone.title }}</h5>
 	</div>
 	<div
 		class="modal fade"
-		:id="modalId(milestone.id)"
+		:id="modalId(milestone.id, mapModal)"
 		role="dialog"
 		tabindex="-1"
 	>
 		<MilestoneModalContent
 			:milestone="milestone"
-			:modalId="modalId(milestone.id)"
-			:nextModalId="modalId(nextId)"
-			:prevModalId="modalId(prevId)"
+			:modalId="modalId(milestone.id, mapModal)"
+			:nextModalId="modalId(nextId, mapModal)"
+			:prevModalId="modalId(prevId, mapModal)"
+			:mapModal="mapModal"
 		/>
 	</div>
 </template>

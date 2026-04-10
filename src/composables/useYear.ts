@@ -23,12 +23,12 @@ export default () => {
 		if (!hash) return { year: null, section: null, milestoneId: null };
 
 		// Check if hash is year-section-milestoneId format (e.g., #2024-kozponti/fejlesztesek/m1)
-		const milestoneMatch = hash.match(/^([\w-]+)\/(fejlesztesek)\/(.+)$/);
+		const milestoneMatch = hash.match(/^([\w-]+)\/([\w-]+)\/(.+)$/);
 		if (milestoneMatch) {
-			const [, yearPart, , milestoneId] = milestoneMatch;
+			const [, yearPart, sectionPart, milestoneId] = milestoneMatch;
 			const yearFromSlug = s2y(yearPart);
 			if (yearFromSlug) {
-				return { year: yearFromSlug, section: 'fejlesztesek', milestoneId };
+				return { year: yearFromSlug, section: sectionPart, milestoneId };
 			}
 		}
 
@@ -43,7 +43,7 @@ export default () => {
 		}
 
 		// Check if hash is just a year (e.g., #2024 or #2024-kozponti)
-		const yearFromHash = s2y(hash);
+		const yearFromHash = s2y(hash.replace(/\/.*$/, '')); // Remove any trailing section/milestone part
 		if (yearFromHash) {
 			return { year: yearFromHash, section: null, milestoneId: null };
 		}
@@ -74,12 +74,12 @@ export default () => {
 		}
 	}
 
-	function handleMilestoneOpened(milestoneId: string) {
-		updateHash(year.value, 'fejlesztesek', milestoneId);
+	function handleMilestoneOpened(milestoneId: string, isMap=false) {
+		updateHash(year.value, isMap ? 'terkep' : 'fejlesztesek', milestoneId);
 	}
 
-	function handleMilestoneClosed() {
-		updateHash(year.value, 'fejlesztesek');
+	function handleMilestoneClosed(isMap=false) {
+		updateHash(year.value, isMap ? 'terkep' : 'fejlesztesek');
 	}
 
 	function translateSection(section: string): string {
@@ -89,6 +89,7 @@ export default () => {
 			'bevetel': 'income',
 			'koszonto': 'welcome',
 			'merleg': 'inex',
+			'terkep': 'map',
 		};
 		return translations[section] || section;
 	}
@@ -111,7 +112,7 @@ export default () => {
 			setTimeout(() => {
 				scrollToSection(section);
 				if (milestoneId) {
-					eventBus.emit('ms', milestoneId);
+					eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
 				}
 			}, 100);
 		}
@@ -129,7 +130,7 @@ export default () => {
 				setTimeout(() => {
 					scrollToSection(section, true);
 					if (milestoneId) {
-						eventBus.emit('ms', milestoneId);
+						eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
 					}
 				}, 100);
 			}
@@ -149,11 +150,19 @@ export default () => {
 		);
 	});
 
+	const canShowMap = computed(() => {
+		return (
+			CONFIG.modules.map &&
+			Object.values(MILESTONES).filter((m) => m.year == year.value && m.position).length > 0
+		);
+	});
+
 	return {
 		year: readonly(year),
 		handleYearSelected,
 		handleMilestoneOpened,
 		handleMilestoneClosed,
 		canShowMilestones,
+		canShowMap,
 	};
 };

@@ -8,7 +8,7 @@
 	"author": "Zsolt Jurányi <juranyi.zsolt@k-monitor.hu>",
 	"scripts": {
 		"dev": "nuxt dev",
-		"build": "nuxt generate",
+		"build": "unset NUXT_APP_BASE_URL && nuxt generate",
 		"prepare": "node scripts/prepare",
 		"new-config": "node scripts/generate-config",
 		"admin": "node admin/index.cjs"
@@ -21,6 +21,7 @@
 		"express": "^4.17.1",
 		"express-basic-auth": "^1.2.0",
 		"express-fileupload": "^1.2.1",
+		"leaflet": "^1.9.4",
 		"markdown-it": "^6.1.1",
 		"mitt": "^3.0.1",
 		"nuxt": "^4.2.1",
@@ -32,6 +33,7 @@
 	},
 	"devDependencies": {
 		"@nuxt/eslint": "^1.10.0",
+		"@types/leaflet": "^1.9.21",
 		"@types/tinycolor2": "^1.4.6",
 		"eslint": "^9.39.2",
 		"eslint-typegen": "^2.3.0",

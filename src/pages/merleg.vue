@@ -24,7 +24,7 @@ useHead({
 
 <template>
 	<div :class="'theme-' + slugify(year)">
-		<Inex />
+		<Inex :height="750" />
 	</div>
 </template>
 
