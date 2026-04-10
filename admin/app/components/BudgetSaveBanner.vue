@@ -34,7 +34,7 @@ async function save() {
 		>
 			<CircleAlert />
 			<AlertTitle>Nem mentett költségvetés módosítások</AlertTitle>
-			<AlertDescription class="___max-w-[80ch]">
+			<AlertDescription>
 				<span>
 					Ha nem mented őket a szerverre, akkor elveszhetnek!
 					<NuxtLink

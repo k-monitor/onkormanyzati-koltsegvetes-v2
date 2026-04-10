@@ -159,7 +159,9 @@ const isEconAndFuncTotalDiffer = computed(() => {
 			variant="destructive"
 		>
 			<CircleAlert />
-			<AlertTitle>A <code>budget.xlsx</code> fájlban nincs ilyen adat jelenleg.</AlertTitle>
+			<AlertDescription>
+				A <code>budget.xlsx</code> fájlban nincs ilyen adat jelenleg.
+			</AlertDescription>
 		</Alert>
 		<Alert
 			v-if="isEconAndFuncTotalDiffer"
@@ -167,7 +169,9 @@ const isEconAndFuncTotalDiffer = computed(() => {
 			variant="destructive"
 		>
 			<CircleAlert />
-			<AlertTitle>A közgazdasági és funkcionális főösszeg nem egyezik meg.</AlertTitle>
+			<AlertDescription>
+				A közgazdasági és funkcionális főösszeg nem egyezik meg.
+			</AlertDescription>
 		</Alert>
 	</PageSection>
 

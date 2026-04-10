@@ -67,7 +67,7 @@ async function handleRename() {
 			variant="destructive"
 		>
 			<CircleAlert />
-			<AlertTitle>Az év elnevezésének 4 számjeggyel kell kezdődnie!</AlertTitle>
+			<AlertDescription>Az év elnevezésének 4 számjeggyel kell kezdődnie!</AlertDescription>
 		</Alert>
 		<Alert
 			v-if="alreadyExists"
@@ -75,7 +75,7 @@ async function handleRename() {
 			variant="destructive"
 		>
 			<CircleAlert />
-			<AlertTitle>Ilyen év már létezik!</AlertTitle>
+			<AlertDescription>Ilyen év már létezik!</AlertDescription>
 		</Alert>
 		<template #actions>
 			<Button

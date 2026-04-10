@@ -193,10 +193,9 @@ function save() {
 							variant="destructive"
 						>
 							<CircleAlert />
-							<AlertTitle
-								>Ehhez a szülő kategóriához nem adható újabb
-								alkategória.</AlertTitle
-							>
+							<AlertDescription>
+								Ehhez a szülő kategóriához nem adható újabb alkategória.
+							</AlertDescription>
 						</Alert>
 						<Item
 							v-for="(n, i) in nodesToAdd"
