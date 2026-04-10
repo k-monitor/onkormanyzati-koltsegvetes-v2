@@ -133,90 +133,95 @@ function save() {
 	<Dialog v-model:open="dialogOpened">
 		<DialogContent
 			v-if="parentNode"
-			class="sm:max-w-200 [&>button]:cursor-pointer"
+			class="flex max-h-[80vh] flex-col sm:max-w-200 [&>button]:cursor-pointer"
 		>
-			<form @submit.prevent="save">
+			<form
+				class="flex min-h-0 flex-1 flex-col"
+				@submit.prevent="save"
+			>
 				<DialogHeader class="mb-4">
 					<DialogTitle>Új sorok hozzáadása</DialogTitle>
 				</DialogHeader>
 
-				<div class="mb-6">
-					<p class="mb-2">Szülő kategória:</p>
-					<Item
-						class="bg-muted mb-2"
-						variant="outline"
-					>
-						<ItemContent>
-							<ItemTitle class="w-full font-bold">
-								<div
-									v-if="parentNode.id"
-									class="text-muted-foreground text-xs font-bold"
-								>
-									{{ parentNode.id }}
-								</div>
-								<div class="grow">{{ parentNode.name }}</div>
-							</ItemTitle>
-						</ItemContent>
-						<ItemActions class="flex flex-col items-end">
-							<div class="text-right font-bold">
-								{{ Number(parentNode.value).toLocaleString('hu') }}
-							</div>
-						</ItemActions>
-					</Item>
-				</div>
-
-				<div class="mb-6">
-					<p class="mb-2">
-						Az alábbi többsoros beviteli mezőbe írhatóak be az új költségvetési sorok.
-						Egy sorban két információt kell feltüntetni: <strong>név és összeg</strong>.
-						Ezek sorrendje tetszőleges, az elválasztó karakter <code>|</code>, tabulátor
-						vagy <code>;</code> lehet. A program az első sorból állapítja meg a
-						formátumot és csak az érvényes sorokat dolgozza fel. A név végén
-						opcionálisan szerepelhet azonosító is, zárójelben (pl.
-						<code>Alkategória neve (B101)</code>), hosszának egyeznie kell már meglévő
-						alkategóriák azonosítóival.
-					</p>
-					<Textarea v-model="textarea" />
-				</div>
-
-				<div class="mb-6">
-					<p class="mb-2">
-						Az alábbi sorok lesznek hozzáadva (<code>{{ newIdMask }}</code> azonosító
-						formátummal, a meglévő {{ existingChildIds.length }} db alkategória után):
-					</p>
-					<Alert
-						v-if="!maxNewChildren"
-						class="not-prose mb-8"
-						variant="destructive"
-					>
-						<CircleAlert />
-						<AlertTitle
-							>Ehhez a szülő kategóriához nem adható újabb alkategória.</AlertTitle
+				<div class="mb-6 flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto pr-8">
+					<div>
+						<p class="mb-2">Szülő kategória:</p>
+						<Item
+							class="bg-muted mb-2"
+							variant="outline"
 						>
-					</Alert>
-					<Item
-						v-for="(n, i) in nodesToAdd"
-						:key="i"
-						class="mb-2"
-						variant="outline"
-					>
-						<ItemContent>
-							<ItemTitle class="min-w-full">
-								<div
-									v-if="n.id"
-									class="text-muted-foreground text-xs font-bold"
-								>
-									{{ n.id }}
+							<ItemContent>
+								<ItemTitle class="w-full font-bold">
+									<div
+										v-if="parentNode.id"
+										class="text-muted-foreground text-xs font-bold"
+									>
+										{{ parentNode.id }}
+									</div>
+									<div class="grow">{{ parentNode.name }}</div>
+								</ItemTitle>
+							</ItemContent>
+							<ItemActions class="flex flex-col items-end">
+								<div class="text-right font-bold">
+									{{ Number(parentNode.value).toLocaleString('hu') }}
 								</div>
-								<div class="grow">{{ n.name }}</div>
-							</ItemTitle>
-						</ItemContent>
-						<ItemActions class="flex flex-col items-end">
-							<div class="text-right">
-								{{ Number(n.value).toLocaleString('hu') }}
-							</div>
-						</ItemActions>
-					</Item>
+							</ItemActions>
+						</Item>
+					</div>
+					<div class="mb-6">
+						<p class="mb-2">
+							Az alábbi többsoros beviteli mezőbe írhatóak be az új költségvetési
+							sorok. Egy sorban két információt kell feltüntetni:
+							<strong>név és összeg</strong>. Ezek sorrendje tetszőleges, az
+							elválasztó karakter <code>|</code>, tabulátor vagy <code>;</code> lehet.
+							A program az első sorból állapítja meg a formátumot és csak az érvényes
+							sorokat dolgozza fel. A név végén opcionálisan szerepelhet azonosító is,
+							zárójelben (pl. <code>Alkategória neve (B101)</code>), hosszának
+							egyeznie kell már meglévő alkategóriák azonosítóival.
+						</p>
+						<Textarea v-model="textarea" />
+					</div>
+					<div>
+						<p class="mb-2">
+							Az alábbi sorok lesznek hozzáadva (<code>{{ newIdMask }}</code>
+							azonosító formátummal, a meglévő {{ existingChildIds.length }} db
+							alkategória után):
+						</p>
+						<Alert
+							v-if="!maxNewChildren"
+							class="not-prose mb-8"
+							variant="destructive"
+						>
+							<CircleAlert />
+							<AlertTitle
+								>Ehhez a szülő kategóriához nem adható újabb
+								alkategória.</AlertTitle
+							>
+						</Alert>
+						<Item
+							v-for="(n, i) in nodesToAdd"
+							:key="i"
+							class="mb-2"
+							variant="outline"
+						>
+							<ItemContent>
+								<ItemTitle class="min-w-full">
+									<div
+										v-if="n.id"
+										class="text-muted-foreground text-xs font-bold"
+									>
+										{{ n.id }}
+									</div>
+									<div class="grow">{{ n.name }}</div>
+								</ItemTitle>
+							</ItemContent>
+							<ItemActions class="flex flex-col items-end">
+								<div class="text-right">
+									{{ Number(n.value).toLocaleString('hu') }}
+								</div>
+							</ItemActions>
+						</Item>
+					</div>
 				</div>
 
 				<DialogFooter class="[&>button]:cursor-pointer">
