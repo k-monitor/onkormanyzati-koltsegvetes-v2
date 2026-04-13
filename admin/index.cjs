@@ -33,7 +33,8 @@ app.post('/budget', (req, res) => {
 });
 
 app.post('/buildSite', (req, res) => {
-	exec('pnpm build', (error, stdout, stderr) => {
+	const buildEnv = { ...process.env, NUXT_APP_BASE_URL: process.env.SITE_BASE_URL || '' };
+	exec('pnpm build', { env: buildEnv }, (error, stdout, stderr) => {
 		if (error) {
 			res.status(500).send(stderr);
 		} else if (CONFIG.DEPLOY_CMD) {
