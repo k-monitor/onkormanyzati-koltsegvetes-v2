@@ -405,10 +405,10 @@ Az admin modul eme 3 lépés megkönnyítésére szolgál. Ez egy webalkalmazás
 Admin beüzemelés lépései részletesen:
 
 1. Telepíts Node.js-t és PNPM-et, ezek adják az alapvető környezetet a projekthez.
-1. Lépj be az `admin` mappába.
-1. Futtasd le a `pnpm install` parancsot.
-1. Készíts másolatot az `.env.example` fájlról `.env` néven.
-1. Szerkeszd az `.env` fájlt, hogy beállítsd az admin felületet:
+2. Lépj be az `admin` mappába.
+3. Futtasd le a `pnpm install` parancsot.
+4. Készíts másolatot az `.env.example` fájlról `.env` néven.
+5. Szerkeszd az `.env` fájlt, hogy beállítsd az admin felületet:
     - `PORT=8081` - a port száma, amin a webes felület elérhető lesz
     - `ADMIN_USER=admin` - ezzel a felhasználónévvel lehet majd elérni az admin felületet
     - `ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
@@ -416,9 +416,10 @@ Admin beüzemelés lépései részletesen:
     - `SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
     - `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
     - `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
-1. Lépj vissza egy mappaszinttel fejlebb, a projekt mappájába.
-1. Futtasd le a `pnpm build:admin` parancsot.
-1. Az admin felület az `pnpm admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
+    - `SITE_BASE_URL` - ezzel lehet a generált site base url-jét (`https://example.hu/` utáni rész, pl.: `/koltsegvetes/`) beállítani
+6. Lépj vissza egy mappaszinttel fejlebb, a projekt mappájába.
+7. Futtasd le a `pnpm build:admin` parancsot.
+8. Az admin felület az `pnpm admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
 
 Ahhoz, hogy az admin felület publikusan is elérhető legyen, az alábbiakra van szükség:
 
