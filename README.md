@@ -394,6 +394,7 @@ Admin beüzemelés lépései részletesen:
     - `SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
     - `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
     - `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami az `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
+    - `SITE_BASE_URL` - ezzel lehet a generált site base url-jét (`https://example.hu/` utáni rész, pl.: `/koltsegvetes/`) beállítani
 5. Az admin felület az `pnpm admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
 
 Ahhoz, hogy az admin felület publikusan is elérhető legyen, az alábbiakra van szükség:
