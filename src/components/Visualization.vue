@@ -12,7 +12,7 @@ const curves = ref<string[]>([]);
 const hovered = ref(-1);
 const mode = ref(0); // 0 = econ, 1 = func
 const path = ref<string[]>([]);
-let resizeTimeout: number | undefined = undefined;
+let resizeTimeout: NodeJS.Timeout | undefined = undefined;
 
 const data = computed(() => DATA[year]?.[side] || { econ: null, func: null });
 const tooltips = computed(() => TOOLTIPS[year] || {});
@@ -44,7 +44,7 @@ const nodePath = computed(() => {
 	let r = root.value;
 	const np = [r];
 	for (let p = 0; p < path.value.length; p++) {
-		var id = path.value[p];
+		const id = path.value[p];
 		const c = (r.children || []).filter((n) => n.id == id)[0];
 		if (c && (c.children || []).length > 0) {
 			r = c;
@@ -140,7 +140,7 @@ function curve(index: number) {
 	}
 }
 
-function down(node: BudgetNode, index: number) {
+function down(node: BudgetNode) {
 	window.$('.tooltip').remove();
 	if (node.children && node.children.length > 0) {
 		path.value.push(String(node.id));
@@ -311,7 +311,7 @@ onUpdated(regenerateTooltips);
 						:title="tooltips[String(n.id)]"
 						oncontextmenu="return false;"
 						@click="
-							down(n, i);
+							down(n);
 							autoScroll();
 						"
 						@mouseover="hovered = i"
@@ -383,7 +383,7 @@ onUpdated(regenerateTooltips);
 					<span
 						class="mr-2"
 						@click="
-							down(n, i);
+							down(n);
 							autoScroll();
 						"
 						>{{ n.name }}</span
