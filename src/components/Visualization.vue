@@ -366,11 +366,11 @@ onUpdated(regenerateTooltips);
 					/>
 				</svg>
 			</div>
-			<div class="d-none d-sm-flex flex-column justify-content-around right-column text-left">
+			<div class="d-none d-sm-flex flex-column justify-content-center right-column text-left">
 				<div
 					v-for="(n, i) in children"
 					:key="n.id"
-					class="label"
+					class="label my-2"
 					:class="{ 'text-muted': hovered > -1 && i != hovered }"
 					:data-id="n.id"
 					:data-index="i"
