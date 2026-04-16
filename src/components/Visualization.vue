@@ -370,8 +370,11 @@ onUpdated(regenerateTooltips);
 				<div
 					v-for="(n, i) in children"
 					:key="n.id"
-					class="label my-2"
-					:class="{ 'text-muted': hovered > -1 && i != hovered }"
+					class="label py-2"
+					:class="{
+						'font-weight-bold': i === hovered,
+						'text-muted': hovered > -1 && i != hovered,
+					}"
 					:data-id="n.id"
 					:data-index="i"
 					oncontextmenu="return false;"
