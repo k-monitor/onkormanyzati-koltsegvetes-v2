@@ -51,11 +51,7 @@ function isNodeSmall(node: BudgetNode, tree: BudgetNode | undefined) {
 	return Math.abs(node.value) < max * 0.1;
 }
 
-function regenerateTooltips() {
-	// TODO LATER jQuery -> Vue refactor
-	const $ = window.$;
-	$('[data-toggle="tooltip"]').tooltip();
-}
+const { regenerateTooltips } = useTooltips();
 
 onMounted(regenerateTooltips);
 onUpdated(regenerateTooltips);

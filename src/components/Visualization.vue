@@ -166,10 +166,7 @@ function updateCurves() {
 	curves.value = children.value.map((n, i) => curve(i));
 }
 
-function regenerateTooltips() {
-	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
-	window.$('[data-toggle="tooltip"]').tooltip();
-}
+const { regenerateTooltips } = useTooltips();
 
 function milestoneId(node: BudgetNode) {
 	try {
