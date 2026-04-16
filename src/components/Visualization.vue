@@ -262,17 +262,23 @@ onUpdated(regenerateTooltips);
 		</div>
 
 		<nav aria-label="breadcrumb">
-			<ol class="breadcrumb">
+			<ol class="breadcrumb bg-transparent p-0">
 				<li
 					v-for="(n, i) in nodePath"
 					:key="i"
-					class="breadcrumb-item"
+					class="breadcrumb-item d-flex flex-wrap justify-content-between px-3 py-2 w-100"
 					:class="{ active: i == nodePath.length - 1 }"
+					:style="{ marginLeft: `${2 * i}rem` }"
 					@click="up(path.length - i)"
 				>
-					{{ n.name }}
+					<div>{{ n.name }}</div>
+					<div class="d-flex text-right">
+						<div class="text-nowrap">{{ groupNums(n.value || 0, roundNums) }}</div>
+						<div style="width: 3rem">
+							{{ Math.round((100 * n.value) / (nodePath[i - 1]?.value || n.value)) }}%
+						</div>
+					</div>
 				</li>
-				<div class="ml-auto subtotal">{{ groupNums(node?.value || 0, roundNums) }}</div>
 			</ol>
 		</nav>
 
@@ -280,6 +286,7 @@ onUpdated(regenerateTooltips);
 			ref="vis"
 			class="d-flex border-top border-bottom vis"
 			:class="{ 'embed-vis': height }"
+			:style="{ marginLeft: `${2 * (nodePath.length - 1)}rem` }"
 			@mouseout="hovered = -1"
 		>
 			<div class="d-flex left-column">
@@ -473,6 +480,7 @@ onUpdated(regenerateTooltips);
 	}
 
 	.breadcrumb-item {
+		background-color: #e9ecef;
 		text-align: left;
 	}
 
@@ -526,6 +534,13 @@ onUpdated(regenerateTooltips);
 		.label span {
 			cursor: pointer;
 		}
+	}
+}
+
+@include media-breakpoint-down(xs) {
+	.breadcrumb-item,
+	.vis {
+		margin-left: 0 !important;
 	}
 }
 </style>
