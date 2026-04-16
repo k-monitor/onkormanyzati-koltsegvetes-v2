@@ -6,9 +6,8 @@ const { subpageMode } = defineProps<{
 const isBannerVisible = ref(true);
 const less = ref(true);
 
-const { canShowMilestones, canShowMap, handleYearSelected, year } = useYear();
+const { canShowMilestones, canShowMap, year } = useYear();
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
-const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
 
 function scrollToTop() {
 	window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -142,38 +141,7 @@ onUnmounted(() => {
 								>{{ CONFIG.navBar.map }}</a
 							>
 						</li>
-						<li
-							v-if="years.length > 1"
-							class="nav-item dropdown highlight"
-						>
-							<a
-								id="navbarDropdown"
-								class="nav-link dropdown-toggle"
-								href="#"
-								role="button"
-								data-toggle="dropdown"
-								aria-haspopup="true"
-								aria-expanded="false"
-							>
-								<span class="mr-1">{{ year }}</span>
-							</a>
-							<div
-								class="dropdown-menu dropdown-menu-right"
-								aria-labelledby="navbarDropdown"
-							>
-								<a
-									v-for="y in years"
-									:key="y"
-									class="dropdown-item"
-									href="javascript:void(0)"
-									:class="['theme-' + slugify(y)]"
-									@click="handleYearSelected(y)"
-								>
-									<i class="fas fa-circle mr-2" />
-									{{ y }}
-								</a>
-							</div>
-						</li>
+						<NavBarYearSelector :subpage-mode="subpageMode" />
 						<li class="nav-item">
 							<a
 								href="javascript:void(0)"
