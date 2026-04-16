@@ -12,16 +12,16 @@ const { handleYearSelected } = useYear();
 		{{ title }}
 		<small class="ml-3 text-muted">
 			<i
-				class="fas fa-caret-left"
 				v-if="DATA[years[index - 1] || '']"
+				class="fas fa-caret-left"
 				@click="handleYearSelected(years[index - 1] || '')"
-			></i>
+			/>
 			{{ year }}
 			<i
-				class="fas fa-caret-right"
 				v-if="DATA[years[index + 1] || '']"
+				class="fas fa-caret-right"
 				@click="handleYearSelected(years[index + 1] || '')"
-			></i>
+			/>
 		</small>
 	</h2>
 </template>
