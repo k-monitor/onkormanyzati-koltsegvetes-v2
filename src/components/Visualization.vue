@@ -335,10 +335,10 @@ onUpdated(regenerateTooltips);
 						<div class="d-flex d-sm-none">
 							<div
 								v-if="CONFIG.modules.milestones && milestoneId(n)"
-								class="btn btn-link bg-light milestone-button ml-3 mr-1 px-2"
+								class="btn btn-light text-primary border-primary milestone-button ml-3 mr-1 px-2"
 								@click="eventBus.emit('ms', milestoneId(n) || '')"
 							>
-								<i class="fas fa-fw fa-camera" />
+								<i class="fas fa-fw fa-lightbulb" />
 							</div>
 							<div
 								v-else-if="tooltips[String(n.id)]"
@@ -378,6 +378,7 @@ onUpdated(regenerateTooltips);
 					@mouseover="hovered = i"
 				>
 					<span
+						class="mr-2"
 						@click="
 							down(n, i);
 							autoScroll();
@@ -386,9 +387,9 @@ onUpdated(regenerateTooltips);
 					>
 					<span
 						v-if="CONFIG.modules.milestones && milestoneId(n)"
-						class="btn btn-link milestone-button ml-auto"
+						class="btn btn-outline-primary btn-sm milestone-button ml-auto"
 						@click="eventBus.emit('ms', milestoneId(n) || '')"
-						><i class="fas fa-camera"
+						><i class="fas fa-fw fa-lightbulb"
 					/></span>
 				</div>
 			</div>
