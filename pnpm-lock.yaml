@@ -60,6 +60,9 @@ importers:
       '@nuxt/eslint':
         specifier: ^1.10.0
         version: 1.13.0(@typescript-eslint/utils@8.53.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(@vue/compiler-sfc@3.5.27)(eslint@9.39.2(jiti@2.6.1))(magicast@0.5.1)(typescript@5.9.3)(vite@7.3.1(jiti@2.6.1)(sass@1.77.6)(terser@5.46.0)(yaml@2.8.2))
+      '@types/leaflet':
+        specifier: ^1.9.21
+        version: 1.9.21
       '@types/tinycolor2':
         specifier: ^1.4.6
         version: 1.4.6
