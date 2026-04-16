@@ -70,6 +70,12 @@ onUnmounted(() => {
 					/>
 					{{ CONFIG.city }}
 				</a>
+				<ul
+					v-if="!subpageMode"
+					class="d-lg-none navbar-nav ml-auto my-2 my-lg-0 align-items-center"
+				>
+					<NavBarYearSelector :subpage-mode="subpageMode" />
+				</ul>
 				<button
 					class="navbar-toggler navbar-toggler-right"
 					type="button"
@@ -338,38 +344,37 @@ onUnmounted(() => {
 
 	// highlight
 
-	/*&, & > div.container-fluid {
+	&,
+	& > div.container-fluid {
 		padding-right: 0;
-	}*/
+	}
 	.nav-item:last-child .nav-link {
 		margin-right: 1rem;
 	}
 
-	@include media-breakpoint-up(lg) {
-		.navbar-nav .nav-item.highlight {
-			.nav-link {
-				color: $gray-900 !important; // white !important;
-				text-decoration: underline;
-			}
+	.navbar-nav .nav-item.highlight {
+		.nav-link {
+			color: $gray-900 !important; // white !important;
+			text-decoration: underline;
 		}
-		&.navbar-scrolled {
-			.navbar-nav .nav-item.highlight {
-				$d: 1.6rem;
-				background-color: $primary;
-				margin-bottom: -$d;
-				margin-top: -$d;
-				padding: $d 0;
-				min-height: 100%;
-				position: relative;
+	}
+	&.navbar-scrolled {
+		.navbar-nav .nav-item.highlight {
+			$d: 1.6rem;
+			background-color: $primary;
+			margin-bottom: -$d;
+			margin-top: -$d;
+			padding: $d 0;
+			min-height: 100%;
+			position: relative;
 
-				.nav-link {
-					color: $white !important;
-					text-decoration: none;
-				}
+			.nav-link {
+				color: $white !important;
+				text-decoration: none;
+			}
 
-				&:hover {
-					background-color: darken($primary, 10%);
-				}
+			&:hover {
+				background-color: darken($primary, 10%);
 			}
 		}
 	}

@@ -15,7 +15,7 @@ const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
 	>
 		<a
 			id="navbarDropdown"
-			class="nav-link dropdown-toggle"
+			class="nav-link dropdown-toggle mx-0 px-2 px-sm-3 px-lg-3"
 			href="#"
 			role="button"
 			data-toggle="dropdown"
