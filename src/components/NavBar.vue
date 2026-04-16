@@ -24,7 +24,7 @@ onMounted(() => {
 	}
 
 	// Collapse Navbar
-	var navbarCollapse = function () {
+	const navbarCollapse = function () {
 		if ($('#mainNav').offset().top > 100) {
 			$('#mainNav').addClass('navbar-scrolled');
 		} else {
@@ -53,14 +53,14 @@ onUnmounted(() => {
 <template>
 	<div id="outerDiv">
 		<nav
-			class="navbar navbar-expand-lg navbar-light fixed-top py-3"
 			id="mainNav"
+			class="navbar navbar-expand-lg navbar-light fixed-top py-3"
 		>
 			<div class="container">
 				<a
 					class="navbar-brand js-scroll-trigger"
 					:href="`#${slugify(year)}/`"
-					v-on:click="scrollToTop()"
+					@click="scrollToTop()"
 				>
 					<img
 						class="mr-2"
@@ -80,11 +80,11 @@ onUnmounted(() => {
 					aria-expanded="false"
 					aria-label="Toggle navigation"
 				>
-					<span class="navbar-toggler-icon"></span>
+					<span class="navbar-toggler-icon" />
 				</button>
 				<div
-					class="collapse navbar-collapse"
 					id="navbarResponsive"
+					class="collapse navbar-collapse"
 				>
 					<ul
 						v-if="!subpageMode"
@@ -97,7 +97,7 @@ onUnmounted(() => {
 								data-toggle="modal"
 								data-target="#search-modal"
 							>
-								<i class="fas fa-search"></i>
+								<i class="fas fa-search" />
 								<span class="sr-only">Keresés</span>
 							</a>
 						</li>
@@ -123,8 +123,8 @@ onUnmounted(() => {
 							>
 						</li>
 						<li
-							class="nav-item"
 							v-if="canShowMilestones"
+							class="nav-item"
 						>
 							<a
 								:href="`#${slugify(year)}/fejlesztesek`"
@@ -133,8 +133,8 @@ onUnmounted(() => {
 							>
 						</li>
 						<li
-							class="nav-item"
 							v-if="canShowMap"
+							class="nav-item"
 						>
 							<a
 								:href="`#${slugify(year)}/terkep`"
@@ -143,13 +143,13 @@ onUnmounted(() => {
 							>
 						</li>
 						<li
-							class="nav-item dropdown highlight"
 							v-if="years.length > 1"
+							class="nav-item dropdown highlight"
 						>
 							<a
+								id="navbarDropdown"
 								class="nav-link dropdown-toggle"
 								href="#"
-								id="navbarDropdown"
 								role="button"
 								data-toggle="dropdown"
 								aria-haspopup="true"
@@ -162,14 +162,14 @@ onUnmounted(() => {
 								aria-labelledby="navbarDropdown"
 							>
 								<a
+									v-for="y in years"
+									:key="y"
 									class="dropdown-item"
 									href="javascript:void(0)"
-									v-for="y in years"
 									:class="['theme-' + slugify(y)]"
-									:key="y"
 									@click="handleYearSelected(y)"
 								>
-									<i class="fas fa-circle mr-2"></i>
+									<i class="fas fa-circle mr-2" />
 									{{ y }}
 								</a>
 							</div>
@@ -203,13 +203,13 @@ onUnmounted(() => {
 								data-toggle="modal"
 								href="javascript:void(0)"
 							>
-								<i class="far fa-comment-dots"></i>
+								<i class="far fa-comment-dots" />
 							</a>
 						</li>
 					</ul>
 					<ul
-						class="navbar-nav ml-auto my-2 my-lg-0"
 						v-else
+						class="navbar-nav ml-auto my-2 my-lg-0"
 					>
 						<li class="nav-item">
 							<a
@@ -224,8 +224,8 @@ onUnmounted(() => {
 			</div>
 		</nav>
 		<div
-			id="banner"
 			v-if="isBannerVisible && CONFIG.navBar.showBanner"
+			id="banner"
 			class="bg-primary"
 		>
 			<VueMarkdown
@@ -235,11 +235,11 @@ onUnmounted(() => {
 			<button
 				aria-label="Close"
 				class="close-banner"
-				@click="isBannerVisible = false"
 				type="button"
+				@click="isBannerVisible = false"
 			>
 				<span aria-hidden="true">
-					<i class="far fa-times-circle"></i>
+					<i class="far fa-times-circle" />
 				</span>
 			</button>
 		</div>
