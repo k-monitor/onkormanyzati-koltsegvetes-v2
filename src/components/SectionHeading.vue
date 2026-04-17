@@ -19,10 +19,7 @@ const { handleYearSelected } = useYear();
 			@click="handleYearSelected(previousYear)"
 		>
 			<span class="d-none d-sm-inline">{{ previousYear }}</span>
-			<i
-				class="fas fa-caret-left"
-				@click="handleYearSelected(previousYear)"
-			/>
+			<i class="fas fa-caret-left" />
 		</span>
 		<span class="current-year">{{ year }}</span>
 		<span
@@ -30,10 +27,7 @@ const { handleYearSelected } = useYear();
 			class="neighbor-year"
 			@click="handleYearSelected(nextYear)"
 		>
-			<i
-				class="fas fa-caret-right"
-				@click="handleYearSelected(nextYear)"
-			/>
+			<i class="fas fa-caret-right" />
 			<span class="d-none d-sm-inline">{{ nextYear }}</span>
 		</span>
 	</div>
