@@ -272,7 +272,7 @@ onUpdated(regenerateTooltips);
 					<div class="d-flex text-right">
 						<div class="text-nowrap">{{ groupNums(n.value || 0, roundNums) }}</div>
 						<div style="width: 3rem">
-							{{ Math.round((100 * n.value) / (nodePath[i - 1]?.value || n.value)) }}%
+							{{ Math.round((100 * n.value) / (nodePath[0]?.value || n.value)) }}%
 						</div>
 					</div>
 				</li>
