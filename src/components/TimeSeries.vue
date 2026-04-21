@@ -140,22 +140,39 @@ const kgrFilter = computed(() => {
 	return ids.length > 0 ? new Set(ids) : null;
 });
 
-// Get children of current node (consistent across years)
+// Get children of current node (union across all years, so items only present in later years still appear)
 const currentChildren = computed(() => {
-	// Get children from the first year that has data at this path
+	const merged = new Map<string, { node: BudgetNode; total: number }>();
+	let leafFallback: BudgetNode | null = null;
+
 	for (const year of years.value) {
 		const root = getRootForYear(year);
 		const node = getNodeAtPath(root, path.value);
-		if (node?.children && node.children.length > 0) {
-			return node.children
-				.filter((child) => !normalizeId(child.id).startsWith('F'))
-				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(normalizeId(child.id)))
-				.sort((a, b) => b.value - a.value);
-		} else {
-			return node ? [node] : [];
+		if (!node) continue;
+		if (node.children && node.children.length > 0) {
+			for (const child of node.children) {
+				const id = normalizeId(child.id);
+				if (id.startsWith('F')) continue;
+				if (view === 'econ' && kgrFilter.value && !kgrFilter.value.has(id)) continue;
+				const existing = merged.get(id);
+				if (existing) {
+					existing.total += child.value;
+				} else {
+					merged.set(id, { node: child, total: child.value });
+				}
+			}
+		} else if (!leafFallback) {
+			leafFallback = node;
 		}
 	}
-	return [];
+
+	if (merged.size === 0) {
+		return leafFallback ? [leafFallback] : [];
+	}
+
+	return Array.from(merged.values())
+		.sort((a, b) => b.total - a.total)
+		.map((entry) => entry.node);
 });
 
 // Build time series data for all children
