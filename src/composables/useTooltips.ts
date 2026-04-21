@@ -1,10 +1,13 @@
 export function useTooltips() {
+	const $ = () => window.$;
+
+	// Lightweight init — safe to call on every onUpdated.
+	// Only initializes elements that haven't been set up yet.
 	function regenerateTooltips() {
-		const $ = window.$;
 		const isTouchDevice = window.matchMedia('(hover: none)').matches;
 
 		if (!isTouchDevice) {
-			$('[data-toggle="tooltip"]').tooltip();
+			$()('[data-toggle="tooltip"]').tooltip();
 			return;
 		}
 
@@ -12,13 +15,26 @@ export function useTooltips() {
 		// tooltip div triggers onUpdated, which would immediately dispose it
 		if (document.querySelector('.tooltip')) return;
 
-		// Destroy existing instances to avoid duplicate handlers on re-render
-		$('[data-toggle="tooltip"]').tooltip('dispose');
+		initTouchTooltips();
+	}
 
+	// Full reinit — disposes existing instances so Bootstrap re-reads updated
+	// :title values. Call this (via nextTick) after the year prop changes.
+	function reinitTooltips() {
+		$()('[data-toggle="tooltip"]').tooltip('dispose');
+		const isTouchDevice = window.matchMedia('(hover: none)').matches;
+		if (isTouchDevice) {
+			initTouchTooltips();
+		} else {
+			$()('[data-toggle="tooltip"]').tooltip();
+		}
+	}
+
+	function initTouchTooltips() {
 		// Manual trigger — we control show/hide via custom long-press logic
-		$('[data-toggle="tooltip"]').tooltip({ trigger: 'manual' });
+		$()('[data-toggle="tooltip"]').tooltip({ trigger: 'manual' });
 
-		$('[data-toggle="tooltip"]').each(function () {
+		$()('[data-toggle="tooltip"]').each(function () {
 			const el = this as HTMLElement;
 			let timer: ReturnType<typeof setTimeout> | null = null;
 			let tooltipShown = false;
@@ -28,7 +44,7 @@ export function useTooltips() {
 				timer = setTimeout(() => {
 					timer = null;
 					tooltipShown = true;
-					$(el).tooltip('show');
+					$()(el).tooltip('show');
 				}, 500);
 			});
 
@@ -47,7 +63,7 @@ export function useTooltips() {
 				// Register dismiss listener only after the long press is confirmed and
 				// touchend has fired, so the current event chain can't trigger it
 				if (tooltipShown) {
-					document.addEventListener('touchstart', () => $(el).tooltip('hide'), {
+					document.addEventListener('touchstart', () => $()(el).tooltip('hide'), {
 						once: true,
 					});
 				}
@@ -69,5 +85,5 @@ export function useTooltips() {
 		});
 	}
 
-	return { regenerateTooltips };
+	return { regenerateTooltips, reinitTooltips };
 }

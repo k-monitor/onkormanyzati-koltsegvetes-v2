@@ -51,10 +51,11 @@ function isNodeSmall(node: BudgetNode, tree: BudgetNode | undefined) {
 	return Math.abs(node.value) < max * 0.1;
 }
 
-const { regenerateTooltips } = useTooltips();
+const { regenerateTooltips, reinitTooltips } = useTooltips();
 
 onMounted(regenerateTooltips);
 onUpdated(regenerateTooltips);
+watch(year, () => nextTick(reinitTooltips));
 </script>
 
 <template>

@@ -72,6 +72,7 @@ watch(
 			mode.value = 0;
 			path.value = [];
 		}
+		nextTick(reinitTooltips);
 	},
 );
 
@@ -166,7 +167,7 @@ function updateCurves() {
 	curves.value = children.value.map((n, i) => curve(i));
 }
 
-const { regenerateTooltips } = useTooltips();
+const { regenerateTooltips, reinitTooltips } = useTooltips();
 
 function milestoneId(node: BudgetNode) {
 	try {
