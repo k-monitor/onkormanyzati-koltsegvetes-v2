@@ -15,6 +15,11 @@ async function uploadBudget(e: Event) {
 	await upload('/api/budget', 'budget', e.target as HTMLInputElement);
 	await loadBudgetXlsxFromServer();
 }
+
+async function save() {
+	await uploadBudgetXlsxToServer();
+	await loadBudgetXlsxFromServer();
+}
 </script>
 
 <template>
@@ -34,7 +39,7 @@ async function uploadBudget(e: Event) {
 					<Download />
 					Letöltés
 				</Button>
-				<Button @click="uploadBudgetXlsxToServer">
+				<Button @click="save">
 					<Upload />
 					Mentés
 				</Button>
