@@ -208,10 +208,13 @@ export function generateFunctionalTree(
 	return root.value > 0 ? root : null;
 }
 
+export const ECON_ID_RE = /(B|K|FH|FT)[0-9-]+/;
+
 export function parseEconomicDescriptor(descriptor: string) {
 	let id, m;
 
-	if ((m = descriptor.match(/\(((B|K|FH|FT)[0-9-]+)\)/))) {
+	const fromInsideParens = new RegExp(`\\((${ECON_ID_RE.source})\\)`);
+	if ((m = descriptor.match(fromInsideParens))) {
 		id = m[1];
 	}
 
