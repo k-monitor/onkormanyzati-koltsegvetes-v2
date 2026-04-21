@@ -33,7 +33,13 @@ const showChildrenSumWarning = computed(() => {
 	return node.value !== sum.value;
 });
 
-const open = ref(isSummary);
+const isOpen = ref(isSummary);
+const canOpen = computed(() => !isSummary && hasChildren.value);
+function open() {
+	if (canOpen.value) {
+		isOpen.value = !isOpen.value;
+	}
+}
 
 const sheet = inject<Ref<Worksheet | undefined>>('sheet');
 
@@ -118,30 +124,24 @@ function handleDelete() {
 </script>
 
 <template>
-	<Collapsible v-model:open="open">
+	<Collapsible v-model:open="isOpen">
 		<Item
-			class="mb-2"
+			class="mb-2 py-0"
 			:class="cn(isSummary && 'bg-muted')"
 			variant="outline"
 		>
-			<ItemContent>
+			<ItemContent
+				class="cursor-pointer py-4"
+				@click="open"
+			>
 				<ItemTitle :class="cn('w-full', isSummary && 'font-bold')">
-					<CollapsibleTrigger
+					<div
 						v-if="!isSummary"
-						as-child
+						:class="cn('*:size-4', !canOpen && 'invisible')"
 					>
-						<Button
-							class="cursor-pointer"
-							:class="cn(!hasChildren && 'invisible')"
-							:disabled="!hasChildren"
-							size="sm"
-							variant="ghost"
-						>
-							<ChevronRight v-if="!open" />
-							<ChevronDown v-else />
-						</Button>
-					</CollapsibleTrigger>
-
+						<ChevronRight v-if="!isOpen" />
+						<ChevronDown v-else />
+					</div>
 					<div
 						v-if="node.id && !isSummary"
 						class="text-muted-foreground text-xs font-bold"
@@ -149,28 +149,28 @@ function handleDelete() {
 						{{ node.id }}
 					</div>
 					<div class="grow">{{ node.name }}</div>
-					<Button
-						v-if="!node.children?.length && isEditable"
-						class="cursor-pointer"
-						size="sm"
-						variant="secondary"
-						@click="handleAdd"
-					>
-						<Plus /> Alábontás
-					</Button>
-					<Button
-						v-if="canBeDeleted && isEditable"
-						class="cursor-pointer"
-						size="sm"
-						variant="destructive"
-						@click="handleDelete"
-					>
-						<Trash2 />
-					</Button>
 				</ItemTitle>
 			</ItemContent>
-			<ItemActions class="flex flex-col items-end">
-				<div>
+			<ItemActions class="flex gap-2 py-2">
+				<Button
+					v-if="!node.children?.length && isEditable"
+					class="cursor-pointer"
+					size="sm"
+					variant="secondary"
+					@click="handleAdd"
+				>
+					<Plus /> Alábontás
+				</Button>
+				<Button
+					v-if="canBeDeleted && isEditable"
+					class="cursor-pointer"
+					size="sm"
+					variant="destructive"
+					@click="handleDelete"
+				>
+					<Trash2 />
+				</Button>
+				<div class="flex flex-col items-end">
 					<!-- econ: editable -->
 					<NumberField
 						v-if="isEditable && node.id && !isSummary"
