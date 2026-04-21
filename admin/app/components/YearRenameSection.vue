@@ -70,7 +70,7 @@ async function handleRename() {
 			<AlertDescription>Az év elnevezésének 4 számjeggyel kell kezdődnie!</AlertDescription>
 		</Alert>
 		<Alert
-			v-if="alreadyExists"
+			v-if="alreadyExists && newYear !== year"
 			class="not-prose mb-8"
 			variant="destructive"
 		>
