@@ -48,7 +48,6 @@ const parsedInputRows = computed<BudgetNode[]>(() => {
 	});
 });
 
-const DEFAULT_SUB_ID_LENGTH = 2;
 const subIdLength = computed(() => {
 	// TODO LATER move to util, write test cases
 	if (existingChildIds.value.length) {
@@ -62,10 +61,13 @@ const subIdLength = computed(() => {
 		// B1 -> children ID = 1 -> subIdLength = 1
 	}
 
+	// default is 1 digit for top level, 2 digit under that
+	const defaultSubIdLength = String(parentNode.value?.id).length === 1 ? 1 : 2;
+
 	// if there are no children, input can dictate ID length
 	const parentId = String(parentNode.value?.id || '');
 	const firstInputId = String(parsedInputRows.value.find((r) => r.id)?.id || '');
-	if (!firstInputId) return DEFAULT_SUB_ID_LENGTH; // no input ID
+	if (!firstInputId) return defaultSubIdLength; // no input ID
 	return Math.max(1, firstInputId.length - parentId.length);
 	// here we need the sub ID length only, e.g. B101 - B1 = 2
 });
