@@ -444,7 +444,19 @@ function formatValue(value: number): string {
 function drillDown(id: string) {
 	if (canDrillDown(id)) {
 		path.value.push(id);
+		hiddenSeries.value = new Set();
+		return;
 	}
+	// No drillable children: filter to show only this item (or restore if already isolated)
+	const allIds = timeSeriesData.value.map((s) => s.id);
+	if (allIds.length <= 1) return;
+	const otherIds = allIds.filter((i) => i !== id);
+	const isIsolated = !hiddenSeries.value.has(id) && otherIds.every((i) => hiddenSeries.value.has(i));
+	hiddenSeries.value = isIsolated ? new Set() : new Set(otherIds);
+}
+
+function canClick(id: string): boolean {
+	return canDrillDown(id) || timeSeriesData.value.length > 1;
 }
 
 function navigateTo(index: number) {
@@ -636,7 +648,7 @@ const hoveredSeries = computed(() => {
 									:stroke="strokeColor(series.id, hovered === series.id)"
 									:stroke-width="hovered === series.id ? 2 : 1"
 									class="bar"
-									:class="{ clickable: canDrillDown(series.id) }"
+									:class="{ clickable: canClick(series.id) }"
 									@mouseenter="hovered = series.id"
 									@mouseleave="hovered = null"
 									@click="drillDown(series.id)"
@@ -698,7 +710,7 @@ const hoveredSeries = computed(() => {
 					:class="{
 						highlighted: hovered === series.id,
 						dimmed: hovered !== null && hovered !== series.id,
-						clickable: canDrillDown(series.id),
+						clickable: canClick(series.id),
 						hidden: hiddenSeries.has(series.id),
 					}"
 					@mouseenter="hovered = series.id"
