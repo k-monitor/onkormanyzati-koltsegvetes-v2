@@ -6,6 +6,16 @@ const { side, view = 'func' } = defineProps<{
 	view?: 'func' | 'econ';
 }>();
 
+function normalizeId(id: string | number | undefined): string {
+	if (id === undefined) return '';
+
+	const s = String(id);
+	// Strip leading zeros from purely numeric IDs (e.g. "01" → "1")
+	if (/^\d+$/.test(s)) return String(Number(s));
+	// Strip leading zeros from letter-prefixed numeric IDs (e.g. "K01" → "K1", "K0000001" → "K1")
+	return s.replace(/^([A-Za-z]+)0*(\d+)$/, (_, prefix, digits) => prefix + String(Number(digits)));
+}
+
 const path = ref<string[]>([]);
 const hovered = ref<string | null>(null);
 const hiddenSeries = ref<Set<string>>(new Set());
@@ -116,7 +126,7 @@ function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode 
 	if (!root) return null;
 	let current = root;
 	for (const id of nodePath) {
-		const child = current.children?.find((c) => String(c.id) === id);
+		const child = current.children?.find((c) => normalizeId(c.id) === id);
 		if (!child) return null;
 		current = child;
 	}
@@ -126,7 +136,7 @@ function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode 
 // Parse allowed IDs for time series filtering from config (kgr sheet)
 const kgrFilter = computed(() => {
 	if (!CONFIG.timeseries?.kgr) return null;
-	const ids = (CONFIG.timeseries.kgr as string).split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+	const ids = (CONFIG.timeseries.kgr as string).split(',').map((s: string) => normalizeId(s.trim())).filter((s: string) => s.length > 0);
 	return ids.length > 0 ? new Set(ids) : null;
 });
 
@@ -138,8 +148,8 @@ const currentChildren = computed(() => {
 		const node = getNodeAtPath(root, path.value);
 		if (node?.children && node.children.length > 0) {
 			return node.children
-				.filter((child) => !String(child.id).startsWith('F'))
-				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(String(child.id)))
+				.filter((child) => !normalizeId(child.id).startsWith('F'))
+				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(normalizeId(child.id)))
 				.sort((a, b) => b.value - a.value);
 		} else {
 			return node ? [node] : [];
@@ -153,7 +163,7 @@ const timeSeriesData = computed(() => {
 	const result: Record<string, { id: string; name: string; values: Record<string, number>; adjustedValues: Record<string, number>; names: Record<string, string> }> = {};
 
 	for (const child of currentChildren.value) {
-		const id = String(child.id);
+		const id = normalizeId(child.id);
 		result[id] = {
 			id,
 			name: child.name,
@@ -169,7 +179,7 @@ const timeSeriesData = computed(() => {
 		const multiplier = inflationMultipliers.value[year] || 1;
 		if (node?.children) {
 			for (const child of node.children) {
-				const id = String(child.id);
+				const id = normalizeId(child.id);
 				if (result[id]) {
 					result[id]!.values[year] = child.value;
 					result[id]!.adjustedValues[year] = child.value * multiplier;
@@ -226,10 +236,10 @@ const nodePath = computed(() => {
 		let current = root;
 		for (let i = 0; i < path.value.length; i++) {
 			const id = path.value[i];
-			const child = current.children?.find((c) => String(c.id) === id);
+			const child = current.children?.find((c) => normalizeId(c.id) === id);
 			if (child) {
 				if (result.length <= i + 1) {
-					result.push({ id: String(child.id), name: child.name });
+					result.push({ id: normalizeId(child.id), name: child.name });
 				}
 				current = child;
 			}
@@ -430,8 +440,8 @@ function canDrillDown(id: string): boolean {
 		const node = getNodeAtPath(root, [...path.value, id]);
 		if (node?.children && node.children.length > 0) {
 			const filtered = node.children
-				.filter((child) => !String(child.id).startsWith('F'))
-				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(String(child.id)));
+				.filter((child) => !normalizeId(child.id).startsWith('F'))
+				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(normalizeId(child.id)));
 			if (filtered.length > 0) {
 				return true;
 			}
