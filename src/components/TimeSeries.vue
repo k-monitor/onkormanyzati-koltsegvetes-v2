@@ -309,6 +309,63 @@ const stackedData = computed(() => {
 	return result;
 });
 
+// Values of the parent node (the one we drilled into), per year, in current display mode.
+// Used to render a dotted outline showing the previous-level bar when drilled down.
+// Per-year state when drilled down:
+//   'bars'    — breakdown data exists; stacked bars already render
+//   'outline' — no breakdown at this level, but parent has a value → dotted outline
+//   'na'      — no data at all for this year at the drilled-into node
+const yearStates = computed(() => {
+	const result: Record<string, 'bars' | 'outline' | 'na'> = {};
+	if (path.value.length === 0) return result;
+	for (const year of years.value) {
+		const root = getRootForYear(year);
+		const node = getNodeAtPath(root, path.value);
+		if (!node) {
+			result[year] = 'na';
+			continue;
+		}
+		const hasBreakdown = !!node.children?.some((child) => {
+			const id = normalizeId(child.id);
+			if (id.startsWith('F')) return false;
+			if (view === 'econ' && kgrFilter.value && !kgrFilter.value.has(id)) return false;
+			return true;
+		});
+		if (hasBreakdown) {
+			result[year] = 'bars';
+		} else if (node.value && node.value > 0 && hiddenSeries.value.size === 0) {
+			// With an active filter we only know the aggregate for this year,
+			// not how it splits across visible/hidden series — mark N/A to avoid a misleading outline.
+			result[year] = 'outline';
+		} else {
+			result[year] = 'na';
+		}
+	}
+	return result;
+});
+
+const parentValues = computed(() => {
+	if (path.value.length === 0) return null;
+	const result: Record<string, number> = {};
+	for (const year of years.value) {
+		if (yearStates.value[year] !== 'outline') continue;
+		const root = getRootForYear(year);
+		const node = getNodeAtPath(root, path.value);
+		if (!node) continue;
+		const raw = node.value;
+		if (mode.value === 'inflation' && inflationEnabled.value) {
+			const multiplier = inflationMultipliers.value[year] || 1;
+			result[year] = raw * multiplier;
+		} else if (mode.value === 'gdp' && gdpEnabled.value) {
+			const gdp = gdpValues.value[year];
+			result[year] = gdp && gdp > 0 ? (raw / gdp) * 100 : 0;
+		} else {
+			result[year] = raw;
+		}
+	}
+	return result;
+});
+
 // Scale calculations - max is now total of all visible series
 const maxValue = computed(() => {
 	let max = 0;
@@ -319,6 +376,12 @@ const maxValue = computed(() => {
 			total += getDisplayValue(series, year);
 		}
 		if (total > max) max = total;
+	}
+	if (parentValues.value) {
+		for (const year of years.value) {
+			const v = parentValues.value[year] || 0;
+			if (v > max) max = v;
+		}
 	}
 	return max * 1.05; // Add 5% padding
 });
@@ -401,6 +464,20 @@ function bgColor(id: string, isHovered: boolean, isOther: boolean): string {
 	}
 	return color.toRgbString();
 }
+
+// Fill/stroke for the dotted parent-outline: lighter shade of the drilled item's color.
+const parentOutlineFill = computed(() => {
+	const parentId = path.value[path.value.length - 1];
+	if (!parentId) return 'rgba(100, 100, 100, 0.08)';
+	const c = tinycolor(getColor(parentId));
+	c.setAlpha(0.15);
+	return c.toRgbString();
+});
+const parentOutlineStroke = computed(() => {
+	const parentId = path.value[path.value.length - 1];
+	if (!parentId) return '#666';
+	return tinycolor(getColor(parentId)).lighten(10).toRgbString();
+});
 
 function strokeColor(id: string, isHovered: boolean): string {
 	const color = tinycolor(getColor(id));
@@ -625,10 +702,48 @@ const hoveredSeries = computed(() => {
 								:x="xScale(index)"
 								:y="innerHeight + 25"
 								class="axis-label"
+								:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
 								text-anchor="middle"
 							>
 								{{ year }}
 							</text>
+						</g>
+
+						<!-- N/A indicator for years with no data at the drilled-into level -->
+						<g class="na-markers">
+							<template
+								v-for="(year, yearIndex) in years"
+								:key="'na-' + year"
+							>
+								<g v-if="yearStates[year] === 'na'" :transform="`translate(${xScale(yearIndex)}, ${innerHeight - 22})`">
+									<circle r="16" class="na-circle" />
+									<text
+										text-anchor="middle"
+										dominant-baseline="central"
+										class="na-text"
+									>N/A</text>
+									<title>Nincs megjeleníthető adat.</title>
+								</g>
+							</template>
+						</g>
+
+						<!-- Dotted outline of the parent bar (the item we drilled into) -->
+						<g v-if="parentValues" class="parent-outlines">
+							<template
+								v-for="(year, yearIndex) in years"
+								:key="'outline-' + year"
+							>
+								<rect
+									v-if="parentValues[year] !== undefined"
+									:x="xScale(yearIndex) - barWidth / 2"
+									:y="yScale(parentValues[year] || 0)"
+									:width="barWidth"
+									:height="innerHeight - yScale(parentValues[year] || 0)"
+									:fill="parentOutlineFill"
+									:stroke="parentOutlineStroke"
+									class="parent-outline"
+								/>
+							</template>
 						</g>
 
 						<!-- Stacked bars for each year -->
@@ -855,6 +970,29 @@ const hoveredSeries = computed(() => {
 	.axis-label {
 		font-size: 12px;
 		fill: #666;
+	}
+
+	.axis-label-muted {
+		fill: #b5b5b5;
+	}
+
+	.parent-outline {
+		stroke-width: 1;
+		stroke-dasharray: 3, 3;
+		pointer-events: none;
+	}
+
+	.na-circle {
+		fill: #f1f3f5;
+		stroke: #adb5bd;
+		stroke-width: 1;
+	}
+
+	.na-text {
+		font-size: 12px;
+		fill: #6c757d;
+		font-weight: 600;
+		pointer-events: none;
 	}
 
 	.bar {
