@@ -522,7 +522,7 @@
 										/>
 										<button
 											class="btn btn-success"
-											@click="copyToClipboard(embed.path)"
+											@click="copyToClipboard(embed.path, embed.maxHeight)"
 											title="Másolás"
 										>
 											<i class="fas fa-fw fa-copy"></i>
@@ -662,8 +662,8 @@
 						const baseUrl = this.publicUrl.replace(/\/$/, '');
 						return `<iframe width="100%" height="${maxHeight || '1200px'}" src="${baseUrl}${path}" frameborder="0"></iframe>`;
 					},
-					async copyToClipboard(path) {
-						const code = this.getEmbedCode(path);
+					async copyToClipboard(path, maxHeight) {
+						const code = this.getEmbedCode(path, maxHeight);
 						try {
 							await navigator.clipboard.writeText(code);
 							alert('Vágólapra másolva!');
