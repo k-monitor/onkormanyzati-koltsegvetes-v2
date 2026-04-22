@@ -234,7 +234,7 @@ function getStringValue(series: { values: Record<string, number>; adjustedValues
 		const gdp = gdpValues.value[year];
 		if (gdp && gdp > 0) {
 			// Show as percentage of GDP
-			return ((series.values[year] || 0) / gdp * 100).toFixed(2) + ' %';
+			return ((series.values[year] || 0) / gdp * 100).toFixed(2).replace('.', ',') + ' %';
 		}
 		return '0 %';
 	}
@@ -426,10 +426,10 @@ const yTicks = computed(() => {
 // Format large numbers or percent
 function formatValue(value: number): string {
 	if (mode.value === 'gdp') {
-		return value.toFixed(2) + ' %';
+		return value.toFixed(2).replace('.', ',') + ' %';
 	}
 	if (value >= 1e9) {
-		return (value / 1e9).toFixed(1) + ' mrd';
+		return (value / 1e9).toFixed(1).replace('.', ',') + ' mrd';
 	}
 	if (value >= 1e6) {
 		return (value / 1e6).toFixed(0) + ' M';
@@ -500,7 +500,7 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 	if (!delta) return '—';
 	if (delta.percent === null) return '—';
 	const sign = delta.percent >= 0 ? '+' : '';
-	return `${sign}${delta.percent.toFixed(1)}%`;
+	return `${sign}${delta.percent.toFixed(1).replace('.', ',')}%`;
 }
 
 function isDeltaPositive(seriesId: string, year: string, yearIndex: number): boolean {
