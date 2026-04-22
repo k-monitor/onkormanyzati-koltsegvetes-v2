@@ -7,6 +7,8 @@ const { assetPrefix, detailsHandler } = defineProps<{
 }>();
 
 const mapContainer = ref<HTMLElement | null>(null);
+const mapWrapper = ref<HTMLElement | null>(null);
+const isFullscreen = ref(false);
 const mapInstance = ref<any>(null);
 const markersLayer = ref<any>(null);
 const markersMap = ref<Map<string, any>>(new Map()); // Store markers by milestone ID
@@ -159,6 +161,7 @@ function updateMarkers(L: any) {
 			);
 			if (btn) {
 				btn.addEventListener('click', () => {
+					exitFullscreen();
 					if (detailsHandler) {
 						detailsHandler(milestone.id);
 					} else {
@@ -213,11 +216,47 @@ function handleKeyup(e: KeyboardEvent) {
 	}
 }
 
+function exitFullscreen() {
+	const doc = document as Document & {
+		webkitFullscreenElement?: Element;
+		webkitExitFullscreen?: () => Promise<void>;
+	};
+	if (doc.fullscreenElement || doc.webkitFullscreenElement) {
+		(doc.exitFullscreen || doc.webkitExitFullscreen)?.call(doc);
+	}
+}
+
+function toggleFullscreen() {
+	if (!mapWrapper.value) return;
+	const doc = document as Document & {
+		webkitFullscreenElement?: Element;
+		webkitExitFullscreen?: () => Promise<void>;
+	};
+	const el = mapWrapper.value as HTMLElement & {
+		webkitRequestFullscreen?: () => Promise<void>;
+	};
+	if (!doc.fullscreenElement && !doc.webkitFullscreenElement) {
+		(el.requestFullscreen || el.webkitRequestFullscreen)?.call(el);
+	} else {
+		(doc.exitFullscreen || doc.webkitExitFullscreen)?.call(doc);
+	}
+}
+
+function handleFullscreenChange() {
+	const doc = document as Document & { webkitFullscreenElement?: Element };
+	isFullscreen.value = !!(doc.fullscreenElement || doc.webkitFullscreenElement);
+	if (mapInstance.value) {
+		setTimeout(() => mapInstance.value?.invalidateSize(), 200);
+	}
+}
+
 onMounted(() => {
 	initMap();
 	const $ = window.$;
 
 	document.addEventListener('keyup', handleKeyup);
+	document.addEventListener('fullscreenchange', handleFullscreenChange);
+	document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
 	eventBus.on('ms_map', (id) => {
 		tag.value = null;
@@ -257,6 +296,8 @@ onUnmounted(() => {
 	eventBus.off('ms_map');
 	eventBus.off('jump_map');
 	document.removeEventListener('keyup', handleKeyup);
+	document.removeEventListener('fullscreenchange', handleFullscreenChange);
+	document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
 
 	// Clean up jQuery event handlers
 	if (window.$) {
@@ -306,9 +347,23 @@ onUnmounted(() => {
 				<div class="col">
 					<div class="map-section-container">
 						<div
-							ref="mapContainer"
-							class="map-container"
-						></div>
+							ref="mapWrapper"
+							class="map-wrapper"
+						>
+							<div
+								ref="mapContainer"
+								class="map-container"
+							/>
+							<button
+								type="button"
+								class="map-fullscreen-btn"
+								:title="isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'"
+								:aria-label="isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'"
+								@click="toggleFullscreen"
+							>
+								<i :class="isFullscreen ? 'fas fa-compress' : 'fas fa-expand'" />
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -328,6 +383,60 @@ onUnmounted(() => {
 .map-section-container {
 	max-width: 1000px;
 	margin: 0 auto;
+}
+
+.map-wrapper {
+	position: relative;
+}
+
+.map-wrapper:fullscreen {
+	width: 100vw;
+	height: 100vh;
+	background: #fff;
+
+	.map-container {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.map-wrapper:-webkit-full-screen {
+	width: 100vw;
+	height: 100vh;
+	background: #fff;
+
+	.map-container {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.map-fullscreen-btn {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 999;
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	background: #fff;
+	border: 2px solid rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+	color: #333;
+	font-size: 16px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+
+	&:hover {
+		background: #f4f4f4;
+	}
+
+	&:focus {
+		outline: none;
+	}
 }
 
 .map-container {
