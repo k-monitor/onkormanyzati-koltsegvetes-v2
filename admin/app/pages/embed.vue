@@ -8,6 +8,8 @@ const embeds = [
 	{ name: 'Kiadások', path: '/kiadasok/', maxHeight: '1100px' },
 	{ name: 'Mérleg', path: '/merleg/' },
 	{ name: 'Térkép', path: '/terkep/', maxHeight: '620px' },
+	{ name: 'Bevételek Idősorban', path: '/bevetelek-idosorban/', maxHeight: '1000px' },
+	{ name: 'Kiadások Idősorban', path: '/kiadasok-idosorban/', maxHeight: '1000px' },
 ];
 
 const kokoUrl = usePublicUrl();

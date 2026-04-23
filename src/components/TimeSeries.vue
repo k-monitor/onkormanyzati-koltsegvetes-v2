@@ -6,6 +6,16 @@ const { side, view = 'func' } = defineProps<{
 	view?: 'func' | 'econ';
 }>();
 
+function normalizeId(id: string | number | undefined): string {
+	if (id === undefined) return '';
+
+	const s = String(id);
+	// Strip leading zeros from purely numeric IDs (e.g. "01" → "1")
+	if (/^\d+$/.test(s)) return String(Number(s));
+	// Strip leading zeros from letter-prefixed numeric IDs (e.g. "K01" → "K1", "K0000001" → "K1")
+	return s.replace(/^([A-Za-z]+)0*(\d+)$/, (_, prefix, digits) => prefix + String(Number(digits)));
+}
+
 const path = ref<string[]>([]);
 const hovered = ref<string | null>(null);
 const hiddenSeries = ref<Set<string>>(new Set());
@@ -116,7 +126,7 @@ function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode 
 	if (!root) return null;
 	let current = root;
 	for (const id of nodePath) {
-		const child = current.children?.find((c) => String(c.id) === id);
+		const child = current.children?.find((c) => normalizeId(c.id) === id);
 		if (!child) return null;
 		current = child;
 	}
@@ -126,26 +136,43 @@ function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode 
 // Parse allowed IDs for time series filtering from config (kgr sheet)
 const kgrFilter = computed(() => {
 	if (!CONFIG.timeseries?.kgr) return null;
-	const ids = (CONFIG.timeseries.kgr as string).split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0);
+	const ids = (CONFIG.timeseries.kgr as string).split(',').map((s: string) => normalizeId(s.trim())).filter((s: string) => s.length > 0);
 	return ids.length > 0 ? new Set(ids) : null;
 });
 
-// Get children of current node (consistent across years)
+// Get children of current node (union across all years, so items only present in later years still appear)
 const currentChildren = computed(() => {
-	// Get children from the first year that has data at this path
+	const merged = new Map<string, { node: BudgetNode; total: number }>();
+	let leafFallback: BudgetNode | null = null;
+
 	for (const year of years.value) {
 		const root = getRootForYear(year);
 		const node = getNodeAtPath(root, path.value);
-		if (node?.children && node.children.length > 0) {
-			return node.children
-				.filter((child) => !String(child.id).startsWith('F'))
-				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(String(child.id)))
-				.sort((a, b) => b.value - a.value);
-		} else {
-			return node ? [node] : [];
+		if (!node) continue;
+		if (node.children && node.children.length > 0) {
+			for (const child of node.children) {
+				const id = normalizeId(child.id);
+				if (id.startsWith('F')) continue;
+				if (view === 'econ' && kgrFilter.value && !kgrFilter.value.has(id)) continue;
+				const existing = merged.get(id);
+				if (existing) {
+					existing.total += child.value;
+				} else {
+					merged.set(id, { node: child, total: child.value });
+				}
+			}
+		} else if (!leafFallback) {
+			leafFallback = node;
 		}
 	}
-	return [];
+
+	if (merged.size === 0) {
+		return leafFallback ? [leafFallback] : [];
+	}
+
+	return Array.from(merged.values())
+		.sort((a, b) => b.total - a.total)
+		.map((entry) => entry.node);
 });
 
 // Build time series data for all children
@@ -153,7 +180,7 @@ const timeSeriesData = computed(() => {
 	const result: Record<string, { id: string; name: string; values: Record<string, number>; adjustedValues: Record<string, number>; names: Record<string, string> }> = {};
 
 	for (const child of currentChildren.value) {
-		const id = String(child.id);
+		const id = normalizeId(child.id);
 		result[id] = {
 			id,
 			name: child.name,
@@ -169,7 +196,7 @@ const timeSeriesData = computed(() => {
 		const multiplier = inflationMultipliers.value[year] || 1;
 		if (node?.children) {
 			for (const child of node.children) {
-				const id = String(child.id);
+				const id = normalizeId(child.id);
 				if (result[id]) {
 					result[id]!.values[year] = child.value;
 					result[id]!.adjustedValues[year] = child.value * multiplier;
@@ -207,7 +234,7 @@ function getStringValue(series: { values: Record<string, number>; adjustedValues
 		const gdp = gdpValues.value[year];
 		if (gdp && gdp > 0) {
 			// Show as percentage of GDP
-			return ((series.values[year] || 0) / gdp * 100).toFixed(2) + ' %';
+			return ((series.values[year] || 0) / gdp * 100).toFixed(2).replace('.', ',') + ' %';
 		}
 		return '0 %';
 	}
@@ -226,10 +253,10 @@ const nodePath = computed(() => {
 		let current = root;
 		for (let i = 0; i < path.value.length; i++) {
 			const id = path.value[i];
-			const child = current.children?.find((c) => String(c.id) === id);
+			const child = current.children?.find((c) => normalizeId(c.id) === id);
 			if (child) {
 				if (result.length <= i + 1) {
-					result.push({ id: String(child.id), name: child.name });
+					result.push({ id: normalizeId(child.id), name: child.name });
 				}
 				current = child;
 			}
@@ -282,6 +309,63 @@ const stackedData = computed(() => {
 	return result;
 });
 
+// Values of the parent node (the one we drilled into), per year, in current display mode.
+// Used to render a dotted outline showing the previous-level bar when drilled down.
+// Per-year state when drilled down:
+//   'bars'    — breakdown data exists; stacked bars already render
+//   'outline' — no breakdown at this level, but parent has a value → dotted outline
+//   'na'      — no data at all for this year at the drilled-into node
+const yearStates = computed(() => {
+	const result: Record<string, 'bars' | 'outline' | 'na'> = {};
+	if (path.value.length === 0) return result;
+	for (const year of years.value) {
+		const root = getRootForYear(year);
+		const node = getNodeAtPath(root, path.value);
+		if (!node) {
+			result[year] = 'na';
+			continue;
+		}
+		const hasBreakdown = !!node.children?.some((child) => {
+			const id = normalizeId(child.id);
+			if (id.startsWith('F')) return false;
+			if (view === 'econ' && kgrFilter.value && !kgrFilter.value.has(id)) return false;
+			return true;
+		});
+		if (hasBreakdown) {
+			result[year] = 'bars';
+		} else if (node.value && node.value > 0 && hiddenSeries.value.size === 0) {
+			// With an active filter we only know the aggregate for this year,
+			// not how it splits across visible/hidden series — mark N/A to avoid a misleading outline.
+			result[year] = 'outline';
+		} else {
+			result[year] = 'na';
+		}
+	}
+	return result;
+});
+
+const parentValues = computed(() => {
+	if (path.value.length === 0) return null;
+	const result: Record<string, number> = {};
+	for (const year of years.value) {
+		if (yearStates.value[year] !== 'outline') continue;
+		const root = getRootForYear(year);
+		const node = getNodeAtPath(root, path.value);
+		if (!node) continue;
+		const raw = node.value;
+		if (mode.value === 'inflation' && inflationEnabled.value) {
+			const multiplier = inflationMultipliers.value[year] || 1;
+			result[year] = raw * multiplier;
+		} else if (mode.value === 'gdp' && gdpEnabled.value) {
+			const gdp = gdpValues.value[year];
+			result[year] = gdp && gdp > 0 ? (raw / gdp) * 100 : 0;
+		} else {
+			result[year] = raw;
+		}
+	}
+	return result;
+});
+
 // Scale calculations - max is now total of all visible series
 const maxValue = computed(() => {
 	let max = 0;
@@ -292,6 +376,12 @@ const maxValue = computed(() => {
 			total += getDisplayValue(series, year);
 		}
 		if (total > max) max = total;
+	}
+	if (parentValues.value) {
+		for (const year of years.value) {
+			const v = parentValues.value[year] || 0;
+			if (v > max) max = v;
+		}
 	}
 	return max * 1.05; // Add 5% padding
 });
@@ -375,6 +465,20 @@ function bgColor(id: string, isHovered: boolean, isOther: boolean): string {
 	return color.toRgbString();
 }
 
+// Fill/stroke for the dotted parent-outline: lighter shade of the drilled item's color.
+const parentOutlineFill = computed(() => {
+	const parentId = path.value[path.value.length - 1];
+	if (!parentId) return 'rgba(100, 100, 100, 0.08)';
+	const c = tinycolor(getColor(parentId));
+	c.setAlpha(0.15);
+	return c.toRgbString();
+});
+const parentOutlineStroke = computed(() => {
+	const parentId = path.value[path.value.length - 1];
+	if (!parentId) return '#666';
+	return tinycolor(getColor(parentId)).lighten(10).toRgbString();
+});
+
 function strokeColor(id: string, isHovered: boolean): string {
 	const color = tinycolor(getColor(id));
 	if (isHovered) {
@@ -399,10 +503,10 @@ const yTicks = computed(() => {
 // Format large numbers or percent
 function formatValue(value: number): string {
 	if (mode.value === 'gdp') {
-		return value.toFixed(2) + ' %';
+		return value.toFixed(2).replace('.', ',') + ' %';
 	}
 	if (value >= 1e9) {
-		return (value / 1e9).toFixed(1) + ' mrd';
+		return (value / 1e9).toFixed(1).replace('.', ',') + ' mrd';
 	}
 	if (value >= 1e6) {
 		return (value / 1e6).toFixed(0) + ' M';
@@ -417,7 +521,19 @@ function formatValue(value: number): string {
 function drillDown(id: string) {
 	if (canDrillDown(id)) {
 		path.value.push(id);
+		hiddenSeries.value = new Set();
+		return;
 	}
+	// No drillable children: filter to show only this item (or restore if already isolated)
+	const allIds = timeSeriesData.value.map((s) => s.id);
+	if (allIds.length <= 1) return;
+	const otherIds = allIds.filter((i) => i !== id);
+	const isIsolated = !hiddenSeries.value.has(id) && otherIds.every((i) => hiddenSeries.value.has(i));
+	hiddenSeries.value = isIsolated ? new Set() : new Set(otherIds);
+}
+
+function canClick(id: string): boolean {
+	return canDrillDown(id) || timeSeriesData.value.length > 1;
 }
 
 function navigateTo(index: number) {
@@ -430,8 +546,8 @@ function canDrillDown(id: string): boolean {
 		const node = getNodeAtPath(root, [...path.value, id]);
 		if (node?.children && node.children.length > 0) {
 			const filtered = node.children
-				.filter((child) => !String(child.id).startsWith('F'))
-				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(String(child.id)));
+				.filter((child) => !normalizeId(child.id).startsWith('F'))
+				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(normalizeId(child.id)));
 			if (filtered.length > 0) {
 				return true;
 			}
@@ -461,7 +577,7 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 	if (!delta) return '—';
 	if (delta.percent === null) return '—';
 	const sign = delta.percent >= 0 ? '+' : '';
-	return `${sign}${delta.percent.toFixed(1)}%`;
+	return `${sign}${delta.percent.toFixed(1).replace('.', ',')}%`;
 }
 
 function isDeltaPositive(seriesId: string, year: string, yearIndex: number): boolean {
@@ -586,10 +702,48 @@ const hoveredSeries = computed(() => {
 								:x="xScale(index)"
 								:y="innerHeight + 25"
 								class="axis-label"
+								:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
 								text-anchor="middle"
 							>
 								{{ year }}
 							</text>
+						</g>
+
+						<!-- N/A indicator for years with no data at the drilled-into level -->
+						<g class="na-markers">
+							<template
+								v-for="(year, yearIndex) in years"
+								:key="'na-' + year"
+							>
+								<g v-if="yearStates[year] === 'na'" :transform="`translate(${xScale(yearIndex)}, ${innerHeight - 22})`">
+									<circle r="16" class="na-circle" />
+									<text
+										text-anchor="middle"
+										dominant-baseline="central"
+										class="na-text"
+									>N/A</text>
+									<title>Nincs megjeleníthető adat.</title>
+								</g>
+							</template>
+						</g>
+
+						<!-- Dotted outline of the parent bar (the item we drilled into) -->
+						<g v-if="parentValues" class="parent-outlines">
+							<template
+								v-for="(year, yearIndex) in years"
+								:key="'outline-' + year"
+							>
+								<rect
+									v-if="parentValues[year] !== undefined"
+									:x="xScale(yearIndex) - barWidth / 2"
+									:y="yScale(parentValues[year] || 0)"
+									:width="barWidth"
+									:height="innerHeight - yScale(parentValues[year] || 0)"
+									:fill="parentOutlineFill"
+									:stroke="parentOutlineStroke"
+									class="parent-outline"
+								/>
+							</template>
 						</g>
 
 						<!-- Stacked bars for each year -->
@@ -609,7 +763,7 @@ const hoveredSeries = computed(() => {
 									:stroke="strokeColor(series.id, hovered === series.id)"
 									:stroke-width="hovered === series.id ? 2 : 1"
 									class="bar"
-									:class="{ clickable: canDrillDown(series.id) }"
+									:class="{ clickable: canClick(series.id) }"
 									@mouseenter="hovered = series.id"
 									@mouseleave="hovered = null"
 									@click="drillDown(series.id)"
@@ -671,7 +825,7 @@ const hoveredSeries = computed(() => {
 					:class="{
 						highlighted: hovered === series.id,
 						dimmed: hovered !== null && hovered !== series.id,
-						clickable: canDrillDown(series.id),
+						clickable: canClick(series.id),
 						hidden: hiddenSeries.has(series.id),
 					}"
 					@mouseenter="hovered = series.id"
@@ -816,6 +970,29 @@ const hoveredSeries = computed(() => {
 	.axis-label {
 		font-size: 12px;
 		fill: #666;
+	}
+
+	.axis-label-muted {
+		fill: #b5b5b5;
+	}
+
+	.parent-outline {
+		stroke-width: 1;
+		stroke-dasharray: 3, 3;
+		pointer-events: none;
+	}
+
+	.na-circle {
+		fill: #f1f3f5;
+		stroke: #adb5bd;
+		stroke-width: 1;
+	}
+
+	.na-text {
+		font-size: 12px;
+		fill: #6c757d;
+		font-weight: 600;
+		pointer-events: none;
 	}
 
 	.bar {
