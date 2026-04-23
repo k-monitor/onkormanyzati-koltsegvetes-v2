@@ -3,8 +3,12 @@ const { canShowMilestones, canShowMap, year } = useYear();
 const { setNavigationScroll, sectionToElementId } = useScrollspy();
 
 // Whether func/econ views are enabled for timeseries (default: both enabled)
-const timeseriesFuncEnabled = computed(() => CONFIG.timeseries?.func == null || !!CONFIG.timeseries.func);
-const timeseriesEconEnabled = computed(() => CONFIG.timeseries?.econ == null || !!CONFIG.timeseries.econ);
+const timeseriesFuncEnabled = computed(
+	() => CONFIG.timeseries?.func == null || !!CONFIG.timeseries.func,
+);
+const timeseriesEconEnabled = computed(
+	() => CONFIG.timeseries?.econ == null || !!CONFIG.timeseries.econ,
+);
 
 // Check if we have function data across multiple years
 const hasTimeSeriesIncome = computed(() => {
@@ -26,12 +30,16 @@ const hasTimeSeriesExpense = computed(() => {
 });
 
 // Default module order
-const DEFAULT_ORDER = 'pub,inex,income,expense,timeseries-income,timeseries-expense,milestones,map,feedback';
+const DEFAULT_ORDER =
+	'pub,inex,income,expense,timeseries-income,timeseries-expense,milestones,map,feedback';
 
 // Ordered list of modules to render
 const orderedModules = computed(() => {
 	const orderStr = CONFIG.modules?.order || DEFAULT_ORDER;
-	return orderStr.split(',').map((m: string) => m.trim()).filter(Boolean);
+	return orderStr
+		.split(',')
+		.map((m: string) => m.trim())
+		.filter(Boolean);
 });
 
 // Translate section slug to element ID
@@ -62,7 +70,7 @@ onMounted(() => {
 			// Extract section from the new URL format (e.g., #2024/koszonto)
 			const section = extractSectionFromHash(this.hash);
 			const elementId = section ? translateSection(section) : null;
-			var target = elementId ? $('#' + elementId) : $(this.hash);
+			let target = elementId ? $('#' + elementId) : $(this.hash);
 			target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
 			if (target.length) {
 				// Prevent scrollspy from updating URL during navigation scroll
@@ -92,9 +100,15 @@ onMounted(() => {
 		<MastHead />
 		<div class="flex-grow-1">
 			<Welcome />
-			<template v-for="mod in orderedModules" :key="mod">
+			<template
+				v-for="mod in orderedModules"
+				:key="mod"
+			>
 				<PublicationSection v-if="mod === 'pub' && CONFIG.modules.pub" />
-				<Inex class="bg-light" v-else-if="mod === 'inex' && CONFIG.modules.inex" />
+				<Inex
+					v-else-if="mod === 'inex' && CONFIG.modules.inex"
+					class="bg-light"
+				/>
 				<VisualizationSection
 					v-else-if="mod === 'income' && CONFIG.modules.income"
 					id="income"
@@ -104,14 +118,18 @@ onMounted(() => {
 				/>
 				<VisualizationSection
 					v-else-if="mod === 'expense'"
-					class="bg-light"
 					id="expense"
+					class="bg-light"
 					side="expense"
 					:text="CONFIG.vis.expenseText"
 					:title="CONFIG.vis.expense"
 				/>
 				<TimeSeriesSection
-					v-else-if="mod === 'timeseries-income' && hasTimeSeriesIncome && CONFIG.modules['timeseries-income']"
+					v-else-if="
+						mod === 'timeseries-income' &&
+						hasTimeSeriesIncome &&
+						CONFIG.modules['timeseries-income']
+					"
 					id="time-series-income"
 					side="income"
 					:func-enabled="timeseriesFuncEnabled"
@@ -120,7 +138,11 @@ onMounted(() => {
 					:text="CONFIG.timeseries?.incomeText"
 				/>
 				<TimeSeriesSection
-					v-else-if="mod === 'timeseries-expense' && hasTimeSeriesExpense && CONFIG.modules['timeseries-expense']"
+					v-else-if="
+						mod === 'timeseries-expense' &&
+						hasTimeSeriesExpense &&
+						CONFIG.modules['timeseries-expense']
+					"
 					id="time-series-expense"
 					side="expense"
 					:func-enabled="timeseriesFuncEnabled"
@@ -130,8 +152,8 @@ onMounted(() => {
 				/>
 				<MilestoneSection
 					v-else-if="mod === 'milestones' && canShowMilestones"
-					class="pb-0"
 					id="milestones"
+					class="pb-0"
 				/>
 				<MapSection
 					v-else-if="mod === 'map' && canShowMap"
@@ -188,11 +210,10 @@ hr.light {
 }
 
 .btn-xl {
-	padding: 1.25rem 2.25rem;
-	font-size: 0.85rem;
+	padding: 1rem 2rem;
+	font-size: 1rem;
 	font-weight: 700;
 	text-transform: uppercase;
-	border-radius: 10rem;
 }
 
 // Page section padding

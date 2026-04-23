@@ -12,7 +12,7 @@ const curves = ref<string[]>([]);
 const hovered = ref(-1);
 const mode = ref(0); // 0 = econ, 1 = func
 const path = ref<string[]>([]);
-let resizeTimeout: number | undefined = undefined;
+let resizeTimeout: NodeJS.Timeout | undefined = undefined;
 
 const data = computed(() => DATA[year]?.[side] || { econ: null, func: null });
 const tooltips = computed(() => TOOLTIPS[year] || {});
@@ -41,11 +41,11 @@ const root = computed(() => {
 });
 
 const nodePath = computed(() => {
-	var r = root.value;
-	var np = [r];
-	for (var p = 0; p < path.value.length; p++) {
-		var id = path.value[p];
-		var c = (r.children || []).filter((n) => n.id == id)[0];
+	let r = root.value;
+	const np = [r];
+	for (let p = 0; p < path.value.length; p++) {
+		const id = path.value[p];
+		const c = (r.children || []).filter((n) => n.id == id)[0];
 		if (c && (c.children || []).length > 0) {
 			r = c;
 			np.push(r);
@@ -72,6 +72,7 @@ watch(
 			mode.value = 0;
 			path.value = [];
 		}
+		nextTick(reinitTooltips);
 	},
 );
 
@@ -99,7 +100,7 @@ function bgColor(node: BudgetNode | undefined, index: number) {
 }
 
 function fgColor(node: BudgetNode | undefined, index: number) {
-	var color = tinycolor(bgColor(node, index));
+	const color = tinycolor(bgColor(node, index));
 	return color.isLight() || color.getAlpha() < 0.5 ? 'black' : 'white';
 }
 
@@ -108,39 +109,39 @@ function curve(index: number) {
 	// TODO LATER eliminate jQuery
 	const $ = window.$;
 	try {
-		var bars = vis.value;
-		var barsTop = $(bars).offset().top;
+		const bars = vis.value;
+		const barsTop = $(bars).offset().top;
 
-		var bar = $(`.bar[data-index=${index}]`, bars);
-		var barHeight = $(bar).outerHeight();
-		var barTop = $(bar).offset().top - barsTop;
-		var barMiddle = barTop + barHeight / 2;
+		const bar = $(`.bar[data-index=${index}]`, bars);
+		const barHeight = $(bar).outerHeight();
+		const barTop = $(bar).offset().top - barsTop;
+		const barMiddle = barTop + barHeight / 2;
 
-		var label = $(`.label[data-index=${index}]`, bars);
-		var labelHeight = $(label).outerHeight();
-		var labelTop = $(label).offset().top - barsTop;
-		var labelMiddle = labelTop + labelHeight / 2;
+		const label = $(`.label[data-index=${index}]`, bars);
+		const labelHeight = $(label).outerHeight();
+		const labelTop = $(label).offset().top - barsTop;
+		const labelMiddle = labelTop + labelHeight / 2;
 
-		var svg = $('.curves svg', bars);
-		var svgWidth = $(svg).outerWidth();
+		const svg = $('.curves svg', bars);
+		const svgWidth = $(svg).outerWidth();
 
-		var x1 = 0;
-		var y1 = barMiddle;
-		var x2 = svgWidth;
-		var y2 = labelMiddle; //self.labelY(node, index).slice(0, -1);
-		var cx1 = svgWidth * 0.2;
-		var cx2 = svgWidth * 0.8;
-		var m = x1 + ',' + y1;
-		var c1 = cx1 + ',' + y1;
-		var c2 = cx2 + ',' + y2;
-		var e = x2 + ',' + y2;
+		const x1 = 0;
+		const y1 = barMiddle;
+		const x2 = svgWidth;
+		const y2 = labelMiddle; //self.labelY(node, index).slice(0, -1);
+		const cx1 = svgWidth * 0.2;
+		const cx2 = svgWidth * 0.8;
+		const m = x1 + ',' + y1;
+		const c1 = cx1 + ',' + y1;
+		const c2 = cx2 + ',' + y2;
+		const e = x2 + ',' + y2;
 		return ['M' + m, 'C' + c1, c2, e].join(' ');
 	} catch (e) {
 		return '';
 	}
 }
 
-function down(node: BudgetNode, index: number) {
+function down(node: BudgetNode) {
 	window.$('.tooltip').remove();
 	if (node.children && node.children.length > 0) {
 		path.value.push(String(node.id));
@@ -159,17 +160,14 @@ function updateCurves() {
 	if (!vis.value) return;
 	const svg = vis.value.querySelector('.curves svg');
 	if (svg) {
-		var svgHeight = svg.getBoundingClientRect().height;
-		var svgWidth = svg.getBoundingClientRect().width;
+		const svgHeight = svg.getBoundingClientRect().height;
+		const svgWidth = svg.getBoundingClientRect().width;
 		svg.setAttribute('viewBox', [0, 0, svgWidth, svgHeight].join(' '));
 	}
 	curves.value = children.value.map((n, i) => curve(i));
 }
 
-function regenerateTooltips() {
-	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
-	window.$('[data-toggle="tooltip"]').tooltip();
-}
+const { regenerateTooltips, reinitTooltips } = useTooltips();
 
 function milestoneId(node: BudgetNode) {
 	try {
@@ -215,28 +213,28 @@ onUpdated(regenerateTooltips);
 
 <template>
 	<div
+		ref="wrapper"
 		class="visualization"
 		:class="{ 'embed-mode': height }"
-		ref="wrapper"
 	>
 		<div class="row justify-content-center">
 			<div
-				class="col-lg-8 text-center"
 				v-if="data.econ && data.func"
+				class="col-lg-8 text-center"
 			>
 				<ul class="justify-content-center mb-5 nav nav-pills w-100">
 					<li class="nav-item">
 						<a
 							:class="{ active: mode == 1 }"
 							:title="CONFIG.vis.funcHint"
-							@click="
-								path = [];
-								mode = 1;
-							"
 							class="nav-link"
 							data-placement="bottom"
 							data-toggle="tooltip"
 							href="javascript:void(0)"
+							@click="
+								path = [];
+								mode = 1;
+							"
 						>
 							{{ CONFIG.vis.func }}
 						</a>
@@ -245,14 +243,14 @@ onUpdated(regenerateTooltips);
 						<a
 							:class="{ active: mode == 0 }"
 							:title="CONFIG.vis.econHint"
-							@click="
-								path = [];
-								mode = 0;
-							"
 							class="nav-link"
 							data-placement="bottom"
 							data-toggle="tooltip"
 							href="javascript:void(0)"
+							@click="
+								path = [];
+								mode = 0;
+							"
 						>
 							{{ CONFIG.vis.econ }}
 						</a>
@@ -262,43 +260,50 @@ onUpdated(regenerateTooltips);
 		</div>
 
 		<nav aria-label="breadcrumb">
-			<ol class="breadcrumb">
+			<ol class="breadcrumb bg-transparent p-0">
 				<li
-					class="breadcrumb-item"
 					v-for="(n, i) in nodePath"
 					:key="i"
+					class="breadcrumb-item d-flex flex-wrap justify-content-between px-3 py-2 w-100"
 					:class="{ active: i == nodePath.length - 1 }"
+					:style="{ marginLeft: `${2 * i}rem` }"
 					@click="up(path.length - i)"
 				>
-					{{ n.name }}
+					<div>{{ n.name }}</div>
+					<div class="d-flex text-right">
+						<div class="text-nowrap">{{ groupNums(n.value || 0, roundNums) }}</div>
+						<div style="width: 3rem">
+							{{ Math.round((100 * n.value) / (nodePath[0]?.value || n.value)) }}%
+						</div>
+					</div>
 				</li>
-				<div class="ml-auto subtotal">{{ groupNums(node?.value || 0, roundNums) }}</div>
 			</ol>
 		</nav>
 
 		<div
+			ref="vis"
 			class="d-flex border-top border-bottom vis"
 			:class="{ 'embed-vis': height }"
-			ref="vis"
+			:style="{ marginLeft: `${2 * (nodePath.length - 1)}rem` }"
 			@mouseout="hovered = -1"
 		>
 			<div class="d-flex left-column">
 				<div
-					class="back-bar d-flex justify-content-center"
 					v-if="path.length > 0"
+					class="back-bar d-flex justify-content-center"
+					:style="{ backgroundColor: bgColor(node, -1), color: fgColor(node, -1) }"
 					@click="
 						up();
 						autoScroll();
 					"
-					:style="{ backgroundColor: bgColor(node, -1), color: fgColor(node, -1) }"
 				>
-					<i class="fas fa-fw fa-level-up-alt mx-2 my-auto"></i>
+					<i class="fas fa-fw fa-level-up-alt mx-2 my-auto" />
 				</div>
 				<div class="d-flex flex-column flex-grow-1">
 					<div
-						class="bar"
 						v-for="(n, i) in children"
 						:key="n.id"
+						class="bar"
 						:data-id="n.id"
 						:data-index="i"
 						:style="{
@@ -306,44 +311,46 @@ onUpdated(regenerateTooltips);
 							color: fgColor(n, i),
 							flexGrow: n.value,
 						}"
-						@click="
-							down(n, i);
-							autoScroll();
-						"
-						@mouseover="hovered = i"
 						data-toggle="tooltip"
 						data-placement="left"
 						:title="tooltips[String(n.id)]"
 						oncontextmenu="return false;"
+						@click="
+							down(n);
+							autoScroll();
+						"
+						@mouseover="hovered = i"
 					>
 						<div class="text-right w-100">
 							<span class="d-inline d-sm-none font-weight-bold">{{
 								groupNums(n.value, true)
 							}}</span>
-							<span class="d-none d-sm-inline">{{ groupNums(n.value, roundNums) }}</span>
+							<span class="d-none d-sm-inline">{{
+								groupNums(n.value, roundNums)
+							}}</span>
 							<span class="d-none d-md-inline ml-1"
 								>({{ Math.round((n.value / (node?.value || 1)) * 100) }}%)</span
 							>
 							<span class="d-sm-none"><br />{{ n.name }}</span>
 							<i
-								class="fas fa-fw fa-level-down-alt ml-1"
 								v-if="n.children && n.children.length"
-							></i>
+								class="fas fa-fw fa-level-down-alt ml-1"
+							/>
 						</div>
 						<div class="d-flex d-sm-none">
 							<div
-								class="btn btn-link bg-light milestone-button ml-3 mr-1 px-2"
-								@click="eventBus.emit('ms', milestoneId(n) || '')"
 								v-if="CONFIG.modules.milestones && milestoneId(n)"
+								class="btn btn-light text-primary border-primary milestone-button ml-3 mr-1 px-2"
+								@click="eventBus.emit('ms', milestoneId(n) || '')"
 							>
-								<i class="fas fa-fw fa-camera"></i>
+								<i class="fas fa-fw fa-lightbulb" />
 							</div>
 							<div
+								v-else-if="tooltips[String(n.id)]"
 								class="btn btn-link ml-3 mr-1 px-2"
 								:style="{ color: fgColor(n, i) }"
-								v-else-if="tooltips[String(n.id)]"
 							>
-								<sub class="fas fa-fw fa-info"></sub>
+								<sub class="fas fa-fw fa-info" />
 							</div>
 						</div>
 					</div>
@@ -355,39 +362,43 @@ onUpdated(regenerateTooltips);
 					width="100%"
 				>
 					<path
-						class="curve"
 						v-for="(n, i) in children"
-						:d="curves[i]"
 						:key="n.id"
+						class="curve"
+						:d="curves[i]"
 						:style="{ stroke: bgColor(n, i) }"
 						vector-effect="non-scaling-stroke"
-					></path>
+					/>
 				</svg>
 			</div>
-			<div class="d-none d-sm-flex flex-column justify-content-around right-column text-left">
+			<div class="d-none d-sm-flex flex-column justify-content-center right-column text-left">
 				<div
-					class="label"
 					v-for="(n, i) in children"
-					:class="{ 'text-muted': hovered > -1 && i != hovered }"
+					:key="n.id"
+					class="label py-2"
+					:class="{
+						'font-weight-bold': i === hovered,
+						'text-muted': hovered > -1 && i != hovered,
+					}"
 					:data-id="n.id"
 					:data-index="i"
-					:key="n.id"
-					@mouseover="hovered = i"
 					oncontextmenu="return false;"
+					@mouseover="hovered = i"
 				>
 					<span
+						class="mr-2"
 						@click="
-							down(n, i);
+							down(n);
 							autoScroll();
 						"
 						>{{ n.name }}</span
 					>
 					<span
-						class="btn btn-link milestone-button ml-auto"
-						@click="eventBus.emit('ms', milestoneId(n) || '')"
 						v-if="CONFIG.modules.milestones && milestoneId(n)"
-						><i class="fas fa-camera"></i
-					></span>
+						class="btn btn-outline-primary btn-sm milestone-button ml-auto"
+						@click="eventBus.emit('ms', milestoneId(n) || '')"
+						><i class="fas fa-fw fa-lightbulb"
+					/></span>
 				</div>
 			</div>
 		</div>
@@ -467,6 +478,7 @@ onUpdated(regenerateTooltips);
 	}
 
 	.breadcrumb-item {
+		background-color: #e9ecef;
 		text-align: left;
 	}
 
@@ -520,6 +532,13 @@ onUpdated(regenerateTooltips);
 		.label span {
 			cursor: pointer;
 		}
+	}
+}
+
+@include media-breakpoint-down(xs) {
+	.breadcrumb-item,
+	.vis {
+		margin-left: 0 !important;
 	}
 }
 </style>

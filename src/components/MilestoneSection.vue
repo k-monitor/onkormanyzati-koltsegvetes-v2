@@ -25,7 +25,6 @@ const filteredMilestones = computed(() => {
 	);
 });
 
-
 onMounted(() => {
 	// TODO LATER eliminate jQuery
 	const $ = window.$;
@@ -79,44 +78,52 @@ onMounted(() => {
 				</div>
 			</div>
 			<div
-				class="row mb-4"
 				v-if="tags.length"
+				class="row"
 			>
 				<div class="col text-center">
-					<a
-						class="btn btn-sm btn-light m-2"
-						:class="!tag ? 'btn-primary' : 'btn-light'"
-						href="javascript:void(0)"
-						@click="tag = null"
-						>Összes</a
-					>
-					<a
-						v-for="t in tags"
-						:key="t"
-						class="btn btn-sm btn-light m-2"
-						:class="tag === t ? 'btn-primary' : 'btn-light'"
-						href="javascript:void(0)"
-						@click="tag = t"
-						>{{ t }}</a
-					>
+					<ul class="justify-content-center mb-5 nav nav-pills w-100">
+						<li class="nav-item">
+							<a
+								class="nav-link"
+								:class="{ active: !tag }"
+								href="javascript:void(0)"
+								@click="tag = null"
+								>Összes</a
+							>
+						</li>
+						<li
+							v-for="t in tags"
+							:key="t"
+							class="nav-item"
+						>
+							<a
+								class="nav-link"
+								:class="{ active: tag === t }"
+								href="javascript:void(0)"
+								@click="tag = t"
+								>{{ t }}</a
+							>
+						</li>
+					</ul>
 				</div>
 			</div>
 			<div class="row mb-5">
 				<div
-					class="col-md-6 col-lg-4 mx-auto px-1"
-					:class="{ 'd-none': tag && !(m.tags || []).includes(tag) }"
 					v-for="(m, i) in filteredMilestones"
 					:key="m.id"
+					class="col-md-6 col-lg-4 mx-auto px-1"
+					:class="{ 'd-none': tag && !(m.tags || []).includes(tag) }"
 				>
 					<Milestone
 						:milestone="m"
-						:nextId="filteredMilestones[(i + 1) % filteredMilestones.length]?.id || ''"
-						:prevId="
+						:next-id="filteredMilestones[(i + 1) % filteredMilestones.length]?.id || ''"
+						:prev-id="
 							filteredMilestones[
 								(filteredMilestones.length + i - 1) % filteredMilestones.length
 							]?.id || ''
 						"
-						:mapModal="false"
+						:map-modal="false"
 					/>
 				</div>
 			</div>
