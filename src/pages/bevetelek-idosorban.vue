@@ -5,30 +5,30 @@ useHead({
 	link: [
 		{
 			rel: 'canonical',
-			href: CONFIG.url + 'idosor',
+			href: CONFIG.url + 'bevetelek-idosorban',
 		},
 	],
 	meta: [
 		{
 			property: 'og:title',
-			content: 'Idősor - ' + CONFIG.seo.siteName,
+			content: 'Bevételek idősorban - ' + CONFIG.seo.siteName,
 		},
 		{
 			property: 'og:url',
-			content: CONFIG.url + 'idosor',
+			content: CONFIG.url + 'bevetelek-idosorban',
 		},
 	],
-	title: 'Idősor - ' + CONFIG.seo.pageTitle,
+	title: 'Bevételek idősorban - ' + CONFIG.seo.pageTitle,
 });
 </script>
 
 <template>
 	<div :class="'theme-' + slugify(year)">
 		<TimeSeriesSection
-			id="time-series-expense"
-			side="expense"
-			title="Kiadások idősorban"
-			text="**Segítünk értelmezni!** Ez a vizualizáció megmutatja, hogyan változtak az önkormányzat kiadásai funkcionális bontásban az évek során. Kattintson egy kategóriára a részletesebb bontás megtekintéséhez!"
+			id="time-series-income"
+			side="income"
+			title="Bevételek idősorban"
+			text="**Segítünk értelmezni!** Ez a vizualizáció megmutatja, hogyan változtak az önkormányzat bevételei funkcionális bontásban az évek során. Kattintson egy kategóriára a részletesebb bontás megtekintéséhez!"
 		/>
 	</div>
 </template>

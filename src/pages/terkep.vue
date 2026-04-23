@@ -30,7 +30,7 @@ function openDetailsUrl(milestoneId: string) {
 <template>
 	<div :class="'theme-' + slugify(year)">
 		<ClientOnly>
-			<MapSection assetPrefix="../" :detailsHandler="openDetailsUrl" />
+			<MapSection asset-prefix="../" :details-handler="openDetailsUrl" />
 		</ClientOnly>
 	</div>
 </template>
