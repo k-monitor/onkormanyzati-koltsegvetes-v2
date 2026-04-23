@@ -6,9 +6,8 @@ const { subpageMode } = defineProps<{
 const isBannerVisible = ref(true);
 const less = ref(true);
 
-const { canShowMilestones, canShowMap, handleYearSelected, year } = useYear();
+const { canShowMilestones, canShowMap, year } = useYear();
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
-const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
 
 function scrollToTop() {
 	window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -24,7 +23,7 @@ onMounted(() => {
 	}
 
 	// Collapse Navbar
-	var navbarCollapse = function () {
+	const navbarCollapse = function () {
 		if ($('#mainNav').offset().top > 100) {
 			$('#mainNav').addClass('navbar-scrolled');
 		} else {
@@ -53,14 +52,14 @@ onUnmounted(() => {
 <template>
 	<div id="outerDiv">
 		<nav
-			class="navbar navbar-expand-lg navbar-light fixed-top py-3"
 			id="mainNav"
+			class="navbar navbar-expand-lg navbar-light fixed-top py-3"
 		>
 			<div class="container">
 				<a
 					class="navbar-brand js-scroll-trigger"
 					:href="`#${slugify(year)}/`"
-					v-on:click="scrollToTop()"
+					@click="scrollToTop()"
 				>
 					<img
 						class="mr-2"
@@ -71,6 +70,12 @@ onUnmounted(() => {
 					/>
 					{{ CONFIG.city }}
 				</a>
+				<ul
+					v-if="!subpageMode"
+					class="d-lg-none navbar-nav ml-auto my-2 my-lg-0 align-items-center"
+				>
+					<NavBarYearSelector :subpage-mode="subpageMode" />
+				</ul>
 				<button
 					class="navbar-toggler navbar-toggler-right"
 					type="button"
@@ -80,11 +85,11 @@ onUnmounted(() => {
 					aria-expanded="false"
 					aria-label="Toggle navigation"
 				>
-					<span class="navbar-toggler-icon"></span>
+					<span class="navbar-toggler-icon" />
 				</button>
 				<div
-					class="collapse navbar-collapse"
 					id="navbarResponsive"
+					class="collapse navbar-collapse"
 				>
 					<ul
 						v-if="!subpageMode"
@@ -97,7 +102,7 @@ onUnmounted(() => {
 								data-toggle="modal"
 								data-target="#search-modal"
 							>
-								<i class="fas fa-search"></i>
+								<i class="fas fa-search" />
 								<span class="sr-only">Keresés</span>
 							</a>
 						</li>
@@ -123,8 +128,8 @@ onUnmounted(() => {
 							>
 						</li>
 						<li
-							class="nav-item"
 							v-if="canShowMilestones"
+							class="nav-item"
 						>
 							<a
 								:href="`#${slugify(year)}/fejlesztesek`"
@@ -133,8 +138,8 @@ onUnmounted(() => {
 							>
 						</li>
 						<li
-							class="nav-item"
 							v-if="canShowMap"
+							class="nav-item"
 						>
 							<a
 								:href="`#${slugify(year)}/terkep`"
@@ -142,38 +147,7 @@ onUnmounted(() => {
 								>{{ CONFIG.navBar.map }}</a
 							>
 						</li>
-						<li
-							class="nav-item dropdown highlight"
-							v-if="years.length > 1"
-						>
-							<a
-								class="nav-link dropdown-toggle"
-								href="#"
-								id="navbarDropdown"
-								role="button"
-								data-toggle="dropdown"
-								aria-haspopup="true"
-								aria-expanded="false"
-							>
-								<span class="mr-1">{{ year }}</span>
-							</a>
-							<div
-								class="dropdown-menu dropdown-menu-right"
-								aria-labelledby="navbarDropdown"
-							>
-								<a
-									class="dropdown-item"
-									href="javascript:void(0)"
-									v-for="y in years"
-									:class="['theme-' + slugify(y)]"
-									:key="y"
-									@click="handleYearSelected(y)"
-								>
-									<i class="fas fa-circle mr-2"></i>
-									{{ y }}
-								</a>
-							</div>
-						</li>
+						<NavBarYearSelector :subpage-mode="subpageMode" />
 						<li class="nav-item">
 							<a
 								href="javascript:void(0)"
@@ -203,13 +177,13 @@ onUnmounted(() => {
 								data-toggle="modal"
 								href="javascript:void(0)"
 							>
-								<i class="far fa-comment-dots"></i>
+								<i class="far fa-comment-dots" />
 							</a>
 						</li>
 					</ul>
 					<ul
-						class="navbar-nav ml-auto my-2 my-lg-0"
 						v-else
+						class="navbar-nav ml-auto my-2 my-lg-0"
 					>
 						<li class="nav-item">
 							<a
@@ -224,8 +198,8 @@ onUnmounted(() => {
 			</div>
 		</nav>
 		<div
-			id="banner"
 			v-if="isBannerVisible && CONFIG.navBar.showBanner"
+			id="banner"
 			class="bg-primary"
 		>
 			<VueMarkdown
@@ -235,11 +209,11 @@ onUnmounted(() => {
 			<button
 				aria-label="Close"
 				class="close-banner"
-				@click="isBannerVisible = false"
 				type="button"
+				@click="isBannerVisible = false"
 			>
 				<span aria-hidden="true">
-					<i class="far fa-times-circle"></i>
+					<i class="far fa-times-circle" />
 				</span>
 			</button>
 		</div>
@@ -370,38 +344,37 @@ onUnmounted(() => {
 
 	// highlight
 
-	/*&, & > div.container-fluid {
+	&,
+	& > div.container-fluid {
 		padding-right: 0;
-	}*/
+	}
 	.nav-item:last-child .nav-link {
 		margin-right: 1rem;
 	}
 
-	@include media-breakpoint-up(lg) {
-		.navbar-nav .nav-item.highlight {
-			.nav-link {
-				color: $gray-900 !important; // white !important;
-				text-decoration: underline;
-			}
+	.navbar-nav .nav-item.highlight {
+		.nav-link {
+			color: $gray-900 !important; // white !important;
+			text-decoration: underline;
 		}
-		&.navbar-scrolled {
-			.navbar-nav .nav-item.highlight {
-				$d: 1.6rem;
-				background-color: $primary;
-				margin-bottom: -$d;
-				margin-top: -$d;
-				padding: $d 0;
-				min-height: 100%;
-				position: relative;
+	}
+	&.navbar-scrolled {
+		.navbar-nav .nav-item.highlight {
+			$d: 1.6rem;
+			background-color: $primary;
+			margin-bottom: -$d;
+			margin-top: -$d;
+			padding: $d 0;
+			min-height: 100%;
+			position: relative;
 
-				.nav-link {
-					color: $white !important;
-					text-decoration: none;
-				}
+			.nav-link {
+				color: $white !important;
+				text-decoration: none;
+			}
 
-				&:hover {
-					background-color: darken($primary, 10%);
-				}
+			&:hover {
+				background-color: darken($primary, 10%);
 			}
 		}
 	}

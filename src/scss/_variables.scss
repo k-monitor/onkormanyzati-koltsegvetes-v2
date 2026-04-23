@@ -1,11 +1,10 @@
-@import "generated";
+@import 'generated';
 
 // Definitions
 
 @function prependOverride($custom, $default) {
 	@if $custom !=null {
-		@return $custom,
-		$default;
+		@return $custom, $default;
 	}
 
 	@return $default;
@@ -13,7 +12,8 @@
 
 // Bootstrap overrides
 
-$font-family-sans-serif: "Roboto Condensed";
+$breadcrumb-divider: none;
+$font-family-sans-serif: 'Roboto Condensed';
 $font-family-base: null !default;
 $font-family-base: prependOverride($font-family-base, $font-family-sans-serif);
 $headings-font-family: null !default;

@@ -86,6 +86,12 @@
 		}
 
 		.nav-pills {
+			.nav-item {
+				margin: 0 0.5rem;
+			}
+			.nav-link {
+				border: 1px solid $primary;
+			}
 			.nav-link.active,
 			.show > .nav-link {
 				background-color: $primary;

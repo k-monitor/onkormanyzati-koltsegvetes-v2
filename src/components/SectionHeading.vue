@@ -4,24 +4,46 @@ const { title, year } = defineProps<{ title: string; year: string }>();
 const years = computed(() => Object.keys(DATA).sort());
 const index = computed(() => years.value.indexOf(year));
 
+const previousYear = computed(() => years.value[index.value - 1] || '');
+const nextYear = computed(() => years.value[index.value + 1] || '');
+
 const { handleYearSelected } = useYear();
 </script>
 
 <template>
-	<h2>
-		{{ title }}
-		<small class="ml-3 text-muted">
-			<i
-				class="fas fa-caret-left"
-				v-if="DATA[years[index - 1] || '']"
-				@click="handleYearSelected(years[index - 1] || '')"
-			></i>
-			{{ year }}
-			<i
-				class="fas fa-caret-right"
-				v-if="DATA[years[index + 1] || '']"
-				@click="handleYearSelected(years[index + 1] || '')"
-			></i>
-		</small>
-	</h2>
+	<h2>{{ title }}</h2>
+	<div class="d-flex align-items-center justify-content-center text-muted">
+		<span
+			v-if="previousYear"
+			class="neighbor-year"
+			@click="handleYearSelected(previousYear)"
+		>
+			<span class="d-none d-sm-inline">{{ previousYear }}</span>
+			<i class="fas fa-caret-left" />
+		</span>
+		<span class="current-year">{{ year }}</span>
+		<span
+			v-if="nextYear"
+			class="neighbor-year"
+			@click="handleYearSelected(nextYear)"
+		>
+			<i class="fas fa-caret-right" />
+			<span class="d-none d-sm-inline">{{ nextYear }}</span>
+		</span>
+	</div>
 </template>
+
+<style scoped>
+.current-year {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin: 0 0.5rem;
+}
+.neighbor-year {
+	cursor: pointer;
+	font-size: 1.25rem;
+}
+i {
+	margin: 0 0.5rem;
+}
+</style>
