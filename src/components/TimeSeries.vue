@@ -117,6 +117,12 @@ const years = computed(() => {
 		.sort();
 });
 
+// Build link to the year's expense/income section
+function yearHref(year: string): string {
+	const section = side === 'income' ? 'bevetel' : 'kiadas';
+	return `#${slugify(year)}/${section}`;
+}
+
 // Get the root node for a specific year
 function getRootForYear(year: string): BudgetNode | null {
 	return DATA[year]?.[side]?.[view] || null;
@@ -697,17 +703,21 @@ const hoveredSeries = computed(() => {
 
 						<!-- X-axis labels (years) -->
 						<g class="x-axis">
-							<text
+							<a
 								v-for="(year, index) in years"
 								:key="year"
-								:x="xScale(index)"
-								:y="innerHeight + 25"
-								class="axis-label"
-								:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
-								text-anchor="middle"
+								:href="yearHref(year)"
 							>
-								{{ year }}
-							</text>
+								<text
+									:x="xScale(index)"
+									:y="innerHeight + 25"
+									class="axis-label axis-label-link"
+									:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
+									text-anchor="middle"
+								>
+									{{ year }}
+								</text>
+							</a>
 						</g>
 
 						<!-- N/A indicator for years with no data at the drilled-into level -->
@@ -976,6 +986,18 @@ const hoveredSeries = computed(() => {
 
 	.axis-label-muted {
 		fill: #b5b5b5;
+	}
+
+	.axis-label-link {
+		cursor: pointer;
+		text-decoration: underline;
+		text-decoration-style: dotted;
+		text-decoration-color: rgba(102, 102, 102, 0.4);
+
+		&:hover {
+			fill: $primary;
+			text-decoration-color: $primary;
+		}
 	}
 
 	.parent-outline {
