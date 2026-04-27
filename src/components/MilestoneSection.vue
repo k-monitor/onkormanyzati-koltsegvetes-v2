@@ -67,7 +67,7 @@ onMounted(() => {
 
 <template>
 	<section class="page-section milestones">
-		<div class="container-fluid">
+		<div class="container">
 			<div class="row">
 				<div class="col text-center">
 					<SectionHeading
