@@ -18,6 +18,7 @@ function normalizeId(id: string | number | undefined): string {
 
 const path = ref<string[]>([]);
 const hovered = ref<string | null>(null);
+const hoverSide = ref<'left' | 'right'>('left');
 const hiddenSeries = ref<Set<string>>(new Set());
 // mode: 'regular' | 'inflation' | 'gdp'
 const mode = ref<'regular' | 'inflation' | 'gdp'>('regular');
@@ -764,7 +765,7 @@ const hoveredSeries = computed(() => {
 									:stroke-width="hovered === series.id ? 2 : 1"
 									class="bar"
 									:class="{ clickable: canClick(series.id) }"
-									@mouseenter="hovered = series.id"
+									@mouseenter="hovered = series.id; hoverSide = yearIndex >= years.length / 2 ? 'right' : 'left'"
 									@mouseleave="hovered = null"
 									@click="drillDown(series.id)"
 								>
@@ -784,6 +785,7 @@ const hoveredSeries = computed(() => {
 				<div
 					v-if="hoveredSeries"
 					class="details-panel details-panel-desktop"
+					:class="hoverSide === 'right' ? 'pos-left' : 'pos-right'"
 				>
 					<h5>{{ hoveredSeries.name }}</h5>
 					<table class="table table-sm">
@@ -1130,7 +1132,7 @@ const hoveredSeries = computed(() => {
 		}
 	}
 
-	// Desktop: details panel floating on the right side
+	// Desktop: details panel overlays the top-right corner of the chart so it never overflows the viewport
 	.details-panel-desktop {
 		display: none;
 
@@ -1138,12 +1140,19 @@ const hoveredSeries = computed(() => {
 			display: block;
 			position: absolute;
 			top: 0;
-			right: -350px;
 			width: 330px;
 			max-height: 350px;
 			overflow-y: auto;
 			z-index: 10;
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+			&.pos-right {
+				right: 0;
+			}
+
+			&.pos-left {
+				left: 0;
+			}
 		}
 	}
 
