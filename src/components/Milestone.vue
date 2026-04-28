@@ -1,5 +1,7 @@
 <script setup lang="ts">
-defineProps<{
+import search from '../utils/search';
+
+const props = defineProps<{
 	milestone: MilestoneWithId;
 	nextId: string;
 	prevId: string;
@@ -9,6 +11,15 @@ defineProps<{
 function modalId(milestoneId: string, mapModal: boolean = false): string {
 	return 'milestone-modal-' + (mapModal ? 'map-' : '') + milestoneId;
 }
+
+const budgetTotal = computed(() => {
+	let sum = 0;
+	(props.milestone.nodeIds || []).forEach((id) => {
+		const hit = search(String(props.milestone.year), id, []).find((r) => r.matchedId);
+		if (hit) sum += hit.value || 0;
+	});
+	return sum;
+});
 </script>
 
 <template>
@@ -24,8 +35,15 @@ function modalId(milestoneId: string, mapModal: boolean = false): string {
 				:class="{ overlay: milestone.overlay }"
 				:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
 			></div>
+			<span
+				v-if="budgetTotal"
+				class="milestone-amount bg-primary text-white font-weight-bold px-2 py-1"
+				>{{ groupNums(budgetTotal, true, ['', 'ezer', 'millió', 'milliárd']) }}</span
+			>
 		</div>
-		<h5 class="bg-white milestone-title px-2 text-center w-100">{{ milestone.title }}</h5>
+		<h5 class="bg-white milestone-title px-2 text-center w-100">
+			{{ milestone.title }}
+		</h5>
 	</div>
 	<div
 		class="modal fade"
@@ -83,8 +101,18 @@ function modalId(milestoneId: string, mapModal: boolean = false): string {
 		transition: all 0.2s ease;
 	}
 
+	.milestone-amount {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		font-size: 1.1rem;
+		filter: brightness(0.8);
+		transition: all 0.2s ease;
+	}
+
 	&:hover {
-		.milestone-picture {
+		.milestone-picture,
+		.milestone-amount {
 			filter: none;
 		}
 	}

@@ -11,7 +11,14 @@ const props = defineProps<{
 const isFuncEnabled = computed(() => props.funcEnabled !== false);
 const isEconEnabled = computed(() => props.econEnabled !== false);
 
-const years = computed(() => Object.keys(DATA).sort());
+const years = computed(() => {
+	const allowedYears = CONFIG.timeseries?.years
+		? CONFIG.timeseries.years.split(',').map((y: string) => y.trim())
+		: null;
+	return Object.keys(DATA)
+		.filter((year) => !allowedYears || allowedYears.includes(year))
+		.sort();
+});
 const yearsRange = computed(() => {
 	if (years.value.length === 0) return '';
 	if (years.value.length === 1) return years.value[0];

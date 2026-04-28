@@ -18,6 +18,7 @@ function normalizeId(id: string | number | undefined): string {
 
 const path = ref<string[]>([]);
 const hovered = ref<string | null>(null);
+const hoverSide = ref<'left' | 'right'>('left');
 const hiddenSeries = ref<Set<string>>(new Set());
 // mode: 'regular' | 'inflation' | 'gdp'
 const mode = ref<'regular' | 'inflation' | 'gdp'>('regular');
@@ -116,6 +117,12 @@ const years = computed(() => {
 		.sort();
 });
 
+// Build link to the year's expense/income section
+function yearHref(year: string): string {
+	const section = side === 'income' ? 'bevetel' : 'kiadas';
+	return `#${slugify(year)}/${section}`;
+}
+
 // Get the root node for a specific year
 function getRootForYear(year: string): BudgetNode | null {
 	return DATA[year]?.[side]?.[view] || null;
@@ -170,9 +177,7 @@ const currentChildren = computed(() => {
 		return leafFallback ? [leafFallback] : [];
 	}
 
-	return Array.from(merged.values())
-		.sort((a, b) => b.total - a.total)
-		.map((entry) => entry.node);
+	return Array.from(merged.values()).map((entry) => entry.node).reverse();
 });
 
 // Build time series data for all children
@@ -696,17 +701,21 @@ const hoveredSeries = computed(() => {
 
 						<!-- X-axis labels (years) -->
 						<g class="x-axis">
-							<text
+							<a
 								v-for="(year, index) in years"
 								:key="year"
-								:x="xScale(index)"
-								:y="innerHeight + 25"
-								class="axis-label"
-								:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
-								text-anchor="middle"
+								:href="yearHref(year)"
 							>
-								{{ year }}
-							</text>
+								<text
+									:x="xScale(index)"
+									:y="innerHeight + 25"
+									class="axis-label axis-label-link"
+									:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
+									text-anchor="middle"
+								>
+									{{ year }}
+								</text>
+							</a>
 						</g>
 
 						<!-- N/A indicator for years with no data at the drilled-into level -->
@@ -764,7 +773,7 @@ const hoveredSeries = computed(() => {
 									:stroke-width="hovered === series.id ? 2 : 1"
 									class="bar"
 									:class="{ clickable: canClick(series.id) }"
-									@mouseenter="hovered = series.id"
+									@mouseenter="hovered = series.id; hoverSide = yearIndex >= years.length / 2 ? 'right' : 'left'"
 									@mouseleave="hovered = null"
 									@click="drillDown(series.id)"
 								>
@@ -784,6 +793,7 @@ const hoveredSeries = computed(() => {
 				<div
 					v-if="hoveredSeries"
 					class="details-panel details-panel-desktop"
+					:class="hoverSide === 'right' ? 'pos-left' : 'pos-right'"
 				>
 					<h5>{{ hoveredSeries.name }}</h5>
 					<table class="table table-sm">
@@ -976,6 +986,18 @@ const hoveredSeries = computed(() => {
 		fill: #b5b5b5;
 	}
 
+	.axis-label-link {
+		cursor: pointer;
+		text-decoration: underline;
+		text-decoration-style: dotted;
+		text-decoration-color: rgba(102, 102, 102, 0.4);
+
+		&:hover {
+			fill: $primary;
+			text-decoration-color: $primary;
+		}
+	}
+
 	.parent-outline {
 		stroke-width: 1;
 		stroke-dasharray: 3, 3;
@@ -1130,7 +1152,7 @@ const hoveredSeries = computed(() => {
 		}
 	}
 
-	// Desktop: details panel floating on the right side
+	// Desktop: details panel overlays the top-right corner of the chart so it never overflows the viewport
 	.details-panel-desktop {
 		display: none;
 
@@ -1138,12 +1160,19 @@ const hoveredSeries = computed(() => {
 			display: block;
 			position: absolute;
 			top: 0;
-			right: -350px;
 			width: 330px;
 			max-height: 350px;
 			overflow-y: auto;
 			z-index: 10;
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+			&.pos-right {
+				right: 0;
+			}
+
+			&.pos-left {
+				left: 0;
+			}
 		}
 	}
 
