@@ -177,9 +177,7 @@ const currentChildren = computed(() => {
 		return leafFallback ? [leafFallback] : [];
 	}
 
-	return Array.from(merged.values())
-		.sort((a, b) => b.total - a.total)
-		.map((entry) => entry.node);
+	return Array.from(merged.values()).map((entry) => entry.node).reverse();
 });
 
 // Build time series data for all children
