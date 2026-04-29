@@ -2,6 +2,7 @@
 const { subpageMode } = defineProps<{
 	subpageMode?: boolean;
 }>();
+// FIXME rename subpage mode into "globalView"
 
 const isBannerVisible = ref(true);
 const less = ref(true);
@@ -108,8 +109,8 @@ onUnmounted(() => {
 						</li>
 						<li class="nav-item">
 							<NuxtLink
-								:to="`/osszesites/`"
 								class="nav-link js-scroll-trigger"
+								to="/"
 								>Összesítés</NuxtLink
 							>
 						</li>
@@ -154,7 +155,14 @@ onUnmounted(() => {
 								>{{ CONFIG.navBar.map }}</a
 							>
 						</li>
-						<NavBarYearSelector :subpage-mode="subpageMode" />
+						<li class="nav-item">
+							<NuxtLink
+								class="nav-link js-scroll-trigger"
+								to="/ev/"
+								>Éves nézet</NuxtLink
+							>
+						</li>
+						<NavBarYearSelector v-if="!subpageMode" />
 						<li class="nav-item">
 							<a
 								href="javascript:void(0)"

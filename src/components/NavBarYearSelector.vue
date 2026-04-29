@@ -1,11 +1,7 @@
 <script setup lang="ts">
-const { subpageMode } = defineProps<{
-	subpageMode?: boolean;
-}>();
-
 const { handleYearSelected, year } = useYear();
 
-const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
+const years = Object.keys(DATA).sort().reverse();
 </script>
 
 <template>

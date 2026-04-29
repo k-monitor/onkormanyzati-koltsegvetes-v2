@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const { canShowMilestones, year } = useYear();
-
 useHead({
 	meta: [
 		{
@@ -8,42 +6,80 @@ useHead({
 			content: CONFIG.seo.ogTitle,
 		},
 	],
-	title: () =>
-		[year.value, CONFIG.seo.pageTitle, CONFIG.seo.siteName].filter(Boolean).join(' | '),
+	title: [CONFIG.seo.pageTitle, CONFIG.seo.siteName].filter(Boolean).join(' | '),
 });
+
+// Whether func/econ views are enabled for timeseries (default: both enabled)
+const timeseriesFuncEnabled = computed(
+	() => CONFIG.timeseries?.func == null || !!CONFIG.timeseries.func,
+);
+const timeseriesEconEnabled = computed(
+	() => CONFIG.timeseries?.econ == null || !!CONFIG.timeseries.econ,
+);
+
+// Check if we have function data across multiple years
+const hasTimeSeriesIncome = computed(() => {
+	const yearsWithData = Object.keys(DATA).filter((y) => {
+		const funcOk = timeseriesFuncEnabled.value && DATA[y]?.income?.func;
+		const econOk = timeseriesEconEnabled.value && DATA[y]?.income?.econ;
+		return funcOk || econOk;
+	});
+	return yearsWithData.length > 1;
+});
+
+const hasTimeSeriesExpense = computed(() => {
+	const yearsWithData = Object.keys(DATA).filter((y) => {
+		const funcOk = timeseriesFuncEnabled.value && DATA[y]?.expense?.func;
+		const econOk = timeseriesEconEnabled.value && DATA[y]?.expense?.econ;
+		return funcOk || econOk;
+	});
+	return yearsWithData.length > 1;
+});
+
+const { canShowMap } = useYear();
 </script>
 
 <template>
 	<DefaultLayout>
+		<MastHead />
+		<Welcome />
+		<!-- FIXME tutorial in Welcome needs year view -->
 		<template
 			v-for="mod in MODULES_ORDER"
 			:key="mod"
 		>
-			<PublicationSection v-if="mod === 'pub' && CONFIG.modules.pub" />
-			<Inex
-				v-else-if="mod === 'inex' && CONFIG.modules.inex"
-				class="bg-light"
-			/>
-			<VisualizationSection
-				v-else-if="mod === 'income' && CONFIG.modules.income"
-				id="income"
+			<TimeSeriesSection
+				v-if="
+					mod === 'timeseries-income' &&
+					hasTimeSeriesIncome &&
+					CONFIG.modules['timeseries-income']
+				"
+				id="time-series-income"
 				side="income"
-				:text="CONFIG.vis.incomeText"
-				:title="CONFIG.vis.income"
+				:func-enabled="timeseriesFuncEnabled"
+				:econ-enabled="timeseriesEconEnabled"
+				:title="CONFIG.timeseries?.income || 'Bevételek idősorban'"
+				:text="CONFIG.timeseries?.incomeText"
 			/>
-			<VisualizationSection
-				v-else-if="mod === 'expense'"
-				id="expense"
-				class="bg-light"
+			<TimeSeriesSection
+				v-else-if="
+					mod === 'timeseries-expense' &&
+					hasTimeSeriesExpense &&
+					CONFIG.modules['timeseries-expense']
+				"
+				id="time-series-expense"
 				side="expense"
-				:text="CONFIG.vis.expenseText"
-				:title="CONFIG.vis.expense"
+				:func-enabled="timeseriesFuncEnabled"
+				:econ-enabled="timeseriesEconEnabled"
+				:title="CONFIG.timeseries?.expense || 'Kiadások idősorban'"
+				:text="CONFIG.timeseries?.expenseText"
 			/>
-			<MilestoneSection
-				v-else-if="mod === 'milestones' && canShowMilestones"
-				id="milestones"
-				class="pb-0"
+			<MapSection
+				v-else-if="mod === 'map' && canShowMap"
+				id="map"
+				class="bg-light"
 			/>
+			<!-- FIXME map should display pins from all years-->
 			<FeedbackSection v-else-if="mod === 'feedback' && CONFIG.modules.feedback" />
 		</template>
 	</DefaultLayout>
