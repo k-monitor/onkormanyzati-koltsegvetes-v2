@@ -32,6 +32,7 @@ const hasTimeSeriesExpense = computed(() => {
 // Default module order
 const DEFAULT_ORDER =
 	'pub,inex,income,expense,timeseries-income,timeseries-expense,milestones,map,feedback';
+// TODO move this into data.ts, and while at it, read it from default-config.json to reduce redundancy and ease maintenance
 
 // Ordered list of modules to render
 const orderedModules = computed(() => {
