@@ -14,7 +14,7 @@ useHead({
 </script>
 
 <template>
-	<DefaultLayout>
+	<DefaultLayout show-year-selector>
 		<template
 			v-for="mod in MODULES_ORDER"
 			:key="mod"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { subpageMode } = defineProps<{
+	showYearSelector?: boolean;
 	subpageMode?: boolean;
 }>();
 // FIXME rename subpage mode into "globalView"
@@ -7,7 +8,7 @@ const { subpageMode } = defineProps<{
 const isBannerVisible = ref(true);
 const less = ref(true);
 
-const { canShowMilestones, canShowMap, year } = useYear();
+const { year } = useYear();
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 
 function scrollToTop() {
@@ -72,10 +73,10 @@ onUnmounted(() => {
 					{{ CONFIG.city }}
 				</NuxtLink>
 				<ul
-					v-if="!subpageMode"
+					v-if="showYearSelector"
 					class="d-lg-none navbar-nav ml-auto my-2 my-lg-0 align-items-center"
 				>
-					<NavBarYearSelector :subpage-mode="subpageMode" />
+					<NavBarYearSelector />
 				</ul>
 				<button
 					class="navbar-toggler navbar-toggler-right"
@@ -114,16 +115,19 @@ onUnmounted(() => {
 								>Összesítés</NuxtLink
 							>
 						</li>
-						<li class="nav-item">
+
+						<NavBarYearSelector v-if="showYearSelector" />
+						<li
+							v-else
+							class="nav-item"
+						>
 							<NuxtLink
 								class="nav-link js-scroll-trigger"
 								to="/ev/"
 								>Éves nézet</NuxtLink
 							>
 						</li>
-						<!-- FIXME ^ do not show on year page -->
-						<NavBarYearSelector />
-						<!-- FIXME do not show on index page -->
+
 						<li class="nav-item">
 							<a
 								href="javascript:void(0)"

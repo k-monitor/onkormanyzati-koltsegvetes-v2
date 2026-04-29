@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineProps<{
+	showYearSelector?: boolean;
+}>();
+
 const route = useRoute();
 
 useHead({
@@ -86,7 +90,7 @@ onMounted(() => {
 
 <template>
 	<div :class="'theme-' + slugify(year)">
-		<NavBar />
+		<NavBar :show-year-selector="showYearSelector" />
 		<SearchModal />
 		<div class="flex-grow-1">
 			<slot />
