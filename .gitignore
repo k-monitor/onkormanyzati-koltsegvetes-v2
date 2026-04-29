@@ -36,3 +36,5 @@ src/data/lorem*
 src/scss/_generated.scss
 static/budget.xlsx
 static/search.log
+
+.pnpm-store/

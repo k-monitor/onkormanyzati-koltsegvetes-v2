@@ -1,12 +1,12 @@
 import fs from 'fs';
 import xl from 'excel4node';
-import defaultConfig from './default-config.json' with { type: 'json' };
-import defaultConfigHelp from './default-config-help.json' with { type: 'json' };
-import defaultMilestones from './default-milestones.json' with { type: 'json' };
-import defaultKgr from './default-kgr.json' with { type: 'json' };
 import './prepare-functions.js'; // required by prepare-data
 import './prepare-data.js'; // required for theme colors & tooltips generation
 
+const defaultConfig = JSON.parse(fs.readFileSync('./scripts/default-config.json', 'utf8'));
+const defaultConfigHelp = JSON.parse(fs.readFileSync('./scripts/default-config-help.json', 'utf8'));
+const defaultKgr = JSON.parse(fs.readFileSync('./scripts/default-kgr.json', 'utf8'));
+const defaultMilestones = JSON.parse(fs.readFileSync('./scripts/default-milestones.json', 'utf8'));
 const data = JSON.parse(fs.readFileSync('./src/data/data.json'));
 
 const GENERATED_FUNCTIONS = './src/data/functions.tsv';
@@ -30,7 +30,11 @@ function flattenConfig(obj, prefix = '', helpMap = {}) {
 		if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
 			rows.push(...flattenConfig(value, fullKey, helpMap));
 		} else {
-			rows.push([fullKey, typeof value === 'number' ? value : String(value ?? ''), helpMap[fullKey] || '']);
+			rows.push([
+				fullKey,
+				typeof value === 'number' ? value : String(value ?? ''),
+				helpMap[fullKey] || '',
+			]);
 		}
 	}
 	return rows;
@@ -44,7 +48,11 @@ function flattenConfigWithBlanks(obj, helpMap = {}) {
 		if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
 			rows.push(...flattenConfig(value, key, helpMap));
 		} else {
-			rows.push([key, typeof value === 'number' ? value : String(value ?? ''), helpMap[key] || '']);
+			rows.push([
+				key,
+				typeof value === 'number' ? value : String(value ?? ''),
+				helpMap[key] || '',
+			]);
 		}
 		if (i < keys.length - 1) {
 			rows.push(['', '', '']);
@@ -106,7 +114,7 @@ function aoaTo3colSheet(sheet, aoa, inputIndex, colWidths) {
 
 // config sheet
 
-const colors = ["#C0D1E3", "#C03B1A", "#0363A0"];
+const colors = ['#C0D1E3', '#C03B1A', '#0363A0'];
 
 const yearColors = Object.keys(data).map((year, index) => [
 	`theme.${year}`,
@@ -134,7 +142,10 @@ const visColors = Object.keys(topLevelIds)
 const configSheet = wb.addWorksheet('config');
 aoaTo3colSheet(
 	configSheet,
-	[["key", "value", "help"], ...defaultConfigRows.concat(yearColors).concat(inexColors).concat(visColors)],
+	[
+		['key', 'value', 'help'],
+		...defaultConfigRows.concat(yearColors).concat(inexColors).concat(visColors),
+	],
 	[1],
 	[25, 40, 100],
 );
@@ -166,7 +177,7 @@ Object.keys(data).forEach((year) => {
 		});
 	});
 
-	let tooltipRows = [['Azon.', 'Megnevezés', 'Súgószöveg']];
+	const tooltipRows = [['Azon.', 'Megnevezés', 'Súgószöveg']];
 
 	Object.keys(ids)
 		.sort()
@@ -182,7 +193,12 @@ Object.keys(data).forEach((year) => {
 // milestones sheet
 
 const milestonesSheet = wb.addWorksheet('milestones');
-aoaTo3colSheet(milestonesSheet, defaultMilestones, [0, 1, 2, 3, 4, 5, 6, 7], [10, 5, 20, 20, 20, 80, 20, 20]);
+aoaTo3colSheet(
+	milestonesSheet,
+	defaultMilestones,
+	[0, 1, 2, 3, 4, 5, 6, 7],
+	[10, 5, 20, 20, 20, 80, 20, 20],
+);
 
 // functions sheet
 

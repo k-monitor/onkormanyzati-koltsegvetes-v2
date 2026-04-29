@@ -1,0 +1,189 @@
+<script setup lang="ts">
+import {
+	ArrowDownToDot,
+	ArrowUpFromDot,
+	ChartPie,
+	CircleAlert,
+	Presentation,
+} from 'lucide-vue-next';
+import { generateEconomicTree, generateFunctionalTree } from '../../../scripts/prepare-data-lib';
+import type { BudgetNode } from '../../../src/utils/types';
+import PageSection from './PageSection.vue';
+
+const { year } = defineProps<{
+	year: string;
+}>();
+
+const sides = [
+	{ key: 'income' as const, label: 'Bevételek', icon: ArrowDownToDot },
+	{ key: 'expense' as const, label: 'Kiadások', icon: ArrowUpFromDot },
+];
+type SideKey = (typeof sides)[number]['key'];
+const side = ref<SideKey>('expense');
+
+const types = [
+	{ key: 'econ' as const, label: 'Közgazdasági', icon: ChartPie },
+	{ key: 'func' as const, label: 'Funkcionális', icon: Presentation },
+];
+type TypeKey = (typeof types)[number]['key'];
+const type = ref<TypeKey>('econ');
+
+const { emptyFuncTree, markModified, workbook, years } = await useBudgetData();
+
+const sheetName = computed(() => {
+	const y = years.value?.[year];
+	if (!y) return undefined;
+	if (side.value === 'income') {
+		return y.incomeSheet;
+	} else {
+		return y.expenseSheet;
+	}
+});
+
+function prepareEconomicTree(sheetName: string) {
+	if (!workbook.value) return;
+	const sheet = workbook.value.getWorksheet(sheetName);
+	if (!sheet) return;
+
+	const root = generateEconomicTree(sheet);
+	if (side.value === 'expense') root.id = 'K';
+	if (side.value === 'income') root.id = 'B';
+	return root;
+}
+
+function prepareFunctionalTree(sheetName: string) {
+	if (!emptyFuncTree.value) return;
+	if (!workbook.value) return;
+	const sheet = workbook.value.getWorksheet(sheetName);
+	if (!sheet) return;
+
+	const copyOfEmptyFuncTree = structuredClone(emptyFuncTree.value);
+	return generateFunctionalTree(sheet, copyOfEmptyFuncTree);
+}
+
+const econTree = ref<BudgetNode | null | undefined>();
+const funcTree = computed(() =>
+	sheetName.value ? prepareFunctionalTree(sheetName.value) : undefined,
+);
+const visibleTree = computed(() => {
+	if (type.value === 'econ') {
+		return econTree.value;
+	} else {
+		return funcTree.value;
+	}
+});
+
+function updateEconTree() {
+	if (!sheetName.value) return;
+	econTree.value = prepareEconomicTree(sheetName.value);
+}
+
+onMounted(() => {
+	// init
+	updateEconTree();
+});
+
+watch(workbook, () => {
+	// file loaded, e.g. revert
+	// need to update total sum
+	updateEconTree();
+});
+
+watch(sheetName, () => {
+	// side changed
+	updateEconTree();
+});
+
+const cellChanged = useCellChangedEvent(); // called throttled from BudgetEditorNode
+cellChanged.on(() => {
+	// value change, rows added or row deleted
+	updateEconTree();
+	markModified();
+});
+
+const sheet = computed(() => {
+	if (!sheetName.value || !workbook.value) return undefined;
+	return workbook.value.getWorksheet(sheetName.value);
+});
+provide('sheet', sheet);
+
+const isEconAndFuncTotalDiffer = computed(() => {
+	if (!econTree.value || !funcTree.value) return false;
+	return econTree.value.value !== funcTree.value.value;
+});
+</script>
+
+<template>
+	<PageSection class="-mb-8 border-none pb-0!">
+		<p>
+			Az alábbiakban meg tudod tekinteni a költségvetési adatokat, és a közgazdasági bontást
+			lehetőséged van szerkeszteni. A beviteli mezők a rovatkódnak (pl. B1) megfelelő cellát
+			módosítják az Excel munkalapon. A főösszeget a program számolja és nem írja ki Excel-be,
+			az "F" betűvel kezdődő rovatkódok értékei nem számítanak bele.
+		</p>
+		<div class="mb-8 flex flex-wrap justify-between gap-4">
+			<ToggleGroup
+				v-model="side"
+				type="single"
+				variant="outline"
+			>
+				<ToggleGroupItem
+					v-for="option in sides"
+					:key="option.key"
+					:value="option.key"
+					:aria-label="option.label"
+				>
+					<component :is="option.icon" />
+					{{ option.label }}
+				</ToggleGroupItem>
+			</ToggleGroup>
+			<ToggleGroup
+				v-model="type"
+				variant="outline"
+				type="single"
+			>
+				<ToggleGroupItem
+					v-for="option in types"
+					:key="option.key"
+					:value="option.key"
+					:aria-label="option.label"
+				>
+					<component :is="option.icon" />
+					{{ option.label }}
+				</ToggleGroupItem>
+			</ToggleGroup>
+		</div>
+		<Alert
+			v-if="!visibleTree"
+			class="not-prose mb-8"
+			variant="destructive"
+		>
+			<CircleAlert />
+			<AlertDescription>
+				A <code>budget.xlsx</code> fájlban nincs ilyen adat jelenleg.
+			</AlertDescription>
+		</Alert>
+		<Alert
+			v-if="isEconAndFuncTotalDiffer"
+			class="not-prose mb-8"
+			variant="destructive"
+		>
+			<CircleAlert />
+			<AlertDescription>
+				A közgazdasági és funkcionális főösszeg nem egyezik meg.
+			</AlertDescription>
+		</Alert>
+	</PageSection>
+
+	<div class="prose mx-auto w-full px-4 lg:max-w-[90%] lg:px-0">
+		<template v-if="visibleTree">
+			<BudgetEditorNode
+				:is-editable="type === 'econ'"
+				is-summary
+				:node="visibleTree"
+			/>
+		</template>
+	</div>
+
+	<BudgetNodeCreatorModal @added-nodes="cellChanged.emit" />
+</template>

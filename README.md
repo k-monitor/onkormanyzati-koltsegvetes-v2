@@ -12,9 +12,11 @@ _Copyright &copy; 2025 K-Monitor_
 
 ## Változások korábbi verzióhoz képest
 
-- minimum Node verzió: v12 -> v20
+- minimum Node verzió: v12 -> v22
 - yarn -> pnpm
 - `src/favicon.png` -> `static/assets/img/favicon.png` (a program automatikusan átmozgatja)
+- az admin felületet build-elni kell indítás előtt: `cd admin && pnpm i && cd .. && pnpm build:admin && pnpm admin`
+- `ADMIN_PORT` -> `PORT`
 
 ## Beüzemelés
 
@@ -49,6 +51,7 @@ pnpx live-server dist --open=$KOKO_DIR
 
 ## Mappastruktúra
 
+- **admin/** - Ebben a mappában van definiálva az admin felület, ami egy külön webalkalmazás. (Használata opcionális.)
 - **dist/ (generált)** - Ebbe a mappába generálja a Nuxt a kész weboldalt.
 - **input/** - Ebbe a mappába kell helyezni az input adatokat.
 - **scripts/** - Ebben a mappában segédszkriptek vannak.
@@ -127,13 +130,13 @@ Ez a fájl a `budget.xlsx` alapján van generálva, a "tooltips <ÉVSZÁM>" munk
     - 2\. oszlop: testreszabható érték, bizonyos esetekben a Markdown formátum támogatott (ez a magyarázatban jelezve van)
     - 3\. oszlop: magyarázat
 - A `welcome` alatti (pl.: `welcome.title`) beállítások értékei felülírhatók kiválasztott évek esetében. Például a `welcome.titles.2025` kulcsú sor hozzáadása 2025 esetében a megadott értéket használja, míg az összes többi évben a `welcome.title` sor értékét.
-  - A sorfelülírások:
-    - `welcome.title` -> `welcome.titles.[év]`
-    - `welcome.leftBlock` -> `welcome.leftBlocks.[év]`
-    - `welcome.rightBlock` -> `welcome.rightBlocks.[év]`
-    - `welcome.aboveSignature` -> `welcome.aboveSignatures.[év]`
-    - `welcome.name` -> `welcome.names.[év]`
-    - `welcome.role` -> `welcome.roles.[év]`
+    - A sorfelülírások:
+        - `welcome.title` -> `welcome.titles.[év]`
+        - `welcome.leftBlock` -> `welcome.leftBlocks.[év]`
+        - `welcome.rightBlock` -> `welcome.rightBlocks.[év]`
+        - `welcome.aboveSignature` -> `welcome.aboveSignatures.[év]`
+        - `welcome.name` -> `welcome.names.[év]`
+        - `welcome.role` -> `welcome.roles.[év]`
 
 #### A "tooltips <ÉVSZÁM>" munkalapok formátuma:
 
@@ -331,32 +334,50 @@ Az oldalon található kereső naplózza a beírt keresőkifejezéseket és a ta
 
 ## Ábrák beágyazása
 
-A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba. Ezekhez html kód az admin felület _Beágyazás_ menüpontjából is elérhető.
-
-Másolható embed kódok, ahol a `[koko-url]` helyettesítendő a használt kökö url-jével (például: `https://kozertheto.k-monitor.hu`):
+A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba az alábbi HTML kódokkal. A `[koko-url]` helyettesítendő a használt kökö url-jével (például: `https://kozertheto.k-monitor.hu`):
 
 Bevételek:
 
 ```html
-<iframe width="100%" height="1200px" src="[koko-url]/bevetelek" frameborder="0"></iframe>
+<iframe
+	src="[koko-url]/bevetelek/"
+	width="100%"
+	height="1200px"
+	frameborder="0"
+></iframe>
 ```
 
 Kiadások:
 
 ```html
-<iframe width="100%" height="1200px" src="[koko-url]/kiadasok" frameborder="0"></iframe>
+<iframe
+	src="[koko-url]/kiadasok/"
+	width="100%"
+	height="1200px"
+	frameborder="0"
+></iframe>
 ```
 
 Mérleg:
 
 ```html
-<iframe width="100%" height="1200px" src="[koko-url]/merleg" frameborder="0"></iframe>
+<iframe
+	src="[koko-url]/merleg/"
+	width="100%"
+	height="1200px"
+	frameborder="0"
+></iframe>
 ```
 
 Térkép:
 
 ```html
-<iframe width="100%" height="620px" src="[koko-url]/terkep" frameborder="0"></iframe>
+<iframe
+	src="[koko-url]/terkep"
+	width="100%"
+	height="620px"
+	frameborder="0"
+></iframe>
 ```
 
 ## Idősor
@@ -384,18 +405,21 @@ Az admin modul eme 3 lépés megkönnyítésére szolgál. Ez egy webalkalmazás
 Admin beüzemelés lépései részletesen:
 
 1. Telepíts Node.js-t és PNPM-et, ezek adják az alapvető környezetet a projekthez.
-2. A projekt mappájában futtasd le a `pnpm install` parancsot, ez letölti a szükséges csomagokat a `node_modules` mappába.
-3. Készíts másolatot az `.env.example` fájlról `.env` néven.
-4. Szerkeszd az `.env` fájlt, hogy beállítsd az admin felületet:
-    - `ADMIN_PORT=8081` - a port száma, amin a webes felület elérhető lesz
+2. Lépj be az `admin` mappába.
+3. Futtasd le a `pnpm install` parancsot.
+4. Készíts másolatot az `.env.example` fájlról `.env` néven.
+5. Szerkeszd az `.env` fájlt, hogy beállítsd az admin felületet:
+    - `PORT=8081` - a port száma, amin a webes felület elérhető lesz
     - `ADMIN_USER=admin` - ezzel a felhasználónévvel lehet majd elérni az admin felületet
     - `ADMIN_PASS=admin` - ezzel a jelszóval lehet majd elérni az admin felületet
     - `SECOND_USER=user` - ezzel a felhasználónévvel is el lehet érni az admin felületet
     - `SECOND_PASS=user` - ezzel a jelszóval is el lehet érni az admin felületet
     - `PUBLIC_URL=https://pelda.koltsegvetes.hu/` - az admin felület jobb felső sarkában levő zöld gomb ide fog linkelni
-    - `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami az `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
+    - `DEPLOY_CMD=` - itt lehet megadni azt a parancsot, ami a `dist` mappát (vagyis a legenerált költségvetés site-ot) a webszerverre kiteszi (pl. ez lehet akár másolás, feltöltés, de akár lehet üresen is hagyni, ha a költségvetést ugyanazon a gépen levő webszerverrel hosztolod és erre a mappára állítottad be a root-ot)
     - `SITE_BASE_URL` - ezzel lehet a generált site base url-jét (`https://example.hu/` utáni rész, pl.: `/koltsegvetes/`) beállítani
-5. Az admin felület az `pnpm admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
+6. Lépj vissza egy mappaszinttel fejlebb, a projekt mappájába.
+7. Futtasd le a `pnpm build:admin` parancsot.
+8. Az admin felület az `pnpm admin` paranccsal indítható el, és böngészőben pl. a http://localhost:8081/ címen lesz elérhető.
 
 Ahhoz, hogy az admin felület publikusan is elérhető legyen, az alábbiakra van szükség:
 

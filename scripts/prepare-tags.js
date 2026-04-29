@@ -4,47 +4,49 @@ import xlsx from 'xlsx';
 const INPUT_FILE = './input/tags.xlsx';
 const OUTPUT_FILE = './src/data/tags.json';
 
-const workbook = xlsx.readFile(INPUT_FILE);
-const sheetName = workbook.SheetNames[0];
-const tsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
+export default () => {
+	const workbook = xlsx.readFile(INPUT_FILE);
+	const sheetName = workbook.SheetNames[0];
+	const tsv = xlsx.utils.sheet_to_csv(workbook.Sheets[sheetName], { FS: '\t' });
 
-const output = {
-	expense: {
-		econ: {},
-		func: {},
-	},
-	income: {
-		econ: {},
-		func: {},
-	},
-};
+	const output = {
+		expense: {
+			econ: {},
+			func: {},
+		},
+		income: {
+			econ: {},
+			func: {},
+		},
+	};
 
-tsv.split('\n').forEach((row) => {
-	let [side, type, id, tags] = row.split('\t');
-	if (output[side] && output[side][type]) {
-		// checking validity - needs predefined output skeleton
-		id = id.split(' ')[0];
-		tags = tags
-			.toLowerCase()
-			.split(',')
-			.map((s) => s.trim())
-			.filter((s) => s.length > 0);
+	tsv.split('\n').forEach((row) => {
+		let [side, type, id, tags] = row.split('\t');
+		if (output[side] && output[side][type]) {
+			// checking validity - needs predefined output skeleton
+			id = id.split(' ')[0];
+			tags = tags
+				.toLowerCase()
+				.split(',')
+				.map((s) => s.trim())
+				.filter((s) => s.length > 0);
 
-		const uniqueTags = {};
-		tags.forEach((tag) => {
-			uniqueTags[tag] = true;
-		});
-
-		Object.keys(uniqueTags).forEach((longer) => {
-			Object.keys(uniqueTags).forEach((shorter) => {
-				if (longer != shorter && longer.includes(shorter)) {
-					delete uniqueTags[shorter];
-				}
+			const uniqueTags = {};
+			tags.forEach((tag) => {
+				uniqueTags[tag] = true;
 			});
-		});
 
-		output[side][type][id] = Object.keys(uniqueTags).sort();
-	}
-});
+			Object.keys(uniqueTags).forEach((longer) => {
+				Object.keys(uniqueTags).forEach((shorter) => {
+					if (longer != shorter && longer.includes(shorter)) {
+						delete uniqueTags[shorter];
+					}
+				});
+			});
 
-fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output));
+			output[side][type][id] = Object.keys(uniqueTags).sort();
+		}
+	});
+
+	fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output));
+};
