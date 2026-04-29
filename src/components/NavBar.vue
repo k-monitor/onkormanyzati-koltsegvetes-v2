@@ -115,54 +115,15 @@ onUnmounted(() => {
 							>
 						</li>
 						<li class="nav-item">
-							<a
-								:href="`#${slugify(year)}/koszonto`"
-								class="nav-link js-scroll-trigger"
-								>{{ CONFIG.navBar.welcome }}</a
-							>
-						</li>
-						<li class="nav-item">
-							<a
-								:href="
-									`#${slugify(year)}/` +
-									(CONFIG.modules.inex
-										? 'merleg'
-										: CONFIG.modules.income
-											? 'bevetel'
-											: 'kiadas')
-								"
-								class="nav-link js-scroll-trigger"
-								>{{ CONFIG.navBar.inex }}</a
-							>
-						</li>
-						<li
-							v-if="canShowMilestones"
-							class="nav-item"
-						>
-							<a
-								:href="`#${slugify(year)}/fejlesztesek`"
-								class="nav-link js-scroll-trigger"
-								>{{ CONFIG.navBar.milestones }}</a
-							>
-						</li>
-						<li
-							v-if="canShowMap"
-							class="nav-item"
-						>
-							<a
-								:href="`#${slugify(year)}/terkep`"
-								class="nav-link js-scroll-trigger"
-								>{{ CONFIG.navBar.map }}</a
-							>
-						</li>
-						<li class="nav-item">
 							<NuxtLink
 								class="nav-link js-scroll-trigger"
 								to="/ev/"
 								>Éves nézet</NuxtLink
 							>
 						</li>
-						<NavBarYearSelector v-if="!subpageMode" />
+						<!-- FIXME ^ do not show on year page -->
+						<NavBarYearSelector />
+						<!-- FIXME do not show on index page -->
 						<li class="nav-item">
 							<a
 								href="javascript:void(0)"
