@@ -1,36 +1,50 @@
 <script setup lang="ts">
-useHead({
-	link: [
-		{
-			rel: 'canonical',
-			href: CONFIG.url,
-		},
+const { canShowMilestones, year } = useYear();
 
-		{
-			rel: 'stylesheet',
-			href: 'https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css',
-		},
-	],
+useHead({
 	meta: [
 		{
 			property: 'og:title',
 			content: CONFIG.seo.ogTitle,
 		},
-		{
-			property: 'og:url',
-			content: CONFIG.url,
-		},
 	],
-	script: [
-		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js' },
-		{ src: 'https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js' },
-	],
-	title: CONFIG.seo.pageTitle,
+	title: () =>
+		[year.value, CONFIG.seo.pageTitle, CONFIG.seo.siteName].filter(Boolean).join(' | '),
 });
 </script>
 
 <template>
 	<DefaultLayout>
-		<h1>ÉVES NÉZET</h1>
+		<template
+			v-for="mod in MODULES_ORDER"
+			:key="mod"
+		>
+			<PublicationSection v-if="mod === 'pub' && CONFIG.modules.pub" />
+			<Inex
+				v-else-if="mod === 'inex' && CONFIG.modules.inex"
+				class="bg-light"
+			/>
+			<VisualizationSection
+				v-else-if="mod === 'income' && CONFIG.modules.income"
+				id="income"
+				side="income"
+				:text="CONFIG.vis.incomeText"
+				:title="CONFIG.vis.income"
+			/>
+			<VisualizationSection
+				v-else-if="mod === 'expense'"
+				id="expense"
+				class="bg-light"
+				side="expense"
+				:text="CONFIG.vis.expenseText"
+				:title="CONFIG.vis.expense"
+			/>
+			<MilestoneSection
+				v-else-if="mod === 'milestones' && canShowMilestones"
+				id="milestones"
+				class="pb-0"
+			/>
+			<FeedbackSection v-else-if="mod === 'feedback' && CONFIG.modules.feedback" />
+		</template>
 	</DefaultLayout>
 </template>
