@@ -2,6 +2,8 @@
 
 <template>
 	<DefaultLayout>
-		<h1>ÖSSZESÍTÉS</h1>
+		<MastHead />
+		<Welcome />
+		<!-- FIXME tutorial in Welcome needs year view -->
 	</DefaultLayout>
 </template>

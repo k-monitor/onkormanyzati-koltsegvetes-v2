@@ -29,20 +29,6 @@ const hasTimeSeriesExpense = computed(() => {
 	return yearsWithData.length > 1;
 });
 
-// Default module order
-const DEFAULT_ORDER =
-	'pub,inex,income,expense,timeseries-income,timeseries-expense,milestones,map,feedback';
-// TODO move this into data.ts, and while at it, read it from default-config.json to reduce redundancy and ease maintenance
-
-// Ordered list of modules to render
-const orderedModules = computed(() => {
-	const orderStr = CONFIG.modules?.order || DEFAULT_ORDER;
-	return orderStr
-		.split(',')
-		.map((m: string) => m.trim())
-		.filter(Boolean);
-});
-
 // Translate section slug to element ID
 function translateSection(section: string): string {
 	return sectionToElementId[section] || section;
@@ -98,11 +84,10 @@ onMounted(() => {
 	<div :class="'theme-' + slugify(year)">
 		<NavBar />
 		<SearchModal />
-		<MastHead />
 		<div class="flex-grow-1">
-			<Welcome />
+			<slot />
 			<template
-				v-for="mod in orderedModules"
+				v-for="mod in MODULES_ORDER"
 				:key="mod"
 			>
 				<PublicationSection v-if="mod === 'pub' && CONFIG.modules.pub" />
@@ -163,7 +148,6 @@ onMounted(() => {
 				/>
 				<FeedbackSection v-else-if="mod === 'feedback' && CONFIG.modules.feedback" />
 			</template>
-			<slot />
 		</div>
 		<Footer />
 		<Social v-if="CONFIG.modules.social" />
