@@ -56,9 +56,9 @@ onUnmounted(() => {
 			class="navbar navbar-expand-lg navbar-light fixed-top py-3"
 		>
 			<div class="container">
-				<a
+				<NuxtLink
 					class="navbar-brand js-scroll-trigger"
-					:href="`#${slugify(year)}/`"
+					:to="`/#${slugify(year)}/`"
 					@click="scrollToTop()"
 				>
 					<img
@@ -69,7 +69,7 @@ onUnmounted(() => {
 						alt=""
 					/>
 					{{ CONFIG.city }}
-				</a>
+				</NuxtLink>
 				<ul
 					v-if="!subpageMode"
 					class="d-lg-none navbar-nav ml-auto my-2 my-lg-0 align-items-center"
@@ -105,6 +105,13 @@ onUnmounted(() => {
 								<i class="fas fa-search" />
 								<span class="sr-only">Keresés</span>
 							</a>
+						</li>
+						<li class="nav-item">
+							<NuxtLink
+								:to="`/osszesites/`"
+								class="nav-link js-scroll-trigger"
+								>Összesítés</NuxtLink
+							>
 						</li>
 						<li class="nav-item">
 							<a

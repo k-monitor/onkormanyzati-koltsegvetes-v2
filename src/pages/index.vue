@@ -30,5 +30,7 @@ useHead({
 </script>
 
 <template>
-	<DefaultLayout />
+	<DefaultLayout>
+		<h1>ÉVES NÉZET</h1>
+	</DefaultLayout>
 </template>
