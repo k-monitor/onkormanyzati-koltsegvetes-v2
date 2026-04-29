@@ -25,10 +25,6 @@
 	"city": "Mintaváros",
 	"navBar": {
 		"showBanner": 1,
-		"welcome": "Köszöntő",
-		"inex": "Költségvetés",
-		"milestones": "Fejlesztések",
-		"map": "Térkép",
 		"moreInfo": "A projektről",
 		"bannerText": "Megcsinálnád településednek? [Telepítsd a keretrendszert!](http://github.com/k-monitor/onkormanyzati-koltsegvetes-v2)"
 	},
