@@ -26,7 +26,13 @@ export default () => {
 	};
 
 	// Sections that should highlight the költségvetés nav item
-	const budgetSections = ['inex', 'income', 'expense', 'time-series-income', 'time-series-expense'];
+	const budgetSections = [
+		'inex',
+		'income',
+		'expense',
+		'time-series-income',
+		'time-series-expense',
+	];
 
 	// Track the current active section to avoid unnecessary URL updates
 	let currentActiveSection: string | null = null;
@@ -71,28 +77,6 @@ export default () => {
 		return null;
 	}
 
-	function updateActiveNavLink(activeSection: string | null) {
-		document.querySelectorAll('#mainNav .nav-link').forEach((link) => {
-			link.classList.remove('active');
-			const href = link.getAttribute('href');
-			if (href && activeSection) {
-				// Extract section from href (e.g., #2024/koszonto -> koszonto)
-				const match = href.match(/^#[\w-]+\/(.+)$/);
-				if (match) {
-					const sectionSlug = match[1];
-					const elementId = sectionToElementId[sectionSlug];
-					// For budget sections (inex, income, expense), highlight the merleg/bevetel/kiadas nav item
-					const isBudgetNavItem =
-						sectionSlug === 'merleg' || sectionSlug === 'bevetel' || sectionSlug === 'kiadas';
-					const isActiveBudgetSection = budgetSections.includes(activeSection);
-					if ((isBudgetNavItem && isActiveBudgetSection) || elementId === activeSection) {
-						link.classList.add('active');
-					}
-				}
-			}
-		});
-	}
-
 	function updateUrlForSection(activeSection: string | null) {
 		if (!activeSection || isNavigationScroll) return;
 
@@ -115,9 +99,6 @@ export default () => {
 
 	function onScroll() {
 		const activeSection = getActiveSection();
-
-		// Update nav link highlighting
-		updateActiveNavLink(activeSection);
 
 		// Update URL if section changed
 		if (activeSection !== currentActiveSection) {
