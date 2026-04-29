@@ -24,17 +24,19 @@ const budgetTotal = computed(() => {
 
 <template>
 	<div
+		v-if="!mapModal"
 		class="milestone d-flex flex-column align-items-end w-100"
 		data-toggle="modal"
-		:data-target="'#' + modalId(milestone.id, mapModal )"
-		v-if="!mapModal"
+		:data-target="'#' + modalId(milestone.id, mapModal)"
 	>
 		<div class="embed-responsive embed-responsive-16by9">
 			<div
 				class="embed-responsive-item milestone-picture"
 				:class="{ overlay: milestone.overlay }"
-				:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
-			></div>
+				:style="{
+					backgroundImage: 'url(../' + milestone.picture + ')',
+				}"
+			/>
 			<span
 				v-if="budgetTotal"
 				class="milestone-amount bg-primary text-white font-weight-bold px-2 py-1"
@@ -46,17 +48,17 @@ const budgetTotal = computed(() => {
 		</h5>
 	</div>
 	<div
-		class="modal fade"
 		:id="modalId(milestone.id, mapModal)"
+		class="modal fade"
 		role="dialog"
 		tabindex="-1"
 	>
 		<MilestoneModalContent
 			:milestone="milestone"
-			:modalId="modalId(milestone.id, mapModal)"
-			:nextModalId="modalId(nextId, mapModal)"
-			:prevModalId="modalId(prevId, mapModal)"
-			:mapModal="mapModal"
+			:modal-id="modalId(milestone.id, mapModal)"
+			:next-modal-id="modalId(nextId, mapModal)"
+			:prev-modal-id="modalId(prevId, mapModal)"
+			:map-modal="mapModal"
 		/>
 	</div>
 </template>
