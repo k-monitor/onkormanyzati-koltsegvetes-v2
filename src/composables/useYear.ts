@@ -1,6 +1,6 @@
 import eventBus from '~/utils/eventBus';
 
-export default () => {
+export default createGlobalState(() => {
 	const year = useState('year', () => '' + CONFIG.defaultYear);
 	const initialized = useState('yearInitialized', () => false);
 
@@ -17,7 +17,11 @@ export default () => {
 		return null;
 	}
 
-	function parseHash(): { year: string | null; section: string | null; milestoneId: string | null } {
+	function parseHash(): {
+		year: string | null;
+		section: string | null;
+		milestoneId: string | null;
+	} {
 		if (typeof window === 'undefined') return { year: null, section: null, milestoneId: null };
 		const hash = window.location.hash.slice(1);
 		if (!hash) return { year: null, section: null, milestoneId: null };
@@ -51,8 +55,13 @@ export default () => {
 		return { year: null, section: null, milestoneId: null };
 	}
 
-	function updateHash(newYear: string, section: string | null = null, milestoneId: string | null = null) {
+	function updateHash(
+		newYear: string,
+		section: string | null = null,
+		milestoneId: string | null = null,
+	) {
 		if (typeof window === 'undefined') return;
+		console.log('Updating hash with', { newYear, section, milestoneId });
 		let newHash = y2s(newYear);
 		if (section) {
 			newHash = `${newHash}/${section}`;
@@ -74,22 +83,22 @@ export default () => {
 		}
 	}
 
-	function handleMilestoneOpened(milestoneId: string, isMap=false) {
+	function handleMilestoneOpened(milestoneId: string, isMap = false) {
 		updateHash(year.value, isMap ? 'terkep' : 'fejlesztesek', milestoneId);
 	}
 
-	function handleMilestoneClosed(isMap=false) {
+	function handleMilestoneClosed(isMap = false) {
 		updateHash(year.value, isMap ? 'terkep' : 'fejlesztesek');
 	}
 
 	function translateSection(section: string): string {
 		const translations: Record<string, string> = {
-			'fejlesztesek': 'milestones',
-			'kiadas': 'expense',
-			'bevetel': 'income',
-			'koszonto': 'welcome',
-			'merleg': 'inex',
-			'terkep': 'map',
+			fejlesztesek: 'milestones',
+			kiadas: 'expense',
+			bevetel: 'income',
+			koszonto: 'welcome',
+			merleg: 'inex',
+			terkep: 'map',
 		};
 		return translations[section] || section;
 	}
@@ -165,4 +174,4 @@ export default () => {
 		canShowMilestones,
 		canShowMap,
 	};
-};
+});
