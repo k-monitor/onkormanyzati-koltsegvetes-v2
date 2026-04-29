@@ -26,7 +26,7 @@ export default () => {
 			pos,
 			onlyOnMap,
 		} = row;
-		const nodeIds = (nodeId || '')
+		const nodeIds = String(nodeId || '')
 			.split(',')
 			.map((id) => id.trim())
 			.filter((id) => id.length);
