@@ -46,7 +46,6 @@ useHead({
 				id="milestones"
 				class="pb-0"
 			/>
-			<FeedbackSection v-else-if="mod === 'feedback' && CONFIG.modules.feedback" />
 		</template>
 	</DefaultLayout>
 </template>
