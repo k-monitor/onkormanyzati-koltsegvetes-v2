@@ -5,8 +5,13 @@ const { subpageMode } = defineProps<{
 }>();
 // FIXME rename subpage mode into "globalView"
 
+const route = useRoute();
 const isBannerVisible = ref(true);
 const less = ref(true);
+
+const showBanner = computed(
+	() => isBannerVisible.value && CONFIG.navBar.showBanner && route.path === '/',
+);
 
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 
@@ -177,7 +182,7 @@ onUnmounted(() => {
 			</div>
 		</nav>
 		<div
-			v-if="isBannerVisible && CONFIG.navBar.showBanner"
+			v-if="showBanner"
 			id="banner"
 			class="bg-primary"
 		>
