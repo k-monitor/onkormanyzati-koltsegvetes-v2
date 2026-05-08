@@ -49,7 +49,6 @@ const hasTimeSeriesExpense = computed(() => {
 	});
 	return yearsWithData.length > 1;
 });
-
 </script>
 
 <template>
@@ -92,7 +91,6 @@ const hasTimeSeriesExpense = computed(() => {
 				id="map"
 				class="bg-light"
 			/>
-			<!-- FIXME map should display pins from all years-->
 			<FeedbackSection v-else-if="mod === 'feedback' && CONFIG.modules.feedback" />
 		</template>
 	</DefaultLayout>

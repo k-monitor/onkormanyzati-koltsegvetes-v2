@@ -18,7 +18,7 @@ let pendingMilestoneId: string | null = null; // Store milestone ID to open afte
 // Get milestones with positions for current year
 const milestonesWithPosition = computed(() =>
 	Object.entries(MILESTONES)
-		.filter(([, m]) => m.year == year.value && m.position)
+		.filter(([, m]) => /*m.year == year.value &&*/ m.position)
 		.map(([id, m]) => ({ ...m, id }) as MilestoneWithId),
 );
 
@@ -128,7 +128,7 @@ function updateMarkers(L: any) {
 		// Create custom icon
 		const icon = L.divIcon({
 			className: 'milestone-marker',
-			html: `<div class="marker-pin"></div>`,
+			html: `<div class="marker-pin theme-${slugify(String(milestone.year))}"></div>`,
 			iconSize: [30, 42],
 			iconAnchor: [15, 42],
 			popupAnchor: [0, -42],
@@ -197,7 +197,9 @@ watch(year, () => {
 });
 
 function getNextId(index: number): string {
-	return milestonesWithPosition.value[(index + 1) % milestonesWithPosition.value.length]?.id || '';
+	return (
+		milestonesWithPosition.value[(index + 1) % milestonesWithPosition.value.length]?.id || ''
+	);
 }
 
 function getPrevId(index: number): string {
@@ -318,8 +320,8 @@ onUnmounted(() => {
 
 <template>
 	<section
-		class="page-section"
 		id="map"
+		class="page-section"
 	>
 		<div class="container-fluid">
 			<div
@@ -328,9 +330,9 @@ onUnmounted(() => {
 			>
 				<Milestone
 					:milestone="m"
-					:nextId="getNextId(i)"
-					:prevId="getPrevId(i)"
-					:mapModal="true"
+					:next-id="getNextId(i)"
+					:prev-id="getPrevId(i)"
+					:map-modal="true"
 				/>
 			</div>
 
@@ -357,8 +359,16 @@ onUnmounted(() => {
 							<button
 								type="button"
 								class="map-fullscreen-btn"
-								:title="isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'"
-								:aria-label="isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'"
+								:title="
+									isFullscreen
+										? 'Kilépés a teljes képernyőből'
+										: 'Teljes képernyő'
+								"
+								:aria-label="
+									isFullscreen
+										? 'Kilépés a teljes képernyőből'
+										: 'Teljes képernyő'
+								"
 								@click="toggleFullscreen"
 							>
 								<i :class="isFullscreen ? 'fas fa-compress' : 'fas fa-expand'" />
