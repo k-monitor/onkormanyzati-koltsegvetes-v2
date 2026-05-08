@@ -1,5 +1,5 @@
 export default () => {
-	const { year, hashMode, isScrollingToSection } = useYear();
+	const { year, hashMode, isScrollingToSection, isMilestoneOpen } = useYear();
 
 	// Section slug to element ID mapping
 	const sectionToElementId: Record<string, string> = {
@@ -78,7 +78,13 @@ export default () => {
 	}
 
 	function updateUrlForSection(activeSection: string | null) {
-		if (!activeSection || isNavigationScroll || isScrollingToSection.value) return;
+		if (
+			!activeSection ||
+			isNavigationScroll ||
+			isScrollingToSection.value ||
+			isMilestoneOpen.value
+		)
+			return;
 
 		if (hashMode.value === 'none') return;
 

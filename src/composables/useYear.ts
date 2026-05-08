@@ -5,6 +5,7 @@ export default createGlobalState(() => {
 	const initialized = useState('yearInitialized', () => false);
 	const hashMode = useState<'full' | 'no-year' | 'none'>('yearHashMode', () => 'full');
 	const isScrollingToSection = ref(false);
+	const isMilestoneOpen = ref(false);
 
 	function setHashMode(mode: 'full' | 'no-year' | 'none') {
 		hashMode.value = mode;
@@ -30,7 +31,8 @@ export default createGlobalState(() => {
 			isScrollingToSection.value = true;
 			setTimeout(() => {
 				scrollToSection(section, true);
-				if (milestoneId) eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
+				if (milestoneId)
+					eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
 			}, 100);
 			setTimeout(() => {
 				isScrollingToSection.value = false;
@@ -62,7 +64,12 @@ export default createGlobalState(() => {
 
 		if (hashMode.value !== 'full') {
 			const milestoneMatch = hash.match(/^([\w-]+)\/(.+)$/);
-			if (milestoneMatch) return { year: null, section: milestoneMatch[1] ?? null, milestoneId: milestoneMatch[2] ?? null };
+			if (milestoneMatch)
+				return {
+					year: null,
+					section: milestoneMatch[1] ?? null,
+					milestoneId: milestoneMatch[2] ?? null,
+				};
 			return { year: null, section: hash, milestoneId: null };
 		}
 
@@ -134,10 +141,12 @@ export default createGlobalState(() => {
 	}
 
 	function handleMilestoneOpened(milestoneId: string, isMap = false) {
+		isMilestoneOpen.value = true;
 		updateHash(year.value, isMap ? 'terkep' : 'fejlesztesek', milestoneId);
 	}
 
 	function handleMilestoneClosed(isMap = false) {
+		isMilestoneOpen.value = false;
 		updateHash(year.value, isMap ? 'terkep' : 'fejlesztesek');
 	}
 
@@ -189,7 +198,8 @@ export default createGlobalState(() => {
 				isScrollingToSection.value = true;
 				setTimeout(() => {
 					scrollToSection(section, true);
-					if (milestoneId) eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
+					if (milestoneId)
+						eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
 				}, 100);
 				setTimeout(() => {
 					isScrollingToSection.value = false;
@@ -222,6 +232,7 @@ export default createGlobalState(() => {
 		year: readonly(year),
 		hashMode: readonly(hashMode),
 		isScrollingToSection: readonly(isScrollingToSection),
+		isMilestoneOpen: readonly(isMilestoneOpen),
 		setHashMode,
 		getInitialHashYear,
 		reinitializeFromHash,

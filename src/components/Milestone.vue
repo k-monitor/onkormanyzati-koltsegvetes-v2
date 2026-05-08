@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import search from '../utils/search';
 
+const { handleMilestoneOpened, handleMilestoneClosed } = useYear();
+
 const props = defineProps<{
 	milestone: MilestoneWithId;
 	nextId: string;
@@ -11,6 +13,22 @@ const props = defineProps<{
 function modalId(milestoneId: string, mapModal: boolean = false): string {
 	return 'milestone-modal-' + (mapModal ? 'map-' : '') + milestoneId;
 }
+
+onMounted(() => {
+	const $ = window.$;
+	const $modal = $(`#${modalId(props.milestone.id, props.mapModal || false)}`);
+	$modal.on('show.bs.modal', () => handleMilestoneOpened(props.milestone.id, props.mapModal || false));
+	$modal.on('hide.bs.modal', () => handleMilestoneClosed(props.mapModal || false));
+});
+
+onUnmounted(() => {
+	const $ = window.$;
+	if ($) {
+		const $modal = $(`#${modalId(props.milestone.id, props.mapModal || false)}`);
+		$modal.off('show.bs.modal');
+		$modal.off('hide.bs.modal');
+	}
+});
 
 const budgetTotal = computed(() => {
 	let sum = 0;
@@ -28,6 +46,7 @@ const budgetTotal = computed(() => {
 		class="milestone d-flex flex-column align-items-end w-100"
 		data-toggle="modal"
 		:data-target="'#' + modalId(milestone.id, mapModal)"
+		@click="handleMilestoneOpened(milestone.id)"
 	>
 		<div class="embed-responsive embed-responsive-16by9">
 			<div
