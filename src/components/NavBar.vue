@@ -8,7 +8,6 @@ const { subpageMode } = defineProps<{
 const isBannerVisible = ref(true);
 const less = ref(true);
 
-const { year } = useYear();
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 
 function scrollToTop() {
@@ -60,7 +59,7 @@ onUnmounted(() => {
 			<div class="container">
 				<NuxtLink
 					class="navbar-brand js-scroll-trigger"
-					:to="`/#${slugify(year)}/`"
+					to="/"
 					@click="scrollToTop()"
 				>
 					<img
