@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { canShowMilestones, year } = useYear();
+const { canShowMilestones, year, setHashMode, reinitializeFromHash } = useYear();
+setHashMode('full');
+onMounted(() => reinitializeFromHash());
 
 useHead({
 	meta: [

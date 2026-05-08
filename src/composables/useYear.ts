@@ -3,6 +3,40 @@ import eventBus from '~/utils/eventBus';
 export default createGlobalState(() => {
 	const year = useState('year', () => '' + CONFIG.defaultYear);
 	const initialized = useState('yearInitialized', () => false);
+	const hashMode = useState<'full' | 'no-year' | 'none'>('yearHashMode', () => 'full');
+	const isScrollingToSection = ref(false);
+
+	function setHashMode(mode: 'full' | 'no-year' | 'none') {
+		hashMode.value = mode;
+	}
+
+	function getInitialHashYear(): string | null {
+		if (typeof window === 'undefined') return null;
+		const hash = window.location.hash.slice(1);
+		if (!hash) return null;
+		return s2y(hash.split('/')[0] ?? '');
+	}
+
+	function clearHashFromUrl() {
+		const url = window.location.pathname + window.location.search;
+		if (window.location.hash) window.history.replaceState(null, '', url);
+	}
+
+	function reinitializeFromHash() {
+		const { year: hashYear, section, milestoneId } = parseHash();
+		if (hashYear) year.value = hashYear;
+		updateHash(year.value, section, milestoneId);
+		if (section) {
+			isScrollingToSection.value = true;
+			setTimeout(() => {
+				scrollToSection(section, true);
+				if (milestoneId) eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
+			}, 100);
+			setTimeout(() => {
+				isScrollingToSection.value = false;
+			}, 600);
+		}
+	}
 
 	function y2s(year: string): string {
 		return slugify(year);
@@ -25,6 +59,12 @@ export default createGlobalState(() => {
 		if (typeof window === 'undefined') return { year: null, section: null, milestoneId: null };
 		const hash = window.location.hash.slice(1);
 		if (!hash) return { year: null, section: null, milestoneId: null };
+
+		if (hashMode.value !== 'full') {
+			const milestoneMatch = hash.match(/^([\w-]+)\/(.+)$/);
+			if (milestoneMatch) return { year: null, section: milestoneMatch[1] ?? null, milestoneId: milestoneMatch[2] ?? null };
+			return { year: null, section: hash, milestoneId: null };
+		}
 
 		// Check if hash is year-section-milestoneId format (e.g., #2024-kozponti/fejlesztesek/m1)
 		const milestoneMatch = hash.match(/^([\w-]+)\/([\w-]+)\/(.+)$/);
@@ -61,7 +101,17 @@ export default createGlobalState(() => {
 		milestoneId: string | null = null,
 	) {
 		if (typeof window === 'undefined') return;
-		console.log('Updating hash with', { newYear, section, milestoneId });
+		if (hashMode.value === 'none' || (hashMode.value === 'no-year' && !section)) {
+			clearHashFromUrl();
+			return;
+		}
+		if (hashMode.value === 'no-year') {
+			let newHash = section!;
+			if (milestoneId) newHash += `/${milestoneId}`;
+			if (window.location.hash.slice(1) !== newHash)
+				window.history.replaceState(null, '', `#${newHash}`);
+			return;
+		}
 		let newHash = y2s(newYear);
 		if (section) {
 			newHash = `${newHash}/${section}`;
@@ -136,12 +186,14 @@ export default createGlobalState(() => {
 			}
 			updateHash(year.value, section, milestoneId);
 			if (section) {
+				isScrollingToSection.value = true;
 				setTimeout(() => {
 					scrollToSection(section, true);
-					if (milestoneId) {
-						eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
-					}
+					if (milestoneId) eventBus.emit(section === 'terkep' ? 'jump_map' : 'ms', milestoneId);
 				}, 100);
+				setTimeout(() => {
+					isScrollingToSection.value = false;
+				}, 600);
 			}
 			initialized.value = true;
 		}
@@ -168,6 +220,11 @@ export default createGlobalState(() => {
 
 	return {
 		year: readonly(year),
+		hashMode: readonly(hashMode),
+		isScrollingToSection: readonly(isScrollingToSection),
+		setHashMode,
+		getInitialHashYear,
+		reinitializeFromHash,
 		handleYearSelected,
 		handleMilestoneOpened,
 		handleMilestoneClosed,

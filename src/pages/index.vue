@@ -1,4 +1,18 @@
 <script setup lang="ts">
+const router = useRouter();
+const { canShowMap, setHashMode, getInitialHashYear } = useYear();
+
+setHashMode('no-year');
+
+const initialHashYear = getInitialHashYear();
+const initialHash = typeof window !== 'undefined' ? window.location.hash : '';
+
+onMounted(() => {
+	if (initialHashYear) {
+		router.push('/ev' + initialHash);
+	}
+});
+
 useHead({
 	meta: [
 		{
@@ -36,7 +50,6 @@ const hasTimeSeriesExpense = computed(() => {
 	return yearsWithData.length > 1;
 });
 
-const { canShowMap } = useYear();
 </script>
 
 <template>
