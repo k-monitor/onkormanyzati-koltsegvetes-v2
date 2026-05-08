@@ -141,10 +141,10 @@ onUnmounted(() => {
 							v-if="CONFIG.iframe.title && CONFIG.iframe.url"
 							class="nav-item"
 						>
-							<a
-								:href="`/${slugify(CONFIG.iframe.title).toLowerCase()}`"
+							<NuxtLink
+								:to="`/${slugify(CONFIG.iframe.title).toLowerCase()}`"
 								class="nav-link"
-								>{{ CONFIG.iframe.title }}</a
+								>{{ CONFIG.iframe.title }}</NuxtLink
 							>
 						</li>
 						<li
@@ -166,12 +166,12 @@ onUnmounted(() => {
 						class="navbar-nav ml-auto my-2 my-lg-0"
 					>
 						<li class="nav-item">
-							<a
+							<NuxtLink
 								class="nav-link"
-								href="/"
+								to="/"
 							>
 								Vissza a költségetésre
-							</a>
+							</NuxtLink>
 						</li>
 					</ul>
 				</div>
