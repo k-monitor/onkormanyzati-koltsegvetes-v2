@@ -3,7 +3,6 @@ const { subpageMode } = defineProps<{
 	showYearSelector?: boolean;
 	subpageMode?: boolean;
 }>();
-// FIXME rename subpage mode into "globalView"
 
 const route = useRoute();
 const isBannerVisible = ref(true);
