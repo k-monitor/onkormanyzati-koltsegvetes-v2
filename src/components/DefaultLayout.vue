@@ -86,10 +86,14 @@ onMounted(() => {
 		$(this).blur();
 	});
 });
+
+const themeClass = computed(
+	() => 'theme-' + slugify(route.path === '/' ? String(CONFIG.defaultYear) : year.value),
+);
 </script>
 
 <template>
-	<div :class="'theme-' + slugify(year)">
+	<div :class="themeClass">
 		<NavBar :show-year-selector="showYearSelector" />
 		<SearchModal />
 		<div class="flex-grow-1">
