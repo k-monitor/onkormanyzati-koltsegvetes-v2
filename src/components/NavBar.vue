@@ -123,7 +123,7 @@ onUnmounted(() => {
 						>
 							<NuxtLink
 								class="nav-link js-scroll-trigger"
-								to="/ev/"
+								to="/ev"
 								>Éves nézet</NuxtLink
 							>
 						</li>
