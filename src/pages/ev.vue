@@ -1,7 +1,19 @@
 <script setup lang="ts">
 const { canShowMilestones, year, setHashMode, reinitializeFromHash } = useYear();
 setHashMode('full');
-onMounted(() => reinitializeFromHash());
+onMounted(() => {
+	reinitializeFromHash();
+	const { pendingBudgetJump } = usePendingBudgetJump();
+	const pending = pendingBudgetJump.value;
+	if (pending) {
+		pendingBudgetJump.value = null;
+		const $ = window.$;
+		setTimeout(() => {
+			scrollToElement($('#' + pending.side), 72);
+			setTimeout(() => eventBus.emit('jump', pending), 1000);
+		}, 500);
+	}
+});
 
 useHead({
 	meta: [

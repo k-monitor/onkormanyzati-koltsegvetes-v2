@@ -48,10 +48,17 @@ function jumpBudget(result) {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
-	// based on SearchModalContent.vue#jump
 	$('.modal').modal('hide');
 	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
 
+	if (mapModal) {
+		const { pendingBudgetJump } = usePendingBudgetJump();
+		pendingBudgetJump.value = result;
+		router.push('/ev#' + slugify(String(milestone.year)));
+		return;
+	}
+
+	// based on SearchModalContent.vue#jump
 	scrollToElement($('#' + result.side), 72);
 	setTimeout(function () {
 		eventBus.emit('jump', result);
