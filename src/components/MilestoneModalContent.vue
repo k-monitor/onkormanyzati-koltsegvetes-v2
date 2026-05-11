@@ -58,13 +58,13 @@ function jumpBudget(result) {
 	}, 1000);
 }
 
-function jumpMap(result) {
+function jumpMap(milestoneId: string) {
 	// TODO LATER search result type
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
 	$('.modal').modal('hide');
-	router.push('/#terkep/' + result);
+	router.push('/#terkep/' + milestoneId);
 }
 
 function handleMarkdownClick(event: MouseEvent) {
