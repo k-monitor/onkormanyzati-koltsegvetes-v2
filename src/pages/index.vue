@@ -1,11 +1,15 @@
 <script setup lang="ts">
 const router = useRouter();
-const { canShowMap, setHashMode, getInitialHashYear } = useYear();
+const { setHashMode, getInitialHashYear } = useYear();
 
 setHashMode('no-year');
 
 const initialHashYear = getInitialHashYear();
 const initialHash = typeof window !== 'undefined' ? window.location.hash : '';
+
+const canShowMap = computed(() => {
+	return CONFIG.modules.map && Object.values(MILESTONES).some((m) => m.position);
+});
 
 onMounted(() => {
 	if (initialHashYear) {

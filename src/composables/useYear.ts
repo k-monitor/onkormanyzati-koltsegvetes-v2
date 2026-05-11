@@ -221,13 +221,6 @@ export default createGlobalState(() => {
 		);
 	});
 
-	const canShowMap = computed(() => {
-		return (
-			CONFIG.modules.map &&
-			Object.values(MILESTONES).filter((m) => m.year == year.value && m.position).length > 0
-		);
-	});
-
 	return {
 		year: readonly(year),
 		hashMode: readonly(hashMode),
@@ -240,6 +233,5 @@ export default createGlobalState(() => {
 		handleMilestoneOpened,
 		handleMilestoneClosed,
 		canShowMilestones,
-		canShowMap,
 	};
 });
