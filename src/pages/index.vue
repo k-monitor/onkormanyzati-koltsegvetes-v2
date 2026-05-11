@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const router = useRouter();
-const { setHashMode, getInitialHashYear } = useYear();
+const { setHashMode, getInitialHashYear, reinitializeFromHash } = useYear();
 
 setHashMode('no-year');
 
@@ -14,6 +14,8 @@ const canShowMap = computed(() => {
 onMounted(() => {
 	if (initialHashYear) {
 		router.push('/ev' + initialHash);
+	} else if (initialHash) {
+		reinitializeFromHash();
 	}
 });
 

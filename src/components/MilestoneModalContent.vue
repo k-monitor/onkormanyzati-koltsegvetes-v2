@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import search from '../utils/search';
 
+const router = useRouter();
+
 const { milestone, modalId, nextModalId, prevModalId, mapModal } = defineProps<{
 	milestone: MilestoneWithId;
 	modalId: string;
@@ -61,14 +63,8 @@ function jumpMap(result) {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
-	// based on SearchModalContent.vue#jump
 	$('.modal').modal('hide');
-	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
-
-	scrollToElement($('#map'), 72);
-	setTimeout(function () {
-		eventBus.emit('jump_map', result);
-	}, 1000);
+	router.push('/#terkep/' + result);
 }
 
 function handleMarkdownClick(event: MouseEvent) {
