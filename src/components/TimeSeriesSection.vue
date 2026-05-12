@@ -5,6 +5,7 @@ const props = defineProps<{
 	text?: string;
 	funcEnabled?: boolean;
 	econEnabled?: boolean;
+	embedded?: boolean;
 }>();
 
 // Default both to true if not provided
@@ -27,20 +28,33 @@ const yearsRange = computed(() => {
 
 // Check if functional data is available (and enabled by config)
 const hasFuncData = computed(() => {
-	return isFuncEnabled.value && years.value.some((year) => (DATA[year]?.expense?.func && props.side === 'expense') || (DATA[year]?.income?.func && props.side === 'income'));
+	return (
+		isFuncEnabled.value &&
+		years.value.some(
+			(year) =>
+				(DATA[year]?.expense?.func && props.side === 'expense') ||
+				(DATA[year]?.income?.func && props.side === 'income')
+		)
+	);
 });
 
 // Check if economic data is available (and enabled by config)
 const hasEconData = computed(() => {
-	return isEconEnabled.value && years.value.some((year) => (DATA[year]?.expense?.econ && props.side === 'expense') || (DATA[year]?.income?.econ && props.side === 'income'));
+	return (
+		isEconEnabled.value &&
+		years.value.some(
+			(year) =>
+				(DATA[year]?.expense?.econ && props.side === 'expense') ||
+				(DATA[year]?.income?.econ && props.side === 'income')
+		)
+	);
 });
 
 const activeView = ref<'func' | 'econ'>(hasFuncData.value ? 'func' : 'econ');
-
 </script>
 
 <template>
-	<section class="page-section">
+	<section class="page-section" :class="{ 'is-embedded': embedded }">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-10 text-center">
@@ -88,20 +102,26 @@ const activeView = ref<'func' | 'econ'>(hasFuncData.value ? 'func' : 'econ');
 
 			<div class="row justify-content-center">
 				<div class="col-lg-10">
-					<TimeSeries :side="side" :view="activeView" />
+					<TimeSeries :side="side" :view="activeView" :embedded="embedded" />
 				</div>
 			</div>
-			<div
-				class="row justify-content-center mt-5"
-				v-if="text"
-			>
+			<div class="row justify-content-center mt-5" v-if="text">
 				<div class="col-lg-8 text-center">
-					<VueMarkdown
-						:source="text"
-						:anchorAttributes="{ target: '_blank' }"
-					/>
+					<VueMarkdown :source="text" :anchorAttributes="{ target: '_blank' }" />
 				</div>
 			</div>
 		</div>
 	</section>
 </template>
+
+<style lang="scss" scoped>
+.page-section.is-embedded {
+	padding: 0rem 0;
+
+	@media (max-width: 1000px) {
+		.container {
+			max-width: none;
+		}
+	}
+}
+</style>
