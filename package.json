@@ -44,5 +44,12 @@
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
 		"xlsx": "^0.14.3"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"@parcel/watcher",
+			"esbuild",
+			"unrs-resolver"
+		]
 	}
 }
