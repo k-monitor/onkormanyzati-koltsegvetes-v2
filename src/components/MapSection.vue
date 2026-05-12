@@ -19,14 +19,16 @@ let pendingMilestoneId: string | null = null; // Store milestone ID to open afte
 const milestonesWithPosition = computed(() =>
 	Object.entries(MILESTONES)
 		.filter(([, m]) => /*m.year == year.value &&*/ m.position)
-		.map(([id, m]) => ({ ...m, id }) as MilestoneWithId),
+		.map(([id, m]) => ({ ...m, id } as MilestoneWithId))
 );
 
 // Default map center and zoom (can be overridden via config)
 // center format: "lat, lng" e.g. "47.4979, 19.0402"
 const DEFAULT_CENTER: [number, number] = (() => {
 	if (CONFIG.map?.center) {
-		const [lat, lng] = CONFIG.map.center.split(',').map((s: string) => parseFloat(s.trim()));
+		const [lat, lng] = CONFIG.map.center
+			.split(',')
+			.map((s: string) => parseFloat(s.trim()));
 		if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
 	}
 	return [47.4979, 19.0402];
@@ -56,18 +58,27 @@ function openMarkerPopup(milestoneId: string) {
 	if (marker && mapInstance.value) {
 		// Close any existing popup first
 		mapInstance.value.closePopup();
-		// Pan to marker (smoother than setView) and open popup
-		const latLng = marker.getLatLng();
-		mapInstance.value.panTo(latLng);
-		marker.openPopup();
+		// If marker is inside a cluster, zoom to it first so the popup is reachable
+		const layer = markersLayer.value;
+		if (layer && typeof layer.zoomToShowLayer === 'function') {
+			layer.zoomToShowLayer(marker, () => {
+				marker.openPopup();
+			});
+		} else {
+			// Pan to marker (smoother than setView) and open popup
+			mapInstance.value.panTo(marker.getLatLng());
+			marker.openPopup();
+		}
 	}
 }
 
 function initMap() {
 	if (typeof window === 'undefined' || !mapContainer.value) return;
 
-	// Dynamic import of Leaflet
-	import('leaflet').then((L) => {
+	// Dynamic import of Leaflet, then markercluster plugin (which requires window.L)
+	import('leaflet').then(async (L) => {
+		(window as any).L = L.default;
+		await import('leaflet.markercluster');
 		// Check if component was unmounted during async import
 		if (isUnmounted || !mapContainer.value) return;
 
@@ -92,8 +103,37 @@ function initMap() {
 			})
 			.addTo(mapInstance.value);
 
-		// Create markers layer
-		markersLayer.value = L.default.layerGroup().addTo(mapInstance.value);
+		// Create clustered markers layer
+		markersLayer.value = (L.default as any)
+			.markerClusterGroup({
+				showCoverageOnHover: false,
+				spiderfyOnMaxZoom: true,
+				maxClusterRadius: 10,
+				// Disable animations to avoid a race in which a marker tries to
+				// animate after its parent layer has been cleared (this._map = null).
+				animate: false,
+				animateAddingMarkers: false,
+				iconCreateFunction: (cluster: any) => {
+					const counts: Record<string, number> = {};
+					for (const m of cluster.getAllChildMarkers()) {
+						const y = m.options.milestoneYear;
+						if (!y) continue;
+						counts[y] = (counts[y] || 0) + 1;
+					}
+					const dominantYear =
+						Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
+					const color =
+						(CONFIG.theme as Record<string, string> | undefined)?.[dominantYear] ??
+						'#3388ff';
+					const count = cluster.getChildCount();
+					return L.default.divIcon({
+						className: 'milestone-cluster',
+						html: `<div class="milestone-cluster-inner" style="background:${color}"><span>${count}</span></div>`,
+						iconSize: [40, 40],
+					});
+				},
+			})
+			.addTo(mapInstance.value);
 
 		// Add markers
 		updateMarkers(L.default);
@@ -134,15 +174,22 @@ function updateMarkers(L: any) {
 			popupAnchor: [0, -42],
 		});
 
-		// Create marker
-		const marker = L.marker([lat, lng], { icon });
+		// Create marker — tag with year so cluster icon can pick a dominant color
+		const marker = L.marker([lat, lng], {
+			icon,
+			milestoneYear: slugify(String(milestone.year)),
+		});
 
 		// Create popup content
 		const popupContent = `
 			<div class="milestone-popup">
-				<div class="milestone-popup-image" style="background-image: url('${assetPrefix || ''}${milestone.picture}')"></div>
+				<div class="milestone-popup-image" style="background-image: url('${assetPrefix || ''}${
+			milestone.picture
+		}')"></div>
 				<h5 class="milestone-popup-title">${milestone.title}</h5>
-				<button class="btn btn-sm btn-primary milestone-popup-btn" data-milestone-id="${milestone.id}">
+				<button class="btn btn-sm btn-primary milestone-popup-btn" data-milestone-id="${
+					milestone.id
+				}">
 					<i class="far fa-hand-point-right mr-1"></i>
 					Részletek
 				</button>
@@ -157,7 +204,7 @@ function updateMarkers(L: any) {
 		// Handle popup open to bind click event
 		marker.on('popupopen', () => {
 			const btn = document.querySelector(
-				`.milestone-popup-btn[data-milestone-id="${milestone.id}"]`,
+				`.milestone-popup-btn[data-milestone-id="${milestone.id}"]`
 			);
 			if (btn) {
 				btn.addEventListener('click', () => {
@@ -198,7 +245,8 @@ watch(year, () => {
 
 function getNextId(index: number): string {
 	return (
-		milestonesWithPosition.value[(index + 1) % milestonesWithPosition.value.length]?.id || ''
+		milestonesWithPosition.value[(index + 1) % milestonesWithPosition.value.length]?.id ||
+		''
 	);
 }
 
@@ -319,15 +367,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<section
-		id="map"
-		class="page-section"
-	>
+	<section id="map" class="page-section">
 		<div class="container-fluid">
-			<div
-				v-for="(m, i) in milestonesWithPosition"
-				:key="'mapmodal-' + m.id"
-			>
+			<div v-for="(m, i) in milestonesWithPosition" :key="'mapmodal-' + m.id">
 				<Milestone
 					:milestone="m"
 					:next-id="getNextId(i)"
@@ -348,26 +390,14 @@ onUnmounted(() => {
 			<div class="row">
 				<div class="col">
 					<div class="map-section-container">
-						<div
-							ref="mapWrapper"
-							class="map-wrapper"
-						>
-							<div
-								ref="mapContainer"
-								class="map-container"
-							/>
+						<div ref="mapWrapper" class="map-wrapper">
+							<div ref="mapContainer" class="map-container" />
 							<button
 								type="button"
 								class="map-fullscreen-btn"
-								:title="
-									isFullscreen
-										? 'Kilépés a teljes képernyőből'
-										: 'Teljes képernyő'
-								"
+								:title="isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'"
 								:aria-label="
-									isFullscreen
-										? 'Kilépés a teljes képernyőből'
-										: 'Teljes képernyő'
+									isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'
 								"
 								@click="toggleFullscreen"
 							>
@@ -389,6 +419,8 @@ onUnmounted(() => {
 
 // Import Leaflet CSS
 @import 'leaflet/dist/leaflet.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 .map-section-container {
 	max-width: 1000px;
@@ -468,6 +500,27 @@ onUnmounted(() => {
 	.leaflet-top,
 	.leaflet-bottom {
 		z-index: 2;
+	}
+}
+
+// Custom cluster styles — color comes from the dominant child year (inline)
+.milestone-cluster {
+	background: transparent;
+	border: none;
+
+	.milestone-cluster-inner {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-weight: 700;
+		font-size: 0.9rem;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+		border: 3px solid rgba(255, 255, 255, 0.85);
 	}
 }
 
