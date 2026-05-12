@@ -16,11 +16,59 @@ const markersMap = ref<Map<string, any>>(new Map()); // Store markers by milesto
 let isUnmounted = false; // Track if component is unmounted
 let pendingMilestoneId: string | null = null; // Store milestone ID to open after map init
 
-// Get milestones with positions for current year
-const milestonesWithPosition = computed(() =>
+const theme = (CONFIG.theme as Record<string, string> | undefined) ?? {};
+const FALLBACK_COLOR = '#3388ff';
+
+// All milestones with a position (year-agnostic — filtering happens via legend)
+const allMilestonesWithPosition = computed(() =>
 	Object.entries(MILESTONES)
-		.filter(([, m]) => /*m.year == year.value &&*/ m.position)
+		.filter(([, m]) => m.position)
 		.map(([id, m]) => ({ ...m, id } as MilestoneWithId))
+);
+
+// Years that actually have positioned milestones, sorted
+const legendYears = computed(() => {
+	const years = new Set<string>();
+	for (const m of allMilestonesWithPosition.value) years.add(String(m.year));
+	return Array.from(years).sort();
+});
+
+const selectedYears = ref<Set<string>>(new Set());
+
+watchEffect(() => {
+	// Default: all years selected. Add any newly-discovered years (keeps user toggles intact).
+	if (selectedYears.value.size === 0) {
+		selectedYears.value = new Set(legendYears.value);
+	}
+});
+
+function toggleYear(y: string) {
+	const next = new Set(selectedYears.value);
+	if (next.has(y)) {
+		// Don't allow deselecting the last one — reset to all instead
+		if (next.size === 1) {
+			next.clear();
+			legendYears.value.forEach((ly) => next.add(ly));
+		} else {
+			next.delete(y);
+		}
+	} else {
+		next.add(y);
+	}
+	selectedYears.value = next;
+}
+
+function isYearSelected(y: string): boolean {
+	return selectedYears.value.has(y);
+}
+
+function colorForYear(y: string): string {
+	return theme[y] ?? FALLBACK_COLOR;
+}
+
+// Filtered milestones for current legend selection
+const milestonesWithPosition = computed(() =>
+	allMilestonesWithPosition.value.filter((m) => selectedYears.value.has(String(m.year)))
 );
 
 // Default map center and zoom (can be overridden via config)
@@ -244,6 +292,18 @@ watch(year, () => {
 	}
 });
 
+// Re-render markers when the legend filter changes
+watch(
+	() => Array.from(selectedYears.value).join(','),
+	() => {
+		if (mapInstance.value && !isUnmounted) {
+			import('leaflet').then((L) => {
+				if (!isUnmounted) updateMarkers(L.default);
+			});
+		}
+	}
+);
+
 function getNextId(index: number): string {
 	return (
 		milestonesWithPosition.value[(index + 1) % milestonesWithPosition.value.length]?.id ||
@@ -405,6 +465,29 @@ onUnmounted(() => {
 							>
 								<i :class="isFullscreen ? 'fas fa-compress' : 'fas fa-expand'" />
 							</button>
+							<div
+								v-if="legendYears.length > 1"
+								class="map-legend"
+								role="group"
+								aria-label="Évek szűrése"
+							>
+								<button
+									v-for="y in legendYears"
+									:key="y"
+									type="button"
+									class="map-legend-item"
+									:class="{ 'is-inactive': !isYearSelected(y) }"
+									:aria-pressed="isYearSelected(y)"
+									:title="`${y} – kattintson a szűréshez`"
+									@click="toggleYear(y)"
+								>
+									<span
+										class="map-legend-swatch"
+										:style="{ backgroundColor: colorForYear(y) }"
+									/>
+									<span class="map-legend-label">{{ y }}</span>
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -453,6 +536,69 @@ onUnmounted(() => {
 		width: 100%;
 		height: 100%;
 	}
+}
+
+.map-legend {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	z-index: 999;
+	background: rgba(255, 255, 255, 0.95);
+	border: 2px solid rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+	padding: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	max-width: 160px;
+}
+
+.map-legend-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background: transparent;
+	border: none;
+	padding: 4px 6px;
+	border-radius: 3px;
+	cursor: pointer;
+	font-size: 0.85rem;
+	color: #333;
+	text-align: left;
+	line-height: 1;
+	transition: opacity 0.15s, background-color 0.15s;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.05);
+	}
+
+	&:focus {
+		outline: none;
+		background-color: rgba(0, 0, 0, 0.05);
+	}
+
+	&.is-inactive {
+		opacity: 0.4;
+
+		.map-legend-label {
+			text-decoration: line-through;
+		}
+	}
+}
+
+.map-legend-swatch {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, 0.85);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	flex-shrink: 0;
+}
+
+.map-legend-label {
+	white-space: nowrap;
 }
 
 .map-fullscreen-btn {
