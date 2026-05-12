@@ -1,5 +1,9 @@
 <script setup lang="ts">
-const { title, year } = defineProps<{ title: string; year: string }>();
+const { title, year, hideYear } = defineProps<{
+	title: string;
+	year: string;
+	hideYear?: boolean;
+}>();
 
 const years = computed(() => Object.keys(DATA).sort());
 const index = computed(() => years.value.indexOf(year));
@@ -12,7 +16,10 @@ const { handleYearSelected } = useYear();
 
 <template>
 	<h2>{{ title }}</h2>
-	<div class="d-flex align-items-center justify-content-center text-muted">
+	<div
+		v-if="!hideYear"
+		class="d-flex align-items-center justify-content-center text-muted"
+	>
 		<span
 			v-if="previousYear"
 			class="neighbor-year"

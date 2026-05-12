@@ -96,6 +96,7 @@ const hasTimeSeriesExpense = computed(() => {
 				v-else-if="mod === 'map' && canShowMap"
 				id="map"
 				class="bg-light"
+				:hide-year="true"
 			/>
 			<FeedbackSection v-else-if="mod === 'feedback' && CONFIG.modules.feedback" />
 		</template>

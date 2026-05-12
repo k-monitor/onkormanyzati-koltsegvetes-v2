@@ -1,9 +1,10 @@
 <script setup lang="ts">
 const { year, handleMilestoneOpened, handleMilestoneClosed } = useYear();
 
-const { assetPrefix, detailsHandler } = defineProps<{
+const { assetPrefix, detailsHandler, hideYear } = defineProps<{
 	assetPrefix?: string;
 	detailsHandler?: (milestoneId: string) => void;
+	hideYear?: boolean;
 }>();
 
 const mapContainer = ref<HTMLElement | null>(null);
@@ -383,6 +384,7 @@ onUnmounted(() => {
 					<SectionHeading
 						:title="CONFIG.map?.title || 'Fejlesztések térképen'"
 						:year="year"
+						:hide-year="hideYear"
 					/>
 					<hr class="divider my-4 mb-5" />
 				</div>
