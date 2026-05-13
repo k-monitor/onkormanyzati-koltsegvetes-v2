@@ -96,7 +96,7 @@ const themeClass = computed(
 	<div :class="themeClass">
 		<NavBar :show-year-selector="showYearSelector" />
 		<SearchModal />
-		<div class="flex-grow-1">
+		<div class="flex-grow-1 mt-5">
 			<slot />
 		</div>
 		<Footer />

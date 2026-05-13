@@ -4,13 +4,10 @@ const { subpageMode } = defineProps<{
 	subpageMode?: boolean;
 }>();
 
-const route = useRoute();
 const isBannerVisible = ref(true);
 const less = ref(true);
 
-const showBanner = computed(
-	() => isBannerVisible.value && CONFIG.navBar.showBanner && route.path === '/',
-);
+const showBanner = computed(() => isBannerVisible.value && CONFIG.navBar.showBanner);
 
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 
