@@ -5,6 +5,7 @@ function intro() {
 	// TODO LATER eliminate jQuery
 	const $ = window.$;
 	$('#mainNav').css('position', 'absolute');
+	$('#banner').css('position', 'absolute');
 	$('.milestone-button').addClass('disabled');
 	const intro = window
 		.introJs()
@@ -56,6 +57,7 @@ function intro() {
 		.onexit(function () {
 			$('#navbarResponsive').removeClass('show');
 			$('#mainNav').css('position', 'fixed');
+			$('#banner').css('position', 'fixed');
 			$('.milestone-button').removeClass('disabled');
 		});
 
