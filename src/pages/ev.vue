@@ -29,6 +29,7 @@ useHead({
 
 <template>
 	<DefaultLayout show-year-selector>
+		<Welcome year-specific />
 		<template
 			v-for="mod in MODULES_ORDER"
 			:key="mod"

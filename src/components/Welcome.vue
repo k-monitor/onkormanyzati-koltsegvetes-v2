@@ -1,5 +1,41 @@
 <script setup lang="ts">
+const { yearSpecific } = defineProps<{
+	yearSpecific?: boolean;
+}>();
+
 const { canShowMilestones, year } = useYear();
+
+const w = CONFIG.welcome as {
+	title?: string;
+	titles?: Record<string, string>;
+	leftBlock?: string;
+	leftBlocks?: Record<string, string>;
+	rightBlock?: string;
+	rightBlocks?: Record<string, string>;
+	aboveSignature?: string;
+	aboveSignatures?: Record<string, string>;
+	name?: string;
+	names?: Record<string, string>;
+	role?: string;
+	roles?: Record<string, string>;
+};
+const hasDefaultContent =
+	w.title || w.leftBlock || w.rightBlock || w.aboveSignature || w.name || w.role;
+const hasYearSpecificContent = computed(
+	() =>
+		w.titles?.[year.value] ||
+		w.leftBlocks?.[year.value] ||
+		w.rightBlocks?.[year.value] ||
+		w.aboveSignatures?.[year.value] ||
+		w.names?.[year.value] ||
+		w.roles?.[year.value],
+);
+const show = computed(() => {
+	// global page:
+	if (!yearSpecific) return hasDefaultContent;
+	// year page:
+	return hasYearSpecificContent.value;
+});
 
 function intro() {
 	// TODO LATER eliminate jQuery
@@ -164,6 +200,7 @@ function intro() {
 
 <template>
 	<section
+		v-if="show"
 		id="welcome"
 		class="page-section bg-primary text-white"
 	>
@@ -171,29 +208,24 @@ function intro() {
 			<div class="container">
 				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
-						<h2>{{ CONFIG.welcome.titles?.[year] || CONFIG.welcome.title }}</h2>
+						<h2>{{ w.titles?.[year] || w.title }}</h2>
 						<hr class="divider light my-4" />
 					</div>
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="CONFIG.welcome.leftBlocks?.[year] || CONFIG.welcome.leftBlock"
+							:source="w.leftBlocks?.[year] || w.leftBlock || ''"
 							:anchor-attributes="{ target: '_blank' }"
 						/>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="
-								CONFIG.welcome.rightBlocks?.[year] || CONFIG.welcome.rightBlock
-							"
+							:source="w.rightBlocks?.[year] || w.rightBlock || ''"
 							:anchor-attributes="{ target: '_blank' }"
 						/>
 						<p class="my-5">
-							{{
-								CONFIG.welcome.aboveSignatures?.[year] ||
-								CONFIG.welcome.aboveSignature
-							}}
+							{{ w.aboveSignatures?.[year] || w.aboveSignature }}
 						</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
@@ -208,9 +240,9 @@ function intro() {
 							<div class="flex-grow-1 ml-5">
 								<p class="mt-4 mb-0">
 									<em>
-										{{ CONFIG.welcome.names?.[year] || CONFIG.welcome.name }}
+										{{ w.names?.[year] || w.name }}
 										<br />
-										{{ CONFIG.welcome.roles?.[year] || CONFIG.welcome.role }}
+										{{ w.roles?.[year] || w.role }}
 									</em>
 								</p>
 							</div>
