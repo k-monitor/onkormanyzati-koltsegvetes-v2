@@ -114,7 +114,8 @@ onUnmounted(() => {
 						<li class="nav-item">
 							<NuxtLink
 								class="nav-link js-scroll-trigger"
-								to="/"
+								href="/"
+								@click="scrollToTop()"
 								>Összesítés</NuxtLink
 							>
 						</li>
