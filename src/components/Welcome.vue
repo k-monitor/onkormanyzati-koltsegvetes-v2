@@ -76,7 +76,7 @@ function intro() {
 
 	const side = CONFIG.modules.income ? 'income' : 'expense';
 	const el = '#' + side;
-	const yearData = DATA[year] || ({} as Record<string, any>);
+	const yearData = DATA[year.value] || ({} as Record<string, any>);
 	const sideData = yearData[side] || ({} as Record<string, any>);
 	if (sideData.func) {
 		steps.push({
@@ -177,20 +177,27 @@ function intro() {
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
 							:source="CONFIG.welcome.leftBlocks?.[year] || CONFIG.welcome.leftBlock"
-							:anchorAttributes="{ target: '_blank' }"
+							:anchor-attributes="{ target: '_blank' }"
 						/>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="CONFIG.welcome.rightBlocks?.[year] || CONFIG.welcome.rightBlock"
-							:anchorAttributes="{ target: '_blank' }"
+							:source="
+								CONFIG.welcome.rightBlocks?.[year] || CONFIG.welcome.rightBlock
+							"
+							:anchor-attributes="{ target: '_blank' }"
 						/>
-						<p class="my-5">{{ CONFIG.welcome.aboveSignatures?.[year] || CONFIG.welcome.aboveSignature }}</p>
+						<p class="my-5">
+							{{
+								CONFIG.welcome.aboveSignatures?.[year] ||
+								CONFIG.welcome.aboveSignature
+							}}
+						</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
-									class="rounded-circle"
 									id="face"
+									class="rounded-circle"
 									src="/assets/img/face.png"
 									alt=""
 									style="height: 100px"
