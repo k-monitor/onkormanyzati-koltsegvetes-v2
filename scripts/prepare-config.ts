@@ -16,8 +16,11 @@ export default async () => {
 		if (!fullKey) return;
 
 		let value = row.getCell(2).value || '';
-		if (value.richText) {
-			value = value.richText.map((part) => part.text).join('');
+		if (typeof value === 'object') {
+			if (value.text) value = value.text;
+			else if (value.richText) {
+				value = value.richText.map((part) => part.text).join('');
+			}
 		}
 		const keyParts = fullKey.split('.');
 		let target = configJson;
