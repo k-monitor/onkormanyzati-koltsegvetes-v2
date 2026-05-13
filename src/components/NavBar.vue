@@ -128,7 +128,7 @@ onUnmounted(() => {
 							<NuxtLink
 								class="nav-link js-scroll-trigger"
 								to="/ev"
-								>Éves nézet</NuxtLink
+								>Éves áttekintés</NuxtLink
 							>
 						</li>
 

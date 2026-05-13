@@ -12,8 +12,8 @@ onMounted(() => {
 
 <template>
 	<header
-		class="masthead d-flex align-items-center"
 		id="masthead-parallax"
+		class="masthead d-flex align-items-center"
 	>
 		<div class="container h-100 pt-5">
 			<div class="row h-100 align-items-center justify-content-center text-center">
@@ -23,11 +23,18 @@ onMounted(() => {
 				</div>
 				<div class="col-lg-8 align-self-baseline">
 					<p class="text-white font-weight-light mb-5">{{ CONFIG.header.headline }}</p>
-					<a
-						class="btn btn-primary btn-xl js-scroll-trigger"
-						:href="`#${slugify(year)}/koszonto`"
-						>{{ CONFIG.header.button }}</a
-					>
+					<div class="d-flex flex-wrap justify-content-center">
+						<a
+							class="btn btn-primary btn-xl js-scroll-trigger m-2"
+							:href="`#${slugify(year)}/koszonto`"
+							>{{ CONFIG.header.button }}</a
+						>
+						<NuxtLink
+							class="btn btn-primary btn-xl m-2"
+							to="/ev"
+							>Éves áttekintés</NuxtLink
+						>
+					</div>
 				</div>
 			</div>
 		</div>
