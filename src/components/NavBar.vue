@@ -74,7 +74,7 @@ onUnmounted(() => {
 				</NuxtLink>
 				<ul
 					v-if="showYearSelector"
-					class="d-lg-none navbar-nav ml-auto my-2 my-lg-0 align-items-center"
+					class="navbar-nav ml-auto my-2 my-lg-0 align-items-center"
 				>
 					<NavBarYearSelector />
 				</ul>
@@ -117,7 +117,10 @@ onUnmounted(() => {
 							>
 						</li>
 
-						<NavBarYearSelector v-if="showYearSelector" />
+						<NavBarYearSelector
+							v-if="showYearSelector"
+							desktop
+						/>
 						<li
 							v-else
 							class="nav-item"
