@@ -1,7 +1,9 @@
+x-site-domain: &site-domain example.com
+
 services:
-    okv2:
+    koko-admin:
         build: .
-        container_name: okv2
+        container_name: koko-admin
         restart: unless-stopped
         ports:
             - '7000:7000'
@@ -10,7 +12,27 @@ services:
             ADMIN_USER: admin
             ADMIN_PASS: admin
             PUBLIC_URL: https://example.com/
-            DEPLOY_CMD: 'rm -r /www/example.com/; cp -r dist/ /www/example.com/'
+            SITE_DOMAIN: *site-domain
+            DEPLOY_CMD: 'rm -rf /www/$$SITE_DOMAIN/; cp -r dist/ /www/$$SITE_DOMAIN/'
             NODE_OPTIONS: '--openssl-legacy-provider'
         volumes:
             - .:/app
+            - www:/www
+
+    koko-nginx:
+        image: nginx:alpine
+        container_name: koko-nginx
+        restart: unless-stopped
+        ports:
+            - '8080:80'
+        environment:
+            SITE_DOMAIN: *site-domain
+            NGINX_ENVSUBST_FILTER_VARIABLES: SITE_DOMAIN
+        volumes:
+            - www:/www:ro
+            - ./docker/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+        depends_on:
+            - koko-admin
+
+volumes:
+    www:

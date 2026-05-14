@@ -456,3 +456,15 @@ server {
     }
 }
 ```
+
+### Docker
+
+Az admin felület konténerizáltan is futtatható. Ehhez példaconfig a `docker-compose.example.yml` fájlban érhető el.
+
+```bash
+cp docker-compose.example.yml docker-compose.yml
+# módosítsd a docker-compose.yml környezeti változóit, domain nevet és portokat
+docker compose up -d
+```
+
+Alapértelmezetten az admin a `7000`-es, a generált oldal statikus hosztolása pedig a `8080`-as porton elérhető.
