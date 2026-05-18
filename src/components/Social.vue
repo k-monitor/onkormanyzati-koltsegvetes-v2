@@ -6,6 +6,7 @@ const li = `https://www.linkedin.com/shareArticle?mini=true&url=${
 }&title=${CONFIG.social.text}&summary=&source=${CONFIG.url}`;
 const ml = `mailto:?subject=${CONFIG.social.text}&body=${CONFIG.url}`;
 </script>
+
 <template>
 	<div id="sharingbuttons">
 		<!-- Sharingbutton Facebook -->
@@ -129,6 +130,7 @@ const ml = `mailto:?subject=${CONFIG.social.text}&body=${CONFIG.url}`;
 	justify-content: center;
 	position: fixed;
 	left: 0;
+	z-index: 1;
 
 	a {
 		flex-grow: 1;

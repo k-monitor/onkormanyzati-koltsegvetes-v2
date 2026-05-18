@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { year, handleMilestoneOpened, handleMilestoneClosed } = useYear();
+const { year, handleMilestoneOpened } = useYear();
 
 const tag = ref<string | null>(null);
 
@@ -25,6 +25,16 @@ const filteredMilestones = computed(() => {
 	);
 });
 
+const msHandler = (id: string) => {
+	tag.value = null;
+	nextTick(() => {
+		const $ = window.$;
+		const modal = $('#milestone-modal-' + id);
+		modal.modal('show');
+		handleMilestoneOpened(id);
+	});
+};
+
 onMounted(() => {
 	// TODO LATER eliminate jQuery
 	const $ = window.$;
@@ -38,30 +48,12 @@ onMounted(() => {
 		}
 	};
 
-	eventBus.on('ms', (id) => {
-		tag.value = null;
-		nextTick(() => {
-			const modal = $('#milestone-modal-' + id);
-			modal.modal('show');
-			handleMilestoneOpened(id);
-		});
-	});
+	eventBus.on('ms', msHandler);
+});
 
-	// Listen for modal show/hide events to update URL hash
-	$(document).on('show.bs.modal', '.modal', function () {
-		const modalId = $(this).attr('id');
-		if (modalId?.startsWith('milestone-modal-')) {
-			const milestoneId = modalId.replace('milestone-modal-', '');
-			handleMilestoneOpened(milestoneId);
-		}
-	});
-
-	$(document).on('hide.bs.modal', '.modal', function () {
-		const modalId = $(this).attr('id');
-		if (modalId?.startsWith('milestone-modal-')) {
-			handleMilestoneClosed();
-		}
-	});
+onUnmounted(() => {
+	document.onkeyup = null;
+	eventBus.off('ms', msHandler);
 });
 </script>
 

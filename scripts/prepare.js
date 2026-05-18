@@ -1,5 +1,5 @@
 import prepareFunctions from './prepare-functions.js';
-import prepareConfig from './prepare-config.js';
+import prepareConfig from './prepare-config.ts';
 import prepareData from './prepare-data.js';
 import prepareMilestones from './prepare-milestones.js';
 import prepareTags from './prepare-tags.js';
@@ -16,7 +16,7 @@ import validateData from './validate-data.js';
 
 	// IN: input/config.xlsx
 	// OUT: src/data/config.json
-	prepareConfig();
+	await prepareConfig();
 
 	// IN: input/budget.xlsx
 	// IN: src/data/functions.tsv

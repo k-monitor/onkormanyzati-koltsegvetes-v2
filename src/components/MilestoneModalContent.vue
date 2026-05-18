@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import search from '../utils/search';
 
+const router = useRouter();
+
 const { milestone, modalId, nextModalId, prevModalId, mapModal } = defineProps<{
 	milestone: MilestoneWithId;
 	modalId: string;
@@ -10,6 +12,8 @@ const { milestone, modalId, nextModalId, prevModalId, mapModal } = defineProps<{
 }>();
 
 const playing = ref(false);
+
+const mapEnabled = computed(() => !!CONFIG.modules.map);
 
 const nodes = computed(() => {
 	// TODO LATER search result type
@@ -46,29 +50,30 @@ function jumpBudget(result) {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
-	// based on SearchModalContent.vue#jump
 	$('.modal').modal('hide');
 	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
 
+	if (mapModal) {
+		const { pendingBudgetJump } = usePendingBudgetJump();
+		pendingBudgetJump.value = result;
+		router.push('/ev#' + slugify(String(milestone.year)));
+		return;
+	}
+
+	// based on SearchModalContent.vue#jump
 	scrollToElement($('#' + result.side), 72);
 	setTimeout(function () {
 		eventBus.emit('jump', result);
 	}, 1000);
 }
 
-function jumpMap(result) {
+function jumpMap(milestoneId: string) {
 	// TODO LATER search result type
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
-	// based on SearchModalContent.vue#jump
 	$('.modal').modal('hide');
-	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
-
-	scrollToElement($('#map'), 72);
-	setTimeout(function () {
-		eventBus.emit('jump_map', result);
-	}, 1000);
+	router.push('/#terkep/' + milestoneId);
 }
 
 function handleMarkdownClick(event: MouseEvent) {
@@ -99,7 +104,7 @@ onMounted(() => {
 				<div class="embed-responsive embed-responsive-16by9">
 					<div
 						class="embed-responsive-item milestone-modal-picture d-flex flex-column text-white"
-						:style="{ backgroundImage: 'url(' + milestone.picture + ')' }"
+						:style="{ backgroundImage: 'url(../' + milestone.picture + ')' }"
 					>
 						<div
 							v-if="milestone.vid && playing"
@@ -124,7 +129,7 @@ onMounted(() => {
 								@click="prev()"
 							>
 								<div>
-									<i class="fas fa-angle-left"/>
+									<i class="fas fa-angle-left" />
 								</div>
 							</div>
 							<div class="d-flex flex-grow-1 play">
@@ -139,7 +144,7 @@ onMounted(() => {
 								@click="next()"
 							>
 								<div class="text-right">
-									<i class="fas fa-angle-right"/>
+									<i class="fas fa-angle-right" />
 								</div>
 							</div>
 						</div>
@@ -162,12 +167,17 @@ onMounted(() => {
 								{{ groupNums(n.value, true, ['', 'ezer', 'millió', 'milliárd']) }}
 							</div>
 						</div>
-						<div class="milestone-budget-link d-flex align-items-center text-primary font-weight-bold pr-3">
+						<div
+							class="milestone-budget-link d-flex align-items-center text-primary font-weight-bold pr-3"
+						>
 							{{ n.name }}
 							<i class="fas fa-arrow-right ml-2" />
 						</div>
 					</div>
-					<div class="m-0 text-justify text-white-75" @click="handleMarkdownClick">
+					<div
+						class="m-0 text-justify text-white-75"
+						@click="handleMarkdownClick"
+					>
 						<VueMarkdown
 							:source="milestone.description"
 							:external-links-new-tab="true"
@@ -175,11 +185,11 @@ onMounted(() => {
 					</div>
 					<div class="d-flex flex-wrap">
 						<button
-							v-if="milestone.position && !mapModal"
+							v-if="milestone.position && !mapModal && mapEnabled"
 							class="btn btn-sm btn-primary mb-3 mb-md-2 mr-2 col-12 col-md-auto"
 							@click="jumpMap(modalId.replace('milestone-modal-', ''))"
 						>
-							<i class="far fa-map mr-2"/>
+							<i class="far fa-map mr-2" />
 							Térképen
 						</button>
 					</div>

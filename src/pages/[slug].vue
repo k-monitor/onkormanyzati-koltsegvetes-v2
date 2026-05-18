@@ -28,6 +28,12 @@ useHead({
 	],
 	title: CONFIG.iframe.title,
 });
+
+onMounted(() => {
+	if (window.location.hash) {
+		window.history.replaceState(null, '', window.location.pathname);
+	}
+});
 </script>
 
 <template>

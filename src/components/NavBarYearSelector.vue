@@ -1,16 +1,24 @@
 <script setup lang="ts">
-const { subpageMode } = defineProps<{
-	subpageMode?: boolean;
+const { desktop } = defineProps<{
+	desktop?: boolean;
 }>();
+
+const BREAKPOINT = 992; // Bootstrap LG
+const { width } = useWindowSize();
+const show = computed(() => {
+	if (!years.length) return false;
+	if (desktop) return width.value >= BREAKPOINT;
+	return width.value < BREAKPOINT;
+});
 
 const { handleYearSelected, year } = useYear();
 
-const years = subpageMode ? [] : Object.keys(DATA).sort().reverse();
+const years = Object.keys(DATA).sort().reverse();
 </script>
 
 <template>
 	<li
-		v-if="years.length > 1"
+		v-if="show"
 		class="nav-item dropdown highlight"
 	>
 		<a

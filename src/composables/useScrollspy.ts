@@ -1,5 +1,5 @@
 export default () => {
-	const { year } = useYear();
+	const { year, hashMode, isScrollingToSection, isMilestoneOpen } = useYear();
 
 	// Section slug to element ID mapping
 	const sectionToElementId: Record<string, string> = {
@@ -26,7 +26,13 @@ export default () => {
 	};
 
 	// Sections that should highlight the költségvetés nav item
-	const budgetSections = ['inex', 'income', 'expense', 'time-series-income', 'time-series-expense'];
+	const budgetSections = [
+		'inex',
+		'income',
+		'expense',
+		'time-series-income',
+		'time-series-expense',
+	];
 
 	// Track the current active section to avoid unnecessary URL updates
 	let currentActiveSection: string | null = null;
@@ -71,34 +77,32 @@ export default () => {
 		return null;
 	}
 
-	function updateActiveNavLink(activeSection: string | null) {
-		document.querySelectorAll('#mainNav .nav-link').forEach((link) => {
-			link.classList.remove('active');
-			const href = link.getAttribute('href');
-			if (href && activeSection) {
-				// Extract section from href (e.g., #2024/koszonto -> koszonto)
-				const match = href.match(/^#[\w-]+\/(.+)$/);
-				if (match) {
-					const sectionSlug = match[1];
-					const elementId = sectionToElementId[sectionSlug];
-					// For budget sections (inex, income, expense), highlight the merleg/bevetel/kiadas nav item
-					const isBudgetNavItem =
-						sectionSlug === 'merleg' || sectionSlug === 'bevetel' || sectionSlug === 'kiadas';
-					const isActiveBudgetSection = budgetSections.includes(activeSection);
-					if ((isBudgetNavItem && isActiveBudgetSection) || elementId === activeSection) {
-						link.classList.add('active');
-					}
-				}
-			}
-		});
-	}
-
 	function updateUrlForSection(activeSection: string | null) {
-		if (!activeSection || isNavigationScroll) return;
+		if (
+			!activeSection ||
+			isNavigationScroll ||
+			isScrollingToSection.value ||
+			isMilestoneOpen.value
+		)
+			return;
+
+		if (hashMode.value === 'none') return;
+
+		if (hashMode.value === 'no-year') {
+			if (activeSection === 'masthead') {
+				const url = window.location.pathname + window.location.search;
+				if (window.location.hash) window.history.replaceState(null, '', url);
+				return;
+			}
+			const sectionSlug = elementIdToSection[activeSection];
+			if (!sectionSlug) return;
+			if (window.location.hash.slice(1) !== sectionSlug)
+				window.history.replaceState(null, '', `#${sectionSlug}`);
+			return;
+		}
 
 		let newHash: string;
 		if (activeSection === 'masthead') {
-			// At the top of the page, just use year with trailing slash
 			newHash = `${slugify(year.value)}/`;
 		} else {
 			const sectionSlug = elementIdToSection[activeSection];
@@ -107,7 +111,6 @@ export default () => {
 		}
 
 		const currentHash = window.location.hash.slice(1);
-
 		if (currentHash !== newHash) {
 			window.history.replaceState(null, '', `#${newHash}`);
 		}
@@ -115,9 +118,6 @@ export default () => {
 
 	function onScroll() {
 		const activeSection = getActiveSection();
-
-		// Update nav link highlighting
-		updateActiveNavLink(activeSection);
 
 		// Update URL if section changed
 		if (activeSection !== currentActiveSection) {
@@ -128,8 +128,7 @@ export default () => {
 
 	function init() {
 		window.addEventListener('scroll', onScroll);
-		// Initial update
-		onScroll();
+		setTimeout(onScroll, 0);
 	}
 
 	function destroy() {

@@ -1,0 +1,10 @@
+server {
+    listen 80;
+    server_name _;
+    root /www/${SITE_DOMAIN};
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ $uri.html =404;
+    }
+}

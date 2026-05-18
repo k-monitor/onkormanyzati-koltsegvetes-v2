@@ -1,10 +1,47 @@
 <script setup lang="ts">
+const { yearSpecific } = defineProps<{
+	yearSpecific?: boolean;
+}>();
+
 const { canShowMilestones, year } = useYear();
+
+const w = CONFIG.welcome as {
+	title?: string;
+	titles?: Record<string, string>;
+	leftBlock?: string;
+	leftBlocks?: Record<string, string>;
+	rightBlock?: string;
+	rightBlocks?: Record<string, string>;
+	aboveSignature?: string;
+	aboveSignatures?: Record<string, string>;
+	name?: string;
+	names?: Record<string, string>;
+	role?: string;
+	roles?: Record<string, string>;
+};
+const hasDefaultContent =
+	w.title || w.leftBlock || w.rightBlock || w.aboveSignature || w.name || w.role;
+const hasYearSpecificContent = computed(
+	() =>
+		w.titles?.[year.value] ||
+		w.leftBlocks?.[year.value] ||
+		w.rightBlocks?.[year.value] ||
+		w.aboveSignatures?.[year.value] ||
+		w.names?.[year.value] ||
+		w.roles?.[year.value],
+);
+const show = computed(() => {
+	// global page:
+	if (!yearSpecific) return hasDefaultContent;
+	// year page:
+	return hasYearSpecificContent.value;
+});
 
 function intro() {
 	// TODO LATER eliminate jQuery
 	const $ = window.$;
 	$('#mainNav').css('position', 'absolute');
+	$('#banner').css('position', 'absolute');
 	$('.milestone-button').addClass('disabled');
 	const intro = window
 		.introJs()
@@ -56,6 +93,7 @@ function intro() {
 		.onexit(function () {
 			$('#navbarResponsive').removeClass('show');
 			$('#mainNav').css('position', 'fixed');
+			$('#banner').css('position', 'fixed');
 			$('.milestone-button').removeClass('disabled');
 		});
 
@@ -76,7 +114,7 @@ function intro() {
 
 	const side = CONFIG.modules.income ? 'income' : 'expense';
 	const el = '#' + side;
-	const yearData = DATA[year] || ({} as Record<string, any>);
+	const yearData = DATA[year.value] || ({} as Record<string, any>);
 	const sideData = yearData[side] || ({} as Record<string, any>);
 	if (sideData.func) {
 		steps.push({
@@ -162,6 +200,7 @@ function intro() {
 
 <template>
 	<section
+		v-if="show"
 		id="welcome"
 		class="page-section bg-primary text-white"
 	>
@@ -169,28 +208,30 @@ function intro() {
 			<div class="container">
 				<div class="row justify-content-center mb-5">
 					<div class="col-lg-8 text-center">
-						<h2>{{ CONFIG.welcome.titles?.[year] || CONFIG.welcome.title }}</h2>
+						<h2>{{ w.titles?.[year] || w.title }}</h2>
 						<hr class="divider light my-4" />
 					</div>
 				</div>
 				<div class="row justify-content-around mb-5">
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="CONFIG.welcome.leftBlocks?.[year] || CONFIG.welcome.leftBlock"
-							:anchorAttributes="{ target: '_blank' }"
+							:source="w.leftBlocks?.[year] || w.leftBlock || ''"
+							:anchor-attributes="{ target: '_blank' }"
 						/>
 					</div>
 					<div class="col-lg-5 text-justify text-white-75">
 						<VueMarkdown
-							:source="CONFIG.welcome.rightBlocks?.[year] || CONFIG.welcome.rightBlock"
-							:anchorAttributes="{ target: '_blank' }"
+							:source="w.rightBlocks?.[year] || w.rightBlock || ''"
+							:anchor-attributes="{ target: '_blank' }"
 						/>
-						<p class="my-5">{{ CONFIG.welcome.aboveSignatures?.[year] || CONFIG.welcome.aboveSignature }}</p>
+						<p class="my-5">
+							{{ w.aboveSignatures?.[year] || w.aboveSignature }}
+						</p>
 						<div class="d-flex">
 							<div class="my-auto w-33 d-flex align-center justify-content-center">
 								<img
-									class="rounded-circle"
 									id="face"
+									class="rounded-circle"
 									src="/assets/img/face.png"
 									alt=""
 									style="height: 100px"
@@ -199,16 +240,19 @@ function intro() {
 							<div class="flex-grow-1 ml-5">
 								<p class="mt-4 mb-0">
 									<em>
-										{{ CONFIG.welcome.names?.[year] || CONFIG.welcome.name }}
+										{{ w.names?.[year] || w.name }}
 										<br />
-										{{ CONFIG.welcome.roles?.[year] || CONFIG.welcome.role }}
+										{{ w.roles?.[year] || w.role }}
 									</em>
 								</p>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="row justify-content-center">
+				<div
+					v-if="!yearSpecific"
+					class="row justify-content-center"
+				>
 					<div class="col-lg-8 text-center">
 						<div
 							class="btn btn-outline-light btn-xl js-scroll-trigger"

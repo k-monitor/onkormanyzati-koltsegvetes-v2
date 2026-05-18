@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
 
-const { side, view = 'func' } = defineProps<{
+const { side, view = 'func', embedded = false } = defineProps<{
 	side: 'expense' | 'income';
 	view?: 'func' | 'econ';
+	embedded?: boolean;
 }>();
 
 function normalizeId(id: string | number | undefined): string {
@@ -827,7 +828,7 @@ const hoveredSeries = computed(() => {
 			</div>
 
 			<!-- Legend -->
-			<div class="legend">
+			<div class="legend" :class="{ 'is-embedded': embedded }">
 				<div
 					v-for="series in timeSeriesData"
 					:key="'legend-' + series.id"
@@ -1104,6 +1105,10 @@ const hoveredSeries = computed(() => {
 
 		.legend-label {
 			font-size: 0.875rem;
+		}
+
+		&.is-embedded .legend-label {
+			font-size: 0.75rem;
 		}
 	}
 

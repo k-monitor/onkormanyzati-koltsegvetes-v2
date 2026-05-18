@@ -9,7 +9,7 @@ export default defineNuxtConfig({
 	dir: {
 		public: 'static',
 	},
-	modules: ['@nuxt/eslint', '@nuxt/scripts'],
+	modules: ['@nuxt/eslint', '@nuxt/scripts', '@vueuse/nuxt'],
 	nitro: {
 		output: {
 			dir: 'dist/.nitro',

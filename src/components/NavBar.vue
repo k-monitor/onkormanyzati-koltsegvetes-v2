@@ -1,12 +1,14 @@
 <script setup lang="ts">
 const { subpageMode } = defineProps<{
+	showYearSelector?: boolean;
 	subpageMode?: boolean;
 }>();
 
 const isBannerVisible = ref(true);
 const less = ref(true);
 
-const { canShowMilestones, canShowMap, year } = useYear();
+const showBanner = computed(() => isBannerVisible.value && CONFIG.navBar.showBanner);
+
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 
 function scrollToTop() {
@@ -56,9 +58,9 @@ onUnmounted(() => {
 			class="navbar navbar-expand-lg navbar-light fixed-top py-3"
 		>
 			<div class="container">
-				<a
+				<NuxtLink
 					class="navbar-brand js-scroll-trigger"
-					:href="`#${slugify(year)}/`"
+					to="/"
 					@click="scrollToTop()"
 				>
 					<img
@@ -69,12 +71,12 @@ onUnmounted(() => {
 						alt=""
 					/>
 					{{ CONFIG.city }}
-				</a>
+				</NuxtLink>
 				<ul
-					v-if="!subpageMode"
-					class="d-lg-none navbar-nav ml-auto my-2 my-lg-0 align-items-center"
+					v-if="showYearSelector"
+					class="navbar-nav ml-auto my-2 my-lg-0 align-items-center"
 				>
-					<NavBarYearSelector :subpage-mode="subpageMode" />
+					<NavBarYearSelector />
 				</ul>
 				<button
 					class="navbar-toggler navbar-toggler-right"
@@ -107,47 +109,29 @@ onUnmounted(() => {
 							</a>
 						</li>
 						<li class="nav-item">
-							<a
-								:href="`#${slugify(year)}/koszonto`"
+							<NuxtLink
 								class="nav-link js-scroll-trigger"
-								>{{ CONFIG.navBar.welcome }}</a
+								href="/"
+								@click="scrollToTop()"
+								>Összesítés</NuxtLink
 							>
 						</li>
-						<li class="nav-item">
-							<a
-								:href="
-									`#${slugify(year)}/` +
-									(CONFIG.modules.inex
-										? 'merleg'
-										: CONFIG.modules.income
-											? 'bevetel'
-											: 'kiadas')
-								"
-								class="nav-link js-scroll-trigger"
-								>{{ CONFIG.navBar.inex }}</a
-							>
-						</li>
+
+						<NavBarYearSelector
+							v-if="showYearSelector"
+							desktop
+						/>
 						<li
-							v-if="canShowMilestones"
+							v-else
 							class="nav-item"
 						>
-							<a
-								:href="`#${slugify(year)}/fejlesztesek`"
+							<NuxtLink
 								class="nav-link js-scroll-trigger"
-								>{{ CONFIG.navBar.milestones }}</a
+								to="/ev"
+								>Éves áttekintés</NuxtLink
 							>
 						</li>
-						<li
-							v-if="canShowMap"
-							class="nav-item"
-						>
-							<a
-								:href="`#${slugify(year)}/terkep`"
-								class="nav-link js-scroll-trigger"
-								>{{ CONFIG.navBar.map }}</a
-							>
-						</li>
-						<NavBarYearSelector :subpage-mode="subpageMode" />
+
 						<li class="nav-item">
 							<a
 								href="javascript:void(0)"
@@ -161,10 +145,10 @@ onUnmounted(() => {
 							v-if="CONFIG.iframe.title && CONFIG.iframe.url"
 							class="nav-item"
 						>
-							<a
-								:href="`/${slugify(CONFIG.iframe.title).toLowerCase()}`"
+							<NuxtLink
+								:to="`/${slugify(CONFIG.iframe.title).toLowerCase()}`"
 								class="nav-link"
-								>{{ CONFIG.iframe.title }}</a
+								>{{ CONFIG.iframe.title }}</NuxtLink
 							>
 						</li>
 						<li
@@ -186,19 +170,19 @@ onUnmounted(() => {
 						class="navbar-nav ml-auto my-2 my-lg-0"
 					>
 						<li class="nav-item">
-							<a
+							<NuxtLink
 								class="nav-link"
-								href="/"
+								to="/"
 							>
 								Vissza a költségetésre
-							</a>
+							</NuxtLink>
 						</li>
 					</ul>
 				</div>
 			</div>
 		</nav>
 		<div
-			v-if="isBannerVisible && CONFIG.navBar.showBanner"
+			v-if="showBanner"
 			id="banner"
 			class="bg-primary"
 		>
