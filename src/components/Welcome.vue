@@ -4,6 +4,7 @@ const { yearSpecific } = defineProps<{
 }>();
 
 const { canShowMilestones, year } = useYear();
+const router = useRouter();
 
 const w = CONFIG.welcome as {
 	title?: string;
@@ -37,12 +38,14 @@ const show = computed(() => {
 	return hasYearSpecificContent.value;
 });
 
-function intro() {
+async function intro() {
 	// TODO LATER eliminate jQuery
 	const $ = window.$;
 	$('#mainNav').css('position', 'absolute');
 	$('#banner').css('position', 'absolute');
 	$('.milestone-button').addClass('disabled');
+	await router.push('/ev#' + CONFIG.defaultYear);
+	await new Promise<void>((resolve) => setTimeout(resolve, 300));
 	const intro = window
 		.introJs()
 		.setOption('doneLabel', 'Kilépés')
@@ -57,7 +60,23 @@ function intro() {
 		.setOption('tooltipPosition', 'left')
 		.onbeforechange(function (targetElement: Element) {
 			const step = this._introItems[this._currentStep];
-			if (step.milestoneButtonStep) {
+			if (step.faceStep) {
+				router.push('/').then(() => {
+					nextTick(() => {
+						setTimeout(() => {
+							const faceEl = document.querySelector('#face');
+							if (faceEl) {
+								(faceEl as HTMLElement).classList.add('introjs-showElement');
+								step.element = faceEl;
+								step.position = 'left';
+								intro.refresh();
+								scrollToElement(faceEl as Element, 160);
+							}
+						}, 200);
+					});
+				});
+				return;
+			} else if (step.milestoneButtonStep) {
 				eventBus.emit('jump', { side: 'expense', type: 'econ' });
 				eventBus.emit('jump', { side: 'income', type: 'econ' });
 				nextTick(() => {
@@ -95,6 +114,9 @@ function intro() {
 			$('#mainNav').css('position', 'fixed');
 			$('#banner').css('position', 'fixed');
 			$('.milestone-button').removeClass('disabled');
+			if (router.currentRoute.value.path !== '/') {
+				router.push('/');
+			}
 		});
 
 	const steps = [];
@@ -189,7 +211,7 @@ function intro() {
 	}
 
 	steps.push({
-		element: '#face',
+		faceStep: true,
 		intro: 'Kellemes böngészést!',
 		position: 'left',
 	});
