@@ -106,6 +106,27 @@ async function intro() {
 				return;
 			} else if (targetElement.className.includes('fa-search')) {
 				$('#navbarResponsive').addClass('show');
+				window.scrollTo(0, 0);
+				nextTick(() => {
+					const el = document.querySelector('#mainNav .fa-search');
+					if (el) {
+						step.element = el;
+						intro.refresh();
+						scrollToElement(el, 160);
+					}
+				});
+				return;
+			} else if (step.mainNavDropdownStep) {
+				window.scrollTo(0, 0);
+				nextTick(() => {
+					const el = document.querySelector('#mainNav .dropdown');
+					if (el) {
+						step.element = el;
+						intro.refresh();
+						scrollToElement(el, 160);
+					}
+				});
+				return;
 			}
 			scrollToElement(targetElement, 160);
 		})
@@ -196,6 +217,7 @@ async function intro() {
 
 	if (Object.keys(DATA).length > 1) {
 		steps.push({
+			mainNavDropdownStep: true,
 			element: '#mainNav .dropdown',
 			intro: 'Az évváltó gombbal pedig a különböző évek költségvetései között válthat.',
 			position: 'bottom',
