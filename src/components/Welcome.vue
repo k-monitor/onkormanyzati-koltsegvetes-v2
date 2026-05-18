@@ -249,7 +249,10 @@ function intro() {
 						</div>
 					</div>
 				</div>
-				<div class="row justify-content-center">
+				<div
+					v-if="!yearSpecific"
+					class="row justify-content-center"
+				>
 					<div class="col-lg-8 text-center">
 						<div
 							class="btn btn-outline-light btn-xl js-scroll-trigger"
