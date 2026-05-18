@@ -13,6 +13,8 @@ const { milestone, modalId, nextModalId, prevModalId, mapModal } = defineProps<{
 
 const playing = ref(false);
 
+const mapEnabled = computed(() => !!CONFIG.modules.map);
+
 const nodes = computed(() => {
 	// TODO LATER search result type
 	const nodes = [];
@@ -183,7 +185,7 @@ onMounted(() => {
 					</div>
 					<div class="d-flex flex-wrap">
 						<button
-							v-if="milestone.position && !mapModal"
+							v-if="milestone.position && !mapModal && mapEnabled"
 							class="btn btn-sm btn-primary mb-3 mb-md-2 mr-2 col-12 col-md-auto"
 							@click="jumpMap(modalId.replace('milestone-modal-', ''))"
 						>

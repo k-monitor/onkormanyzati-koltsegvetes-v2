@@ -17,7 +17,9 @@ function modalId(milestoneId: string, mapModal: boolean = false): string {
 onMounted(() => {
 	const $ = window.$;
 	const $modal = $(`#${modalId(props.milestone.id, props.mapModal || false)}`);
-	$modal.on('show.bs.modal', () => handleMilestoneOpened(props.milestone.id, props.mapModal || false));
+	$modal.on('show.bs.modal', () =>
+		handleMilestoneOpened(props.milestone.id, props.mapModal || false)
+	);
 	$modal.on('hide.bs.modal', () => handleMilestoneClosed(props.mapModal || false));
 });
 
@@ -59,7 +61,12 @@ const budgetTotal = computed(() => {
 			<span
 				v-if="budgetTotal"
 				class="milestone-amount bg-primary text-white font-weight-bold px-2 py-1"
-				>{{ groupNums(budgetTotal, true, ['', 'ezer', 'millió', 'milliárd']) }}</span
+				>{{
+					groupNums(budgetTotal, true, ['', 'ezer', 'millió', 'milliárd']).replace(
+						',0 ',
+						' '
+					)
+				}}</span
 			>
 		</div>
 		<h5 class="bg-white milestone-title px-2 text-center w-100">

@@ -27,6 +27,7 @@ useHead({
 		<TimeSeriesSection
 			id="time-series-income"
 			side="income"
+			:embedded="true"
 			title="Bevételek idősorban"
 			text="**Segítünk értelmezni!** Ez a vizualizáció megmutatja, hogyan változtak az önkormányzat bevételei funkcionális bontásban az évek során. Kattintson egy kategóriára a részletesebb bontás megtekintéséhez!"
 		/>

@@ -31,10 +31,10 @@ useHead({
 
 // Whether func/econ views are enabled for timeseries (default: both enabled)
 const timeseriesFuncEnabled = computed(
-	() => CONFIG.timeseries?.func == null || !!CONFIG.timeseries.func,
+	() => CONFIG.timeseries?.func == null || !!CONFIG.timeseries.func
 );
 const timeseriesEconEnabled = computed(
-	() => CONFIG.timeseries?.econ == null || !!CONFIG.timeseries.econ,
+	() => CONFIG.timeseries?.econ == null || !!CONFIG.timeseries.econ
 );
 
 // Check if we have function data across multiple years
@@ -62,10 +62,7 @@ const hasTimeSeriesExpense = computed(() => {
 		<MastHead />
 		<Welcome />
 		<!-- FIXME tutorial in Welcome needs year view -->
-		<template
-			v-for="mod in MODULES_ORDER"
-			:key="mod"
-		>
+		<template v-for="mod in MODULES_ORDER" :key="mod">
 			<TimeSeriesSection
 				v-if="
 					mod === 'timeseries-income' &&
@@ -96,6 +93,7 @@ const hasTimeSeriesExpense = computed(() => {
 				v-else-if="mod === 'map' && canShowMap"
 				id="map"
 				class="bg-light"
+				:hide-year="true"
 			/>
 			<FeedbackSection v-else-if="mod === 'feedback' && CONFIG.modules.feedback" />
 		</template>

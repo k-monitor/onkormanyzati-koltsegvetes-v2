@@ -1,9 +1,10 @@
 <script setup lang="ts">
 const { year, handleMilestoneOpened, handleMilestoneClosed } = useYear();
 
-const { assetPrefix, detailsHandler } = defineProps<{
+const { assetPrefix, detailsHandler, hideYear } = defineProps<{
 	assetPrefix?: string;
 	detailsHandler?: (milestoneId: string) => void;
+	hideYear?: boolean;
 }>();
 
 const mapContainer = ref<HTMLElement | null>(null);
@@ -15,18 +16,68 @@ const markersMap = ref<Map<string, any>>(new Map()); // Store markers by milesto
 let isUnmounted = false; // Track if component is unmounted
 let pendingMilestoneId: string | null = null; // Store milestone ID to open after map init
 
-// Get milestones with positions for current year
-const milestonesWithPosition = computed(() =>
+const theme = (CONFIG.theme as Record<string, string> | undefined) ?? {};
+const FALLBACK_COLOR = '#3388ff';
+
+// All milestones with a position (year-agnostic — filtering happens via legend)
+const allMilestonesWithPosition = computed(() =>
 	Object.entries(MILESTONES)
-		.filter(([, m]) => /*m.year == year.value &&*/ m.position)
-		.map(([id, m]) => ({ ...m, id }) as MilestoneWithId),
+		.filter(([, m]) => m.position)
+		.map(([id, m]) => ({ ...m, id } as MilestoneWithId))
+);
+
+// Years that actually have positioned milestones, sorted
+const legendYears = computed(() => {
+	const years = new Set<string>();
+	for (const m of allMilestonesWithPosition.value) years.add(String(m.year));
+	return Array.from(years).sort();
+});
+
+const selectedYears = ref<Set<string>>(new Set());
+
+watchEffect(() => {
+	// Default: all years selected. Add any newly-discovered years (keeps user toggles intact).
+	if (selectedYears.value.size === 0) {
+		selectedYears.value = new Set(legendYears.value);
+	}
+});
+
+function toggleYear(y: string) {
+	const next = new Set(selectedYears.value);
+	if (next.has(y)) {
+		// Don't allow deselecting the last one — reset to all instead
+		if (next.size === 1) {
+			next.clear();
+			legendYears.value.forEach((ly) => next.add(ly));
+		} else {
+			next.delete(y);
+		}
+	} else {
+		next.add(y);
+	}
+	selectedYears.value = next;
+}
+
+function isYearSelected(y: string): boolean {
+	return selectedYears.value.has(y);
+}
+
+function colorForYear(y: string): string {
+	return theme[y] ?? FALLBACK_COLOR;
+}
+
+// Filtered milestones for current legend selection
+const milestonesWithPosition = computed(() =>
+	allMilestonesWithPosition.value.filter((m) => selectedYears.value.has(String(m.year)))
 );
 
 // Default map center and zoom (can be overridden via config)
 // center format: "lat, lng" e.g. "47.4979, 19.0402"
 const DEFAULT_CENTER: [number, number] = (() => {
 	if (CONFIG.map?.center) {
-		const [lat, lng] = CONFIG.map.center.split(',').map((s: string) => parseFloat(s.trim()));
+		const [lat, lng] = CONFIG.map.center
+			.split(',')
+			.map((s: string) => parseFloat(s.trim()));
 		if (!isNaN(lat) && !isNaN(lng)) return [lat, lng];
 	}
 	return [47.4979, 19.0402];
@@ -56,18 +107,27 @@ function openMarkerPopup(milestoneId: string) {
 	if (marker && mapInstance.value) {
 		// Close any existing popup first
 		mapInstance.value.closePopup();
-		// Pan to marker (smoother than setView) and open popup
-		const latLng = marker.getLatLng();
-		mapInstance.value.panTo(latLng);
-		marker.openPopup();
+		// If marker is inside a cluster, zoom to it first so the popup is reachable
+		const layer = markersLayer.value;
+		if (layer && typeof layer.zoomToShowLayer === 'function') {
+			layer.zoomToShowLayer(marker, () => {
+				marker.openPopup();
+			});
+		} else {
+			// Pan to marker (smoother than setView) and open popup
+			mapInstance.value.panTo(marker.getLatLng());
+			marker.openPopup();
+		}
 	}
 }
 
 function initMap() {
 	if (typeof window === 'undefined' || !mapContainer.value) return;
 
-	// Dynamic import of Leaflet
-	import('leaflet').then((L) => {
+	// Dynamic import of Leaflet, then markercluster plugin (which requires window.L)
+	import('leaflet').then(async (L) => {
+		(window as any).L = L.default;
+		await import('leaflet.markercluster');
 		// Check if component was unmounted during async import
 		if (isUnmounted || !mapContainer.value) return;
 
@@ -92,8 +152,37 @@ function initMap() {
 			})
 			.addTo(mapInstance.value);
 
-		// Create markers layer
-		markersLayer.value = L.default.layerGroup().addTo(mapInstance.value);
+		// Create clustered markers layer
+		markersLayer.value = (L.default as any)
+			.markerClusterGroup({
+				showCoverageOnHover: false,
+				spiderfyOnMaxZoom: true,
+				maxClusterRadius: 10,
+				// Disable animations to avoid a race in which a marker tries to
+				// animate after its parent layer has been cleared (this._map = null).
+				animate: false,
+				animateAddingMarkers: false,
+				iconCreateFunction: (cluster: any) => {
+					const counts: Record<string, number> = {};
+					for (const m of cluster.getAllChildMarkers()) {
+						const y = m.options.milestoneYear;
+						if (!y) continue;
+						counts[y] = (counts[y] || 0) + 1;
+					}
+					const dominantYear =
+						Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
+					const color =
+						(CONFIG.theme as Record<string, string> | undefined)?.[dominantYear] ??
+						'#3388ff';
+					const count = cluster.getChildCount();
+					return L.default.divIcon({
+						className: 'milestone-cluster',
+						html: `<div class="milestone-cluster-inner" style="background:${color}"><span>${count}</span></div>`,
+						iconSize: [40, 40],
+					});
+				},
+			})
+			.addTo(mapInstance.value);
 
 		// Add markers
 		updateMarkers(L.default);
@@ -134,15 +223,22 @@ function updateMarkers(L: any) {
 			popupAnchor: [0, -42],
 		});
 
-		// Create marker
-		const marker = L.marker([lat, lng], { icon });
+		// Create marker — tag with year so cluster icon can pick a dominant color
+		const marker = L.marker([lat, lng], {
+			icon,
+			milestoneYear: slugify(String(milestone.year)),
+		});
 
 		// Create popup content
 		const popupContent = `
 			<div class="milestone-popup">
-				<div class="milestone-popup-image" style="background-image: url('${assetPrefix || ''}${milestone.picture}')"></div>
+				<div class="milestone-popup-image" style="background-image: url('${assetPrefix || ''}${
+			milestone.picture
+		}')"></div>
 				<h5 class="milestone-popup-title">${milestone.title}</h5>
-				<button class="btn btn-sm btn-primary milestone-popup-btn" data-milestone-id="${milestone.id}">
+				<button class="btn btn-sm btn-primary milestone-popup-btn" data-milestone-id="${
+					milestone.id
+				}">
 					<i class="far fa-hand-point-right mr-1"></i>
 					Részletek
 				</button>
@@ -157,7 +253,7 @@ function updateMarkers(L: any) {
 		// Handle popup open to bind click event
 		marker.on('popupopen', () => {
 			const btn = document.querySelector(
-				`.milestone-popup-btn[data-milestone-id="${milestone.id}"]`,
+				`.milestone-popup-btn[data-milestone-id="${milestone.id}"]`
 			);
 			if (btn) {
 				btn.addEventListener('click', () => {
@@ -196,9 +292,22 @@ watch(year, () => {
 	}
 });
 
+// Re-render markers when the legend filter changes
+watch(
+	() => Array.from(selectedYears.value).join(','),
+	() => {
+		if (mapInstance.value && !isUnmounted) {
+			import('leaflet').then((L) => {
+				if (!isUnmounted) updateMarkers(L.default);
+			});
+		}
+	}
+);
+
 function getNextId(index: number): string {
 	return (
-		milestonesWithPosition.value[(index + 1) % milestonesWithPosition.value.length]?.id || ''
+		milestonesWithPosition.value[(index + 1) % milestonesWithPosition.value.length]?.id ||
+		''
 	);
 }
 
@@ -319,15 +428,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<section
-		id="map"
-		class="page-section"
-	>
+	<section id="map" class="page-section">
 		<div class="container-fluid">
-			<div
-				v-for="(m, i) in milestonesWithPosition"
-				:key="'mapmodal-' + m.id"
-			>
+			<div v-for="(m, i) in milestonesWithPosition" :key="'mapmodal-' + m.id">
 				<Milestone
 					:milestone="m"
 					:next-id="getNextId(i)"
@@ -341,6 +444,7 @@ onUnmounted(() => {
 					<SectionHeading
 						:title="CONFIG.map?.title || 'Fejlesztések térképen'"
 						:year="year"
+						:hide-year="hideYear"
 					/>
 					<hr class="divider my-4 mb-5" />
 				</div>
@@ -348,31 +452,42 @@ onUnmounted(() => {
 			<div class="row">
 				<div class="col">
 					<div class="map-section-container">
-						<div
-							ref="mapWrapper"
-							class="map-wrapper"
-						>
-							<div
-								ref="mapContainer"
-								class="map-container"
-							/>
+						<div ref="mapWrapper" class="map-wrapper">
+							<div ref="mapContainer" class="map-container" />
 							<button
 								type="button"
 								class="map-fullscreen-btn"
-								:title="
-									isFullscreen
-										? 'Kilépés a teljes képernyőből'
-										: 'Teljes képernyő'
-								"
+								:title="isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'"
 								:aria-label="
-									isFullscreen
-										? 'Kilépés a teljes képernyőből'
-										: 'Teljes képernyő'
+									isFullscreen ? 'Kilépés a teljes képernyőből' : 'Teljes képernyő'
 								"
 								@click="toggleFullscreen"
 							>
 								<i :class="isFullscreen ? 'fas fa-compress' : 'fas fa-expand'" />
 							</button>
+							<div
+								v-if="legendYears.length > 1"
+								class="map-legend"
+								role="group"
+								aria-label="Évek szűrése"
+							>
+								<button
+									v-for="y in legendYears"
+									:key="y"
+									type="button"
+									class="map-legend-item"
+									:class="{ 'is-inactive': !isYearSelected(y) }"
+									:aria-pressed="isYearSelected(y)"
+									:title="`${y} – kattintson a szűréshez`"
+									@click="toggleYear(y)"
+								>
+									<span
+										class="map-legend-swatch"
+										:style="{ backgroundColor: colorForYear(y) }"
+									/>
+									<span class="map-legend-label">{{ y }}</span>
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -389,6 +504,8 @@ onUnmounted(() => {
 
 // Import Leaflet CSS
 @import 'leaflet/dist/leaflet.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.css';
+@import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 .map-section-container {
 	max-width: 1000px;
@@ -419,6 +536,69 @@ onUnmounted(() => {
 		width: 100%;
 		height: 100%;
 	}
+}
+
+.map-legend {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	z-index: 999;
+	background: rgba(255, 255, 255, 0.95);
+	border: 2px solid rgba(0, 0, 0, 0.2);
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+	padding: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	max-width: 160px;
+}
+
+.map-legend-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	background: transparent;
+	border: none;
+	padding: 4px 6px;
+	border-radius: 3px;
+	cursor: pointer;
+	font-size: 0.85rem;
+	color: #333;
+	text-align: left;
+	line-height: 1;
+	transition: opacity 0.15s, background-color 0.15s;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.05);
+	}
+
+	&:focus {
+		outline: none;
+		background-color: rgba(0, 0, 0, 0.05);
+	}
+
+	&.is-inactive {
+		opacity: 0.4;
+
+		.map-legend-label {
+			text-decoration: line-through;
+		}
+	}
+}
+
+.map-legend-swatch {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, 0.85);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+	flex-shrink: 0;
+}
+
+.map-legend-label {
+	white-space: nowrap;
 }
 
 .map-fullscreen-btn {
@@ -468,6 +648,27 @@ onUnmounted(() => {
 	.leaflet-top,
 	.leaflet-bottom {
 		z-index: 2;
+	}
+}
+
+// Custom cluster styles — color comes from the dominant child year (inline)
+.milestone-cluster {
+	background: transparent;
+	border: none;
+
+	.milestone-cluster-inner {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #fff;
+		font-weight: 700;
+		font-size: 0.9rem;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+		border: 3px solid rgba(255, 255, 255, 0.85);
 	}
 }
 
