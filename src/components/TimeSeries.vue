@@ -129,7 +129,7 @@ const years = computed(() => {
 // Build link to the year's expense/income section
 function yearHref(year: string): string {
 	const section = side === 'income' ? 'bevetel' : 'kiadas';
-	return `#${slugify(year)}/${section}`;
+	return `/ev#${slugify(year)}/${section}`;
 }
 
 // Get the root node for a specific year
