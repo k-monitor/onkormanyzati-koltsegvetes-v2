@@ -14,7 +14,10 @@ function normalizeId(id: string | number | undefined): string {
 	// Strip leading zeros from purely numeric IDs (e.g. "01" → "1")
 	if (/^\d+$/.test(s)) return String(Number(s));
 	// Strip leading zeros from letter-prefixed numeric IDs (e.g. "K01" → "K1", "K0000001" → "K1")
-	return s.replace(/^([A-Za-z]+)0*(\d+)$/, (_, prefix, digits) => prefix + String(Number(digits)));
+	return s.replace(
+		/^([A-Za-z]+)0*(\d+)$/,
+		(_, prefix, digits) => prefix + String(Number(digits))
+	);
 }
 
 const path = ref<string[]>([]);
@@ -25,11 +28,14 @@ const hiddenSeries = ref<Set<string>>(new Set());
 const mode = ref<'regular' | 'inflation' | 'gdp'>('regular');
 
 // Reset path when view changes
-watch(() => view, () => {
-	path.value = [];
-	hovered.value = null;
-	hiddenSeries.value = new Set();
-});
+watch(
+	() => view,
+	() => {
+		path.value = [];
+		hovered.value = null;
+		hiddenSeries.value = new Set();
+	}
+);
 
 // Toggle series visibility
 function toggleSeriesVisibility(id: string, event: Event) {
@@ -73,33 +79,33 @@ const inflationRates = computed(() => {
 const inflationMultipliers = computed(() => {
 	const multipliers: Record<string, number> = {};
 	const rates = inflationRates.value;
-	
+
 	if (years.value.length === 0) return multipliers;
-	
+
 	const firstYear = years.value[0]!;
 	const lastYear = years.value[years.value.length - 1]!;
-	
+
 	// Last data year is base (multiplier = 1)
 	multipliers[lastYear] = 1;
-	
+
 	// Collect all inflation years between first and last data year (inclusive start, exclusive end)
 	// This accounts for skipped data years whose inflation still compounds
 	const allInflationYears = Object.keys(rates)
-		.filter(y => y >= firstYear && y < lastYear)
+		.filter((y) => y >= firstYear && y < lastYear)
 		.sort();
-	
+
 	// Calculate cumulative multipliers working backwards through ALL intermediate years
 	let cumulative = 1;
 	for (let i = allInflationYears.length - 1; i >= 0; i--) {
 		const y = allInflationYears[i]!;
 		const rate = rates[y] || 0;
-		cumulative *= (1 + rate / 100);
+		cumulative *= 1 + rate / 100;
 		// Only store multiplier for years that have data
 		if (years.value.includes(y)) {
 			multipliers[y] = cumulative;
 		}
 	}
-	
+
 	return multipliers;
 });
 
@@ -114,14 +120,16 @@ const years = computed(() => {
 	return Object.keys(DATA)
 		.filter((year) => DATA[year]?.[side]?.[view])
 		.filter((year) => !allowedYears || allowedYears.includes(year))
-		.filter((year) => mode.value !== 'gdp' || (typeof gdp[year] === 'number' && gdp[year] > 0))
+		.filter(
+			(year) => mode.value !== 'gdp' || (typeof gdp[year] === 'number' && gdp[year] > 0)
+		)
 		.sort();
 });
 
 // Build link to the year's expense/income section
 function yearHref(year: string): string {
 	const section = side === 'income' ? 'bevetel' : 'kiadas';
-	return `#${slugify(year)}/${section}`;
+	return `/ev#${slugify(year)}/${section}`;
 }
 
 // Get the root node for a specific year
@@ -144,7 +152,10 @@ function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode 
 // Parse allowed IDs for time series filtering from config (kgr sheet)
 const kgrFilter = computed(() => {
 	if (!CONFIG.timeseries?.kgr) return null;
-	const ids = (CONFIG.timeseries.kgr as string).split(',').map((s: string) => normalizeId(s.trim())).filter((s: string) => s.length > 0);
+	const ids = (CONFIG.timeseries.kgr as string)
+		.split(',')
+		.map((s: string) => normalizeId(s.trim()))
+		.filter((s: string) => s.length > 0);
 	return ids.length > 0 ? new Set(ids) : null;
 });
 
@@ -178,12 +189,23 @@ const currentChildren = computed(() => {
 		return leafFallback ? [leafFallback] : [];
 	}
 
-	return Array.from(merged.values()).map((entry) => entry.node).reverse();
+	return Array.from(merged.values())
+		.map((entry) => entry.node)
+		.reverse();
 });
 
 // Build time series data for all children
 const timeSeriesData = computed(() => {
-	const result: Record<string, { id: string; name: string; values: Record<string, number>; adjustedValues: Record<string, number>; names: Record<string, string> }> = {};
+	const result: Record<
+		string,
+		{
+			id: string;
+			name: string;
+			values: Record<string, number>;
+			adjustedValues: Record<string, number>;
+			names: Record<string, string>;
+		}
+	> = {};
 
 	for (const child of currentChildren.value) {
 		const id = normalizeId(child.id);
@@ -216,7 +238,10 @@ const timeSeriesData = computed(() => {
 });
 
 // Helper to get display value (raw, inflation-adjusted, or GDP-adjusted)
-function getDisplayValue(series: { values: Record<string, number>; adjustedValues: Record<string, number> }, year: string): number {
+function getDisplayValue(
+	series: { values: Record<string, number>; adjustedValues: Record<string, number> },
+	year: string
+): number {
 	if (mode.value === 'inflation' && inflationEnabled.value) {
 		return series.adjustedValues[year] || 0;
 	}
@@ -232,7 +257,10 @@ function getDisplayValue(series: { values: Record<string, number>; adjustedValue
 }
 
 // Helper to get string value (raw, inflation-adjusted, or GDP-adjusted)
-function getStringValue(series: { values: Record<string, number>; adjustedValues: Record<string, number> }, year: string): string {
+function getStringValue(
+	series: { values: Record<string, number>; adjustedValues: Record<string, number> },
+	year: string
+): string {
 	if (mode.value === 'inflation' && inflationEnabled.value) {
 		return groupNums(series.adjustedValues[year] || 0);
 	}
@@ -240,13 +268,14 @@ function getStringValue(series: { values: Record<string, number>; adjustedValues
 		const gdp = gdpValues.value[year];
 		if (gdp && gdp > 0) {
 			// Show as percentage of GDP
-			return ((series.values[year] || 0) / gdp * 100).toFixed(2).replace('.', ',') + ' %';
+			return (
+				(((series.values[year] || 0) / gdp) * 100).toFixed(2).replace('.', ',') + ' %'
+			);
 		}
 		return '0 %';
 	}
 	return groupNums(series.values[year] || 0);
 }
-
 
 // Get current node name for breadcrumb
 const nodePath = computed(() => {
@@ -455,7 +484,8 @@ function bgColor(id: string, isHovered: boolean, isOther: boolean): string {
 		if (series && maxChildValue.value > 0) {
 			// Keep opacity scaling consistent with active mode (regular/inflation/gdp)
 			const values = years.value.map((year) => getDisplayValue(series, year));
-			const avgValue = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+			const avgValue =
+				values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
 			// Scale opacity from 0.4 to 1.0 based on value
 			baseOpacity = 0.4 + 0.6 * (avgValue / maxChildValue.value);
 		}
@@ -534,7 +564,8 @@ function drillDown(id: string) {
 	const allIds = timeSeriesData.value.map((s) => s.id);
 	if (allIds.length <= 1) return;
 	const otherIds = allIds.filter((i) => i !== id);
-	const isIsolated = !hiddenSeries.value.has(id) && otherIds.every((i) => hiddenSeries.value.has(i));
+	const isIsolated =
+		!hiddenSeries.value.has(id) && otherIds.every((i) => hiddenSeries.value.has(i));
 	hiddenSeries.value = isIsolated ? new Set() : new Set(otherIds);
 }
 
@@ -553,7 +584,12 @@ function canDrillDown(id: string): boolean {
 		if (node?.children && node.children.length > 0) {
 			const filtered = node.children
 				.filter((child) => !normalizeId(child.id).startsWith('F'))
-				.filter((child) => view !== 'econ' || !kgrFilter.value || kgrFilter.value.has(normalizeId(child.id)));
+				.filter(
+					(child) =>
+						view !== 'econ' ||
+						!kgrFilter.value ||
+						kgrFilter.value.has(normalizeId(child.id))
+				);
 			if (filtered.length > 0) {
 				return true;
 			}
@@ -563,7 +599,11 @@ function canDrillDown(id: string): boolean {
 }
 
 // Calculate delta (change from previous year)
-function getDelta(seriesId: string, year: string, yearIndex: number): { value: number; percent: number | null } | null {
+function getDelta(
+	seriesId: string,
+	year: string,
+	yearIndex: number
+): { value: number; percent: number | null } | null {
 	if (yearIndex === 0) return null;
 	const series = timeSeriesData.value.find((s) => s.id === seriesId);
 	if (!series) return null;
@@ -600,14 +640,23 @@ const hoveredSeries = computed(() => {
 	if (!hovered.value) return null;
 	return timeSeriesData.value.find((s) => s.id === hovered.value) || null;
 });
+
+const { regenerateTooltips, reinitTooltips } = useTooltips();
+
+onMounted(regenerateTooltips);
+onUpdated(regenerateTooltips);
+watch(
+	[() => view, () => side, mode, path, hiddenSeries],
+	() => nextTick(reinitTooltips),
+	{
+		deep: true,
+	}
+);
 </script>
 
 <template>
 	<div class="time-series">
-		<div
-			v-if="years.length === 0"
-			class="alert alert-info"
-		>
+		<div v-if="years.length === 0" class="alert alert-info">
 			Nincs elérhető funkcionális adat ehhez a kategóriához.
 		</div>
 
@@ -635,6 +684,7 @@ const hoveredSeries = computed(() => {
 						<button
 							class="btn"
 							:class="mode === 'regular' ? 'btn-primary' : 'btn-outline-secondary'"
+							data-toggle="tooltip"
 							title="Nominális értékek megjelenítése"
 							@click="mode = 'regular'"
 						>
@@ -644,6 +694,7 @@ const hoveredSeries = computed(() => {
 							v-if="inflationEnabled"
 							class="btn"
 							:class="mode === 'inflation' ? 'btn-primary' : 'btn-outline-secondary'"
+							data-toggle="tooltip"
 							title="Infláció korrigált értékek"
 							@click="mode = 'inflation'"
 						>
@@ -653,6 +704,7 @@ const hoveredSeries = computed(() => {
 							v-if="gdpEnabled"
 							class="btn"
 							:class="mode === 'gdp' ? 'btn-primary' : 'btn-outline-secondary'"
+							data-toggle="tooltip"
 							title="Értékek az éves GDP %-ában"
 							@click="mode = 'gdp'"
 						>
@@ -671,122 +723,123 @@ const hoveredSeries = computed(() => {
 						class="chart"
 						preserveAspectRatio="xMidYMid meet"
 					>
-					<g :transform="`translate(${padding.left}, ${padding.top})`">
-						<!-- Y-axis grid lines -->
-						<g class="grid">
-							<line
-								v-for="tick in yTicks"
-								:key="tick"
-								:x1="0"
-								:x2="innerWidth"
-								:y1="yScale(tick)"
-								:y2="yScale(tick)"
-								class="grid-line"
-							/>
-						</g>
-
-						<!-- Y-axis labels -->
-						<g class="y-axis">
-							<text
-								v-for="tick in yTicks"
-								:key="tick"
-								:x="-10"
-								:y="yScale(tick)"
-								class="axis-label"
-								text-anchor="end"
-								dominant-baseline="middle"
-							>
-								{{ formatValue(tick) }}
-							</text>
-						</g>
-
-						<!-- X-axis labels (years) -->
-						<g class="x-axis">
-							<a
-								v-for="(year, index) in years"
-								:key="year"
-								:href="yearHref(year)"
-							>
-								<text
-									:x="xScale(index)"
-									:y="innerHeight + 25"
-									class="axis-label axis-label-link"
-									:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
-									text-anchor="middle"
-								>
-									{{ year }}
-								</text>
-							</a>
-						</g>
-
-						<!-- N/A indicator for years with no data at the drilled-into level -->
-						<g class="na-markers">
-							<template
-								v-for="(year, yearIndex) in years"
-								:key="'na-' + year"
-							>
-								<g v-if="yearStates[year] === 'na'" :transform="`translate(${xScale(yearIndex)}, ${innerHeight - 22})`">
-									<circle r="16" class="na-circle" />
-									<text
-										text-anchor="middle"
-										dominant-baseline="central"
-										class="na-text"
-									>N/A</text>
-									<title>Nincs megjeleníthető adat.</title>
-								</g>
-							</template>
-						</g>
-
-						<!-- Dotted outline of the parent bar (the item we drilled into) -->
-						<g v-if="parentValues" class="parent-outlines">
-							<template
-								v-for="(year, yearIndex) in years"
-								:key="'outline-' + year"
-							>
-								<rect
-									v-if="parentValues[year] !== undefined"
-									:x="xScale(yearIndex) - barWidth / 2"
-									:y="yScale(parentValues[year] || 0)"
-									:width="barWidth"
-									:height="innerHeight - yScale(parentValues[year] || 0)"
-									:fill="parentOutlineFill"
-									:stroke="parentOutlineStroke"
-									class="parent-outline"
+						<g :transform="`translate(${padding.left}, ${padding.top})`">
+							<!-- Y-axis grid lines -->
+							<g class="grid">
+								<line
+									v-for="tick in yTicks"
+									:key="tick"
+									:x1="0"
+									:x2="innerWidth"
+									:y1="yScale(tick)"
+									:y2="yScale(tick)"
+									class="grid-line"
 								/>
-							</template>
-						</g>
+							</g>
 
-						<!-- Stacked bars for each year -->
-						<g class="bars">
-							<template
-								v-for="(year, yearIndex) in years"
-								:key="'year-' + year"
-							>
-								<rect
-									v-for="series in stackedData"
-									:key="'bar-' + series.id + '-' + year"
-									:x="xScale(yearIndex) - barWidth / 2"
-									:y="yScale(series.stackedValues[year]?.y1 || 0)"
-									:width="barWidth"
-									:height="yScale(series.stackedValues[year]?.y0 || 0) - yScale(series.stackedValues[year]?.y1 || 0)"
-									:fill="bgColor(series.id, hovered === series.id, hovered !== null && hovered !== series.id)"
-									:stroke="strokeColor(series.id, hovered === series.id)"
-									:stroke-width="hovered === series.id ? 2 : 1"
-									class="bar"
-									:class="{ clickable: canClick(series.id) }"
-									@mouseenter="hovered = series.id; hoverSide = yearIndex >= years.length / 2 ? 'right' : 'left'"
-									@mouseleave="hovered = null"
-									@click="drillDown(series.id)"
+							<!-- Y-axis labels -->
+							<g class="y-axis">
+								<text
+									v-for="tick in yTicks"
+									:key="tick"
+									:x="-10"
+									:y="yScale(tick)"
+									class="axis-label"
+									text-anchor="end"
+									dominant-baseline="middle"
 								>
-									<title>{{ series.name }}: {{ getStringValue(series, year) }}
-										<template v-if="mode === 'inflation'"> ({{ baseYear }}-es árszinten)</template>
-										<template v-if="mode === 'gdp'"> (% GDP)</template>
-										({{ year }})
-									</title>
-								</rect>
-							</template>
+									{{ formatValue(tick) }}
+								</text>
+							</g>
+
+							<!-- X-axis labels (years) -->
+							<g class="x-axis">
+								<a v-for="(year, index) in years" :key="year" :href="yearHref(year)">
+									<text
+										:x="xScale(index)"
+										:y="innerHeight + 25"
+										class="axis-label axis-label-link"
+										:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
+										text-anchor="middle"
+									>
+										{{ year }}
+									</text>
+								</a>
+							</g>
+
+							<!-- N/A indicator for years with no data at the drilled-into level -->
+							<g class="na-markers">
+								<template v-for="(year, yearIndex) in years" :key="'na-' + year">
+									<g
+										v-if="yearStates[year] === 'na'"
+										:transform="`translate(${xScale(yearIndex)}, ${innerHeight - 22})`"
+										data-toggle="tooltip"
+										title="Nincs megjeleníthető adat."
+									>
+										<circle r="16" class="na-circle" />
+										<text
+											text-anchor="middle"
+											dominant-baseline="central"
+											class="na-text"
+										>
+											N/A
+										</text>
+									</g>
+								</template>
+							</g>
+
+							<!-- Dotted outline of the parent bar (the item we drilled into) -->
+							<g v-if="parentValues" class="parent-outlines">
+								<template v-for="(year, yearIndex) in years" :key="'outline-' + year">
+									<rect
+										v-if="parentValues[year] !== undefined"
+										:x="xScale(yearIndex) - barWidth / 2"
+										:y="yScale(parentValues[year] || 0)"
+										:width="barWidth"
+										:height="innerHeight - yScale(parentValues[year] || 0)"
+										:fill="parentOutlineFill"
+										:stroke="parentOutlineStroke"
+										class="parent-outline"
+									/>
+								</template>
+							</g>
+
+							<!-- Stacked bars for each year -->
+							<g class="bars">
+								<template v-for="(year, yearIndex) in years" :key="'year-' + year">
+									<rect
+										v-for="series in stackedData"
+										:key="'bar-' + series.id + '-' + year"
+										:x="xScale(yearIndex) - barWidth / 2"
+										:y="yScale(series.stackedValues[year]?.y1 || 0)"
+										:width="barWidth"
+										:height="
+											yScale(series.stackedValues[year]?.y0 || 0) -
+											yScale(series.stackedValues[year]?.y1 || 0)
+										"
+										:fill="
+											bgColor(
+												series.id,
+												hovered === series.id,
+												hovered !== null && hovered !== series.id
+											)
+										"
+										:stroke="strokeColor(series.id, hovered === series.id)"
+										:stroke-width="hovered === series.id ? 2 : 1"
+										class="bar"
+										:class="{ clickable: canClick(series.id) }"
+										data-toggle="tooltip"
+										:title="series.name"
+										@mouseenter="
+											hovered = series.id;
+											hoverSide = yearIndex >= years.length / 2 ? 'right' : 'left';
+										"
+										@mouseleave="hovered = null"
+										@click="drillDown(series.id)"
+									/>
+								</template>
+							</g>
 						</g>
-					</g>
 					</svg>
 				</div>
 
@@ -810,15 +863,18 @@ const hoveredSeries = computed(() => {
 							</tr>
 						</thead>
 						<tbody>
-							<tr
-								v-for="(year, index) in years"
-								:key="year"
-							>
+							<tr v-for="(year, index) in years" :key="year">
 								<td>{{ year }}</td>
 								<td class="text-right">
 									{{ getStringValue(hoveredSeries, year) }}
 								</td>
-								<td class="text-right delta" :class="{ positive: isDeltaPositive(hoveredSeries.id, year, index), negative: isDeltaNegative(hoveredSeries.id, year, index) }">
+								<td
+									class="text-right delta"
+									:class="{
+										positive: isDeltaPositive(hoveredSeries.id, year, index),
+										negative: isDeltaNegative(hoveredSeries.id, year, index),
+									}"
+								>
 									{{ formatDelta(getDelta(hoveredSeries.id, year, index)) }}
 								</td>
 							</tr>
@@ -848,26 +904,24 @@ const hoveredSeries = computed(() => {
 						:style="{ backgroundColor: bgColor(series.id, false, false) }"
 					/>
 					<span class="legend-label">{{ series.name }}</span>
-					<i
-						v-if="canDrillDown(series.id)"
-						class="fas fa-fw fa-level-down-alt ml-1"
-					/>
+					<i v-if="canDrillDown(series.id)" class="fas fa-fw fa-level-down-alt ml-1" />
 					<button
 						class="toggle-visibility-btn"
 						:class="{ 'is-hidden': hiddenSeries.has(series.id) }"
+						data-toggle="tooltip"
 						:title="hiddenSeries.has(series.id) ? 'Megjelenítés' : 'Elrejtés'"
 						@click="toggleSeriesVisibility(series.id, $event)"
 					>
-						<i class="fas fa-fw" :class="hiddenSeries.has(series.id) ? 'fa-eye-slash' : 'fa-eye'"/>
+						<i
+							class="fas fa-fw"
+							:class="hiddenSeries.has(series.id) ? 'fa-eye-slash' : 'fa-eye'"
+						/>
 					</button>
 				</div>
 			</div>
 
 			<!-- Details panel for mobile (below legend) -->
-			<div
-				v-if="hoveredSeries"
-				class="details-panel details-panel-mobile"
-			>
+			<div v-if="hoveredSeries" class="details-panel details-panel-mobile">
 				<h5>{{ hoveredSeries.name }}</h5>
 				<table class="table table-sm">
 					<thead>
@@ -883,16 +937,19 @@ const hoveredSeries = computed(() => {
 						</tr>
 					</thead>
 					<tbody>
-						<tr
-							v-for="(year, index) in years"
-							:key="year"
-						>
+						<tr v-for="(year, index) in years" :key="year">
 							<td>{{ year }}</td>
 							<td class="name-cell">{{ hoveredSeries.names[year] || '—' }}</td>
 							<td class="text-right">
 								{{ getStringValue(hoveredSeries, year) }}
 							</td>
-							<td class="text-right delta" :class="{ positive: isDeltaPositive(hoveredSeries.id, year, index), negative: isDeltaNegative(hoveredSeries.id, year, index) }">
+							<td
+								class="text-right delta"
+								:class="{
+									positive: isDeltaPositive(hoveredSeries.id, year, index),
+									negative: isDeltaNegative(hoveredSeries.id, year, index),
+								}"
+							>
 								{{ formatDelta(getDelta(hoveredSeries.id, year, index)) }}
 							</td>
 						</tr>
