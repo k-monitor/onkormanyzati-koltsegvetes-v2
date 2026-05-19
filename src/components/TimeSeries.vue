@@ -640,6 +640,18 @@ const hoveredSeries = computed(() => {
 	if (!hovered.value) return null;
 	return timeSeriesData.value.find((s) => s.id === hovered.value) || null;
 });
+
+const { regenerateTooltips, reinitTooltips } = useTooltips();
+
+onMounted(regenerateTooltips);
+onUpdated(regenerateTooltips);
+watch(
+	[() => view, () => side, mode, path, hiddenSeries],
+	() => nextTick(reinitTooltips),
+	{
+		deep: true,
+	}
+);
 </script>
 
 <template>
@@ -672,6 +684,7 @@ const hoveredSeries = computed(() => {
 						<button
 							class="btn"
 							:class="mode === 'regular' ? 'btn-primary' : 'btn-outline-secondary'"
+							data-toggle="tooltip"
 							title="Nominális értékek megjelenítése"
 							@click="mode = 'regular'"
 						>
@@ -681,6 +694,7 @@ const hoveredSeries = computed(() => {
 							v-if="inflationEnabled"
 							class="btn"
 							:class="mode === 'inflation' ? 'btn-primary' : 'btn-outline-secondary'"
+							data-toggle="tooltip"
 							title="Infláció korrigált értékek"
 							@click="mode = 'inflation'"
 						>
@@ -690,6 +704,7 @@ const hoveredSeries = computed(() => {
 							v-if="gdpEnabled"
 							class="btn"
 							:class="mode === 'gdp' ? 'btn-primary' : 'btn-outline-secondary'"
+							data-toggle="tooltip"
 							title="Értékek az éves GDP %-ában"
 							@click="mode = 'gdp'"
 						>
@@ -758,6 +773,8 @@ const hoveredSeries = computed(() => {
 									<g
 										v-if="yearStates[year] === 'na'"
 										:transform="`translate(${xScale(yearIndex)}, ${innerHeight - 22})`"
+										data-toggle="tooltip"
+										title="Nincs megjeleníthető adat."
 									>
 										<circle r="16" class="na-circle" />
 										<text
@@ -767,7 +784,6 @@ const hoveredSeries = computed(() => {
 										>
 											N/A
 										</text>
-										<title>Nincs megjeleníthető adat.</title>
 									</g>
 								</template>
 							</g>
@@ -812,20 +828,15 @@ const hoveredSeries = computed(() => {
 										:stroke-width="hovered === series.id ? 2 : 1"
 										class="bar"
 										:class="{ clickable: canClick(series.id) }"
+										data-toggle="tooltip"
+										:title="series.name"
 										@mouseenter="
 											hovered = series.id;
 											hoverSide = yearIndex >= years.length / 2 ? 'right' : 'left';
 										"
 										@mouseleave="hovered = null"
 										@click="drillDown(series.id)"
-									>
-										<title>
-											{{ series.name }}: {{ getStringValue(series, year) }} <template
-											v-if="mode === 'inflation'"> ({{ baseYear }}-es
-											árszinten)</template> <template v-if="mode === 'gdp'"> (%
-											GDP)</template> ({{ year }})
-										</title>
-									</rect>
+									/>
 								</template>
 							</g>
 						</g>
@@ -897,6 +908,7 @@ const hoveredSeries = computed(() => {
 					<button
 						class="toggle-visibility-btn"
 						:class="{ 'is-hidden': hiddenSeries.has(series.id) }"
+						data-toggle="tooltip"
 						:title="hiddenSeries.has(series.id) ? 'Megjelenítés' : 'Elrejtés'"
 						@click="toggleSeriesVisibility(series.id, $event)"
 					>
