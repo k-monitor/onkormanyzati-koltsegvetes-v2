@@ -2,6 +2,7 @@
 import {
 	CalendarDays,
 	CircleAlert,
+	Dot,
 	Globe,
 	Image,
 	PictureInPicture,
@@ -11,7 +12,8 @@ import {
 } from 'lucide-vue-next';
 import { cn } from '~/lib/utils';
 
-const { isModified, pending, years } = await useBudgetData();
+const { pending, years } = await useBudgetData();
+const { isBudgetModified, isYearModified } = useModifications();
 
 const yearItems = computed(() =>
 	Object.keys(years.value || {})
@@ -20,6 +22,7 @@ const yearItems = computed(() =>
 			href: `/budget/${slugifyYear(y)}/`,
 			text: y,
 			icon: CalendarDays,
+			warning: isYearModified(y),
 		})),
 );
 
@@ -37,7 +40,7 @@ const links = computed(() => {
 				},
 				...yearItems.value,
 			],
-			warning: isModified.value,
+			warning: isBudgetModified.value,
 		},
 		{ href: '/config/', text: 'Konfiguráció', icon: Settings },
 		{ href: '/logos/', text: 'Logók', icon: Image },
@@ -107,6 +110,10 @@ onMounted(async () => {
 												:is="item.icon"
 												v-if="item.icon"
 											/>{{ item.text }}
+											<Dot
+												v-if="item.warning"
+												class="text-destructive! ml-auto size-8!"
+											/>
 										</NuxtLink>
 									</SidebarMenuSubButton>
 								</SidebarMenuSubItem>

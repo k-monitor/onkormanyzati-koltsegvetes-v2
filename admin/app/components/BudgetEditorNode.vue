@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { throttleFilter } from '@vueuse/core';
 import type { Worksheet } from 'exceljs';
-import { ChevronDown, ChevronRight, Plus, Sigma, Trash2 } from 'lucide-vue-next';
+import { ChevronDown, ChevronRight, Dot, Plus, Trash2, UndoDot } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 import { cn } from '~/lib/utils';
 
@@ -75,20 +75,25 @@ function readEconValue(id: string | number, name: string) {
 	return Number(rawValue.replace(/[^0-9-]+/g, ''));
 }
 
-function writeEconValue(id: string | number, name: string, value: number) {
+function writeEconValue(id: string | number, name: string, value: number): number | undefined {
 	const row = findEconRow(id, name);
-	if (!row) return;
+	if (!row) return undefined;
 	const valueCell = row.getCell(3);
+	const previousValue = (valueCell.result || valueCell.value)?.toString() || '';
 	valueCell.value = value;
+	return Number(previousValue.replace(/[^0-9-]+/g, ''));
 }
 
 const inputValue = ref(readEconValue(node.id || '', node.name || ''));
 const bus = useCellChangedEvent();
+const { getPreviousValue, isModified, isNodeTreeModified, markModified, markUnmodified } =
+	useModifications();
 const { ignoreUpdates } = watchIgnorable(
 	inputValue,
 	() => {
-		if (inputValue.value === undefined) return;
-		writeEconValue(node.id || '', node.name || '', inputValue.value);
+		if (inputValue.value === undefined) inputValue.value = 0;
+		const prev = writeEconValue(node.id || '', node.name || '', inputValue.value);
+		markModified(sheet?.value?.name || '', String(node.id || ''), prev);
 		bus.emit();
 	},
 	{
@@ -100,7 +105,8 @@ const { workbook } = await useBudgetData();
 watch(workbook, () => {
 	// file reloaded, e.g. on revert
 	ignoreUpdates(() => {
-		inputValue.value = readEconValue(node.id || '', node.name || '');
+		markUnmodified(sheet?.value?.name || '', String(node.id || ''));
+		bus.emit();
 	});
 });
 
@@ -121,115 +127,161 @@ function handleDelete() {
 		bus.emit();
 	}
 }
+
+function undo() {
+	ignoreUpdates(() => {
+		const v = getPreviousValue(sheet?.value?.name || '', String(node.id || ''));
+		if (v === undefined) return;
+		markUnmodified(sheet?.value?.name || '', String(node.id || ''));
+		inputValue.value = v;
+	});
+}
 </script>
 
 <template>
-	<Collapsible v-model:open="isOpen">
-		<Item
-			class="mb-2 py-0"
-			:class="cn(isSummary && 'bg-muted')"
-			variant="outline"
-		>
-			<ItemContent
-				class="cursor-pointer py-4"
-				@click="open"
-			>
-				<ItemTitle :class="cn('w-full', isSummary && 'font-bold')">
-					<div
-						v-if="!isSummary"
-						:class="cn('*:size-4', !canOpen && 'invisible')"
-					>
-						<ChevronRight v-if="!isOpen" />
-						<ChevronDown v-else />
-					</div>
-					<div
-						v-if="node.id && !isSummary"
-						class="text-muted-foreground text-xs font-bold"
-					>
-						{{ node.id }}
-					</div>
-					<div class="grow">{{ node.name }}</div>
-				</ItemTitle>
-			</ItemContent>
-			<ItemActions class="flex gap-2 py-2">
-				<Button
-					v-if="!node.children?.length && isEditable"
-					class="cursor-pointer"
-					size="sm"
-					variant="secondary"
-					@click="handleAdd"
-				>
-					<Plus /> Alábontás
-				</Button>
-				<Button
-					v-if="canBeDeleted && isEditable"
-					class="cursor-pointer"
-					size="sm"
-					variant="destructive"
-					@click="handleDelete"
-				>
-					<Trash2 />
-				</Button>
-				<div class="flex flex-col items-end">
-					<!-- econ: editable -->
-					<NumberField
-						v-if="isEditable && node.id && !isSummary"
-						v-model="inputValue"
-						locale="hu"
-						:min="0"
-					>
-						<NumberFieldContent>
-							<NumberFieldDecrement />
-							<NumberFieldInput />
-							<NumberFieldIncrement />
-						</NumberFieldContent>
-						<div
-							v-if="showChildrenSumWarning"
-							class="text-destructive relative flex items-center justify-center gap-3"
-						>
-							<Sigma class="absolute left-0 ml-4 size-4" />
-							{{ Number(sum).toLocaleString('hu') }}
-						</div>
-					</NumberField>
-					<!-- summary row & func: not editable -->
-					<div
-						v-else
-						:class="cn('text-right', isSummary && 'font-bold')"
-					>
-						{{ Number(node.value).toLocaleString('hu') }}
-						<div
-							v-if="showChildrenSumWarning"
-							class="text-destructive flex items-center justify-center gap-3"
-						>
-							<Sigma class="size-4" />
-							{{ Number(sum).toLocaleString('hu') }}
-						</div>
-					</div>
-				</div>
-			</ItemActions>
-		</Item>
-		<CollapsibleContent
-			v-if="hasChildren"
-			:class="cn('mb-8', isSummary || 'mx-8')"
-		>
-			<BudgetEditorNode
-				v-for="child in node.children"
-				:key="child.id"
-				:is-editable="isEditable"
-				:node="child"
-			/>
+	<TooltipProvider>
+		<Collapsible v-model:open="isOpen">
 			<Item
-				v-if="isEditable"
-				class="-mt-2"
+				class="mb-2 py-0"
+				:class="cn(isSummary && 'bg-muted')"
+				variant="outline"
 			>
-				<Button
-					class="cursor-pointer"
-					variant="secondary"
-					@click="handleAdd"
+				<ItemContent
+					class="cursor-pointer py-4"
+					@click="open"
 				>
-					<Plus /> Új sor
-				</Button>
+					<ItemTitle :class="cn('w-full', isSummary && 'font-bold')">
+						<div
+							v-if="!isSummary"
+							:class="cn('*:size-4', !canOpen && 'invisible')"
+						>
+							<ChevronRight v-if="!isOpen" />
+							<ChevronDown v-else />
+						</div>
+						<div
+							v-if="node.id && !isSummary"
+							class="text-muted-foreground text-xs font-bold"
+						>
+							{{ node.id }}
+						</div>
+						<div class="flex grow items-center gap-1">
+							{{ node.name }}
+							<div
+								v-if="
+									!isSummary &&
+									isNodeTreeModified(sheet?.name || '', String(node.id || ''))
+								"
+								class="relative size-4 overflow-hidden"
+							>
+								<Dot
+									class="text-destructive absolute top-1/2 left-1/2 size-8 -translate-x-1/2 -translate-y-1/2"
+								/>
+							</div>
+						</div>
+					</ItemTitle>
+				</ItemContent>
+				<ItemActions class="flex gap-2 py-2">
+					<Tooltip>
+						<TooltipTrigger as-child>
+							<Button
+								v-if="
+									isEditable &&
+									isModified(sheet?.name || '', String(node.id || ''))
+								"
+								class="cursor-pointer"
+								size="sm"
+								variant="destructive"
+								@click="undo"
+							>
+								<UndoDot />
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>
+								Utolsó mentett érték ({{
+									Number(
+										getPreviousValue(sheet?.name || '', String(node.id || '')),
+									).toLocaleString('hu')
+								}}) visszaállítása
+							</p>
+						</TooltipContent>
+					</Tooltip>
+					<Button
+						v-if="!node.children?.length && isEditable"
+						class="cursor-pointer"
+						size="sm"
+						variant="secondary"
+						@click="handleAdd"
+					>
+						<Plus /> Alábontás
+					</Button>
+					<Button
+						v-if="canBeDeleted && isEditable"
+						class="cursor-pointer"
+						size="sm"
+						variant="destructive"
+						@click="handleDelete"
+					>
+						<Trash2 />
+					</Button>
+					<div class="flex flex-col items-end">
+						<!-- econ: editable -->
+						<NumberField
+							v-if="isEditable && node.id && !isSummary"
+							v-model="inputValue"
+							disable-wheel-change
+							locale="hu"
+							:min="0"
+						>
+							<NumberFieldContent>
+								<NumberFieldDecrement />
+								<NumberFieldInput />
+								<NumberFieldIncrement />
+							</NumberFieldContent>
+							<BudgetEditorNodeDiff
+								v-if="showChildrenSumWarning"
+								:node-value="node.value"
+								:sum="sum"
+							/>
+						</NumberField>
+						<!-- summary row & func: not editable -->
+						<div
+							v-else
+							:class="cn('text-right', isSummary && 'font-bold')"
+						>
+							{{ Number(node.value).toLocaleString('hu') }}
+							<BudgetEditorNodeDiff
+								v-if="showChildrenSumWarning"
+								:node-value="node.value"
+								:sum="sum"
+							/>
+						</div>
+					</div>
+				</ItemActions>
 			</Item>
-		</CollapsibleContent>
-	</Collapsible>
+			<CollapsibleContent
+				v-if="hasChildren"
+				:class="cn('mb-8', isSummary || 'mx-8')"
+			>
+				<BudgetEditorNode
+					v-for="child in node.children"
+					:key="child.id"
+					:is-editable="isEditable"
+					:node="child"
+				/>
+				<Item
+					v-if="isEditable"
+					class="-mt-2"
+				>
+					<Button
+						class="cursor-pointer"
+						variant="secondary"
+						@click="handleAdd"
+					>
+						<Plus /> Új sor
+					</Button>
+				</Item>
+			</CollapsibleContent>
+		</Collapsible>
+	</TooltipProvider>
 </template>

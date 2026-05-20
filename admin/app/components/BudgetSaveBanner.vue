@@ -2,7 +2,8 @@
 import { CircleAlert } from 'lucide-vue-next';
 import { toast } from 'vue-sonner';
 
-const { isModified, loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } = await useBudgetData();
+const { loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } = await useBudgetData();
+const { isBudgetModified } = useModifications();
 
 function revertChanges() {
 	if (!confirm('Biztosan el akarod vetni a módosításokat?')) return;
@@ -10,7 +11,7 @@ function revertChanges() {
 }
 
 async function save() {
-	if (!isModified.value) return;
+	if (!isBudgetModified.value) return;
 	try {
 		await uploadBudgetXlsxToServer();
 		await loadBudgetXlsxFromServer();
@@ -24,11 +25,11 @@ async function save() {
 
 <template>
 	<div
-		v-if="isModified"
+		v-if="isBudgetModified"
 		class="sticky bottom-0 flex items-center justify-between gap-4 border-t border-b bg-white px-4 py-0!"
 	>
 		<Alert
-			v-if="isModified"
+			v-if="isBudgetModified"
 			class="border-0 bg-transparent"
 			variant="destructive"
 		>
