@@ -175,6 +175,7 @@ function handleDelete() {
 					<NumberField
 						v-if="isEditable && node.id && !isSummary"
 						v-model="inputValue"
+						disable-wheel-change
 						locale="hu"
 						:min="0"
 					>
