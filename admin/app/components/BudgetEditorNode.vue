@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { throttleFilter } from '@vueuse/core';
 import type { Worksheet } from 'exceljs';
-import { ChevronDown, ChevronRight, Plus, Trash2 } from 'lucide-vue-next';
+import { ChevronDown, ChevronRight, Dot, Plus, Trash2 } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 import { cn } from '~/lib/utils';
 
@@ -86,7 +86,7 @@ function writeEconValue(id: string | number, name: string, value: number): numbe
 
 const inputValue = ref(readEconValue(node.id || '', node.name || ''));
 const bus = useCellChangedEvent();
-const { markModified } = useModifications();
+const { isNodeTreeModified, markModified } = useModifications();
 const { ignoreUpdates } = watchIgnorable(
 	inputValue,
 	() => {
@@ -152,7 +152,20 @@ function handleDelete() {
 					>
 						{{ node.id }}
 					</div>
-					<div class="grow">{{ node.name }}</div>
+					<div class="flex grow items-center gap-1">
+						{{ node.name }}
+						<div
+							v-if="
+								!isSummary &&
+								isNodeTreeModified(sheet?.name || '', String(node.id || ''))
+							"
+							class="relative size-4 overflow-hidden"
+						>
+							<Dot
+								class="text-destructive absolute top-1/2 left-1/2 size-8 -translate-x-1/2 -translate-y-1/2"
+							/>
+						</div>
+					</div>
 				</ItemTitle>
 			</ItemContent>
 			<ItemActions class="flex gap-2 py-2">

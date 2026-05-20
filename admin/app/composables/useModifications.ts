@@ -24,6 +24,30 @@ export default createGlobalState(() => {
 		modifications.value.clear();
 	}
 
+	function isModified(sheetName: string, id: string): boolean {
+		const key = generateKey(sheetName, id);
+		return modifications.value.has(key);
+	}
+
+	function isPrefixModified(prefix: string): boolean {
+		for (const key of modifications.value.keys()) {
+			if (key.startsWith(prefix)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	function isNodeTreeModified(sheetName: string, id: string) {
+		// using the fact that only econ nodes are editable
+		// and an econ child ID has the prefix of the parent ID
+		return isPrefixModified(generateKey(sheetName, id));
+	}
+
+	function isYearModified(year: string) {
+		return isPrefixModified(year);
+	}
+
 	const isBudgetModified = computed(() => modifications.value.size > 0);
 
 	const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
@@ -42,6 +66,9 @@ export default createGlobalState(() => {
 	return {
 		modifications, // FIXME only for debug, remove!
 		isBudgetModified,
+		isYearModified,
+		isNodeTreeModified,
+		isModified,
 		markModified,
 		markUnmodified,
 		markAllUnmodified,

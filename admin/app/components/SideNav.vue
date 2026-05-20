@@ -2,6 +2,7 @@
 import {
 	CalendarDays,
 	CircleAlert,
+	Dot,
 	Globe,
 	Image,
 	PictureInPicture,
@@ -12,7 +13,7 @@ import {
 import { cn } from '~/lib/utils';
 
 const { pending, years } = await useBudgetData();
-const { isBudgetModified } = useModifications();
+const { isBudgetModified, isYearModified } = useModifications();
 
 const yearItems = computed(() =>
 	Object.keys(years.value || {})
@@ -21,6 +22,7 @@ const yearItems = computed(() =>
 			href: `/budget/${slugifyYear(y)}/`,
 			text: y,
 			icon: CalendarDays,
+			warning: isYearModified(y),
 		})),
 );
 
@@ -108,6 +110,10 @@ onMounted(async () => {
 												:is="item.icon"
 												v-if="item.icon"
 											/>{{ item.text }}
+											<Dot
+												v-if="item.warning"
+												class="text-destructive! ml-auto size-8!"
+											/>
 										</NuxtLink>
 									</SidebarMenuSubButton>
 								</SidebarMenuSubItem>
