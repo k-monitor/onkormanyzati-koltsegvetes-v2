@@ -11,7 +11,8 @@ import {
 } from 'lucide-vue-next';
 import { cn } from '~/lib/utils';
 
-const { isModified, pending, years } = await useBudgetData();
+const { pending, years } = await useBudgetData();
+const { isBudgetModified } = useModifications();
 
 const yearItems = computed(() =>
 	Object.keys(years.value || {})
@@ -37,7 +38,7 @@ const links = computed(() => {
 				},
 				...yearItems.value,
 			],
-			warning: isModified.value,
+			warning: isBudgetModified.value,
 		},
 		{ href: '/config/', text: 'Konfiguráció', icon: Settings },
 		{ href: '/logos/', text: 'Logók', icon: Image },

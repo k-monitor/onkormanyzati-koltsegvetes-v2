@@ -28,7 +28,7 @@ const types = [
 type TypeKey = (typeof types)[number]['key'];
 const type = ref<TypeKey>('econ');
 
-const { emptyFuncTree, markModified, workbook, years } = await useBudgetData();
+const { emptyFuncTree, workbook, years } = await useBudgetData();
 
 const sheetName = computed(() => {
 	const y = years.value?.[year];
@@ -98,7 +98,6 @@ const cellChanged = useCellChangedEvent(); // called throttled from BudgetEditor
 cellChanged.on(() => {
 	// value change, rows added or row deleted
 	updateEconTree();
-	markModified();
 });
 
 const sheet = computed(() => {

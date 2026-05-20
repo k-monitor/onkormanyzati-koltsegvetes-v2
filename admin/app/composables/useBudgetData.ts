@@ -5,24 +5,7 @@ import type { BudgetNode } from '../../../src/utils/types';
 export default createGlobalState(async () => {
 	// modified state
 
-	const isModified = ref(false);
-
-	function markModified() {
-		isModified.value = true;
-	}
-
-	const beforeUnloadHandler = (event: BeforeUnloadEvent) => {
-		event.preventDefault();
-		event.returnValue = true;
-	};
-
-	watch(isModified, (newValue) => {
-		if (newValue) {
-			window.addEventListener('beforeunload', beforeUnloadHandler);
-		} else {
-			window.removeEventListener('beforeunload', beforeUnloadHandler);
-		}
-	});
+	const { markAllUnmodified } = useModifications();
 
 	// xlsx
 
@@ -39,7 +22,7 @@ export default createGlobalState(async () => {
 			const wb = new ExcelJS.Workbook();
 			await wb.xlsx.load(buffer);
 			workbook.value = wb;
-			isModified.value = false;
+			markAllUnmodified();
 		} catch (error) {
 			console.error('Error loading budget.xlsx from server:', error);
 		} finally {
@@ -168,7 +151,5 @@ export default createGlobalState(async () => {
 
 		// derived data
 		years: readonly(years),
-		isModified: readonly(isModified),
-		markModified,
 	};
 });

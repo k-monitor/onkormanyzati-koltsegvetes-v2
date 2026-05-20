@@ -75,20 +75,24 @@ function readEconValue(id: string | number, name: string) {
 	return Number(rawValue.replace(/[^0-9-]+/g, ''));
 }
 
-function writeEconValue(id: string | number, name: string, value: number) {
+function writeEconValue(id: string | number, name: string, value: number): number | undefined {
 	const row = findEconRow(id, name);
-	if (!row) return;
+	if (!row) return undefined;
 	const valueCell = row.getCell(3);
+	const previousValue = (valueCell.result || valueCell.value)?.toString() || '';
 	valueCell.value = value;
+	return Number(previousValue.replace(/[^0-9-]+/g, ''));
 }
 
 const inputValue = ref(readEconValue(node.id || '', node.name || ''));
 const bus = useCellChangedEvent();
+const { markModified } = useModifications();
 const { ignoreUpdates } = watchIgnorable(
 	inputValue,
 	() => {
 		if (inputValue.value === undefined) inputValue.value = 0;
-		writeEconValue(node.id || '', node.name || '', inputValue.value);
+		const prev = writeEconValue(node.id || '', node.name || '', inputValue.value);
+		markModified(sheet?.value?.name || '', String(node.id || ''), prev);
 		bus.emit();
 	},
 	{
