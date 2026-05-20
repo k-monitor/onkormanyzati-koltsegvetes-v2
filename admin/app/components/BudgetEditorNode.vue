@@ -87,7 +87,7 @@ const bus = useCellChangedEvent();
 const { ignoreUpdates } = watchIgnorable(
 	inputValue,
 	() => {
-		if (inputValue.value === undefined) return;
+		if (inputValue.value === undefined) inputValue.value = 0;
 		writeEconValue(node.id || '', node.name || '', inputValue.value);
 		bus.emit();
 	},
