@@ -15,6 +15,11 @@ export default createGlobalState(() => {
 		}
 	}
 
+	function getPreviousValue(sheetName: string, id: string): number | undefined {
+		const key = generateKey(sheetName, id);
+		return modifications.value.get(key);
+	}
+
 	function markUnmodified(sheetName: string, id: string) {
 		const key = generateKey(sheetName, id);
 		modifications.value.delete(key);
@@ -64,7 +69,6 @@ export default createGlobalState(() => {
 	});
 
 	return {
-		modifications, // FIXME only for debug, remove!
 		isBudgetModified,
 		isYearModified,
 		isNodeTreeModified,
@@ -72,5 +76,6 @@ export default createGlobalState(() => {
 		markModified,
 		markUnmodified,
 		markAllUnmodified,
+		getPreviousValue,
 	};
 });
