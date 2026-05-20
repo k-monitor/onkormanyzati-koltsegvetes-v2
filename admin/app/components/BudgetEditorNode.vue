@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { throttleFilter } from '@vueuse/core';
 import type { Worksheet } from 'exceljs';
-import { ChevronDown, ChevronRight, Plus, Sigma, Trash2 } from 'lucide-vue-next';
+import { ChevronDown, ChevronRight, Plus, Trash2 } from 'lucide-vue-next';
 import type { BudgetNode } from '../../../src/utils/types';
 import { cn } from '~/lib/utils';
 
@@ -184,13 +184,11 @@ function handleDelete() {
 							<NumberFieldInput />
 							<NumberFieldIncrement />
 						</NumberFieldContent>
-						<div
+						<BudgetEditorNodeDiff
 							v-if="showChildrenSumWarning"
-							class="text-destructive relative flex items-center justify-center gap-3"
-						>
-							<Sigma class="absolute left-0 ml-4 size-4" />
-							{{ Number(sum).toLocaleString('hu') }}
-						</div>
+							:node-value="node.value"
+							:sum="sum"
+						/>
 					</NumberField>
 					<!-- summary row & func: not editable -->
 					<div
@@ -198,13 +196,11 @@ function handleDelete() {
 						:class="cn('text-right', isSummary && 'font-bold')"
 					>
 						{{ Number(node.value).toLocaleString('hu') }}
-						<div
+						<BudgetEditorNodeDiff
 							v-if="showChildrenSumWarning"
-							class="text-destructive flex items-center justify-center gap-3"
-						>
-							<Sigma class="size-4" />
-							{{ Number(sum).toLocaleString('hu') }}
-						</div>
+							:node-value="node.value"
+							:sum="sum"
+						/>
 					</div>
 				</div>
 			</ItemActions>
