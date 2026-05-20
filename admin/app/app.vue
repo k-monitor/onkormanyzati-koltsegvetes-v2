@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import 'vue-sonner/style.css';
 
-// FIXME replace all alert calls with toeast
 // TODO LATER replace confirm calls with AlertDialogs
 </script>
 

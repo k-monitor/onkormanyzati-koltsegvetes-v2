@@ -3,8 +3,9 @@ import { Download, Undo, Upload } from 'lucide-vue-next';
 
 const serverUrl = useServerUrl();
 
-const { downloadXlsxFromClient, isModified, loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } =
+const { downloadXlsxFromClient, loadBudgetXlsxFromServer, uploadBudgetXlsxToServer } =
 	await useBudgetData();
+const { isBudgetModified } = useModifications();
 
 function revertChanges() {
 	if (!confirm('Biztosan el akarod vetni a módosításokat?')) return;
@@ -24,7 +25,7 @@ async function save() {
 
 <template>
 	<PageFrame title="Költségvetés">
-		<PageSection v-if="isModified">
+		<PageSection v-if="isBudgetModified">
 			<p class="text-destructive *:text-destructive">
 				<strong>A költségvetés módosult, de még nem lett mentve</strong>
 				(feltöltve) a szerveren levő <code>budget.xlsx</code> fájlba. A módosítások
@@ -56,7 +57,7 @@ async function save() {
 		<PageSection>
 			<p>
 				Itt tudod letölteni a szerveren levő <code>budget.xlsx</code> fájlt.
-				<template v-if="isModified">
+				<template v-if="isBudgetModified">
 					Ez nem tartalmazza az admin felületen végzett és még nem mentett módosításokat.
 				</template>
 			</p>
@@ -80,7 +81,7 @@ async function save() {
 				Az alábbi gombbal tudsz feltölteni új <code>budget.xlsx</code> fájlt, felülírva a
 				szerveren levő változatot.
 				<strong
-					v-if="isModified"
+					v-if="isBudgetModified"
 					class="text-destructive"
 				>
 					A módosításaid el fognak veszni!
@@ -91,7 +92,7 @@ async function save() {
 			<template #actions>
 				<Button
 					as-child
-					:variant="isModified ? 'destructive' : undefined"
+					:variant="isBudgetModified ? 'destructive' : undefined"
 				>
 					<label>
 						<Upload />

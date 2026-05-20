@@ -232,7 +232,7 @@ function save() {
 					<Button
 						:disabled="!canSave"
 						type="submit"
-						>Mentés</Button
+						>Hozzáadás</Button
 					>
 				</DialogFooter>
 			</form>
