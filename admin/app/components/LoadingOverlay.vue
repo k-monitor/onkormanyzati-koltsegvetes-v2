@@ -6,7 +6,7 @@ const loading = useLoading();
 	<div
 		v-if="loading"
 		id="loading"
-		class="bg-background/75 absolute inset-0 z-10 flex flex-col items-center justify-center"
+		class="bg-background/75 fixed inset-0 z-10 flex flex-col items-center justify-center"
 	>
 		<Spinner class="mb-4 size-12" />
 		<h1
