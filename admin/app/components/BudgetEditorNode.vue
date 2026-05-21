@@ -135,7 +135,7 @@ function undo() {
 	<TooltipProvider>
 		<Collapsible v-model:open="isOpen">
 			<Item
-				class="mb-2 py-0"
+				class="mb-2 grow py-0"
 				:class="cn(isSummary && 'bg-muted')"
 				variant="outline"
 			>
@@ -254,7 +254,7 @@ function undo() {
 			</Item>
 			<CollapsibleContent
 				v-if="hasChildren"
-				:class="cn('mb-8', isSummary || 'mx-8')"
+				:class="cn('relative mb-8', isSummary || 'mx-8')"
 			>
 				<BudgetEditorNode
 					v-for="child in node.children"
@@ -264,7 +264,8 @@ function undo() {
 				/>
 				<Item
 					v-if="isEditable"
-					class="-mt-2"
+					class="p-2"
+					variant="outline"
 				>
 					<Button
 						class="cursor-pointer"
