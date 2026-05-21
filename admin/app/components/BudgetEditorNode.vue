@@ -101,15 +101,6 @@ const { ignoreUpdates } = watchIgnorable(
 	},
 );
 
-const { workbook } = await useBudgetData();
-watch(workbook, () => {
-	// file reloaded, e.g. on revert
-	ignoreUpdates(() => {
-		markUnmodified(sheet?.value?.name || '', String(node.id || ''));
-		bus.emit();
-	});
-});
-
 const nodeCreatorBus = useNodeCreatorEvent();
 function handleAdd() {
 	nodeCreatorBus.emit({ parentNode: node, sheet: sheet?.value });
@@ -134,6 +125,8 @@ function undo() {
 		if (v === undefined) return;
 		markUnmodified(sheet?.value?.name || '', String(node.id || ''));
 		inputValue.value = v;
+		writeEconValue(node.id || '', node.name || '', v);
+		bus.emit();
 	});
 }
 </script>
