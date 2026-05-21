@@ -254,27 +254,37 @@ function undo() {
 			</Item>
 			<CollapsibleContent
 				v-if="hasChildren"
-				:class="cn('relative mb-8', isSummary || 'mx-8')"
+				class="relative mb-8"
 			>
-				<BudgetEditorNode
-					v-for="child in node.children"
-					:key="child.id"
-					:is-editable="isEditable"
-					:node="child"
-				/>
-				<Item
-					v-if="isEditable"
-					class="p-2"
-					variant="outline"
-				>
-					<Button
-						class="cursor-pointer"
-						variant="secondary"
-						@click="handleAdd"
+				<div class="flex">
+					<div
+						v-if="!isSummary"
+						class="-mt-2 -mb-8 ml-5 w-3 border-l"
 					>
-						<Plus /> Új sor
-					</Button>
-				</Item>
+						&nbsp;
+					</div>
+					<div class="flex grow flex-col">
+						<BudgetEditorNode
+							v-for="child in node.children"
+							:key="child.id"
+							:is-editable="isEditable"
+							:node="child"
+						/>
+						<Item
+							v-if="isEditable"
+							class="p-2"
+							variant="outline"
+						>
+							<Button
+								class="cursor-pointer"
+								variant="secondary"
+								@click="handleAdd"
+							>
+								<Plus /> Új sor
+							</Button>
+						</Item>
+					</div>
+				</div>
 			</CollapsibleContent>
 		</Collapsible>
 	</TooltipProvider>
