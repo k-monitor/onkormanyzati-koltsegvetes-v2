@@ -176,6 +176,9 @@ const currentChildren = computed(() => {
 				const existing = merged.get(id);
 				if (existing) {
 					existing.total += child.value;
+					// years.value is sorted ascending, so later iterations
+					// overwrite earlier ones — label tracks the most recent name.
+					existing.node = child;
 				} else {
 					merged.set(id, { node: child, total: child.value });
 				}
