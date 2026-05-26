@@ -26,7 +26,7 @@ async function save() {
 <template>
 	<PageFrame title="Költségvetés">
 		<PageSection v-if="isBudgetModified">
-			<p class="text-destructive *:text-destructive">
+			<p class="text-modification *:text-modification">
 				<strong>A költségvetés módosult, de még nem lett mentve</strong>
 				(feltöltve) a szerveren levő <code>budget.xlsx</code> fájlba. A módosítások
 				elvesznek a böngészőlap bezárásakor, újratöltésekor, új költségvetés feltöltésekor,
@@ -46,7 +46,7 @@ async function save() {
 				</Button>
 				<Button
 					class="ml-auto"
-					variant="destructive"
+					variant="modification"
 					@click="revertChanges"
 				>
 					<Undo />
@@ -82,7 +82,7 @@ async function save() {
 				szerveren levő változatot.
 				<strong
 					v-if="isBudgetModified"
-					class="text-destructive"
+					class="text-modification"
 				>
 					A módosításaid el fognak veszni!
 				</strong>

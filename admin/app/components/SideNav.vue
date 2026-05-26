@@ -22,7 +22,7 @@ const yearItems = computed(() =>
 			href: `/budget/${slugifyYear(y)}/`,
 			text: y,
 			icon: CalendarDays,
-			warning: isYearModified(y),
+			modified: isYearModified(y),
 		})),
 );
 
@@ -40,7 +40,7 @@ const links = computed(() => {
 				},
 				...yearItems.value,
 			],
-			warning: isBudgetModified.value,
+			modified: isBudgetModified.value,
 		},
 		{ href: '/config/', text: 'Konfiguráció', icon: Settings },
 		{ href: '/logos/', text: 'Logók', icon: Image },
@@ -91,8 +91,8 @@ onMounted(async () => {
 									/>
 									{{ link.text }}
 									<CircleAlert
-										v-if="link.warning"
-										class="text-destructive ml-auto"
+										v-if="link.modified"
+										class="text-modification ml-auto"
 									/>
 								</NuxtLink>
 							</SidebarMenuButton>
@@ -111,8 +111,8 @@ onMounted(async () => {
 												v-if="item.icon"
 											/>{{ item.text }}
 											<Dot
-												v-if="item.warning"
-												class="text-destructive! ml-auto size-8!"
+												v-if="item.modified"
+												class="text-modification! ml-auto size-8!"
 											/>
 										</NuxtLink>
 									</SidebarMenuSubButton>

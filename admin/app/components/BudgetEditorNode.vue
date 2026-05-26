@@ -172,7 +172,7 @@ function undo() {
 								class="relative size-4 overflow-hidden"
 							>
 								<Dot
-									class="text-destructive absolute top-1/2 left-1/2 size-8 -translate-x-1/2 -translate-y-1/2"
+									class="text-modification absolute top-1/2 left-1/2 size-8 -translate-x-1/2 -translate-y-1/2"
 								/>
 							</div>
 						</div>
@@ -190,7 +190,7 @@ function undo() {
 								"
 								class="cursor-pointer"
 								size="sm"
-								variant="destructive"
+								variant="modification"
 								@click="undo"
 							>
 								<UndoDot />

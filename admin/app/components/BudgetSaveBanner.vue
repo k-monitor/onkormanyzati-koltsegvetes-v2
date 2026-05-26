@@ -30,8 +30,7 @@ async function save() {
 	>
 		<Alert
 			v-if="isBudgetModified"
-			class="border-0 bg-transparent"
-			variant="destructive"
+			class="text-modification border-0 bg-transparent"
 		>
 			<CircleAlert />
 			<AlertTitle>Nem mentett költségvetés módosítások</AlertTitle>
@@ -47,7 +46,7 @@ async function save() {
 			</AlertDescription>
 		</Alert>
 		<Button
-			variant="destructive"
+			variant="modification"
 			@click="revertChanges"
 			>Elvetés</Button
 		>
