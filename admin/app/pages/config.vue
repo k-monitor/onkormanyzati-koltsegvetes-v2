@@ -2,6 +2,7 @@
 import { Cog, Download, Upload } from 'lucide-vue-next';
 import { toast } from 'vue-sonner';
 
+const { loadFunctionsTsvFromServer } = await useBudgetData();
 const loading = useLoading();
 const serverUrl = useServerUrl();
 
@@ -11,6 +12,7 @@ async function newConfig() {
 	try {
 		await $fetch('/api/newConfig', { method: 'POST' });
 		toast.success('Új konfig sikeresen generálva!');
+		await loadFunctionsTsvFromServer();
 	} catch (e: unknown) {
 		console.error(e);
 		toast.error('Nem sikerült új konfigot generálni.');
@@ -19,8 +21,9 @@ async function newConfig() {
 	}
 }
 
-function uploadConfig(e: Event) {
-	upload('/api/config', 'config', e.target as HTMLInputElement);
+async function uploadConfig(e: Event) {
+	await upload('/api/config', 'config', e.target as HTMLInputElement);
+	await loadFunctionsTsvFromServer();
 }
 </script>
 

@@ -6,4 +6,5 @@ export default defineEventHandler(async (event) => {
 		event.node.req,
 		event.node.res,
 	);
+	await runPrepareScript(); // in order to regenerate functions.tsv
 });
