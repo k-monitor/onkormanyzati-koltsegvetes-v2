@@ -74,38 +74,58 @@ const inflationRates = computed(() => {
 	return CONFIG.inflations as Record<string, number>;
 });
 
-// Calculate cumulative inflation multipliers for each year (base = last/most recent year)
-// Uses ALL inflation years from config (sorted), not just data years, to handle gaps correctly
+// Calculate cumulative inflation multipliers for each year (base = last/most recent year).
+// Each data year is matched to the longest inflation key that is a prefix of it,
+// so keys like "2021" match "2021 valami" and "2021. 01." match "2021. 01. valami".
 const inflationMultipliers = computed(() => {
 	const multipliers: Record<string, number> = {};
 	const rates = inflationRates.value;
 
 	if (years.value.length === 0) return multipliers;
 
-	const firstYear = years.value[0]!;
-	const lastYear = years.value[years.value.length - 1]!;
+	const sortedInflationKeys = Object.keys(rates).sort();
 
-	// Last data year is base (multiplier = 1)
+	function longestPrefixMatch(dataYear: string): string | null {
+		let best: string | null = null;
+		for (const k of sortedInflationKeys) {
+			if (dataYear.startsWith(k) && (best === null || k.length > best.length)) {
+				best = k;
+			}
+		}
+		return best;
+	}
+
+	const lastYear = years.value[years.value.length - 1]!;
 	multipliers[lastYear] = 1;
 
-	// Collect all inflation years between first and last data year (inclusive start, exclusive end)
-	// This accounts for skipped data years whose inflation still compounds
-	const allInflationYears = Object.keys(rates)
-		.filter((y) => y >= firstYear && y < lastYear)
-		.sort();
+	const lastKey = longestPrefixMatch(lastYear);
+	const firstKey = longestPrefixMatch(years.value[0]!);
+	if (!lastKey || !firstKey) {
+		return multipliers;
+	}
 
-	// Calculate cumulative multipliers working backwards through ALL intermediate years
+	// Map each matched inflation key to its data year so we can store the multiplier under the data label
+	const dataYearByKey = new Map<string, string>();
+	for (const dy of years.value) {
+		const k = longestPrefixMatch(dy);
+		if (k) dataYearByKey.set(k, dy);
+	}
+
+	// Inflation keys between firstKey (inclusive) and lastKey (exclusive) — covers gaps in data years
+	const relevantKeys = sortedInflationKeys.filter((k) => k >= firstKey && k < lastKey);
+
 	let cumulative = 1;
-	for (let i = allInflationYears.length - 1; i >= 0; i--) {
-		const y = allInflationYears[i]!;
-		const rate = rates[y] || 0;
+	for (let i = relevantKeys.length - 1; i >= 0; i--) {
+		const k = relevantKeys[i]!;
+		const rate = rates[k] || 0;
 		cumulative *= 1 + rate / 100;
-		// Only store multiplier for years that have data
-		if (years.value.includes(y)) {
-			multipliers[y] = cumulative;
+		const dy = dataYearByKey.get(k);
+		if (dy) {
+			multipliers[dy] = cumulative;
 		}
 	}
 
+	// console.debug('[inflation] final multipliers:', multipliers);
 	return multipliers;
 });
 
