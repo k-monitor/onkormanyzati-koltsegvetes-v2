@@ -86,7 +86,7 @@ function writeEconValue(id: string | number, name: string, value: number): numbe
 
 const inputValue = ref(readEconValue(node.id || '', node.name || ''));
 const bus = useCellChangedEvent();
-const { getPreviousValue, isModified, isNodeTreeModified, markModified, markUnmodified } =
+const { getPreviousValue, isModified, isNewRow, isNodeTreeModified, markModified, markUnmodified } =
 	useModifications();
 const { ignoreUpdates } = watchIgnorable(
 	inputValue,
@@ -115,6 +115,11 @@ function handleDelete() {
 	const row = findEconRow(node.id || '', node.name || '');
 	if (row) {
 		sheet.value.spliceRows(row.number, 1);
+		if (isNewRow(sheet?.value?.name || '', String(node.id || ''))) {
+			markUnmodified(sheet?.value?.name || '', String(node.id || ''), true);
+		} else {
+			markModified(sheet?.value?.name || '', String(node.id || ''), inputValue.value);
+		}
 		bus.emit();
 	}
 }

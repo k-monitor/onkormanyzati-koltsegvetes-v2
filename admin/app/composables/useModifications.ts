@@ -28,10 +28,15 @@ export default createGlobalState(() => {
 		return modifications.value.get(key)?.previousValue;
 	}
 
-	function markUnmodified(sheetName: string, id: string) {
+	function isNewRow(sheetName: string, id: string): boolean {
+		const key = generateKey(sheetName, id);
+		return modifications.value.get(key)?.newRow || false;
+	}
+
+	function markUnmodified(sheetName: string, id: string, isDeletion: boolean = false) {
 		const key = generateKey(sheetName, id);
 		if (!modifications.value.has(key)) return;
-		if (modifications.value.get(key)?.newRow) return;
+		if (modifications.value.get(key)?.newRow && !isDeletion) return;
 		// we need to keep new rows tracked until save (markAllUnmodified)
 		modifications.value.delete(key);
 	}
@@ -84,6 +89,7 @@ export default createGlobalState(() => {
 		isYearModified,
 		isNodeTreeModified,
 		isModified,
+		isNewRow,
 		markModified,
 		markUnmodified,
 		markAllUnmodified,
