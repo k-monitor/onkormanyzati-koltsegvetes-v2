@@ -1,27 +1,38 @@
 export default createGlobalState(() => {
-	const modifications = useState<Map<string, number>>('modifications', () => new Map());
+	const modifications = useState<Map<string, { previousValue: number; newRow: boolean }>>(
+		'modifications',
+		() => new Map(),
+	);
 
 	function generateKey(sheetName: string, id: string) {
 		return `${sheetName}#${id}`;
 	}
 
-	function markModified(sheetName: string, id: string, previousValue: number | undefined) {
+	function markModified(
+		sheetName: string,
+		id: string,
+		previousValue: number | undefined,
+		newRow: boolean = false,
+	) {
 		if (!sheetName || !id || previousValue === undefined) return;
 		const key = generateKey(sheetName, id);
 		if (!modifications.value.has(key)) {
 			// only storing last saved state
 			// so not updating on every change
-			modifications.value.set(key, previousValue);
+			modifications.value.set(key, { previousValue, newRow });
 		}
 	}
 
 	function getPreviousValue(sheetName: string, id: string): number | undefined {
 		const key = generateKey(sheetName, id);
-		return modifications.value.get(key);
+		return modifications.value.get(key)?.previousValue;
 	}
 
 	function markUnmodified(sheetName: string, id: string) {
 		const key = generateKey(sheetName, id);
+		if (!modifications.value.has(key)) return;
+		if (modifications.value.get(key)?.newRow) return;
+		// we need to keep new rows tracked until save (markAllUnmodified)
 		modifications.value.delete(key);
 	}
 

@@ -110,6 +110,8 @@ const emit = defineEmits<{
 	(e: 'addedNodes'): void;
 }>();
 
+const { markModified } = useModifications();
+
 function save() {
 	if (!sheet.value || !parentNode.value) return;
 
@@ -126,7 +128,10 @@ function save() {
 		nodesToAdd.value.map((n) => [99, n.name + ` (${n.id})`, n.value]),
 	);
 
-	emit('addedNodes');
+	emit('addedNodes'); // to recalculate tree
+	nodesToAdd.value.forEach((node) =>
+		markModified(sheet.value!.name, String(node.id || ''), node.value, true),
+	);
 	dialogOpened.value = false;
 }
 </script>

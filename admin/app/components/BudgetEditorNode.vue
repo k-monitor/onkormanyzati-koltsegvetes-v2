@@ -179,7 +179,9 @@ function undo() {
 							<Button
 								v-if="
 									isEditable &&
-									isModified(sheet?.name || '', String(node.id || ''))
+									isModified(sheet?.name || '', String(node.id || '')) &&
+									getPreviousValue(sheet?.name || '', String(node.id || '')) !==
+										node.value
 								"
 								class="cursor-pointer"
 								size="sm"
