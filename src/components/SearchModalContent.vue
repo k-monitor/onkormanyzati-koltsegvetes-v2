@@ -1,5 +1,8 @@
 <script setup lang="ts">
 const { year, handleYearSelected } = useYear();
+const router = useRouter();
+const route = useRoute();
+const { pendingBudgetJump } = usePendingBudgetJump();
 
 type Suffix = {
 	label: string;
@@ -86,13 +89,22 @@ function jump(result: SearchResult) {
 	// TODO LATER eliminate jQuery (might need Bootstrap-Vue)
 	const $ = window.$;
 
+	$('#search-modal').modal('hide');
+	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
+
+	// On the global page, visualization/milestones don't exist — navigate to year page first
+	if (route.path === '/') {
+		pendingBudgetJump.value = result;
+		const targetYear = result.year ? String(result.year) : year.value;
+		router.push('/ev#' + slugify(targetYear));
+		return;
+	}
+
 	// Navigate to the correct year if result is from a different year
 	if (result.year && String(result.year) !== year.value) {
 		handleYearSelected(String(result.year));
 	}
 
-	$('#search-modal').modal('hide');
-	if ($('#mainNav .show').length > 0) $('#mainNav button').click();
 	scrollToElement($('#' + result.side), 72);
 
 	setTimeout(function () {
@@ -123,34 +135,34 @@ onMounted(() => {
 					<div class="input-group mb-3">
 						<div class="input-group-prepend">
 							<span
-								class="input-group-text"
 								id="searchTerm-label"
-								><i class="fas fa-fw fa-search"></i
-							></span>
+								class="input-group-text"
+								><i class="fas fa-fw fa-search"
+							/></span>
 						</div>
 						<input
+							id="searchTerm-input"
+							v-model="searchTerm"
 							aria-describedby="searchTerm-label"
 							aria-label="Szöveges keresés"
 							class="form-control"
-							id="searchTerm-input"
 							placeholder="Kulcsszó..."
 							type="text"
-							v-model="searchTerm"
 						/>
 					</div>
 					<div class="input-group mb-3">
 						<div class="input-group-prepend">
 							<span
-								class="input-group-text"
 								id="yearSelect-label"
-								><i class="fas fa-fw fa-calendar-alt"></i
-							></span>
+								class="input-group-text"
+								><i class="fas fa-fw fa-calendar-alt"
+							/></span>
 						</div>
 						<select
+							v-model="selectedYear"
 							aria-describedby="yearSelect-label"
 							aria-label="Év kiválasztása"
 							class="form-control"
-							v-model="selectedYear"
 						>
 							<option :value="undefined">Összes év</option>
 							<option
@@ -165,25 +177,25 @@ onMounted(() => {
 					<div class="input-group">
 						<div class="input-group-prepend">
 							<span
-								class="input-group-text"
 								id="valueTerm-label"
-								><i class="fas fa-fw fa-money-bill-wave"></i
-							></span>
+								class="input-group-text"
+								><i class="fas fa-fw fa-money-bill-wave"
+							/></span>
 						</div>
 						<input
+							v-model="valueTerm"
 							aria-describedby="valueTerm-label"
 							aria-label="Szűrés érték szerint"
 							class="form-control"
 							placeholder="Érték..."
 							type="text"
-							v-model="valueTerm"
 						/>
 						<div class="input-group-append">
 							<div class="dropdown">
 								<button
+									id="dropdownMenuButton"
 									class="btn btn-secondary dropdown-toggle"
 									type="button"
-									id="dropdownMenuButton"
 									data-toggle="dropdown"
 									aria-haspopup="true"
 									aria-expanded="false"
@@ -218,26 +230,26 @@ onMounted(() => {
 					<i
 						class="close fas fa-times-circle"
 						data-dismiss="modal"
-					></i>
+					/>
 				</button>
 			</div>
 			<div class="modal-body">
 				<p
-					class="text-center text-muted"
 					v-if="results.length == 0"
+					class="text-center text-muted"
 				>
 					<span v-if="searchTerm.length < 3">{{ CONFIG.search.tooShort }}</span>
 					<span v-else>{{ CONFIG.search.noResults }}</span>
 				</p>
 				<div class="list-group">
 					<div
-						class="d-flex list-group-item"
 						v-for="r in results"
 						:key="r.side + r.type + r.id"
+						class="d-flex list-group-item"
 					>
 						<div class="flex-grow-1 font-weight-bold mb-2">
 							<span>
-								<span v-html="r.name"></span>
+								<span v-html="r.name" />
 								<span
 									v-if="r.value"
 									class="ml-1 text-nowrap text-secondary"
@@ -248,15 +260,16 @@ onMounted(() => {
 							<br />
 
 							<small class="text-muted"
-								>({{ CONFIG.search[r.type] }}<span v-if="r.year">, {{ r.year }}</span
+								>({{ CONFIG.search[r.type]
+								}}<span v-if="r.year">, {{ r.year }}</span
 								>)</small
 							>
 							<br />
 							<span v-if="(r.tags || '').length > 0">
 								<span
-									class="badge badge-info font-weight-normal mr-2"
 									v-for="t in r.tags"
 									:key="t"
+									class="badge badge-info font-weight-normal mr-2"
 									>#{{ t }}</span
 								>
 								<br />
@@ -275,7 +288,7 @@ onMounted(() => {
 								href="javascript:void(0)"
 								@click="jump(r)"
 							>
-								<i class="far fa-hand-point-right"></i>
+								<i class="far fa-hand-point-right" />
 								<br />
 								{{ CONFIG.search[r.side] }}
 							</a>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { canShowMilestones, year, setHashMode, reinitializeFromHash } = useYear();
+const { canShowMilestones, year, handleYearSelected, setHashMode, reinitializeFromHash } = useYear();
 setHashMode('full');
 onMounted(() => {
 	reinitializeFromHash();
@@ -8,9 +8,18 @@ onMounted(() => {
 	if (pending) {
 		pendingBudgetJump.value = null;
 		const $ = window.$;
+		if (pending.year && String(pending.year) !== year.value) {
+			handleYearSelected(String(pending.year));
+		}
 		setTimeout(() => {
 			scrollToElement($('#' + pending.side), 72);
-			setTimeout(() => eventBus.emit('jump', pending), 1000);
+			setTimeout(() => {
+				if (pending.side === 'milestones') {
+					eventBus.emit('ms', pending.id);
+				} else {
+					eventBus.emit('jump', pending);
+				}
+			}, 1000);
 		}, 500);
 	}
 });
