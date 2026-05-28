@@ -191,7 +191,6 @@ onMounted(() => {
 	});
 
 	eventBus.on('jump', (target) => {
-		console.log('ON jump', target);
 		if (target.side == side) {
 			mode.value = target.type == 'econ' ? 0 : 1;
 			path.value = [];
