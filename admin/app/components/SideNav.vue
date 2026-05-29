@@ -54,6 +54,9 @@ const mounted = ref(false);
 onMounted(async () => {
 	mounted.value = true;
 });
+
+const publicUrl = usePublicUrl();
+const domain = computed(() => new URL(publicUrl.value).hostname);
 </script>
 
 <template>
@@ -64,6 +67,8 @@ onMounted(async () => {
 					<SidebarMenuButton size="lg">
 						<div class="grid flex-1 text-left text-lg leading-tight">
 							<span class="truncate font-semibold">KÖKÖ Admin</span>
+							<br />
+							<span class="text-muted-foreground text-sm">{{ domain }}</span>
 						</div>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
