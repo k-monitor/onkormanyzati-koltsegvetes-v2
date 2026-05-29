@@ -6,6 +6,10 @@ const links = [
 		href: 'https://github.com/k-monitor/onkormanyzati-koltsegvetes-v2',
 		text: 'Dokumentáció',
 	},
+	{
+		href: 'https://docs.google.com/document/u/1/d/e/2PACX-1vTXFt_lgaWxek33RM6kO4OtAq5Ja1FntR0kbyCWWjEAI577wcj6aKKLwznxUdY_EHM1NylPGiDSZ9QN/pub',
+		text: 'Súgó',
+	},
 ];
 
 const kokoUrl = usePublicUrl();

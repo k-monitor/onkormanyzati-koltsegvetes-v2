@@ -84,7 +84,7 @@ async function save() {
 				<a
 					href="https://github.com/k-monitor/onkormanyzati-koltsegvetes-v2#inputbudgetxlsx"
 					target="_blank"
-					>súgóban</a
+					>dokumentációban</a
 				>
 				írtakat.
 				<strong
