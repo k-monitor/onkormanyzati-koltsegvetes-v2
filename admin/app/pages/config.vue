@@ -40,7 +40,7 @@ async function uploadConfig(e: Event) {
 				<a
 					href="https://github.com/k-monitor/onkormanyzati-koltsegvetes-v2#inputconfigxlsx"
 					target="_blank"
-					>dokuemntációban</a
+					>dokumentációban</a
 				>
 				található részletes információ. Feltöltéskor a fájl neve mindegy, a meglevő
 				<code>config.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365 (*.xlsx) fájlt
