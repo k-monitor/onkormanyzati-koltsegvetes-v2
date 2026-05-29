@@ -4,9 +4,11 @@ const { title } = defineProps<{
 	title: string;
 }>();
 
+const cityName = await useCityName();
+
 useHead({
 	title,
-	titleTemplate: '%s | KÖKÖ Admin',
+	titleTemplate: computed(() => ['%s | KÖKÖ Admin', cityName.value].filter(Boolean).join(' - ')),
 });
 </script>
 

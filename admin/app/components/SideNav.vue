@@ -57,6 +57,8 @@ onMounted(async () => {
 
 const publicUrl = usePublicUrl();
 const domain = computed(() => new URL(publicUrl.value).hostname);
+
+const cityName = await useCityName();
 </script>
 
 <template>
@@ -64,10 +66,13 @@ const domain = computed(() => new URL(publicUrl.value).hostname);
 		<SidebarHeader>
 			<SidebarMenu>
 				<SidebarMenuItem>
-					<SidebarMenuButton size="lg">
+					<SidebarMenuButton
+						class="h-auto"
+						size="lg"
+					>
 						<div class="grid flex-1 text-left text-lg leading-tight">
 							<span class="truncate font-semibold">KÖKÖ Admin</span>
-							<br />
+							<span class="truncate text-2xl font-bold">{{ cityName }}</span>
 							<span class="text-muted-foreground text-sm">{{ domain }}</span>
 						</div>
 					</SidebarMenuButton>
