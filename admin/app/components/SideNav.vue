@@ -58,7 +58,7 @@ onMounted(async () => {
 const publicUrl = usePublicUrl();
 const domain = computed(() => new URL(publicUrl.value).hostname);
 
-const cityName = await useCityName();
+const { cityName } = useCityName();
 </script>
 
 <template>

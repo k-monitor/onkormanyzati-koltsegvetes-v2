@@ -4,7 +4,7 @@ const { title } = defineProps<{
 	title: string;
 }>();
 
-const cityName = await useCityName();
+const { cityName } = useCityName();
 
 useHead({
 	title,
