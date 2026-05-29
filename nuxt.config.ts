@@ -16,12 +16,7 @@ export default defineNuxtConfig({
 			publicDir: 'dist',
 		},
 	},
-	scripts: {
-		registry: {
-			googleAnalytics: true,
-			googleTagManager: true,
-		},
-	},
+	scripts: {},
 	vite: {
 		css: {
 			preprocessorOptions: {
