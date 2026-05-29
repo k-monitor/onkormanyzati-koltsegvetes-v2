@@ -20,7 +20,7 @@ const alreadyExists = computed(() => Object.keys(years.value || {}).includes(new
 
 const copyOptions = computed(() => [
 	{ value: 'NOTHING' as const, label: 'Maradjanak üresen' },
-	{ value: 'FULLTREE' as const, label: 'Teljes közgazdasági fa 0 értékekkel' },
+	{ value: 'FULLTREE' as const, label: 'Teljes közgazdasági fa/rovatrend 0 Ft értékekkel' },
 	{ value: 'EXISTING' as const, label: 'Másolás innen:' },
 ]);
 const copy = ref<(typeof copyOptions.value)[number]['value']>();

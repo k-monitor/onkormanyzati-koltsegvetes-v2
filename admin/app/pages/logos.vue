@@ -73,7 +73,7 @@ async function uploadLogo(e: Event, f: string) {
 					target="_blank"
 					>itt</a
 				>
-				tehető meg, az URL beírása után a <em>Scrape again</em> gombra kattinva.
+				tehető meg.
 			</p>
 		</PageSection>
 

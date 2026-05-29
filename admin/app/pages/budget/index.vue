@@ -79,15 +79,20 @@ async function save() {
 		<PageSection>
 			<p>
 				Az alábbi gombbal tudsz feltölteni új <code>budget.xlsx</code> fájlt, felülírva a
-				szerveren levő változatot.
+				szerveren levő változatot. Excel 2007-O365 (*.xlsx) fájlt kell feltölteni, melynek
+				szerkezete követi a
+				<a
+					href="https://github.com/k-monitor/onkormanyzati-koltsegvetes-v2#inputbudgetxlsx"
+					target="_blank"
+					>súgóban</a
+				>
+				írtakat.
 				<strong
 					v-if="isBudgetModified"
 					class="text-modification"
 				>
 					A módosításaid el fognak veszni!
 				</strong>
-				Excel 2007-O365 (<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete
-				követi a dokumentációban írtakat.
 			</p>
 			<template #actions>
 				<Button

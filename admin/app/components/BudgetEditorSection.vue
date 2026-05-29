@@ -116,9 +116,8 @@ const isEconAndFuncTotalDiffer = computed(() => {
 	<PageSection class="-mb-8 border-none pb-0!">
 		<p>
 			Az alábbiakban meg tudod tekinteni a költségvetési adatokat, és a közgazdasági bontást
-			lehetőséged van szerkeszteni. A beviteli mezők a rovatkódnak (pl. B1) megfelelő cellát
-			módosítják az Excel munkalapon. A főösszeget a program számolja és nem írja ki Excel-be,
-			az "F" betűvel kezdődő rovatkódok értékei nem számítanak bele.
+			lehetőséged van szerkeszteni. Az FT kóddal kezdődő összegek a főösszegbe nem számolódnak
+			bele. Az oldalon végzett módosításokat a Mentés gombbal el kell menteni.
 		</p>
 		<div class="mb-8 flex flex-wrap justify-between gap-4">
 			<ToggleGroup

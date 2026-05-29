@@ -89,8 +89,10 @@ onBeforeUnmount(() => {
 	<PageFrame title="Weboldal">
 		<PageSection>
 			<p>
-				A KÖKÖ site-ot a költségvetés, konfiguráció, vagy képek módosítása után le kell
-				generálni. Ez a folyamat akár 1-2 percig is tarthat.
+				A költségvetés, beállítások és képek feltöltését vagy módosítását követően a
+				költségvetést vizualizáló oldalt a <em>Generálás</em> gombbal lehet létrehozni,
+				frissíteni. Ezt követően a jobb felső sarokban található KÖKÖ gombbal lehet
+				megtekinteni az előnézetét. A folyamat akár 1-2 percig is tarthat.
 			</p>
 			<template #actions>
 				<Button @click="buildSite">
@@ -101,9 +103,13 @@ onBeforeUnmount(() => {
 		</PageSection>
 		<PageSection>
 			<p>
-				Generálás után a site fájljai letölthetőek ZIP-ben. Ez egy
-				<code>dist</code> mappát fog tartalmazni, ezt lehet webszerveren hosztolni. Fontos,
-				hogy a site végleges URL-jét a konfigban előzetesen be kell állítani!
+				Ahhoz, hogy saját webszerveren legyen tárolva és publikálva az oldal, a generálás
+				után az oldal fájljai letölthetőek ZIP tömörítésben. A ZIP fájl egy
+				<cpde>dist</cpde> mappát fog tartalmazni, ezt lehet saját szerveren hosztolni.
+			</p>
+			<p>
+				A letöltés előtt ajánlott az oldal végleges, nyilvános url-jét a config.xlsx-ben
+				beállítani.
 			</p>
 			<template #actions>
 				<Button

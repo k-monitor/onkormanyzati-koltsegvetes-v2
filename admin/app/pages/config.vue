@@ -31,10 +31,17 @@ async function uploadConfig(e: Event) {
 	<PageFrame title="Konfiguráció">
 		<PageSection>
 			<p>
-				Feltöltéskor a fájl neve mindegy, a szerveren levő
-				<code>config.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365
-				(<code>*.xlsx</code>) fájlt kell feltölteni, melynek szerkezete követi a
-				dokumentációban írtakat.
+				A honlap konfigurációs beállításait egy sablon alapján Excel fájlon keresztül lehet
+				szerkeszteni. A sablon paramétereihez annak egyes munkalapjai tartalmaznak
+				segítséget, az Excel fájl szerkezetéről a
+				<a
+					href="https://github.com/k-monitor/onkormanyzati-koltsegvetes-v2#inputconfigxlsx"
+					target="_blank"
+					>súgóban</a
+				>
+				található részletes információ. Feltöltéskor a fájl neve mindegy, a meglevő
+				<code>config.xlsx</code> fájl lesz felülírva vele. Excel 2007-O365 (*.xlsx) fájlt
+				kell feltölteni.
 			</p>
 			<template #actions>
 				<Button

@@ -36,8 +36,8 @@ async function copyToClipboard(path: string, maxHeight = '1200px') {
 	<PageFrame title="Beágyazás">
 		<PageSection>
 			<p>
-				A bevétel, kiadás és mérleg ábrák külön beágyazhatók más oldalakba az alábbi HTML
-				kódokkal.
+				A bevétel, kiadás, mérleg, térkép, bevételek idősorban és kiadások idősorban ábrák
+				külön beágyazhatók más oldalakba az alábbi HTML kódokkal.
 			</p>
 
 			<Alert
