@@ -171,7 +171,7 @@ function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode 
 
 // Parse allowed IDs for time series filtering from config (kgr sheet)
 const kgrFilter = computed(() => {
-	if (!CONFIG.timeseries?.kgr) return null;
+	if (!CONFIG.timeseries?.kgr || !CONFIG.timeseries.kgrOnly) return null;
 	const ids = (CONFIG.timeseries.kgr as string)
 		.split(',')
 		.map((s: string) => normalizeId(s.trim()))
@@ -578,6 +578,9 @@ function formatValue(value: number): string {
 
 // Navigation
 function drillDown(id: string) {
+	// The clicked bar/legend item may be removed from the DOM on drill-down while
+	// its tooltip is showing — clear any stray tip so it doesn't get stuck.
+	window.$('.tooltip').remove();
 	if (canDrillDown(id)) {
 		path.value.push(id);
 		hiddenSeries.value = new Set();
