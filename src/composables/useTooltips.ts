@@ -7,7 +7,11 @@ export function useTooltips() {
 		const isTouchDevice = window.matchMedia('(hover: none)').matches;
 
 		if (!isTouchDevice) {
-			$()('[data-toggle="tooltip"]').tooltip();
+			// trigger: 'hover' only (not 'hover focus') — these tooltips sit on
+			// clickable controls (nav pills, mode buttons, bars). With the default
+			// 'focus' trigger the tip stays visible after a click keeps the element
+			// focused, leaving it stuck on screen.
+			$()('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
 			return;
 		}
 
@@ -22,11 +26,14 @@ export function useTooltips() {
 	// :title values. Call this (via nextTick) after the year prop changes.
 	function reinitTooltips() {
 		$()('[data-toggle="tooltip"]').tooltip('dispose');
+		// Remove any orphaned tooltip divs left behind when their source element
+		// was removed from the DOM (e.g. an SVG bar) while the tip was visible.
+		$()('.tooltip').remove();
 		const isTouchDevice = window.matchMedia('(hover: none)').matches;
 		if (isTouchDevice) {
 			initTouchTooltips();
 		} else {
-			$()('[data-toggle="tooltip"]').tooltip();
+			$()('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
 		}
 	}
 

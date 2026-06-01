@@ -74,38 +74,58 @@ const inflationRates = computed(() => {
 	return CONFIG.inflations as Record<string, number>;
 });
 
-// Calculate cumulative inflation multipliers for each year (base = last/most recent year)
-// Uses ALL inflation years from config (sorted), not just data years, to handle gaps correctly
+// Calculate cumulative inflation multipliers for each year (base = last/most recent year).
+// Each data year is matched to the longest inflation key that is a prefix of it,
+// so keys like "2021" match "2021 valami" and "2021. 01." match "2021. 01. valami".
 const inflationMultipliers = computed(() => {
 	const multipliers: Record<string, number> = {};
 	const rates = inflationRates.value;
 
 	if (years.value.length === 0) return multipliers;
 
-	const firstYear = years.value[0]!;
-	const lastYear = years.value[years.value.length - 1]!;
+	const sortedInflationKeys = Object.keys(rates).sort();
 
-	// Last data year is base (multiplier = 1)
+	function longestPrefixMatch(dataYear: string): string | null {
+		let best: string | null = null;
+		for (const k of sortedInflationKeys) {
+			if (dataYear.startsWith(k) && (best === null || k.length > best.length)) {
+				best = k;
+			}
+		}
+		return best;
+	}
+
+	const lastYear = years.value[years.value.length - 1]!;
 	multipliers[lastYear] = 1;
 
-	// Collect all inflation years between first and last data year (inclusive start, exclusive end)
-	// This accounts for skipped data years whose inflation still compounds
-	const allInflationYears = Object.keys(rates)
-		.filter((y) => y >= firstYear && y < lastYear)
-		.sort();
+	const lastKey = longestPrefixMatch(lastYear);
+	const firstKey = longestPrefixMatch(years.value[0]!);
+	if (!lastKey || !firstKey) {
+		return multipliers;
+	}
 
-	// Calculate cumulative multipliers working backwards through ALL intermediate years
+	// Map each matched inflation key to its data year so we can store the multiplier under the data label
+	const dataYearByKey = new Map<string, string>();
+	for (const dy of years.value) {
+		const k = longestPrefixMatch(dy);
+		if (k) dataYearByKey.set(k, dy);
+	}
+
+	// Inflation keys between firstKey (inclusive) and lastKey (exclusive) — covers gaps in data years
+	const relevantKeys = sortedInflationKeys.filter((k) => k >= firstKey && k < lastKey);
+
 	let cumulative = 1;
-	for (let i = allInflationYears.length - 1; i >= 0; i--) {
-		const y = allInflationYears[i]!;
-		const rate = rates[y] || 0;
+	for (let i = relevantKeys.length - 1; i >= 0; i--) {
+		const k = relevantKeys[i]!;
+		const rate = rates[k] || 0;
 		cumulative *= 1 + rate / 100;
-		// Only store multiplier for years that have data
-		if (years.value.includes(y)) {
-			multipliers[y] = cumulative;
+		const dy = dataYearByKey.get(k);
+		if (dy) {
+			multipliers[dy] = cumulative;
 		}
 	}
 
+	// console.debug('[inflation] final multipliers:', multipliers);
 	return multipliers;
 });
 
@@ -151,7 +171,7 @@ function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode 
 
 // Parse allowed IDs for time series filtering from config (kgr sheet)
 const kgrFilter = computed(() => {
-	if (!CONFIG.timeseries?.kgr) return null;
+	if (!CONFIG.timeseries?.kgr || !CONFIG.timeseries.kgrOnly) return null;
 	const ids = (CONFIG.timeseries.kgr as string)
 		.split(',')
 		.map((s: string) => normalizeId(s.trim()))
@@ -404,6 +424,51 @@ const parentValues = computed(() => {
 	return result;
 });
 
+// Full sum of every item on the current level — including those hidden by the kgrOnly
+// filter. Shown as a dotted outline so the visible (filtered) stack isn't mistaken for
+// the level total. Only relevant in econ view with an active kgr filter, and only for
+// years where the filter actually drops some items while leaving others visible.
+const levelTotalValues = computed(() => {
+	if (view !== 'econ' || !kgrFilter.value) return null;
+	// When the user has isolated/hidden series, the stack no longer represents the
+	// kgr-visible total, so the full-level line would be misleading — drop it entirely.
+	if (hiddenSeries.value.size > 0) return null;
+	const filter = kgrFilter.value;
+	const result: Record<string, number> = {};
+	let any = false;
+	for (const year of years.value) {
+		const root = getRootForYear(year);
+		const node = getNodeAtPath(root, path.value);
+		if (!node?.children) continue;
+		let fullSum = 0;
+		let visibleCount = 0;
+		let filteredOut = false;
+		for (const child of node.children) {
+			const id = normalizeId(child.id);
+			if (id.startsWith('F')) continue;
+			fullSum += child.value;
+			if (filter.has(id)) {
+				visibleCount++;
+			} else {
+				// Removed by the kgr filter — this is what the dotted line surfaces.
+				filteredOut = true;
+			}
+		}
+		// Only show when the kgr filter drops some items but a visible stack still renders.
+		if (!filteredOut || visibleCount === 0 || fullSum <= 0) continue;
+		let display = fullSum;
+		if (mode.value === 'inflation' && inflationEnabled.value) {
+			display = fullSum * (inflationMultipliers.value[year] || 1);
+		} else if (mode.value === 'gdp' && gdpEnabled.value) {
+			const gdp = gdpValues.value[year];
+			display = gdp && gdp > 0 ? (fullSum / gdp) * 100 : 0;
+		}
+		result[year] = display;
+		any = true;
+	}
+	return any ? result : null;
+});
+
 // Scale calculations - max is now total of all visible series
 const maxValue = computed(() => {
 	let max = 0;
@@ -418,6 +483,12 @@ const maxValue = computed(() => {
 	if (parentValues.value) {
 		for (const year of years.value) {
 			const v = parentValues.value[year] || 0;
+			if (v > max) max = v;
+		}
+	}
+	if (levelTotalValues.value) {
+		for (const year of years.value) {
+			const v = levelTotalValues.value[year] || 0;
 			if (v > max) max = v;
 		}
 	}
@@ -558,6 +629,9 @@ function formatValue(value: number): string {
 
 // Navigation
 function drillDown(id: string) {
+	// The clicked bar/legend item may be removed from the DOM on drill-down while
+	// its tooltip is showing — clear any stray tip so it doesn't get stuck.
+	window.$('.tooltip').remove();
 	if (canDrillDown(id)) {
 		path.value.push(id);
 		hiddenSeries.value = new Set();
@@ -757,17 +831,29 @@ watch(
 
 							<!-- X-axis labels (years) -->
 							<g class="x-axis">
-								<a v-for="(year, index) in years" :key="year" :href="yearHref(year)">
+								<template v-for="(year, index) in years" :key="year">
+									<a v-if="!embedded" :href="yearHref(year)">
+										<text
+											:x="xScale(index)"
+											:y="innerHeight + 25"
+											class="axis-label axis-label-link"
+											:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
+											text-anchor="middle"
+										>
+											{{ year }}
+										</text>
+									</a>
 									<text
+										v-else
 										:x="xScale(index)"
 										:y="innerHeight + 25"
-										class="axis-label axis-label-link"
+										class="axis-label"
 										:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
 										text-anchor="middle"
 									>
 										{{ year }}
 									</text>
-								</a>
+								</template>
 							</g>
 
 							<!-- N/A indicator for years with no data at the drilled-into level -->
@@ -803,6 +889,24 @@ watch(
 										:fill="parentOutlineFill"
 										:stroke="parentOutlineStroke"
 										class="parent-outline"
+									/>
+								</template>
+							</g>
+
+							<!-- Dotted outline of the full level total, including items hidden by kgrOnly -->
+							<g v-if="levelTotalValues" class="level-total-outlines">
+								<template v-for="(year, yearIndex) in years" :key="'leveltotal-' + year">
+									<rect
+										v-if="levelTotalValues[year] !== undefined"
+										:x="xScale(yearIndex) - barWidth / 2"
+										:y="yScale(levelTotalValues[year] || 0)"
+										:width="barWidth"
+										:height="innerHeight - yScale(levelTotalValues[year] || 0)"
+										fill="none"
+										:stroke="parentOutlineStroke"
+										class="parent-outline level-total-outline"
+										data-toggle="tooltip"
+										title="A szint teljes összege (a szűrt tételekkel együtt)"
 									/>
 								</template>
 							</g>
@@ -1063,6 +1167,13 @@ watch(
 		stroke-width: 1;
 		stroke-dasharray: 3, 3;
 		pointer-events: none;
+	}
+
+	.level-total-outline {
+		stroke-width: 1.5;
+		stroke-dasharray: 4, 3;
+		// Re-enable hovering so the tooltip explaining the line can show.
+		pointer-events: stroke;
 	}
 
 	.na-circle {
