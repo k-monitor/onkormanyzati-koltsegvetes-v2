@@ -780,17 +780,29 @@ watch(
 
 							<!-- X-axis labels (years) -->
 							<g class="x-axis">
-								<a v-for="(year, index) in years" :key="year" :href="yearHref(year)">
+								<template v-for="(year, index) in years" :key="year">
+									<a v-if="!embedded" :href="yearHref(year)">
+										<text
+											:x="xScale(index)"
+											:y="innerHeight + 25"
+											class="axis-label axis-label-link"
+											:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
+											text-anchor="middle"
+										>
+											{{ year }}
+										</text>
+									</a>
 									<text
+										v-else
 										:x="xScale(index)"
 										:y="innerHeight + 25"
-										class="axis-label axis-label-link"
+										class="axis-label"
 										:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
 										text-anchor="middle"
 									>
 										{{ year }}
 									</text>
-								</a>
+								</template>
 							</g>
 
 							<!-- N/A indicator for years with no data at the drilled-into level -->
