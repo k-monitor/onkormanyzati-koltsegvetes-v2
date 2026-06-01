@@ -424,6 +424,51 @@ const parentValues = computed(() => {
 	return result;
 });
 
+// Full sum of every item on the current level — including those hidden by the kgrOnly
+// filter. Shown as a dotted outline so the visible (filtered) stack isn't mistaken for
+// the level total. Only relevant in econ view with an active kgr filter, and only for
+// years where the filter actually drops some items while leaving others visible.
+const levelTotalValues = computed(() => {
+	if (view !== 'econ' || !kgrFilter.value) return null;
+	// When the user has isolated/hidden series, the stack no longer represents the
+	// kgr-visible total, so the full-level line would be misleading — drop it entirely.
+	if (hiddenSeries.value.size > 0) return null;
+	const filter = kgrFilter.value;
+	const result: Record<string, number> = {};
+	let any = false;
+	for (const year of years.value) {
+		const root = getRootForYear(year);
+		const node = getNodeAtPath(root, path.value);
+		if (!node?.children) continue;
+		let fullSum = 0;
+		let visibleCount = 0;
+		let filteredOut = false;
+		for (const child of node.children) {
+			const id = normalizeId(child.id);
+			if (id.startsWith('F')) continue;
+			fullSum += child.value;
+			if (filter.has(id)) {
+				visibleCount++;
+			} else {
+				// Removed by the kgr filter — this is what the dotted line surfaces.
+				filteredOut = true;
+			}
+		}
+		// Only show when the kgr filter drops some items but a visible stack still renders.
+		if (!filteredOut || visibleCount === 0 || fullSum <= 0) continue;
+		let display = fullSum;
+		if (mode.value === 'inflation' && inflationEnabled.value) {
+			display = fullSum * (inflationMultipliers.value[year] || 1);
+		} else if (mode.value === 'gdp' && gdpEnabled.value) {
+			const gdp = gdpValues.value[year];
+			display = gdp && gdp > 0 ? (fullSum / gdp) * 100 : 0;
+		}
+		result[year] = display;
+		any = true;
+	}
+	return any ? result : null;
+});
+
 // Scale calculations - max is now total of all visible series
 const maxValue = computed(() => {
 	let max = 0;
@@ -438,6 +483,12 @@ const maxValue = computed(() => {
 	if (parentValues.value) {
 		for (const year of years.value) {
 			const v = parentValues.value[year] || 0;
+			if (v > max) max = v;
+		}
+	}
+	if (levelTotalValues.value) {
+		for (const year of years.value) {
+			const v = levelTotalValues.value[year] || 0;
 			if (v > max) max = v;
 		}
 	}
@@ -842,6 +893,24 @@ watch(
 								</template>
 							</g>
 
+							<!-- Dotted outline of the full level total, including items hidden by kgrOnly -->
+							<g v-if="levelTotalValues" class="level-total-outlines">
+								<template v-for="(year, yearIndex) in years" :key="'leveltotal-' + year">
+									<rect
+										v-if="levelTotalValues[year] !== undefined"
+										:x="xScale(yearIndex) - barWidth / 2"
+										:y="yScale(levelTotalValues[year] || 0)"
+										:width="barWidth"
+										:height="innerHeight - yScale(levelTotalValues[year] || 0)"
+										fill="none"
+										:stroke="parentOutlineStroke"
+										class="parent-outline level-total-outline"
+										data-toggle="tooltip"
+										title="A szint teljes összege (a szűrt tételekkel együtt)"
+									/>
+								</template>
+							</g>
+
 							<!-- Stacked bars for each year -->
 							<g class="bars">
 								<template v-for="(year, yearIndex) in years" :key="'year-' + year">
@@ -1098,6 +1167,13 @@ watch(
 		stroke-width: 1;
 		stroke-dasharray: 3, 3;
 		pointer-events: none;
+	}
+
+	.level-total-outline {
+		stroke-width: 1.5;
+		stroke-dasharray: 4, 3;
+		// Re-enable hovering so the tooltip explaining the line can show.
+		pointer-events: stroke;
 	}
 
 	.na-circle {
