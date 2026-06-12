@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
 
-const { side, view = 'func', embedded = false } = defineProps<{
+const {
+	side,
+	view = 'func',
+	embedded = false,
+} = defineProps<{
 	side: 'expense' | 'income';
 	view?: 'func' | 'econ';
 	embedded?: boolean;
@@ -16,7 +20,7 @@ function normalizeId(id: string | number | undefined): string {
 	// Strip leading zeros from letter-prefixed numeric IDs (e.g. "K01" → "K1", "K0000001" → "K1")
 	return s.replace(
 		/^([A-Za-z]+)0*(\d+)$/,
-		(_, prefix, digits) => prefix + String(Number(digits))
+		(_, prefix, digits) => prefix + String(Number(digits)),
 	);
 }
 
@@ -34,7 +38,7 @@ watch(
 		path.value = [];
 		hovered.value = null;
 		hiddenSeries.value = new Set();
-	}
+	},
 );
 
 // Toggle series visibility
@@ -133,16 +137,16 @@ const inflationMultipliers = computed(() => {
 const years = computed(() => {
 	// Parse allowed years from config (comma-separated string)
 	const allowedYears = CONFIG.timeseries?.years
-		? CONFIG.timeseries.years.split(',').map((y: string) => y.trim())
+		? String(CONFIG.timeseries.years || '')
+				.split(',')
+				.map((y: string) => y.trim())
 		: null;
 	const gdp = gdpValues.value;
 
 	return Object.keys(DATA)
 		.filter((year) => DATA[year]?.[side]?.[view])
 		.filter((year) => !allowedYears || allowedYears.includes(year))
-		.filter(
-			(year) => mode.value !== 'gdp' || (typeof gdp[year] === 'number' && gdp[year] > 0)
-		)
+		.filter((year) => mode.value !== 'gdp' || (typeof gdp[year] === 'number' && gdp[year] > 0))
 		.sort();
 });
 
@@ -263,7 +267,7 @@ const timeSeriesData = computed(() => {
 // Helper to get display value (raw, inflation-adjusted, or GDP-adjusted)
 function getDisplayValue(
 	series: { values: Record<string, number>; adjustedValues: Record<string, number> },
-	year: string
+	year: string,
 ): number {
 	if (mode.value === 'inflation' && inflationEnabled.value) {
 		return series.adjustedValues[year] || 0;
@@ -282,7 +286,7 @@ function getDisplayValue(
 // Helper to get string value (raw, inflation-adjusted, or GDP-adjusted)
 function getStringValue(
 	series: { values: Record<string, number>; adjustedValues: Record<string, number> },
-	year: string
+	year: string,
 ): string {
 	if (mode.value === 'inflation' && inflationEnabled.value) {
 		return groupNums(series.adjustedValues[year] || 0);
@@ -291,9 +295,7 @@ function getStringValue(
 		const gdp = gdpValues.value[year];
 		if (gdp && gdp > 0) {
 			// Show as percentage of GDP
-			return (
-				(((series.values[year] || 0) / gdp) * 100).toFixed(2).replace('.', ',') + ' %'
-			);
+			return (((series.values[year] || 0) / gdp) * 100).toFixed(2).replace('.', ',') + ' %';
 		}
 		return '0 %';
 	}
@@ -665,7 +667,7 @@ function canDrillDown(id: string): boolean {
 					(child) =>
 						view !== 'econ' ||
 						!kgrFilter.value ||
-						kgrFilter.value.has(normalizeId(child.id))
+						kgrFilter.value.has(normalizeId(child.id)),
 				);
 			if (filtered.length > 0) {
 				return true;
@@ -679,7 +681,7 @@ function canDrillDown(id: string): boolean {
 function getDelta(
 	seriesId: string,
 	year: string,
-	yearIndex: number
+	yearIndex: number,
 ): { value: number; percent: number | null } | null {
 	if (yearIndex === 0) return null;
 	const series = timeSeriesData.value.find((s) => s.id === seriesId);
@@ -722,18 +724,17 @@ const { regenerateTooltips, reinitTooltips } = useTooltips();
 
 onMounted(regenerateTooltips);
 onUpdated(regenerateTooltips);
-watch(
-	[() => view, () => side, mode, path, hiddenSeries],
-	() => nextTick(reinitTooltips),
-	{
-		deep: true,
-	}
-);
+watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitTooltips), {
+	deep: true,
+});
 </script>
 
 <template>
 	<div class="time-series">
-		<div v-if="years.length === 0" class="alert alert-info">
+		<div
+			v-if="years.length === 0"
+			class="alert alert-info"
+		>
 			Nincs elérhető funkcionális adat ehhez a kategóriához.
 		</div>
 
@@ -756,8 +757,14 @@ watch(
 				</nav>
 
 				<!-- Mode chooser: regular, inflation, GDP -->
-				<div v-if="inflationEnabled || gdpEnabled" class="mode-toggle">
-					<div class="btn-group btn-group-sm" role="group">
+				<div
+					v-if="inflationEnabled || gdpEnabled"
+					class="mode-toggle"
+				>
+					<div
+						class="btn-group btn-group-sm"
+						role="group"
+					>
 						<button
 							class="btn"
 							:class="mode === 'regular' ? 'btn-primary' : 'btn-outline-secondary'"
@@ -831,13 +838,21 @@ watch(
 
 							<!-- X-axis labels (years) -->
 							<g class="x-axis">
-								<template v-for="(year, index) in years" :key="year">
-									<a v-if="!embedded" :href="yearHref(year)">
+								<template
+									v-for="(year, index) in years"
+									:key="year"
+								>
+									<a
+										v-if="!embedded"
+										:href="yearHref(year)"
+									>
 										<text
 											:x="xScale(index)"
 											:y="innerHeight + 25"
 											class="axis-label axis-label-link"
-											:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
+											:class="{
+												'axis-label-muted': yearStates[year] === 'na',
+											}"
 											text-anchor="middle"
 										>
 											{{ year }}
@@ -858,14 +873,20 @@ watch(
 
 							<!-- N/A indicator for years with no data at the drilled-into level -->
 							<g class="na-markers">
-								<template v-for="(year, yearIndex) in years" :key="'na-' + year">
+								<template
+									v-for="(year, yearIndex) in years"
+									:key="'na-' + year"
+								>
 									<g
 										v-if="yearStates[year] === 'na'"
 										:transform="`translate(${xScale(yearIndex)}, ${innerHeight - 22})`"
 										data-toggle="tooltip"
 										title="Nincs megjeleníthető adat."
 									>
-										<circle r="16" class="na-circle" />
+										<circle
+											r="16"
+											class="na-circle"
+										/>
 										<text
 											text-anchor="middle"
 											dominant-baseline="central"
@@ -878,8 +899,14 @@ watch(
 							</g>
 
 							<!-- Dotted outline of the parent bar (the item we drilled into) -->
-							<g v-if="parentValues" class="parent-outlines">
-								<template v-for="(year, yearIndex) in years" :key="'outline-' + year">
+							<g
+								v-if="parentValues"
+								class="parent-outlines"
+							>
+								<template
+									v-for="(year, yearIndex) in years"
+									:key="'outline-' + year"
+								>
 									<rect
 										v-if="parentValues[year] !== undefined"
 										:x="xScale(yearIndex) - barWidth / 2"
@@ -894,8 +921,14 @@ watch(
 							</g>
 
 							<!-- Dotted outline of the full level total, including items hidden by kgrOnly -->
-							<g v-if="levelTotalValues" class="level-total-outlines">
-								<template v-for="(year, yearIndex) in years" :key="'leveltotal-' + year">
+							<g
+								v-if="levelTotalValues"
+								class="level-total-outlines"
+							>
+								<template
+									v-for="(year, yearIndex) in years"
+									:key="'leveltotal-' + year"
+								>
 									<rect
 										v-if="levelTotalValues[year] !== undefined"
 										:x="xScale(yearIndex) - barWidth / 2"
@@ -913,7 +946,10 @@ watch(
 
 							<!-- Stacked bars for each year -->
 							<g class="bars">
-								<template v-for="(year, yearIndex) in years" :key="'year-' + year">
+								<template
+									v-for="(year, yearIndex) in years"
+									:key="'year-' + year"
+								>
 									<rect
 										v-for="series in stackedData"
 										:key="'bar-' + series.id + '-' + year"
@@ -928,7 +964,7 @@ watch(
 											bgColor(
 												series.id,
 												hovered === series.id,
-												hovered !== null && hovered !== series.id
+												hovered !== null && hovered !== series.id,
 											)
 										"
 										:stroke="strokeColor(series.id, hovered === series.id)"
@@ -939,7 +975,8 @@ watch(
 										:title="series.name"
 										@mouseenter="
 											hovered = series.id;
-											hoverSide = yearIndex >= years.length / 2 ? 'right' : 'left';
+											hoverSide =
+												yearIndex >= years.length / 2 ? 'right' : 'left';
 										"
 										@mouseleave="hovered = null"
 										@click="drillDown(series.id)"
@@ -963,14 +1000,19 @@ watch(
 								<th>Év</th>
 								<th class="text-right">
 									Összeg
-									<template v-if="mode === 'inflation'"> ({{ baseYear }})</template>
+									<template v-if="mode === 'inflation'">
+										({{ baseYear }})</template
+									>
 									<template v-if="mode === 'gdp'"> (% GDP)</template>
 								</th>
 								<th class="text-right">Változás</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="(year, index) in years" :key="year">
+							<tr
+								v-for="(year, index) in years"
+								:key="year"
+							>
 								<td>{{ year }}</td>
 								<td class="text-right">
 									{{ getStringValue(hoveredSeries, year) }}
@@ -991,7 +1033,10 @@ watch(
 			</div>
 
 			<!-- Legend -->
-			<div class="legend" :class="{ 'is-embedded': embedded }">
+			<div
+				class="legend"
+				:class="{ 'is-embedded': embedded }"
+			>
 				<div
 					v-for="series in timeSeriesData"
 					:key="'legend-' + series.id"
@@ -1011,7 +1056,10 @@ watch(
 						:style="{ backgroundColor: bgColor(series.id, false, false) }"
 					/>
 					<span class="legend-label">{{ series.name }}</span>
-					<i v-if="canDrillDown(series.id)" class="fas fa-fw fa-level-down-alt ml-1" />
+					<i
+						v-if="canDrillDown(series.id)"
+						class="fas fa-fw fa-level-down-alt ml-1"
+					/>
 					<button
 						class="toggle-visibility-btn"
 						:class="{ 'is-hidden': hiddenSeries.has(series.id) }"
@@ -1028,7 +1076,10 @@ watch(
 			</div>
 
 			<!-- Details panel for mobile (below legend) -->
-			<div v-if="hoveredSeries" class="details-panel details-panel-mobile">
+			<div
+				v-if="hoveredSeries"
+				class="details-panel details-panel-mobile"
+			>
 				<h5>{{ hoveredSeries.name }}</h5>
 				<table class="table table-sm">
 					<thead>
@@ -1044,7 +1095,10 @@ watch(
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(year, index) in years" :key="year">
+						<tr
+							v-for="(year, index) in years"
+							:key="year"
+						>
 							<td>{{ year }}</td>
 							<td class="name-cell">{{ hoveredSeries.names[year] || '—' }}</td>
 							<td class="text-right">

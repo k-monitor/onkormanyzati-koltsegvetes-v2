@@ -14,7 +14,9 @@ const isEconEnabled = computed(() => props.econEnabled !== false);
 
 const years = computed(() => {
 	const allowedYears = CONFIG.timeseries?.years
-		? CONFIG.timeseries.years.split(',').map((y: string) => y.trim())
+		? String(CONFIG.timeseries.years || '')
+				.split(',')
+				.map((y: string) => y.trim())
 		: null;
 	return Object.keys(DATA)
 		.filter((year) => !allowedYears || allowedYears.includes(year))
@@ -33,7 +35,7 @@ const hasFuncData = computed(() => {
 		years.value.some(
 			(year) =>
 				(DATA[year]?.expense?.func && props.side === 'expense') ||
-				(DATA[year]?.income?.func && props.side === 'income')
+				(DATA[year]?.income?.func && props.side === 'income'),
 		)
 	);
 });
@@ -45,7 +47,7 @@ const hasEconData = computed(() => {
 		years.value.some(
 			(year) =>
 				(DATA[year]?.expense?.econ && props.side === 'expense') ||
-				(DATA[year]?.income?.econ && props.side === 'income')
+				(DATA[year]?.income?.econ && props.side === 'income'),
 		)
 	);
 });
@@ -54,7 +56,10 @@ const activeView = ref<'func' | 'econ'>(hasFuncData.value ? 'func' : 'econ');
 </script>
 
 <template>
-	<section class="page-section" :class="{ 'is-embedded': embedded }">
+	<section
+		class="page-section"
+		:class="{ 'is-embedded': embedded }"
+	>
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-10 text-center">
@@ -67,10 +72,16 @@ const activeView = ref<'func' | 'econ'>(hasFuncData.value ? 'func' : 'econ');
 			</div>
 
 			<!-- View tabs -->
-			<div class="row justify-content-center mb-4" v-if="hasFuncData && hasEconData">
+			<div
+				v-if="hasFuncData && hasEconData"
+				class="row justify-content-center mb-4"
+			>
 				<div class="col-lg-8 text-center">
 					<ul class="justify-content-center mb-3 nav nav-pills w-100">
-						<li class="nav-item" v-if="hasFuncData">
+						<li
+							v-if="hasFuncData"
+							class="nav-item"
+						>
 							<a
 								class="nav-link"
 								:class="{ active: activeView === 'func' }"
@@ -83,7 +94,10 @@ const activeView = ref<'func' | 'econ'>(hasFuncData.value ? 'func' : 'econ');
 								{{ CONFIG.vis?.func || 'Funkcionális nézet' }}
 							</a>
 						</li>
-						<li class="nav-item" v-if="hasEconData">
+						<li
+							v-if="hasEconData"
+							class="nav-item"
+						>
 							<a
 								class="nav-link"
 								:class="{ active: activeView === 'econ' }"
@@ -102,12 +116,22 @@ const activeView = ref<'func' | 'econ'>(hasFuncData.value ? 'func' : 'econ');
 
 			<div class="row justify-content-center">
 				<div class="col-lg-10">
-					<TimeSeries :side="side" :view="activeView" :embedded="embedded" />
+					<TimeSeries
+						:side="side"
+						:view="activeView"
+						:embedded="embedded"
+					/>
 				</div>
 			</div>
-			<div class="row justify-content-center mt-5" v-if="text">
+			<div
+				v-if="text"
+				class="row justify-content-center mt-5"
+			>
 				<div class="col-lg-8 text-center">
-					<VueMarkdown :source="text" :anchorAttributes="{ target: '_blank' }" />
+					<VueMarkdown
+						:source="text"
+						:anchor-attributes="{ target: '_blank' }"
+					/>
 				</div>
 			</div>
 		</div>
