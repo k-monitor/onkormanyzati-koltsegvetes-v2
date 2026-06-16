@@ -25,6 +25,11 @@ const filteredMilestones = computed(() => {
 	);
 });
 
+// Milestones hidden from the section (onlyOnMap). We still render their modals so they
+// can be opened from the budget module (camera button) or search, even when the map
+// module is disabled or no coordinates are set.
+const hiddenMilestones = computed(() => milestones.value.filter((m) => m.onlyOnMap));
+
 
 onMounted(() => {
 	// TODO LATER eliminate jQuery
@@ -120,6 +125,16 @@ onMounted(() => {
 					/>
 				</div>
 			</div>
+			<!-- Modals for milestones hidden from the section (onlyOnMap), so they can still
+			     be opened from the budget module or search. No cards are rendered. -->
+			<Milestone
+				v-for="m in hiddenMilestones"
+				:key="'hidden-' + m.id"
+				:milestone="m"
+				:next-id="''"
+				:prev-id="''"
+				:modal-only="true"
+			/>
 		</div>
 	</section>
 </template>

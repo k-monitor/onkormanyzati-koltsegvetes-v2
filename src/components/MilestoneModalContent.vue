@@ -166,7 +166,7 @@ onMounted(() => {
 					</div>
 					<div class="d-flex flex-wrap">
 						<button
-							v-if="milestone.position && !mapModal"
+							v-if="milestone.position && !mapModal && CONFIG.modules.map"
 							class="btn btn-sm btn-primary mb-3 mb-md-2 mr-2 col-12 col-md-auto"
 							@click="jumpMap(modalId.replace('milestone-modal-', ''))"
 						>

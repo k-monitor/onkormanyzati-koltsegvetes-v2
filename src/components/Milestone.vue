@@ -4,6 +4,9 @@ defineProps<{
 	nextId: string;
 	prevId: string;
 	mapModal?: boolean;
+	// Render only the modal (no clickable card). Used so milestones hidden from the
+	// section (onlyOnMap) can still be opened from the budget module / search.
+	modalOnly?: boolean;
 }>();
 
 function modalId(milestoneId: string, mapModal: boolean = false): string {
@@ -15,8 +18,8 @@ function modalId(milestoneId: string, mapModal: boolean = false): string {
 	<div
 		class="milestone d-flex flex-column align-items-end w-100"
 		data-toggle="modal"
+		v-if="!mapModal && !modalOnly"
 		:data-target="'#' + modalId(milestone.id, mapModal )"
-		v-if="!mapModal"
 	>
 		<div class="embed-responsive embed-responsive-16by9">
 			<div
