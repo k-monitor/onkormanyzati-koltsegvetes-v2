@@ -8,6 +8,8 @@ const props = defineProps<{
 	nextId: string;
 	prevId: string;
 	mapModal?: boolean;
+	// render only the modal (no grid card), keeping the normal modal id
+	modalOnly?: boolean;
 }>();
 
 function modalId(milestoneId: string, mapModal: boolean = false): string {
@@ -44,7 +46,7 @@ const budgetTotal = computed(() => {
 
 <template>
 	<div
-		v-if="!mapModal"
+		v-if="!mapModal && !modalOnly"
 		class="milestone d-flex flex-column align-items-end w-100"
 		data-toggle="modal"
 		:data-target="'#' + modalId(milestone.id, mapModal)"
