@@ -25,6 +25,12 @@ const filteredMilestones = computed(() => {
 	);
 });
 
+// Milestones hidden from the grid (onlyOnMap) still need their modals rendered
+// so they can be opened from the expenses/revenues chart via the 'ms' event.
+const mapOnlyMilestones = computed(() =>
+	milestones.value.filter((m) => m.onlyOnMap),
+);
+
 const msHandler = (id: string) => {
 	tag.value = null;
 	nextTick(() => {
@@ -119,6 +125,20 @@ onUnmounted(() => {
 					/>
 				</div>
 			</div>
+
+			<!-- Modals for onlyOnMap milestones (no grid card), openable from the chart -->
+			<Milestone
+				v-for="(m, i) in mapOnlyMilestones"
+				:key="m.id"
+				:milestone="m"
+				:next-id="mapOnlyMilestones[(i + 1) % mapOnlyMilestones.length]?.id || ''"
+				:prev-id="
+					mapOnlyMilestones[
+						(mapOnlyMilestones.length + i - 1) % mapOnlyMilestones.length
+					]?.id || ''
+				"
+				:modal-only="true"
+			/>
 		</div>
 	</section>
 </template>
