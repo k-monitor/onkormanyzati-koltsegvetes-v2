@@ -144,6 +144,12 @@ function down(node: BudgetNode, index: number) {
 	window.$('.tooltip').remove();
 	if (node.children && node.children.length > 0) {
 		path.value.push(String(node.id));
+	} else {
+		// Lowest level: open the associated milestone card if there is one
+		const mid = milestoneId(node);
+		if (CONFIG.modules.milestones && mid) {
+			eventBus.emit('ms', mid);
+		}
 	}
 }
 
