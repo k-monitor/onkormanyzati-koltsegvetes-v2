@@ -145,6 +145,10 @@ function down(node: BudgetNode) {
 	window.$('.tooltip').remove();
 	if (node.children && node.children.length > 0) {
 		path.value.push(String(node.id));
+	} else if (CONFIG.modules.milestones) {
+		// at the lowest level, open the related milestone card (if any)
+		const mid = milestoneId(node);
+		if (mid) eventBus.emit('ms', mid);
 	}
 }
 
