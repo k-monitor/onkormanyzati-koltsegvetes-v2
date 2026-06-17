@@ -24,7 +24,7 @@ import validateData from './validate-data.js';
 	await prepareData();
 
 	// IN: input/config.xlsx
-	// OUT: src/data/milestones.json
+	// OUT: static/data/milestones.json
 	prepareMilestones();
 
 	// IN: input/tags.xlsx
