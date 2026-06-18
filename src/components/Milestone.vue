@@ -10,15 +10,26 @@ const props = defineProps<{
 	mapModal?: boolean;
 	// render only the modal (no grid card), keeping the normal modal id
 	modalOnly?: boolean;
+	// use a fixed modal element id instead of one derived from the milestone id,
+	// so a single host can swap its milestone without remounting the modal
+	modalIdOverride?: string;
+	// when provided, prev/next swap the displayed milestone via this callback
+	// instead of hiding/showing a sibling modal by id
+	navigate?: (direction: 'prev' | 'next') => void;
 }>();
 
 function modalId(milestoneId: string, mapModal: boolean = false): string {
 	return 'milestone-modal-' + (mapModal ? 'map-' : '') + milestoneId;
 }
 
+// The element id this component's modal actually uses (override wins).
+const resolvedModalId = computed(
+	() => props.modalIdOverride || modalId(props.milestone.id, props.mapModal || false)
+);
+
 onMounted(() => {
 	const $ = window.$;
-	const $modal = $(`#${modalId(props.milestone.id, props.mapModal || false)}`);
+	const $modal = $(`#${resolvedModalId.value}`);
 	$modal.on('show.bs.modal', () =>
 		handleMilestoneOpened(props.milestone.id, props.mapModal || false)
 	);
@@ -28,7 +39,7 @@ onMounted(() => {
 onUnmounted(() => {
 	const $ = window.$;
 	if ($) {
-		const $modal = $(`#${modalId(props.milestone.id, props.mapModal || false)}`);
+		const $modal = $(`#${resolvedModalId.value}`);
 		$modal.off('show.bs.modal');
 		$modal.off('hide.bs.modal');
 	}
@@ -76,17 +87,18 @@ const budgetTotal = computed(() => {
 		</h5>
 	</div>
 	<div
-		:id="modalId(milestone.id, mapModal)"
+		:id="resolvedModalId"
 		class="modal fade"
 		role="dialog"
 		tabindex="-1"
 	>
 		<MilestoneModalContent
 			:milestone="milestone"
-			:modal-id="modalId(milestone.id, mapModal)"
+			:modal-id="resolvedModalId"
 			:next-modal-id="modalId(nextId, mapModal)"
 			:prev-modal-id="modalId(prevId, mapModal)"
 			:map-modal="mapModal"
+			:navigate="navigate"
 		/>
 	</div>
 </template>

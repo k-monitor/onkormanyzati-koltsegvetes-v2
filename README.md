@@ -68,7 +68,7 @@ A vizualizáció az alábbi adatfájlokból dolgozik:
 - **src/data/config.js** - A weboldal beállításai, szövegei.
 - **src/data/data.json (generált)** - A vizualizáció adatai, előkészítve.
 - **src/data/functions.tsv (generált)** - A funkcionális kategóriák fa struktúrája.
-- **src/data/milestones.json (generált)** - A fejlesztések leírásai, előkészítve.
+- **static/data/milestones.json (generált)** - A fejlesztések leírásai, előkészítve.
 - **src/data/tags.json (generált)** - A kereső által használt címkehalmazok, előkészítve.
 - **src/data/tooltips.json (generált)** - Az egyes kategóriákhoz tartozó tooltip-ek szövegei, előkészítve.
 
@@ -240,9 +240,11 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 - **value** - Az adott node-hoz tartozó összeg.
 - **children** - Gyerek node-ok tömbje.
 
-### src/data/milestones.json (generált)
+### static/data/milestones.json (generált)
 
 Ezt a fájlt a `milestones.xlsx` tartalmából generálja a `prepare-milestones.js` szkript. Ez a fájl tartalmazza a _Fejlesztések_ szakasz tartalmát.
+
+A fájlt statikusan hosztoljuk, javascript-be bundle-ölés helyett, hogy nagy számú objektum esetén se terhelje le a build-et.
 
 Formátuma JSON, struktúra:
 

@@ -3,12 +3,15 @@ import search from '../utils/search';
 
 const router = useRouter();
 
-const { milestone, modalId, nextModalId, prevModalId, mapModal } = defineProps<{
+const { milestone, modalId, nextModalId, prevModalId, mapModal, navigate } = defineProps<{
 	milestone: MilestoneWithId;
 	modalId: string;
 	nextModalId: string;
 	prevModalId: string;
 	mapModal?: boolean;
+	// when set, prev/next swap this modal's milestone in place instead of
+	// hiding/showing a sibling modal by id (used by the on-demand host)
+	navigate?: (direction: 'prev' | 'next') => void;
 }>();
 
 const playing = ref(false);
@@ -38,11 +41,13 @@ function switchModal(id: string) {
 }
 
 function prev() {
-	switchModal(prevModalId);
+	if (navigate) navigate('prev');
+	else switchModal(prevModalId);
 }
 
 function next() {
-	switchModal(nextModalId);
+	if (navigate) navigate('next');
+	else switchModal(nextModalId);
 }
 
 function jumpBudget(result) {

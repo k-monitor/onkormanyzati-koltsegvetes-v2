@@ -1,8 +1,12 @@
 import fs from 'fs';
+import path from 'path';
 import xlsx from 'xlsx';
 
 const INPUT_FILE = './input/config.xlsx';
-const OUTPUT_FILE = './src/data/milestones.json';
+// Written to the public dir (not src/data) so it is served as a static asset and
+// lazy-loaded at runtime instead of bundled into the JS. The milestones dataset can be
+// tens of MB; bundling it can OOM `nuxt generate` and bloat the client chunk.
+const OUTPUT_FILE = './static/data/milestones.json';
 
 export default () => {
 	const workbook = xlsx.readFile(INPUT_FILE);
@@ -63,5 +67,6 @@ export default () => {
 		}
 	});
 
+	fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
 	fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output));
 };

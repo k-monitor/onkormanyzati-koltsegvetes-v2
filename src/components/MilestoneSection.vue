@@ -3,11 +3,7 @@ const { year, handleMilestoneOpened } = useYear();
 
 const tag = ref<string | null>(null);
 
-const milestones = computed(() =>
-	Object.entries(MILESTONES)
-		.filter((e) => e[1].year == year.value)
-		.map((e) => ({ ...e[1], id: e[0] }) as MilestoneWithId),
-);
+const milestones = computed(() => MILESTONES_BY_YEAR[year.value] || []);
 
 const tags = computed(() => {
 	const dict: Record<string, boolean> = {};
@@ -25,19 +21,52 @@ const filteredMilestones = computed(() => {
 	);
 });
 
-// Milestones hidden from the grid (onlyOnMap) still need their modals rendered
-// so they can be opened from the expenses/revenues chart via the 'ms' event.
+// Milestones hidden from the grid (onlyOnMap) are opened from the chart via the
+// 'ms' event. A year can have ~1000 of them, so rather than rendering a modal for
+// each (which froze the page and made year switches slow), we render a single
+// on-demand host modal and swap its milestone in place. This list only drives
+// prev/next cycling now, not rendering.
 const mapOnlyMilestones = computed(() =>
 	milestones.value.filter((m) => m.onlyOnMap),
 );
 
+const MAP_ONLY_MODAL_ID = 'milestone-modal-maponly';
+const activeMapOnly = ref<MilestoneWithId | null>(null);
+
+function openMapOnly(id: string) {
+	const raw = MILESTONES[id];
+	if (!raw) return;
+	activeMapOnly.value = { ...raw, id };
+	// Wait for the host modal to (re)render with this milestone, then show it.
+	nextTick(() => window.$('#' + MAP_ONLY_MODAL_ID).modal('show'));
+}
+
+function navigateMapOnly(direction: 'prev' | 'next') {
+	const list = mapOnlyMilestones.value;
+	if (!list.length) return;
+	const i = list.findIndex((m) => m.id === activeMapOnly.value?.id);
+	const base = i < 0 ? 0 : i;
+	const j =
+		direction === 'next'
+			? (base + 1) % list.length
+			: (list.length + base - 1) % list.length;
+	const target = list[j];
+	if (!target) return;
+	activeMapOnly.value = target;
+	handleMilestoneOpened(target.id);
+}
+
 const msHandler = (id: string) => {
 	tag.value = null;
 	nextTick(() => {
-		const $ = window.$;
-		const modal = $('#milestone-modal-' + id);
-		modal.modal('show');
-		handleMilestoneOpened(id);
+		// A grid card already renders this milestone's modal — show it directly.
+		// Otherwise it's an onlyOnMap milestone: route it through the host modal.
+		if (document.getElementById('milestone-modal-' + id)) {
+			window.$('#milestone-modal-' + id).modal('show');
+			handleMilestoneOpened(id);
+		} else {
+			openMapOnly(id);
+		}
 	});
 };
 
@@ -126,18 +155,16 @@ onUnmounted(() => {
 				</div>
 			</div>
 
-			<!-- Modals for onlyOnMap milestones (no grid card), openable from the chart -->
+			<!-- Single on-demand modal for onlyOnMap milestones (no grid card),
+			     openable from the chart. prev/next swap its milestone in place. -->
 			<Milestone
-				v-for="(m, i) in mapOnlyMilestones"
-				:key="m.id"
-				:milestone="m"
-				:next-id="mapOnlyMilestones[(i + 1) % mapOnlyMilestones.length]?.id || ''"
-				:prev-id="
-					mapOnlyMilestones[
-						(mapOnlyMilestones.length + i - 1) % mapOnlyMilestones.length
-					]?.id || ''
-				"
+				v-if="activeMapOnly"
+				:milestone="activeMapOnly"
+				:next-id="''"
+				:prev-id="''"
 				:modal-only="true"
+				:modal-id-override="MAP_ONLY_MODAL_ID"
+				:navigate="navigateMapOnly"
 			/>
 		</div>
 	</section>
