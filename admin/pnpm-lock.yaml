@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  exceljs@4.4.0: 20a7d1a741c570b1605bec4956277d3d28ca1555ae05aaea6dc8ecd064a84542
+  exceljs@4.4.0: d787c44cb958cdadb661627f1f8a14350642a2ec1b83882895c3d22b73ef152c
 
 importers:
 
@@ -22,7 +22,7 @@ importers:
         version: 2.1.1
       exceljs:
         specifier: 4.4.0
-        version: 4.4.0(patch_hash=20a7d1a741c570b1605bec4956277d3d28ca1555ae05aaea6dc8ecd064a84542)
+        version: 4.4.0(patch_hash=d787c44cb958cdadb661627f1f8a14350642a2ec1b83882895c3d22b73ef152c)
       lucide-vue-next:
         specifier: ^0.577.0
         version: 0.577.0(vue@3.5.31(typescript@5.9.3))
@@ -7474,7 +7474,7 @@ snapshots:
 
   events@3.3.0: {}
 
-  exceljs@4.4.0(patch_hash=20a7d1a741c570b1605bec4956277d3d28ca1555ae05aaea6dc8ecd064a84542):
+  exceljs@4.4.0(patch_hash=d787c44cb958cdadb661627f1f8a14350642a2ec1b83882895c3d22b73ef152c):
     dependencies:
       archiver: 5.3.2
       dayjs: 1.11.19
