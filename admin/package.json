@@ -14,7 +14,7 @@
 		"archiver": "^7.0.1",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"exceljs": "^4.4.0",
+		"exceljs": "4.4.0",
 		"lucide-vue-next": "^0.577.0",
 		"multer": "^2.1.1",
 		"nuxt": "^4.4.2",
