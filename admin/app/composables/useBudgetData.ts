@@ -30,8 +30,24 @@ export default createGlobalState(async () => {
 		}
 	}
 
+	function fixForExcel(workbook: ExcelJS.Workbook) {
+		// fix invalid DPI values
+		workbook.worksheets.forEach((ws) => {
+			if (ws.pageSetup) {
+				ws.pageSetup.horizontalDpi = 96;
+				ws.pageSetup.verticalDpi = 96;
+			}
+		});
+
+		// remove external references
+		workbook.definedNames.model = workbook.definedNames.model.filter(
+			(dnrs) => !dnrs.ranges[0]?.includes('['),
+		);
+	}
+
 	async function downloadXlsxFromClient() {
 		if (!workbook.value) return;
+		fixForExcel(workbook.value);
 		const buffer = await workbook.value.xlsx.writeBuffer();
 		const blob = new Blob([buffer], {
 			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -51,6 +67,7 @@ export default createGlobalState(async () => {
 		if (!workbook.value) return;
 		let success = false;
 		workbookPending.value = true;
+		fixForExcel(workbook.value);
 		const buffer = await workbook.value.xlsx.writeBuffer();
 		const blob = new Blob([buffer], {
 			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
