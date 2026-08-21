@@ -11,6 +11,12 @@ export type BudgetNode = {
 	name: string;
 	children?: BudgetNode[];
 	value: number;
+	/**
+	 * "Államháztartási azonosító" — a stable, place-independent identifier of the
+	 * budget item. Only present when the AHT column is enabled in the config and
+	 * filled in budget.xlsx. Used by the time series to match items across years.
+	 */
+	aht?: string;
 };
 
 export type BudgetData = {

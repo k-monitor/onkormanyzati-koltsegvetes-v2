@@ -24,8 +24,21 @@ function normalizeId(id: string | number | undefined): string {
 	);
 }
 
+// Config values come from XLSX cells, so a "0" may arrive as a string.
+function configEnabled(value: unknown): boolean {
+	const v = String(value ?? '')
+		.trim()
+		.toLowerCase();
+	return v !== '' && v !== '0' && v !== 'false';
+}
+
+// Items are identified by their key: the AHT code when we have one (see the
+// cross-year matching block below), the normalized economic ID otherwise.
 const path = ref<string[]>([]);
 const hovered = ref<string | null>(null);
+// Year of the hovered bar; null when the hover came from the legend, which
+// isn't tied to a year.
+const hoveredYear = ref<string | null>(null);
 const hoverSide = ref<'left' | 'right'>('left');
 const hiddenSeries = ref<Set<string>>(new Set());
 // mode: 'regular' | 'inflation' | 'gdp'
@@ -37,18 +50,19 @@ watch(
 	() => {
 		path.value = [];
 		hovered.value = null;
+		hoveredYear.value = null;
 		hiddenSeries.value = new Set();
 	},
 );
 
 // Toggle series visibility
-function toggleSeriesVisibility(id: string, event: Event) {
+function toggleSeriesVisibility(key: string, event: Event) {
 	event.stopPropagation();
 	const newSet = new Set(hiddenSeries.value);
-	if (newSet.has(id)) {
-		newSet.delete(id);
+	if (newSet.has(key)) {
+		newSet.delete(key);
 	} else {
-		newSet.add(id);
+		newSet.add(key);
 	}
 	hiddenSeries.value = newSet;
 }
@@ -161,18 +175,6 @@ function getRootForYear(year: string): BudgetNode | null {
 	return DATA[year]?.[side]?.[view] || null;
 }
 
-// Navigate to a node following the current path
-function getNodeAtPath(root: BudgetNode | null, nodePath: string[]): BudgetNode | null {
-	if (!root) return null;
-	let current = root;
-	for (const id of nodePath) {
-		const child = current.children?.find((c) => normalizeId(c.id) === id);
-		if (!child) return null;
-		current = child;
-	}
-	return current;
-}
-
 // Parse allowed IDs for time series filtering from config (kgr sheet)
 const kgrFilter = computed(() => {
 	if (!CONFIG.timeseries?.kgr || !CONFIG.timeseries.kgrOnly) return null;
@@ -183,90 +185,502 @@ const kgrFilter = computed(() => {
 	return ids.length > 0 ? new Set(ids) : null;
 });
 
-// Get children of current node (union across all years, so items only present in later years still appear)
-const currentChildren = computed(() => {
-	const merged = new Map<string, { node: BudgetNode; total: number }>();
+// Skip the balance rows (FH/FT), they are only meant for the Mérleg chart
+function isBalanceItem(node: BudgetNode): boolean {
+	return normalizeId(node.id).startsWith('F');
+}
+
+function passesKgrFilter(node: BudgetNode): boolean {
+	if (view !== 'econ' || !kgrFilter.value) return true;
+	return kgrFilter.value.has(normalizeId(node.id));
+}
+
+function isVisibleChild(node: BudgetNode): boolean {
+	return !isBalanceItem(node) && passesKgrFilter(node);
+}
+
+/* --- Cross-year matching by AHT code ---------------------------------------
+ * Economic IDs (K1101…) encode where an item sits in the budget, so they get
+ * renumbered whenever something is inserted or removed above them — the same
+ * item can be K11010404 one year and K11010403 the next. Names change too.
+ * AHT ("államháztartási azonosító") codes stay with the item, so when the
+ * budget provides them (see the `timeseries.aht` config option) series are
+ * keyed by AHT instead of by position, and an item that was reorganized into
+ * another place can still be found and followed — flagged as uncertain.
+ */
+
+const AHT_KEY_PREFIX = 'aht:';
+
+type AhtEntry = {
+	node: BudgetNode;
+	/** Ancestors from the root down to the node's parent. */
+	parents: BudgetNode[];
+};
+
+const ahtLookup = computed(() => {
+	const byYear: Record<string, Map<string, AhtEntry>> = {};
+	// Economic IDs of the AHT-keyed nodes, for config lookups keyed by ID (colors).
+	const econIds = new Map<string, string>();
+	let found = false;
+
+	// AHT codes only exist on the economic side — the functional tree is built
+	// from functions.tsv, where the IDs are already stable across years.
+	if (view !== 'econ' || !configEnabled(CONFIG.timeseries?.aht)) {
+		return { byYear, econIds, found };
+	}
+
+	for (const year of years.value) {
+		const root = getRootForYear(year);
+		if (!root) continue;
+		const map = new Map<string, AhtEntry>();
+		const parents: BudgetNode[] = [];
+		const walk = (node: BudgetNode) => {
+			// A code should appear once per year; on a duplicate we keep the first.
+			if (node.aht && !map.has(node.aht)) {
+				map.set(node.aht, { node, parents: [...parents] });
+				econIds.set(AHT_KEY_PREFIX + node.aht, normalizeId(node.id));
+				found = true;
+			}
+			if (node.children) {
+				parents.push(node);
+				node.children.forEach(walk);
+				parents.pop();
+			}
+		};
+		walk(root);
+		byYear[year] = map;
+	}
+
+	return { byYear, econIds, found };
+});
+
+// Enabled by config *and* actually present in the data
+const ahtEnabled = computed(() => ahtLookup.value.found);
+
+function seriesKey(node: BudgetNode): string {
+	if (ahtEnabled.value && node.aht) return AHT_KEY_PREFIX + node.aht;
+	return normalizeId(node.id);
+}
+
+function ahtOfKey(key: string): string | null {
+	return key.startsWith(AHT_KEY_PREFIX) ? key.slice(AHT_KEY_PREFIX.length) : null;
+}
+
+function findByAht(year: string, key: string): AhtEntry | null {
+	const aht = ahtOfKey(key);
+	if (!aht) return null;
+	return ahtLookup.value.byYear[year]?.get(aht) || null;
+}
+
+// Colors are configured per economic ID, so AHT keys need translating back.
+function colorKey(key: string): string {
+	return ahtLookup.value.econIds.get(key) || key;
+}
+
+// How many ancestor levels a warning names. The full path from the root repeats
+// context the reader already has from the breadcrumb, and turns the warnings
+// into a wall of text as soon as a few items moved in the same year.
+const LOCATION_LEVELS = 2;
+
+// Human-readable place of an item inside a year's tree, for the warnings
+function describeLocation(parents: BudgetNode[]): string {
+	const names = parents.map((p) => p.name).filter((name) => name && name !== 'Összesen');
+	if (names.length === 0) return 'Összesen';
+	const innermost = names.slice(-LOCATION_LEVELS);
+	return (innermost.length < names.length ? '… → ' : '') + innermost.join(' → ');
+}
+
+/**
+ * Walks `keys` down a year's tree. A step that isn't among the children is
+ * looked up by its AHT code anywhere in that year's tree, so a reorganized
+ * item is still found — `movedTo` then tells where it turned up.
+ */
+function resolveForYear(
+	year: string,
+	keys: string[],
+): { node: BudgetNode; movedTo: string | null } | null {
+	const root = getRootForYear(year);
+	if (!root) return null;
+	let current = root;
+	let movedTo: string | null = null;
+	for (const key of keys) {
+		let next = current.children?.find((child) => seriesKey(child) === key);
+		if (!next) {
+			const entry = findByAht(year, key);
+			if (!entry) return null;
+			next = entry.node;
+			movedTo = describeLocation(entry.parents);
+		}
+		current = next;
+	}
+	return { node: current, movedTo };
+}
+
+function getNodeForYear(year: string, keys: string[]): BudgetNode | null {
+	return resolveForYear(year, keys)?.node || null;
+}
+
+/**
+ * Every AHT code inside a node's subtree, memoised (the trees come from a static
+ * JSON import, so the sets stay valid for the lifetime of the page).
+ */
+const subtreeAhtCache = new WeakMap<BudgetNode, Set<string>>();
+function subtreeAhtCodes(node: BudgetNode): Set<string> {
+	const cached = subtreeAhtCache.get(node);
+	if (cached) return cached;
+	const codes = new Set<string>();
+	const walk = (n: BudgetNode) => {
+		if (n.aht) codes.add(n.aht);
+		n.children?.forEach(walk);
+	};
+	walk(node);
+	subtreeAhtCache.set(node, codes);
+	return codes;
+}
+
+/**
+ * How much two nodes contain the same budget items, as a Jaccard index of their
+ * AHT code sets. Section-level nodes (chapters, titles) often have no AHT of
+ * their own, or get a new one when the budget is restructured, so their own code
+ * can't identify them across years — but their content still can.
+ */
+function contentSimilarity(a: BudgetNode, b: BudgetNode) {
+	const codesA = subtreeAhtCodes(a);
+	const codesB = subtreeAhtCodes(b);
+	if (codesA.size === 0 || codesB.size === 0) return { shared: 0, similarity: 0 };
+	const [small, large] = codesA.size <= codesB.size ? [codesA, codesB] : [codesB, codesA];
+	let shared = 0;
+	for (const code of small) if (large.has(code)) shared++;
+	return { shared, similarity: shared / (codesA.size + codesB.size - shared) };
+}
+
+// Below this the two nodes have too little in common to call them the same item.
+// Tuned on the central budget: real renames land at 0.4+, genuinely different
+// funds and chapters that happen to swap places stay near 0.1.
+const MIN_CONTENT_SIMILARITY = 0.4;
+
+// Years where the item we drilled into is not in its usual place
+const pathMoves = computed(() => {
+	const result: Record<string, string> = {};
+	if (!ahtEnabled.value || path.value.length === 0) return result;
+	for (const year of years.value) {
+		const movedTo = resolveForYear(year, path.value)?.movedTo;
+		if (movedTo) result[year] = movedTo;
+	}
+	return result;
+});
+
+/** One item of the current level, with the node it maps to in each year. */
+type LevelItem = {
+	key: string;
+	/** Most recent node of the item — provides its label and its AHT code. */
+	node: BudgetNode;
+	byYear: Record<string, BudgetNode>;
+	/** Every AHT code the item was seen under, newest first. */
+	ahts: string[];
+	/** Years matched by content rather than by AHT code / economic ID. */
+	rematches: Record<string, { from: string; shared: number; similarity: number }>;
+};
+
+/**
+ * The items of the current level, aligned across years (union, so items only
+ * present in some years still appear). Matching goes AHT code → economic ID →
+ * content similarity, the last one covering the section levels: chapters and
+ * titles are renumbered and renamed freely, and often carry no AHT code of
+ * their own, so without it the same ministry would be split into two series
+ * (and mixed with whatever else took its place).
+ */
+const levelItems = computed(() => {
+	const items: LevelItem[] = [];
+	const byKey = new Map<string, LevelItem>();
 	let leafFallback: BudgetNode | null = null;
 
 	for (const year of years.value) {
-		const root = getRootForYear(year);
-		const node = getNodeAtPath(root, path.value);
+		const node = getNodeForYear(year, path.value);
 		if (!node) continue;
-		if (node.children && node.children.length > 0) {
-			for (const child of node.children) {
-				const id = normalizeId(child.id);
-				if (id.startsWith('F')) continue;
-				if (view === 'econ' && kgrFilter.value && !kgrFilter.value.has(id)) continue;
-				const existing = merged.get(id);
-				if (existing) {
-					existing.total += child.value;
-					// years.value is sorted ascending, so later iterations
-					// overwrite earlier ones — label tracks the most recent name.
-					existing.node = child;
-				} else {
-					merged.set(id, { node: child, total: child.value });
+		const children = (node.children || []).filter(isVisibleChild);
+		if (children.length === 0) {
+			if (!leafFallback) leafFallback = node;
+			continue;
+		}
+
+		let unmatched: BudgetNode[] = [];
+		for (const child of children) {
+			const item = byKey.get(seriesKey(child));
+			if (item && !item.byYear[year]) {
+				item.byYear[year] = child;
+				// years.value is sorted ascending, so later iterations overwrite
+				// earlier ones — the label tracks the most recent name.
+				item.node = child;
+				if (child.aht && item.ahts[0] !== child.aht) item.ahts.unshift(child.aht);
+			} else {
+				unmatched.push(child);
+			}
+		}
+
+		if (ahtEnabled.value && unmatched.length > 0) {
+			// Items with nothing at this level in this year, and whose AHT codes are
+			// gone for good — none of them shows up in this or any later year. An
+			// item whose code comes back later didn't get renamed: the budget was
+			// restructured around it (a level inserted or removed), and gluing it to
+			// whatever took its place would splice two different items together.
+			// Items still present elsewhere in the tree are excluded by the same
+			// test; those were relocated, and are picked up as such further down.
+			const remainingYears = years.value.slice(years.value.indexOf(year));
+			const open = items.filter(
+				(item) =>
+					!item.byYear[year] &&
+					!item.ahts.some((aht) =>
+						remainingYears.some((later) => ahtLookup.value.byYear[later]?.has(aht)),
+					),
+			);
+			const pairs: {
+				child: BudgetNode;
+				item: LevelItem;
+				shared: number;
+				similarity: number;
+			}[] = [];
+			for (const child of unmatched) {
+				for (const item of open) {
+					const match = contentSimilarity(child, item.node);
+					if (match.similarity >= MIN_CONTENT_SIMILARITY)
+						pairs.push({ child, item, ...match });
 				}
 			}
-		} else if (!leafFallback) {
-			leafFallback = node;
+			// Greedy: the most similar pair wins, then both sides are taken.
+			pairs.sort((a, b) => b.similarity - a.similarity);
+			const takenChildren = new Set<BudgetNode>();
+			const takenItems = new Set<LevelItem>();
+			for (const pair of pairs) {
+				if (takenChildren.has(pair.child) || takenItems.has(pair.item)) continue;
+				takenChildren.add(pair.child);
+				takenItems.add(pair.item);
+				pair.item.rematches[year] = {
+					from: pair.item.node.name,
+					shared: pair.shared,
+					similarity: pair.similarity,
+				};
+				pair.item.byYear[year] = pair.child;
+				pair.item.node = pair.child;
+				if (pair.child.aht) pair.item.ahts.unshift(pair.child.aht);
+				// Register the new key so the following years match without a search.
+				byKey.set(seriesKey(pair.child), pair.item);
+			}
+			unmatched = unmatched.filter((child) => !takenChildren.has(child));
+		}
+
+		for (const child of unmatched) {
+			// A key can already be taken when an earlier content match adopted it;
+			// suffixing keeps the two apart instead of dropping one of them.
+			const key = seriesKey(child);
+			const item: LevelItem = {
+				key: byKey.has(key) ? `${key}#${items.length}` : key,
+				node: child,
+				byYear: { [year]: child },
+				ahts: child.aht ? [child.aht] : [],
+				rematches: {},
+			};
+			items.push(item);
+			if (!byKey.has(key)) byKey.set(key, item);
 		}
 	}
 
-	if (merged.size === 0) {
-		return leafFallback ? [leafFallback] : [];
+	if (items.length === 0 && leafFallback) {
+		items.push({
+			key: seriesKey(leafFallback),
+			node: leafFallback,
+			byYear: {},
+			ahts: leafFallback.aht ? [leafFallback.aht] : [],
+			rematches: {},
+		});
+		return items;
 	}
 
-	return Array.from(merged.values())
-		.map((entry) => entry.node)
-		.reverse();
+	return items.reverse();
 });
+
+type Series = {
+	/** Series identity: AHT code when available, economic ID otherwise */
+	key: string;
+	aht: string | null;
+	name: string;
+	values: Record<string, number>;
+	adjustedValues: Record<string, number>;
+	names: Record<string, string>;
+	/**
+	 * Years where the item wasn't in its usual place and had to be located by
+	 * its AHT code. `inside` means it turned up below this level, so its value
+	 * is already part of another bar segment here.
+	 */
+	moves: Record<string, { at: string; inside: boolean }>;
+	/** Years matched by content similarity — see `levelItems`. */
+	rematches: Record<string, { from: string; shared: number; similarity: number }>;
+};
 
 // Build time series data for all children
 const timeSeriesData = computed(() => {
-	const result: Record<
-		string,
-		{
-			id: string;
-			name: string;
-			values: Record<string, number>;
-			adjustedValues: Record<string, number>;
-			names: Record<string, string>;
-		}
-	> = {};
+	// The node the chart currently shows the breakdown of, per year — needed to
+	// tell a relocation *below* this level from one somewhere else entirely.
+	const levelNodes: Record<string, BudgetNode | null> = {};
+	for (const year of years.value) levelNodes[year] = getNodeForYear(year, path.value);
 
-	for (const child of currentChildren.value) {
-		const id = normalizeId(child.id);
-		result[id] = {
-			id,
-			name: child.name,
+	return levelItems.value.map((item) => {
+		const series: Series = {
+			key: item.key,
+			aht: item.node.aht || null,
+			name: item.node.name,
 			values: {},
 			adjustedValues: {},
 			names: {},
+			moves: {},
+			rematches: item.rematches,
 		};
-	}
+
+		for (const year of years.value) {
+			const multiplier = inflationMultipliers.value[year] || 1;
+			const record = (node: BudgetNode) => {
+				series.values[year] = node.value;
+				series.adjustedValues[year] = node.value * multiplier;
+				series.names[year] = node.name;
+			};
+
+			const node = item.byYear[year];
+			if (node) {
+				record(node);
+				continue;
+			}
+			if (!ahtEnabled.value) continue;
+
+			// Missing from this level: follow the AHT code to wherever the item
+			// ended up this year, so the series stays comparable — but remember
+			// that it was reorganized, as that makes the comparison uncertain.
+			const entry = item.ahts
+				.map((aht) => ahtLookup.value.byYear[year]?.get(aht))
+				.find(Boolean);
+			if (!entry) continue;
+			record(entry.node);
+			const levelNode = levelNodes[year];
+			series.moves[year] = {
+				at: describeLocation(entry.parents),
+				inside: !!levelNode && entry.parents.includes(levelNode),
+			};
+		}
+
+		return series;
+	});
+});
+
+// Years where an item on the chart was reorganized — relocated in the tree, or
+// only recognisable by its content — with a note for each. Surfaced as a ⚠
+// marker above the year's bar.
+const uncertainYears = computed(() => {
+	const result: Record<string, { name: string; reason: string }[]> = {};
+	if (!ahtEnabled.value) return result;
+	const drilledName = nodePath.value[nodePath.value.length - 1]?.name || '';
 
 	for (const year of years.value) {
-		const root = getRootForYear(year);
-		const node = getNodeAtPath(root, path.value);
-		const multiplier = inflationMultipliers.value[year] || 1;
-		if (node?.children) {
-			for (const child of node.children) {
-				const id = normalizeId(child.id);
-				if (result[id]) {
-					result[id]!.values[year] = child.value;
-					result[id]!.adjustedValues[year] = child.value * multiplier;
-					result[id]!.names[year] = child.name;
-				}
-			}
+		const entries: { name: string; reason: string }[] = [];
+		if (pathMoves.value[year]) entries.push({ name: drilledName, reason: 'máshol szerepel' });
+		for (const series of timeSeriesData.value) {
+			if (hiddenSeries.value.has(series.key)) continue;
+			const reason = shortReason(series, year);
+			if (reason) entries.push({ name: series.name, reason });
 		}
+		if (entries.length > 0) result[year] = entries;
 	}
-
-	return Object.values(result);
+	return result;
 });
+
+const hasUncertainty = computed(() => Object.keys(uncertainYears.value).length > 0);
+
+function describeMove(move?: { at: string; inside: boolean }): string {
+	if (!move) return '';
+	return move.inside
+		? `mélyebb szinten szerepel (${move.at}), az összege ott jelenik meg a sávban`
+		: `máshol szerepel (${move.at})`;
+}
+
+function describeRematch(rematch?: { from: string; shared: number; similarity: number }): string {
+	if (!rematch) return '';
+	return `más azonosítóval szerepel, a tartalma alapján párosítva (előző neve: „${rematch.from}”, ${rematch.shared} közös AHT kód)`;
+}
+
+/** Why a given year of a series is uncertain, or an empty string if it isn't. */
+function describeUncertainty(series: Series, year: string): string {
+	return describeMove(series.moves[year]) || describeRematch(series.rematches[year]);
+}
+
+function isUncertain(series: Series, year: string): boolean {
+	return !!series.moves[year] || !!series.rematches[year];
+}
+
+function hasAnyUncertainty(series: Series): boolean {
+	return Object.keys(series.moves).length > 0 || Object.keys(series.rematches).length > 0;
+}
+
+/** The kind of trouble, without the location — for the compact year summary. */
+function shortReason(series: Series, year: string): string {
+	const move = series.moves[year];
+	if (move) return move.inside ? 'mélyebb szinten szerepel' : 'máshol szerepel';
+	if (series.rematches[year]) return 'más azonosítóval szerepel';
+	return '';
+}
+
+/** "2018, 2020–2023" — consecutive years collapse into a range. */
+function joinYears(list: string[]): string {
+	const order = years.value;
+	const sorted = [...list].sort((a, b) => order.indexOf(a) - order.indexOf(b));
+	const runs: string[][] = [];
+	for (const year of sorted) {
+		const run = runs[runs.length - 1];
+		const previous = run?.[run.length - 1];
+		if (run && previous && order.indexOf(year) === order.indexOf(previous) + 1) run.push(year);
+		else runs.push([year]);
+	}
+	return runs
+		.map((run) => (run.length > 2 ? `${run[0]}–${run[run.length - 1]}` : run.join(', ')))
+		.join(', ');
+}
+
+// Years that share the same explanation are listed together, so a series that
+// sat elsewhere for eight years reads as one line instead of eight.
+function uncertaintyTooltip(series: Series): string {
+	const byNote = new Map<string, string[]>();
+	for (const year of years.value) {
+		const note = describeUncertainty(series, year);
+		if (!note) continue;
+		const list = byNote.get(note);
+		if (list) list.push(year);
+		else byNote.set(note, [year]);
+	}
+	const notes = [...byNote].map(([note, list]) => `${joinYears(list)}: ${note}`);
+	return `Ez a tétel átszervezés miatt nem mindig ugyanott szerepel, ezért az összehasonlítás bizonytalan${series.aht ? ` (AHT: ${series.aht})` : ''}. ${notes.join('; ')}`;
+}
+
+// How many item names the year summary spells out before it just counts them.
+const MAX_LISTED_ITEMS = 3;
+
+function yearUncertaintyTooltip(year: string): string {
+	const byReason = new Map<string, string[]>();
+	for (const { name, reason } of uncertainYears.value[year] || []) {
+		const list = byReason.get(reason);
+		if (list) list.push(name);
+		else byReason.set(reason, [name]);
+	}
+	const parts = [...byReason].map(([reason, names]) => {
+		const rest = names.length - MAX_LISTED_ITEMS;
+		const listed = names.slice(0, MAX_LISTED_ITEMS).join(', ');
+		return `${reason}: ${listed}${rest > 0 ? ` és további ${rest} tétel` : ''}`;
+	});
+	return `${year} – átszervezés. ${parts.join('; ')}. Részletek a jelmagyarázat ⚠ jelénél.`;
+}
 
 // Helper to get display value (raw, inflation-adjusted, or GDP-adjusted)
 function getDisplayValue(
-	series: { values: Record<string, number>; adjustedValues: Record<string, number> },
+	series: {
+		values: Record<string, number>;
+		adjustedValues: Record<string, number>;
+	},
 	year: string,
 ): number {
 	if (mode.value === 'inflation' && inflationEnabled.value) {
@@ -285,7 +699,10 @@ function getDisplayValue(
 
 // Helper to get string value (raw, inflation-adjusted, or GDP-adjusted)
 function getStringValue(
-	series: { values: Record<string, number>; adjustedValues: Record<string, number> },
+	series: {
+		values: Record<string, number>;
+		adjustedValues: Record<string, number>;
+	},
 	year: string,
 ): string {
 	if (mode.value === 'inflation' && inflationEnabled.value) {
@@ -302,24 +719,16 @@ function getStringValue(
 	return groupNums(series.values[year] || 0);
 }
 
-// Get current node name for breadcrumb
+// Get current node name for breadcrumb. Names can differ between years, so the
+// first year that resolves a given level provides its label.
 const nodePath = computed(() => {
-	const result: { id: string; name: string }[] = [{ id: '', name: 'Összesen' }];
+	const result: { key: string; name: string }[] = [{ key: '', name: 'Összesen' }];
 
 	for (const year of years.value) {
-		const root = getRootForYear(year);
-		if (!root) continue;
-
-		let current = root;
-		for (let i = 0; i < path.value.length; i++) {
-			const id = path.value[i];
-			const child = current.children?.find((c) => normalizeId(c.id) === id);
-			if (child) {
-				if (result.length <= i + 1) {
-					result.push({ id: normalizeId(child.id), name: child.name });
-				}
-				current = child;
-			}
+		for (let i = result.length - 1; i < path.value.length; i++) {
+			const node = getNodeForYear(year, path.value.slice(0, i + 1));
+			if (!node) break;
+			result.push({ key: path.value[i]!, name: node.name });
 		}
 		if (result.length > path.value.length) break;
 	}
@@ -334,19 +743,25 @@ const padding = { top: 20, right: 30, bottom: 40, left: 80 };
 const innerWidth = chartWidth - padding.left - padding.right;
 const innerHeight = chartHeight - padding.top - padding.bottom;
 
+/**
+ * Value a series contributes to the stacked bar. An item that moved *below*
+ * this level is already counted inside another segment of the same bar, so
+ * adding it again would inflate the stack — the details table still shows it.
+ */
+function getStackValue(series: Series, year: string): number {
+	if (series.moves[year]?.inside) return 0;
+	return getDisplayValue(series, year);
+}
+
 // Calculate stacked data - cumulative values for each year (excluding hidden series)
 const stackedData = computed(() => {
-	const result: {
-		id: string;
-		name: string;
-		values: Record<string, number>;
-		adjustedValues: Record<string, number>;
+	const result: (Series & {
 		stackedValues: Record<string, { y0: number; y1: number }>;
-	}[] = [];
+	})[] = [];
 
 	// Initialize with raw values (only non-hidden series)
 	for (const series of timeSeriesData.value) {
-		if (hiddenSeries.value.has(series.id)) continue;
+		if (hiddenSeries.value.has(series.key)) continue;
 		result.push({
 			...series,
 			stackedValues: {},
@@ -357,7 +772,7 @@ const stackedData = computed(() => {
 	for (const year of years.value) {
 		let cumulative = 0;
 		for (const series of result) {
-			const value = getDisplayValue(series, year);
+			const value = getStackValue(series, year);
 			series.stackedValues[year] = {
 				y0: cumulative,
 				y1: cumulative + value,
@@ -379,21 +794,16 @@ const yearStates = computed(() => {
 	const result: Record<string, 'bars' | 'outline' | 'na'> = {};
 	if (path.value.length === 0) return result;
 	for (const year of years.value) {
-		const root = getRootForYear(year);
-		const node = getNodeAtPath(root, path.value);
-		if (!node) {
-			result[year] = 'na';
-			continue;
-		}
-		const hasBreakdown = !!node.children?.some((child) => {
-			const id = normalizeId(child.id);
-			if (id.startsWith('F')) return false;
-			if (view === 'econ' && kgrFilter.value && !kgrFilter.value.has(id)) return false;
-			return true;
-		});
+		const node = getNodeForYear(year, path.value);
+		// Items that moved in from elsewhere are a breakdown of their own — even
+		// when this node has no (visible) children left in this year, or when the
+		// grouping itself was dissolved and only its former items remain.
+		const hasBreakdown =
+			!!node?.children?.some(isVisibleChild) ||
+			timeSeriesData.value.some((series) => series.moves[year]);
 		if (hasBreakdown) {
 			result[year] = 'bars';
-		} else if (node.value && node.value > 0 && hiddenSeries.value.size === 0) {
+		} else if (node?.value && node.value > 0 && hiddenSeries.value.size === 0) {
 			// With an active filter we only know the aggregate for this year,
 			// not how it splits across visible/hidden series — mark N/A to avoid a misleading outline.
 			result[year] = 'outline';
@@ -409,8 +819,7 @@ const parentValues = computed(() => {
 	const result: Record<string, number> = {};
 	for (const year of years.value) {
 		if (yearStates.value[year] !== 'outline') continue;
-		const root = getRootForYear(year);
-		const node = getNodeAtPath(root, path.value);
+		const node = getNodeForYear(year, path.value);
 		if (!node) continue;
 		const raw = node.value;
 		if (mode.value === 'inflation' && inflationEnabled.value) {
@@ -439,17 +848,15 @@ const levelTotalValues = computed(() => {
 	const result: Record<string, number> = {};
 	let any = false;
 	for (const year of years.value) {
-		const root = getRootForYear(year);
-		const node = getNodeAtPath(root, path.value);
+		const node = getNodeForYear(year, path.value);
 		if (!node?.children) continue;
 		let fullSum = 0;
 		let visibleCount = 0;
 		let filteredOut = false;
 		for (const child of node.children) {
-			const id = normalizeId(child.id);
-			if (id.startsWith('F')) continue;
+			if (isBalanceItem(child)) continue;
 			fullSum += child.value;
-			if (filter.has(id)) {
+			if (filter.has(normalizeId(child.id))) {
 				visibleCount++;
 			} else {
 				// Removed by the kgr filter — this is what the dotted line surfaces.
@@ -477,8 +884,8 @@ const maxValue = computed(() => {
 	for (const year of years.value) {
 		let total = 0;
 		for (const series of timeSeriesData.value) {
-			if (hiddenSeries.value.has(series.id)) continue;
-			total += getDisplayValue(series, year);
+			if (hiddenSeries.value.has(series.key)) continue;
+			total += getStackValue(series, year);
 		}
 		if (total > max) max = total;
 	}
@@ -524,18 +931,18 @@ const xScale = computed(() => {
 });
 
 // Color management - use parent color with gradients when drilling down
-function getColor(id: string): string {
+function getColor(key: string): string {
 	const colors: Record<string, string> = CONFIG.color || {};
 	const defaultColor = '#6c757d';
 
 	// If we're at root level, use the item's own color
 	if (path.value.length === 0) {
-		return colors[id] || defaultColor;
+		return colors[colorKey(key)] || defaultColor;
 	}
 
 	// If we're deeper, use the first-level parent's color
-	const parentId = path.value[0];
-	return parentId ? colors[parentId] || defaultColor : defaultColor;
+	const parentKey = path.value[0];
+	return parentKey ? colors[colorKey(parentKey)] || defaultColor : defaultColor;
 }
 
 // Get the max value among current children for calculating opacity gradient
@@ -550,13 +957,13 @@ const maxChildValue = computed(() => {
 	return max;
 });
 
-function bgColor(id: string, isHovered: boolean, isOther: boolean): string {
-	const color = tinycolor(getColor(id));
+function bgColor(key: string, isHovered: boolean, isOther: boolean): string {
+	const color = tinycolor(getColor(key));
 
 	// Calculate base opacity based on value relative to siblings (when drilling down)
 	let baseOpacity = 0.85;
 	if (path.value.length > 0) {
-		const series = timeSeriesData.value.find((s) => s.id === id);
+		const series = timeSeriesData.value.find((s) => s.key === key);
 		if (series && maxChildValue.value > 0) {
 			// Keep opacity scaling consistent with active mode (regular/inflation/gdp)
 			const values = years.value.map((year) => getDisplayValue(series, year));
@@ -579,20 +986,20 @@ function bgColor(id: string, isHovered: boolean, isOther: boolean): string {
 
 // Fill/stroke for the dotted parent-outline: lighter shade of the drilled item's color.
 const parentOutlineFill = computed(() => {
-	const parentId = path.value[path.value.length - 1];
-	if (!parentId) return 'rgba(100, 100, 100, 0.08)';
-	const c = tinycolor(getColor(parentId));
+	const parentKey = path.value[path.value.length - 1];
+	if (!parentKey) return 'rgba(100, 100, 100, 0.08)';
+	const c = tinycolor(getColor(parentKey));
 	c.setAlpha(0.15);
 	return c.toRgbString();
 });
 const parentOutlineStroke = computed(() => {
-	const parentId = path.value[path.value.length - 1];
-	if (!parentId) return '#666';
-	return tinycolor(getColor(parentId)).lighten(10).toRgbString();
+	const parentKey = path.value[path.value.length - 1];
+	if (!parentKey) return '#666';
+	return tinycolor(getColor(parentKey)).lighten(10).toRgbString();
 });
 
-function strokeColor(id: string, isHovered: boolean): string {
-	const color = tinycolor(getColor(id));
+function strokeColor(key: string, isHovered: boolean): string {
+	const color = tinycolor(getColor(key));
 	if (isHovered) {
 		return color.darken(10).toRgbString();
 	}
@@ -630,61 +1037,48 @@ function formatValue(value: number): string {
 }
 
 // Navigation
-function drillDown(id: string) {
+function drillDown(key: string) {
 	// The clicked bar/legend item may be removed from the DOM on drill-down while
 	// its tooltip is showing — clear any stray tip so it doesn't get stuck.
 	window.$('.tooltip').remove();
-	if (canDrillDown(id)) {
-		path.value.push(id);
+	if (canDrillDown(key)) {
+		path.value.push(key);
 		hiddenSeries.value = new Set();
 		return;
 	}
 	// No drillable children: filter to show only this item (or restore if already isolated)
-	const allIds = timeSeriesData.value.map((s) => s.id);
-	if (allIds.length <= 1) return;
-	const otherIds = allIds.filter((i) => i !== id);
+	const allKeys = timeSeriesData.value.map((s) => s.key);
+	if (allKeys.length <= 1) return;
+	const otherKeys = allKeys.filter((k) => k !== key);
 	const isIsolated =
-		!hiddenSeries.value.has(id) && otherIds.every((i) => hiddenSeries.value.has(i));
-	hiddenSeries.value = isIsolated ? new Set() : new Set(otherIds);
+		!hiddenSeries.value.has(key) && otherKeys.every((k) => hiddenSeries.value.has(k));
+	hiddenSeries.value = isIsolated ? new Set() : new Set(otherKeys);
 }
 
-function canClick(id: string): boolean {
-	return canDrillDown(id) || timeSeriesData.value.length > 1;
+function canClick(key: string): boolean {
+	return canDrillDown(key) || timeSeriesData.value.length > 1;
 }
 
 function navigateTo(index: number) {
 	path.value = path.value.slice(0, index);
 }
 
-function canDrillDown(id: string): boolean {
+function canDrillDown(key: string): boolean {
 	for (const year of years.value) {
-		const root = getRootForYear(year);
-		const node = getNodeAtPath(root, [...path.value, id]);
-		if (node?.children && node.children.length > 0) {
-			const filtered = node.children
-				.filter((child) => !normalizeId(child.id).startsWith('F'))
-				.filter(
-					(child) =>
-						view !== 'econ' ||
-						!kgrFilter.value ||
-						kgrFilter.value.has(normalizeId(child.id)),
-				);
-			if (filtered.length > 0) {
-				return true;
-			}
-		}
+		const node = getNodeForYear(year, [...path.value, key]);
+		if (node?.children?.some(isVisibleChild)) return true;
 	}
 	return false;
 }
 
 // Calculate delta (change from previous year)
 function getDelta(
-	seriesId: string,
+	seriesKeyToFind: string,
 	year: string,
 	yearIndex: number,
 ): { value: number; percent: number | null } | null {
 	if (yearIndex === 0) return null;
-	const series = timeSeriesData.value.find((s) => s.id === seriesId);
+	const series = timeSeriesData.value.find((s) => s.key === seriesKeyToFind);
 	if (!series) return null;
 	const currentValue = getDisplayValue(series, year);
 	const prevYear = years.value[yearIndex - 1];
@@ -705,20 +1099,50 @@ function formatDelta(delta: { value: number; percent: number | null } | null): s
 	return `${sign}${delta.percent.toFixed(1).replace('.', ',')}%`;
 }
 
-function isDeltaPositive(seriesId: string, year: string, yearIndex: number): boolean {
-	const delta = getDelta(seriesId, year, yearIndex);
+function isDeltaPositive(key: string, year: string, yearIndex: number): boolean {
+	const delta = getDelta(key, year, yearIndex);
 	return !!delta && delta.value > 0;
 }
 
-function isDeltaNegative(seriesId: string, year: string, yearIndex: number): boolean {
-	const delta = getDelta(seriesId, year, yearIndex);
+function isDeltaNegative(key: string, year: string, yearIndex: number): boolean {
+	const delta = getDelta(key, year, yearIndex);
 	return !!delta && delta.value < 0;
 }
 
 const hoveredSeries = computed(() => {
 	if (!hovered.value) return null;
-	return timeSeriesData.value.find((s) => s.id === hovered.value) || null;
+	return timeSeriesData.value.find((s) => s.key === hovered.value) || null;
 });
+
+/**
+ * Name the item carried in a given year. Items get renamed between years, so a
+ * hovered bar has to show the name of that year, not the most recent one.
+ */
+function nameFor(series: Series, year: string): string {
+	return series.names[year] || series.name;
+}
+
+// Details panel heading: the hovered year's name when hovering a bar, the most
+// recent name when hovering the legend (which covers all years at once).
+const hoveredName = computed(() => {
+	const series = hoveredSeries.value;
+	if (!series) return '';
+	return hoveredYear.value ? nameFor(series, hoveredYear.value) : series.name;
+});
+
+// Top of a year's stack, so the ⚠ marker can sit right above the bar
+function stackTop(year: string): number {
+	let top = 0;
+	for (const series of stackedData.value) {
+		const y1 = series.stackedValues[year]?.y1 || 0;
+		if (y1 > top) top = y1;
+	}
+	return top;
+}
+
+// Hatch pattern marking the uncertain (moved) bar segments. The ID has to be
+// unique per instance, as several charts can share a page.
+const hatchId = `ts-moved-hatch-${useId()}`;
 
 const { regenerateTooltips, reinitTooltips } = useTooltips();
 
@@ -807,6 +1231,24 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 						class="chart"
 						preserveAspectRatio="xMidYMid meet"
 					>
+						<defs v-if="hasUncertainty">
+							<!-- Marks the segments whose item was reorganized that year -->
+							<pattern
+								:id="hatchId"
+								width="6"
+								height="6"
+								patternUnits="userSpaceOnUse"
+								patternTransform="rotate(45)"
+							>
+								<line
+									x1="0"
+									y1="0"
+									x2="0"
+									y2="6"
+									class="moved-hatch-line"
+								/>
+							</pattern>
+						</defs>
 						<g :transform="`translate(${padding.left}, ${padding.top})`">
 							<!-- Y-axis grid lines -->
 							<g class="grid">
@@ -863,7 +1305,9 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 										:x="xScale(index)"
 										:y="innerHeight + 25"
 										class="axis-label"
-										:class="{ 'axis-label-muted': yearStates[year] === 'na' }"
+										:class="{
+											'axis-label-muted': yearStates[year] === 'na',
+										}"
 										text-anchor="middle"
 									>
 										{{ year }}
@@ -952,7 +1396,7 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 								>
 									<rect
 										v-for="series in stackedData"
-										:key="'bar-' + series.id + '-' + year"
+										:key="'bar-' + series.key + '-' + year"
 										:x="xScale(yearIndex) - barWidth / 2"
 										:y="yScale(series.stackedValues[year]?.y1 || 0)"
 										:width="barWidth"
@@ -962,25 +1406,73 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 										"
 										:fill="
 											bgColor(
-												series.id,
-												hovered === series.id,
-												hovered !== null && hovered !== series.id,
+												series.key,
+												hovered === series.key,
+												hovered !== null && hovered !== series.key,
 											)
 										"
-										:stroke="strokeColor(series.id, hovered === series.id)"
-										:stroke-width="hovered === series.id ? 2 : 1"
+										:stroke="strokeColor(series.key, hovered === series.key)"
+										:stroke-width="hovered === series.key ? 2 : 1"
 										class="bar"
-										:class="{ clickable: canClick(series.id) }"
+										:class="{
+											clickable: canClick(series.key),
+										}"
 										data-toggle="tooltip"
-										:title="series.name"
+										:title="nameFor(series, year)"
 										@mouseenter="
-											hovered = series.id;
+											hovered = series.key;
+											hoveredYear = year;
 											hoverSide =
 												yearIndex >= years.length / 2 ? 'right' : 'left';
 										"
-										@mouseleave="hovered = null"
-										@click="drillDown(series.id)"
+										@mouseleave="
+											hovered = null;
+											hoveredYear = null;
+										"
+										@click="drillDown(series.key)"
 									/>
+								</template>
+							</g>
+
+							<!-- Uncertainty hatching over the segments of moved items -->
+							<g class="moved-overlays">
+								<template
+									v-for="(year, yearIndex) in years"
+									:key="'moved-year-' + year"
+								>
+									<rect
+										v-for="series in stackedData.filter((s) => s.moves[year])"
+										:key="'moved-' + series.key + '-' + year"
+										:x="xScale(yearIndex) - barWidth / 2"
+										:y="yScale(series.stackedValues[year]?.y1 || 0)"
+										:width="barWidth"
+										:height="
+											yScale(series.stackedValues[year]?.y0 || 0) -
+											yScale(series.stackedValues[year]?.y1 || 0)
+										"
+										:fill="`url(#${hatchId})`"
+										class="moved-overlay"
+									/>
+								</template>
+							</g>
+
+							<!-- Warning marker above the bars of years affected by a move -->
+							<g class="moved-markers">
+								<template
+									v-for="(year, yearIndex) in years"
+									:key="'movedmark-' + year"
+								>
+									<text
+										v-if="uncertainYears[year]"
+										:x="xScale(yearIndex)"
+										:y="Math.max(10, yScale(stackTop(year)) - 8)"
+										class="moved-marker"
+										text-anchor="middle"
+										data-toggle="tooltip"
+										:title="yearUncertaintyTooltip(year)"
+									>
+										&#9888;
+									</text>
 								</template>
 							</g>
 						</g>
@@ -993,7 +1485,7 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 					class="details-panel details-panel-desktop"
 					:class="hoverSide === 'right' ? 'pos-left' : 'pos-right'"
 				>
-					<h5>{{ hoveredSeries.name }}</h5>
+					<h5>{{ hoveredName }}</h5>
 					<table class="table table-sm">
 						<thead>
 							<tr>
@@ -1013,18 +1505,26 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 								v-for="(year, index) in years"
 								:key="year"
 							>
-								<td>{{ year }}</td>
+								<td>
+									{{ year }}
+									<i
+										v-if="isUncertain(hoveredSeries, year)"
+										class="fas fa-exclamation-triangle moved-icon"
+										data-toggle="tooltip"
+										:title="describeUncertainty(hoveredSeries, year)"
+									/>
+								</td>
 								<td class="text-right">
 									{{ getStringValue(hoveredSeries, year) }}
 								</td>
 								<td
 									class="text-right delta"
 									:class="{
-										positive: isDeltaPositive(hoveredSeries.id, year, index),
-										negative: isDeltaNegative(hoveredSeries.id, year, index),
+										positive: isDeltaPositive(hoveredSeries.key, year, index),
+										negative: isDeltaNegative(hoveredSeries.key, year, index),
 									}"
 								>
-									{{ formatDelta(getDelta(hoveredSeries.id, year, index)) }}
+									{{ formatDelta(getDelta(hoveredSeries.key, year, index)) }}
 								</td>
 							</tr>
 						</tbody>
@@ -1039,40 +1539,67 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 			>
 				<div
 					v-for="series in timeSeriesData"
-					:key="'legend-' + series.id"
+					:key="'legend-' + series.key"
 					class="legend-item"
 					:class="{
-						highlighted: hovered === series.id,
-						dimmed: hovered !== null && hovered !== series.id,
-						clickable: canClick(series.id),
-						hidden: hiddenSeries.has(series.id),
+						highlighted: hovered === series.key,
+						dimmed: hovered !== null && hovered !== series.key,
+						clickable: canClick(series.key),
+						hidden: hiddenSeries.has(series.key),
 					}"
-					@mouseenter="hovered = series.id"
+					@mouseenter="
+						hovered = series.key;
+						hoveredYear = null;
+					"
 					@mouseleave="hovered = null"
-					@click="drillDown(series.id)"
+					@click="drillDown(series.key)"
 				>
 					<span
 						class="legend-color"
-						:style="{ backgroundColor: bgColor(series.id, false, false) }"
+						:style="{
+							backgroundColor: bgColor(series.key, false, false),
+						}"
 					/>
 					<span class="legend-label">{{ series.name }}</span>
 					<i
-						v-if="canDrillDown(series.id)"
+						v-if="hasAnyUncertainty(series)"
+						class="fas fa-fw fa-exclamation-triangle moved-icon ml-1"
+						data-toggle="tooltip"
+						:title="uncertaintyTooltip(series)"
+					/>
+					<i
+						v-if="canDrillDown(series.key)"
 						class="fas fa-fw fa-level-down-alt ml-1"
 					/>
 					<button
 						class="toggle-visibility-btn"
-						:class="{ 'is-hidden': hiddenSeries.has(series.id) }"
+						:class="{ 'is-hidden': hiddenSeries.has(series.key) }"
 						data-toggle="tooltip"
-						:title="hiddenSeries.has(series.id) ? 'Megjelenítés' : 'Elrejtés'"
-						@click="toggleSeriesVisibility(series.id, $event)"
+						:title="hiddenSeries.has(series.key) ? 'Megjelenítés' : 'Elrejtés'"
+						@click="toggleSeriesVisibility(series.key, $event)"
 					>
 						<i
 							class="fas fa-fw"
-							:class="hiddenSeries.has(series.id) ? 'fa-eye-slash' : 'fa-eye'"
+							:class="hiddenSeries.has(series.key) ? 'fa-eye-slash' : 'fa-eye'"
 						/>
 					</button>
 				</div>
+			</div>
+
+			<!-- Reorganization warning: some items are not in the same place every year -->
+			<div
+				v-if="hasUncertainty"
+				class="moved-note"
+			>
+				<i class="fas fa-exclamation-triangle moved-icon mr-2" />
+				<span>
+					Néhány tétel átszervezés miatt nem minden évben ugyanott szerepel a
+					költségvetésben. Ezeket az AHT azonosítójuk, illetve — ha az is megváltozott — a
+					tartalmuk alapján követjük tovább, de az összehasonlításuk bizonytalan: a
+					<i class="fas fa-exclamation-triangle moved-icon" />
+					jellel és a sávozott mintával jelölt tételekre, illetve évekre mutatva
+					olvasható, hogy mi történt velük.
+				</span>
 			</div>
 
 			<!-- Details panel for mobile (below legend) -->
@@ -1080,7 +1607,7 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 				v-if="hoveredSeries"
 				class="details-panel details-panel-mobile"
 			>
-				<h5>{{ hoveredSeries.name }}</h5>
+				<h5>{{ hoveredName }}</h5>
 				<table class="table table-sm">
 					<thead>
 						<tr>
@@ -1099,19 +1626,29 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 							v-for="(year, index) in years"
 							:key="year"
 						>
-							<td>{{ year }}</td>
-							<td class="name-cell">{{ hoveredSeries.names[year] || '—' }}</td>
+							<td>
+								{{ year }}
+								<i
+									v-if="isUncertain(hoveredSeries, year)"
+									class="fas fa-exclamation-triangle moved-icon"
+									data-toggle="tooltip"
+									:title="describeUncertainty(hoveredSeries, year)"
+								/>
+							</td>
+							<td class="name-cell">
+								{{ hoveredSeries.names[year] || '—' }}
+							</td>
 							<td class="text-right">
 								{{ getStringValue(hoveredSeries, year) }}
 							</td>
 							<td
 								class="text-right delta"
 								:class="{
-									positive: isDeltaPositive(hoveredSeries.id, year, index),
-									negative: isDeltaNegative(hoveredSeries.id, year, index),
+									positive: isDeltaPositive(hoveredSeries.key, year, index),
+									negative: isDeltaNegative(hoveredSeries.key, year, index),
 								}"
 							>
-								{{ formatDelta(getDelta(hoveredSeries.id, year, index)) }}
+								{{ formatDelta(getDelta(hoveredSeries.key, year, index)) }}
 							</td>
 						</tr>
 					</tbody>
@@ -1126,6 +1663,9 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 @import '../../node_modules/bootstrap/scss/functions';
 @import '../../node_modules/bootstrap/scss/variables';
 @import '../../node_modules/bootstrap/scss/mixins';
+
+// Amber that stays readable on the white chart background
+$moved-color: #b8860b;
 
 .time-series {
 	font-family: $vis-font-family;
@@ -1228,6 +1768,44 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 		stroke-dasharray: 4, 3;
 		// Re-enable hovering so the tooltip explaining the line can show.
 		pointer-events: stroke;
+	}
+
+	// Reorganization ("moved item") markers — see the AHT block in the script
+	.moved-hatch-line {
+		stroke: rgba(0, 0, 0, 0.3);
+		stroke-width: 2;
+	}
+
+	.moved-overlay {
+		// Must not swallow the hover of the bar underneath
+		pointer-events: none;
+	}
+
+	.moved-marker {
+		font-size: 14px;
+		fill: $moved-color;
+		cursor: help;
+	}
+
+	.moved-icon {
+		color: $moved-color;
+		cursor: help;
+	}
+
+	.legend .moved-icon {
+		font-size: 0.8rem;
+	}
+
+	.moved-note {
+		display: flex;
+		align-items: flex-start;
+		margin-top: 0.75rem;
+		padding: 0.5rem 0.75rem;
+		border-left: 3px solid $moved-color;
+		border-radius: 0.25rem;
+		background-color: rgba(184, 134, 11, 0.08);
+		font-size: 0.8rem;
+		color: $text-muted;
 	}
 
 	.na-circle {

@@ -97,7 +97,7 @@ A munkalapoknak 2 formátumát ismeri a program. Az egyik az elmúlt évekre von
 Az ilyen munkalapokon megtalálható a mátrix, vagyis nem csak közgazdasági bontásban vannak az adatok, hanem funkcionális bontásban is. Elvárt formátum:
 
 - 1\. sor: lényegtelen
-- 2\. sor: a 4. (D) oszloptól kezdve funkcionális kategóriák `<AZONOSÍTÓSZÁM> <ELNEVEZÉS>` formában. Az elnevezés lényegtelen. A programnak csak az azonosítószám kell, amit szóközzel kell elválasztani a többi adattól, pl.: _"042120 Mezőgazdasági támogatások"_.
+- 2\. sor: a 4. (D) oszloptól kezdve funkcionális kategóriák `<AZONOSÍTÓSZÁM> <ELNEVEZÉS>` formában. Az elnevezés lényegtelen. A programnak csak az azonosítószám kell, amit szóközzel kell elválasztani a többi adattól, pl.: _"042120 Mezőgazdasági támogatások"_. A program csak azokat az oszlopokat veszi funkcionális kategóriának, amelyek fejléce számmal kezdődik, így a 3. (C) oszlop és a funkcionális blokk közé beszúrt egyéb oszlopokat (pl. az alább leírt `AHT` oszlopot) figyelmen kívül hagyja.
 - 3\. sortól kezdve:
     - 1\. oszlop: egy legalább kétjegyű számot kell tartalmaznia ahhoz, hogy a program az adott sort adatsornak vegye és feldolgozza, noha e cella értéke nem lesz másra használva (így kézileg hozzáadott soroknál megadható akár `99` is).
     - 2\. oszlop: közgazdasági kategória elnevezése és kiegészítő információi.
@@ -108,6 +108,16 @@ Az ilyen munkalapokon megtalálható a mátrix, vagyis nem csak közgazdasági b
     - 3\. oszlop: az adott közgazdasági kategóriához tartozó összeg
     - 4\. oszloptól kezdve: az adott közgazdasági (sor) és funkcionális (oszlop) kategóriához tartozó számérték.
     - A számértékből beolvasáskor a `,` és szóköz karakterek eltávolításra kerülnek.
+
+#### AHT oszlop (opcionális)
+
+A munkalapok tartalmazhatnak egy `AHT` oszlopot is, melyben az egyes tételek államháztartási azonosítója (AHT kód) szerepel. Ezt az idősor ábra használja: a közgazdasági azonosítók (pl. `K110104`) a tétel költségvetésen belüli _helyét_ kódolják, ezért minden be- és kiszúrás átszámozza őket, a nevek pedig évek között változhatnak — az AHT kód viszont a tételnél marad, így ez alapján az évek közt biztonságosan összepárosíthatók a tételek. Formátum:
+
+- Az `AHT` oszlop fejlécében (az első 3 sor bármelyikében) pontosan az `AHT` szöveg kell, hogy szerepeljen. A program a fejléc alapján keresi meg, tehát az oszlop bárhol lehet.
+- Az adatsorokban a tétel AHT kódja szerepel, jellemzően 6 számjegy (pl. `000110`). Ha a cella számként van formázva, a program visszapótolja a levágott kezdő nullákat.
+- A kód nem kötelező minden sorban (a felsőbb, összesítő szinteken jellemzően nincs is), viszont egy munkalapon belül egyedinek kell lennie. Ismétlődés esetén a program figyelmeztet, és az első előfordulást használja.
+
+Az oszlop beolvasása csak akkor történik meg, ha a `config.xlsx`-ben a `timeseries.aht` beállítás értéke `1`, egyébként a program a szokásos (AHT nélküli) formátumot olvassa. Részletek: [Idősor](#idősor).
 
 #### Prognózisra vonatkozó formátum
 
@@ -239,6 +249,7 @@ Az `expense` mező a kiadások, az `income` a bevételek adatait tartalmazza. Az
 - **name** - A kategória elnevezése.
 - **value** - Az adott node-hoz tartozó összeg.
 - **children** - Gyerek node-ok tömbje.
+- **aht** - A tétel államháztartási azonosítója. Csak akkor kerül a fájlba, ha a `timeseries.aht` beállítás be van kapcsolva, és a `budget.xlsx`-ben ki van töltve az `AHT` oszlop az adott sorban.
 
 ### static/data/milestones.json (generált)
 
@@ -391,6 +402,19 @@ Személyre szabás a `config.xlsx` fájl `config` lapján lehetséges.
 Az inflációszűrőhez szükséges értékek az `inflations.[év]` kezdetű sorokban adhatók meg. A funkció támogatja szöveget is tartalmazó évek ábrázolását, viszont ezekben az esetekben az ábrázolandó évek abc-rendjének és időbeli sorrendjének egyeznie kell. Kihagyott évek esetében a grafikonon a köztes infláció egyesítve lesz alkalmazva, ehhez viszont szükséges, hogy a köztes évek inflációs értékei is ki legyenek töltve.
 
 Hasonlóan, a GDP arányú megjelenítés opciójához a `gdps.[év]` sorokat kell kitölteni az évek GDP adataival Forintban. Azoknál az éveknél, ahol nem elérhető GDP adat, az adott év nem jelenik meg a diagram GDP nézetén.
+
+A `timeseries.aht` beállítással kapcsolható be, hogy az ábra a tételek államháztartási azonosítója (AHT kód) alapján kövesse az évek közti változást. Ehhez a `budget.xlsx` munkalapjain szükség van egy `AHT` oszlopra (ld. [input/budget.xlsx](#inputbudgetxlsx)); a beállítás nélkül a program be sem olvassa ezt az oszlopot. Bekapcsolva a közgazdasági idősor a tételeket nem a fában elfoglalt helyük (közgazdasági azonosítójuk), hanem az AHT kódjuk alapján párosítja össze az évek között, így az átszámozódó azonosítók és a változó elnevezések nem szakítják meg az idősort.
+
+Előfordul, hogy egy tétel átszervezés miatt más helyre kerül a költségvetésben (más fejezet vagy cím alá). Ilyenkor a program az AHT kód alapján ott is megtalálja, és továbbvezeti az idősorát, viszont ezt bizonytalanként jelöli:
+
+- a diagramon az érintett év sávja fölött ⚠ jel jelenik meg, rámutatva az adott év rövid összefoglalója olvasható (legfeljebb 3 tétel, utána darabszám);
+- az érintett tétel sávrésze sávozott mintát kap;
+- a jelmagyarázatban és a részletező táblázat érintett éveinél ⚠ jel jelzi, hogy hová került a tétel — a szomszédos, azonos magyarázatú évek egy sorba vonva (pl. „2021, 2022”, „2023–2026”), a hely pedig a két legszűkebb szinttel megadva;
+- az ábra alatt figyelmeztető szöveg hívja fel a jelenségre a figyelmet.
+
+Ha a tétel az adott évben az ábrán éppen látható szint _alá_ került (tehát az összege már egy másik, szintén megjelenített tétel sávrészének a része), akkor a kétszeres számolás elkerülése végett az összege csak a részletező táblázatban jelenik meg, a sávban nem.
+
+A fejezetek és címek (minisztériumok, alapok) szintjén előfordul, hogy magának a tételnek is megváltozik az AHT kódja, vagy egyáltalán nincs is kódja. Ilyenkor a program a tétel _tartalma_ alapján párosít: az alatta levő tételek AHT kódjait hasonlítja össze a többi évben megszűnt tételekével, és a leginkább egyező tételhez kapcsolja (Jaccard-hasonlóság, legalább 0,4). Ezt csak akkor teszi meg, ha a tétel AHT kódja az adott évben és az utána következő években sem szerepel többé sehol a költségvetésben — ha később visszatér, akkor nem névváltásról van szó, hanem a költségvetés átszervezéséről (egy szint beszúrásáról vagy kivételéről), és a két tétel összekapcsolása félrevezető lenne. Az így összekapcsolt évek szintén ⚠ jelet kapnak, a megjelenő szövegben a korábbi elnevezéssel és a közös AHT kódok számával.
 
 A `timeseries.kgrOnly` beállítás azt szabályozza, hogy a közgazdasági idősorban megjelenített tételek csak a kgr rovatkódok szintjéig menjenek-e le. Ha a rovatkódok évek közti kozisztenciája alacsonyabb szinteken is biztosítva van, ez kikapcsolható. Ezek a rovatkódok `config.xlsx` fájl `kgr` lapján vannak megadva. A kgr kódok változása esetén a lap tartalma frissítésre szorulhat.
 

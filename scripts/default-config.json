@@ -89,6 +89,7 @@
 		"econ": 1,
 		"years": "",
 		"kgrOnly": 1,
+		"aht": 0,
 		"inflation": 1,
 		"expense": "Kiadások idősorban",
 		"expenseText": "TODO",

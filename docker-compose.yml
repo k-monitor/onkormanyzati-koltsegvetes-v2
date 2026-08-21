@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    ports:
+      - "7000:7000"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    environment:
+      ADMIN_PORT: 7000
+      ADMIN_USER: admin
+      ADMIN_PASS: admin
+      PUBLIC_URL: https://admin.boapps.hu/hello
+      DEPLOY_CMD: "rm -r /www/hello.boapps.hu/; cp -r dist/ /www/hello.boapps.hu/"
+      # Site generation (`pnpm build` = `nuxt generate`) prerenders the large
+      # milestones dataset and OOMs on the ~4 GB default heap (needs ~4.6 GB with
+      # current data). 6144 MB gives headroom for milestone growth.
+      NODE_OPTIONS: "--openssl-legacy-provider --max-old-space-size=6144"
+    restart: unless-stopped
+
+volumes:
+  node_modules:

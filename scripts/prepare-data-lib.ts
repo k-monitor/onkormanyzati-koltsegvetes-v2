@@ -1,7 +1,20 @@
 import type { BudgetData, BudgetNode } from '../src/utils/types.ts';
 import type ExcelJS from 'exceljs';
 
-export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
+export type ParseOptions = {
+	/**
+	 * Read the AHT column of the sheets (see README). AHT codes identify budget
+	 * items independently of their place in the tree, which lets the time series
+	 * track an item across years even if its economic ID or name changed.
+	 */
+	aht?: boolean;
+};
+
+export function parseBudget(
+	workbook: ExcelJS.Workbook,
+	funcTreeTsv: string,
+	options: ParseOptions = {},
+) {
 	const data: BudgetData = {};
 
 	const emptyFuncTree = parseFunctionalTreeDescriptor(funcTreeTsv) as Record<number, BudgetNode>;
@@ -18,7 +31,7 @@ export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 			data[year][side] = data[year][side] || {};
 
 			console.log('Generating economic tree');
-			data[year][side]['econ'] = generateEconomicTree(sheet);
+			data[year][side]['econ'] = generateEconomicTree(sheet, options);
 
 			const copyOfEmptyFuncTree = structuredClone(emptyFuncTree);
 
@@ -34,8 +47,16 @@ export function parseBudget(workbook: ExcelJS.Workbook, funcTreeTsv: string) {
 	return data;
 }
 
-export function generateEconomicTree(sheet: ExcelJS.Worksheet) {
+export function generateEconomicTree(sheet: ExcelJS.Worksheet, options: ParseOptions = {}) {
 	const nodes: Record<string, BudgetNode> = {};
+
+	// AHT codes are only read when explicitly enabled, so sheets without the
+	// column (or configs that don't want it) keep the regular loading format.
+	const ahtColumn = options.aht ? findAhtColumn(sheet) : null;
+	if (options.aht && !ahtColumn) {
+		console.error('[KÖKÖ]', 'AHT oszlop nem található a munkalapon:', sheet.name);
+	}
+	const ahtOwners: Record<string, string> = {};
 
 	// collecting all nodes
 
@@ -65,6 +86,20 @@ export function generateEconomicTree(sheet: ExcelJS.Worksheet) {
 				name,
 				value,
 			};
+			const aht = ahtColumn ? readAht(row.getCell(ahtColumn)) : null;
+			if (aht) {
+				nodes[id].aht = aht;
+				// Cross-year matching assumes an AHT code appears once per sheet.
+				if (ahtOwners[aht]) {
+					console.error(
+						'[KÖKÖ]',
+						`Ismétlődő AHT azonosító (${sheet.name}):`,
+						`${aht} (${ahtOwners[aht]}, ${id})`,
+					);
+				} else {
+					ahtOwners[aht] = id;
+				}
+			}
 		}
 	}
 
@@ -206,6 +241,35 @@ export function generateFunctionalTree(
 	cleanUp(root);
 
 	return root.value > 0 ? root : null;
+}
+
+/**
+ * Finds the AHT column by its header, so it works regardless of how many
+ * columns precede it. The header may sit in any of the first 3 rows, as those
+ * differ between the past-years and the forecast sheet formats.
+ */
+export function findAhtColumn(sheet: ExcelJS.Worksheet) {
+	for (let ri = 1; ri <= Math.min(3, sheet.rowCount); ri++) {
+		const row = sheet.getRow(ri);
+		for (let ci = 1; ci <= row.cellCount; ci++) {
+			if (/^AHT$/i.test(row.getCell(ci).value?.toString().trim() || '')) return ci;
+		}
+	}
+	return null;
+}
+
+export function readAht(cell: ExcelJS.Cell) {
+	return normalizeAht(cell.result || cell.value);
+}
+
+/**
+ * AHT codes are 6 digits, but a cell formatted as a number loses its leading
+ * zeros, so numeric values are padded back to their canonical form.
+ */
+export function normalizeAht(raw: unknown) {
+	const aht = String(raw ?? '').trim();
+	if (!aht) return null;
+	return /^\d+$/.test(aht) ? aht.padStart(6, '0') : aht;
 }
 
 export const ECON_ID_RE = /(B|K|FH|FT)[0-9-]+/;
