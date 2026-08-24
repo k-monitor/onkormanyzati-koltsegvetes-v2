@@ -116,31 +116,32 @@ const inflationMultipliers = computed(() => {
 	const lastYear = years.value[years.value.length - 1]!;
 	multipliers[lastYear] = 1;
 
-	const lastKey = longestPrefixMatch(lastYear);
-	const firstKey = longestPrefixMatch(years.value[0]!);
-	if (!lastKey || !firstKey) {
-		return multipliers;
-	}
-
-	// Map each matched inflation key to its data year so we can store the multiplier under the data label
-	const dataYearByKey = new Map<string, string>();
-	for (const dy of years.value) {
-		const k = longestPrefixMatch(dy);
-		if (k) dataYearByKey.set(k, dy);
-	}
+	// The base year is usually a plan year that has no inflation figure of its own, and
+	// the first year of data can predate the rates — in both cases fall back to the year
+	// label as the range bound. Labels and inflation keys both start with the year, so
+	// they still compare correctly against each other.
+	const lastKey = longestPrefixMatch(lastYear) ?? lastYear;
+	const firstKey = longestPrefixMatch(years.value[0]!) ?? years.value[0]!;
 
 	// Inflation keys between firstKey (inclusive) and lastKey (exclusive) — covers gaps in data years
 	const relevantKeys = sortedInflationKeys.filter((k) => k >= firstKey && k < lastKey);
 
+	const cumulativeByKey: Record<string, number> = {};
 	let cumulative = 1;
 	for (let i = relevantKeys.length - 1; i >= 0; i--) {
 		const k = relevantKeys[i]!;
 		const rate = rates[k] || 0;
 		cumulative *= 1 + rate / 100;
-		const dy = dataYearByKey.get(k);
-		if (dy) {
-			multipliers[dy] = cumulative;
-		}
+		cumulativeByKey[k] = cumulative;
+	}
+
+	// Several data years can share one inflation key ("2024" and "2024 zárszámadás" both
+	// match "2024"), so each year resolves its own multiplier instead of the key claiming
+	// a single year.
+	for (const dy of years.value) {
+		const k = longestPrefixMatch(dy);
+		const value = k === null ? undefined : cumulativeByKey[k];
+		if (value !== undefined) multipliers[dy] = value;
 	}
 
 	// console.debug('[inflation] final multipliers:', multipliers);
