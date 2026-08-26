@@ -258,6 +258,34 @@ const ahtLookup = computed(() => {
 // Enabled by config *and* actually present in the data
 const ahtEnabled = computed(() => ahtLookup.value.found);
 
+/**
+ * config.json only carries the rows the budget's own config.xlsx fills in, so
+ * an option added later isn't part of its inferred type.
+ */
+function timeseriesOption(key: string): unknown {
+	return (CONFIG.timeseries as Record<string, unknown> | undefined)?.[key];
+}
+
+/**
+ * Whether an AHT code may be followed into another part of the budget — a
+ * different chapter or title than the one being shown. Those items are money
+ * that isn't in this section that year, so they can be left out and the series
+ * simply ends. Items that only moved *deeper* inside the shown item are
+ * unaffected; they are part of it either way.
+ *
+ * `timeseries.ahtOtherSections` sets where the chart starts; the reader flips it
+ * with the toggle next to the display modes. The option is missing from config
+ * files written before it existed, where the items were always followed — an
+ * empty cell keeps that.
+ */
+function configuredOtherSections(): boolean {
+	const value = timeseriesOption('ahtOtherSections');
+	if (value === undefined || String(value).trim() === '') return true;
+	return configEnabled(value);
+}
+
+const showOtherSections = ref(configuredOtherSections());
+
 function seriesKey(node: BudgetNode): string {
 	if (ahtEnabled.value && node.aht) return AHT_KEY_PREFIX + node.aht;
 	return normalizeId(node.id);
@@ -332,6 +360,9 @@ function resolveForYear(
 		if (!next) {
 			const entry = findByAht(year, key);
 			if (!entry) return null;
+			// Found somewhere else than under the item we are walking down — that
+			// is another section, and following it is optional.
+			if (!showOtherSections.value && !entry.parents.includes(current)) return null;
 			next = entry.node;
 			movedTo = describeLocation(entry.parents);
 		}
@@ -654,11 +685,13 @@ const timeSeriesData = computed(() => {
 			// two (renamed and reorganized), and that node's value is its own.
 			const owner = itemKeyByNode.value.get(entry.node);
 			if (owner !== undefined && owner !== item.key) continue;
-			record(entry.node);
 			const levelNode = levelNodes[year];
 			// The ancestor right below the drilled-into node is the segment of this
-			// bar that swallowed the item's value.
+			// bar that swallowed the item's value; no such ancestor means the item
+			// left this part of the budget altogether.
 			const depth = levelNode ? entry.parents.indexOf(levelNode) : -1;
+			if (depth < 0 && !showOtherSections.value) continue;
+			record(entry.node);
 			const containerNode = depth >= 0 ? entry.parents[depth + 1] : undefined;
 			series.moves[year] = {
 				at: describeLocation(entry.parents),
@@ -1333,9 +1366,11 @@ const { regenerateTooltips, reinitTooltips } = useTooltips();
 
 onMounted(regenerateTooltips);
 onUpdated(regenerateTooltips);
-watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitTooltips), {
-	deep: true,
-});
+watch(
+	[() => view, () => side, mode, path, hiddenSeries, showOtherSections],
+	() => nextTick(reinitTooltips),
+	{ deep: true },
+);
 </script>
 
 <template>
@@ -1404,6 +1439,31 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 							GDP arány
 						</button>
 					</div>
+				</div>
+
+				<!-- Follow items into other chapters/titles by their AHT code -->
+				<div
+					v-if="ahtEnabled"
+					class="mode-toggle other-sections-toggle"
+				>
+					<button
+						class="btn btn-sm"
+						:class="showOtherSections ? 'btn-primary' : 'btn-outline-secondary'"
+						data-toggle="tooltip"
+						:data-template="PATH_TOOLTIP_TEMPLATE"
+						:title="
+							showOtherSections
+								? 'Az átszervezés miatt más fejezetbe vagy címbe került tételeket az AHT kódjuk alapján követi az ábra, és az összegük itt is megjelenik (sávozott mintával jelölve). Kattints, ha csak az itt szereplő tételeket szeretnéd látni.'
+								: 'Az ábra csak az itt szereplő tételeket mutatja: ha egy tétel átszervezés miatt másik fejezetbe vagy címbe került, az idősora ott véget ér. Kattints a máshol szereplő tételek követéséhez.'
+						"
+						@click="showOtherSections = !showOtherSections"
+					>
+						<i
+							class="fas fa-fw"
+							:class="showOtherSections ? 'fa-eye' : 'fa-eye-slash'"
+						/>
+						Máshol szereplő tételek
+					</button>
 				</div>
 			</div>
 

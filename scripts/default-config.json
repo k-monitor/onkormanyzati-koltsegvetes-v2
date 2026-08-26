@@ -90,6 +90,7 @@
 		"years": "",
 		"kgrOnly": 1,
 		"aht": 0,
+		"ahtOtherSections": 1,
 		"inflation": 1,
 		"expense": "Kiadások idősorban",
 		"expenseText": "TODO",

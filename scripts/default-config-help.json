@@ -64,6 +64,7 @@
 	"timeseries.years": "Idősor szűrése a megadott évekre. (pl.: “2020,2021,2022”)",
 	"timeseries.kgrOnly": "Közgazdasági idősor korlátozása a kgr lapon megadott rovatkódokra. (1 = Igen, 0 = Nem)",
 	"timeseries.aht": "A budget.xlsx \"AHT\" oszlopának beolvasása és használata a tételek évek közti azonosítására a közgazdasági idősorban. Csak akkor kapcsold be, ha a munkalapokon van AHT oszlop. (1 = Igen, 0 = Nem)",
+	"timeseries.ahtOtherSections": "Más fejezetbe vagy címbe került tételek követése az AHT kód alapján. Kikapcsolva a tétel idősora ott véget ér, ahol kikerült a megjelenített részből, és nem kerül a sávba máshol szereplő összeg. Ez az ábra kezdőállapota, az olvasó a „Máshol szereplő tételek” gombbal átállíthatja. Csak akkor van hatása, ha a timeseries.aht be van kapcsolva. (1 = Igen, 0 = Nem)",
 	"timeseries.inflation": "Idősor infláció-szűrő megjelenítése? (1 = Igen, 0 = Nem)",
 	"timeseries.expense": "Idősor kiadások szakasz címsora.",
 	"timeseries.expenseText": "Idősor kiadások szakasz magyarázata.",
