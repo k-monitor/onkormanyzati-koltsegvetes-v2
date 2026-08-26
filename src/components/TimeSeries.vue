@@ -293,23 +293,13 @@ function seriesKey(node: BudgetNode): string {
 
 /**
  * Two items of a level can share a key — a renamed chapter that split off from
- * an earlier series keeps the AHT code it inherited — so the later one carries
- * a `#n` suffix. Everything that looks the key up in the budget wants the plain
- * one.
+ * an earlier series keeps the AHT code it inherited — so the later one carries a
+ * `#<first year>` suffix. Config lookups (colors) are keyed by the identifier
+ * itself and want the plain one; turning a key back into a node goes through the
+ * level's items instead, as they are the only thing that can tell the two apart.
  */
 function baseKey(key: string): string {
-	return key.replace(/#\d+$/, '');
-}
-
-function ahtOfKey(key: string): string | null {
-	const plain = baseKey(key);
-	return plain.startsWith(AHT_KEY_PREFIX) ? plain.slice(AHT_KEY_PREFIX.length) : null;
-}
-
-function findByAht(year: string, key: string): AhtEntry | null {
-	const aht = ahtOfKey(key);
-	if (!aht) return null;
-	return ahtLookup.value.byYear[year]?.get(aht) || null;
+	return key.replace(/#\d[\d.]*$/, '');
 }
 
 // Colors are configured per economic ID, so AHT keys need translating back.
@@ -343,9 +333,17 @@ function fullLocation(parents: BudgetNode[]): string {
 }
 
 /**
- * Walks `keys` down a year's tree. A step that isn't among the children is
- * looked up by its AHT code anywhere in that year's tree, so a reorganized
- * item is still found — `movedTo` then tells where it turned up.
+ * Walks `keys` down a year's tree. Each key names an item of its level — a
+ * cross-year series, not just an identifier — so the step lands on the node that
+ * series holds in this year. Going by the identifier alone would mix up the
+ * series that split apart under a shared one: chapter XVII is the Nemzeti
+ * Fejlesztési Minisztérium in 2016 and the Energiaügyi Minisztérium in 2026,
+ * both under AHT 280489, and drilling into either one used to walk into the
+ * other's breakdown in the years it covers.
+ *
+ * A year the series has no node of its own in is looked up by its AHT codes
+ * anywhere in that year's tree, so a reorganized item is still found — `movedTo`
+ * then tells where it turned up.
  */
 function resolveForYear(
 	year: string,
@@ -355,18 +353,27 @@ function resolveForYear(
 	if (!root) return null;
 	let current = root;
 	let movedTo: string | null = null;
-	for (const key of keys) {
-		let next = current.children?.find((child) => seriesKey(child) === baseKey(key));
-		if (!next) {
-			const entry = findByAht(year, key);
-			if (!entry) return null;
-			// Found somewhere else than under the item we are walking down — that
-			// is another section, and following it is optional.
-			if (!showOtherSections.value && !entry.parents.includes(current)) return null;
-			next = entry.node;
-			movedTo = describeLocation(entry.parents);
+	for (let i = 0; i < keys.length; i++) {
+		const key = keys[i]!;
+		const items = levelItemsFor(keys.slice(0, i));
+		const item = findLevelItem(items, key);
+		if (!item) return null;
+		const own = item.byYear[year];
+		if (own) {
+			current = own;
+			continue;
 		}
-		current = next;
+		const entry = item.ahts.map((aht) => ahtLookup.value.byYear[year]?.get(aht)).find(Boolean);
+		if (!entry) return null;
+		// The code leads to another item of the same level — the series split in
+		// two, and that node belongs to the other half.
+		const owner = itemKeysByNode(items).get(entry.node);
+		if (owner !== undefined && owner !== item.key) return null;
+		// Found somewhere else than under the item we are walking down — that
+		// is another section, and following it is optional.
+		if (!showOtherSections.value && !entry.parents.includes(current)) return null;
+		current = entry.node;
+		movedTo = describeLocation(entry.parents);
 	}
 	return { node: current, movedTo };
 }
@@ -485,20 +492,21 @@ type LevelItem = {
 };
 
 /**
- * The items of the current level, aligned across years (union, so items only
- * present in some years still appear). Matching goes AHT code → economic ID →
- * content similarity, the last one covering the section levels: chapters and
+ * The items of the level below `keys`, aligned across years (union, so items
+ * only present in some years still appear). Matching goes AHT code → economic ID
+ * → content similarity, the last one covering the section levels: chapters and
  * titles are renumbered and renamed freely, and often carry no AHT code of
  * their own, so without it the same ministry would be split into two series
  * (and mixed with whatever else took its place).
  */
-const levelItems = computed(() => {
+function computeLevelItems(keys: string[]): LevelItem[] {
 	const items: LevelItem[] = [];
 	const byKey = new Map<string, LevelItem>();
+	const usedKeys = new Set<string>();
 	let leafFallback: BudgetNode | null = null;
 
 	for (const year of years.value) {
-		const node = getNodeForYear(year, path.value);
+		const node = getNodeForYear(year, keys);
 		if (!node) continue;
 		const children = (node.children || []).filter(isVisibleChild);
 		if (children.length === 0) {
@@ -580,17 +588,24 @@ const levelItems = computed(() => {
 			// A key can already be taken — by an earlier content match, or by the
 			// series this one just split off from. Suffixing keeps the two apart
 			// instead of dropping one of them, and the newest item takes over the
-			// key so the following years carry on with it.
-			const key = seriesKey(child);
+			// plain key so the following years carry on with it. The suffix is the
+			// year the series starts in, which stays the same when the year range
+			// does not, so a path drilled into it survives a change of display mode.
+			const base = seriesKey(child);
+			let key = byKey.has(base) ? `${base}#${year}` : base;
+			// Two items of one level can even start in the same year, when they
+			// carry the same identifier outright — a counter keeps those apart too.
+			for (let n = 2; usedKeys.has(key); n++) key = `${base}#${year}.${n}`;
 			const item: LevelItem = {
-				key: byKey.has(key) ? `${key}#${items.length}` : key,
+				key,
 				node: child,
 				byYear: { [year]: child },
 				ahts: child.aht ? [child.aht] : [],
 				rematches: {},
 			};
 			items.push(item);
-			byKey.set(key, item);
+			usedKeys.add(key);
+			byKey.set(base, item);
 		}
 	}
 
@@ -606,7 +621,70 @@ const levelItems = computed(() => {
 	}
 
 	return items.reverse();
-});
+}
+
+/**
+ * The alignment is the same for every level of the budget, so it is memoised —
+ * resolving a path now needs the items of each level above it. It does depend on
+ * the year list and the filters, which change as the reader flips the controls,
+ * so entries are stored under a signature of those: a change simply stops hitting
+ * the old ones. Everything else the alignment reads (the trees themselves) is a
+ * static import.
+ */
+const alignmentSignature = computed(() =>
+	[
+		side,
+		view,
+		years.value.join(','),
+		ahtEnabled.value ? 'aht' : '',
+		showOtherSections.value ? 'other' : '',
+		kgrFilter.value ? [...kgrFilter.value].join('.') : '',
+	].join('|'),
+);
+
+const levelItemsCache = new Map<string, LevelItem[]>();
+
+function levelItemsFor(keys: string[]): LevelItem[] {
+	const cacheKey = [alignmentSignature.value, ...keys].join('\u0000');
+	let items = levelItemsCache.get(cacheKey);
+	if (!items) {
+		// Keeps the memo from growing without bound as the reader wanders around.
+		if (levelItemsCache.size > 500) levelItemsCache.clear();
+		items = computeLevelItems(keys);
+		levelItemsCache.set(cacheKey, items);
+	}
+	return items;
+}
+
+/**
+ * The item of a level a key belongs to. A key can go stale — the year range
+ * changes with the display mode, and with it where a level splits into separate
+ * series — in which case the plain identifier still resolves as long as nothing
+ * else at that level shares it, so a drilled-in chart doesn't go blank over a
+ * suffix.
+ */
+function findLevelItem(items: LevelItem[], key: string): LevelItem | undefined {
+	const exact = items.find((item) => item.key === key);
+	if (exact) return exact;
+	const plain = baseKey(key);
+	const sharing = items.filter((item) => baseKey(item.key) === plain);
+	return sharing.length === 1 ? sharing[0] : undefined;
+}
+
+/** Which item of a level each of its nodes belongs to. */
+const itemKeysByNodeCache = new WeakMap<LevelItem[], Map<BudgetNode, string>>();
+function itemKeysByNode(items: LevelItem[]): Map<BudgetNode, string> {
+	const cached = itemKeysByNodeCache.get(items);
+	if (cached) return cached;
+	const map = new Map<BudgetNode, string>();
+	for (const item of items) {
+		for (const node of Object.values(item.byYear)) map.set(node, item.key);
+	}
+	itemKeysByNodeCache.set(items, map);
+	return map;
+}
+
+const levelItems = computed(() => levelItemsFor(path.value));
 
 type Series = {
 	/** Series identity: AHT code when available, economic ID otherwise */
@@ -632,13 +710,7 @@ type Series = {
  * Which item of the current level a node belongs to, so an item that moved
  * deeper can name the segment it ended up inside.
  */
-const itemKeyByNode = computed(() => {
-	const map = new Map<BudgetNode, string>();
-	for (const item of levelItems.value) {
-		for (const node of Object.values(item.byYear)) map.set(node, item.key);
-	}
-	return map;
-});
+const itemKeyByNode = computed(() => itemKeysByNode(levelItems.value));
 
 // Build time series data for all children
 const timeSeriesData = computed(() => {
@@ -858,18 +930,17 @@ function getStringValue(
 	return groupNums(series.values[year] || 0);
 }
 
-// Get current node name for breadcrumb. Names can differ between years, so the
-// first year that resolves a given level provides its label.
+// Get current node name for breadcrumb. Names differ between years, so each
+// level is labelled with its item's most recent name — the same label the
+// legend was clicked on to get here.
 const nodePath = computed(() => {
 	const result: { key: string; name: string }[] = [{ key: '', name: 'Összesen' }];
 
-	for (const year of years.value) {
-		for (let i = result.length - 1; i < path.value.length; i++) {
-			const node = getNodeForYear(year, path.value.slice(0, i + 1));
-			if (!node) break;
-			result.push({ key: path.value[i]!, name: node.name });
-		}
-		if (result.length > path.value.length) break;
+	for (let i = 0; i < path.value.length; i++) {
+		const key = path.value[i]!;
+		const item = findLevelItem(levelItemsFor(path.value.slice(0, i)), key);
+		if (!item) break;
+		result.push({ key, name: item.node.name });
 	}
 
 	return result;
