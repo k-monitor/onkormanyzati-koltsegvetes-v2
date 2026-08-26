@@ -263,8 +263,19 @@ function seriesKey(node: BudgetNode): string {
 	return normalizeId(node.id);
 }
 
+/**
+ * Two items of a level can share a key — a renamed chapter that split off from
+ * an earlier series keeps the AHT code it inherited — so the later one carries
+ * a `#n` suffix. Everything that looks the key up in the budget wants the plain
+ * one.
+ */
+function baseKey(key: string): string {
+	return key.replace(/#\d+$/, '');
+}
+
 function ahtOfKey(key: string): string | null {
-	return key.startsWith(AHT_KEY_PREFIX) ? key.slice(AHT_KEY_PREFIX.length) : null;
+	const plain = baseKey(key);
+	return plain.startsWith(AHT_KEY_PREFIX) ? plain.slice(AHT_KEY_PREFIX.length) : null;
 }
 
 function findByAht(year: string, key: string): AhtEntry | null {
@@ -275,7 +286,8 @@ function findByAht(year: string, key: string): AhtEntry | null {
 
 // Colors are configured per economic ID, so AHT keys need translating back.
 function colorKey(key: string): string {
-	return ahtLookup.value.econIds.get(key) || key;
+	const plain = baseKey(key);
+	return ahtLookup.value.econIds.get(plain) || plain;
 }
 
 // How many ancestor levels a warning names. The full path from the root repeats
@@ -285,10 +297,21 @@ const LOCATION_LEVELS = 2;
 
 // Human-readable place of an item inside a year's tree, for the warnings
 function describeLocation(parents: BudgetNode[]): string {
-	const names = parents.map((p) => p.name).filter((name) => name && name !== 'Összesen');
+	const names = locationNames(parents);
 	if (names.length === 0) return 'Összesen';
 	const innermost = names.slice(-LOCATION_LEVELS);
 	return (innermost.length < names.length ? '… → ' : '') + innermost.join(' → ');
+}
+
+function locationNames(parents: BudgetNode[]): string[] {
+	return parents.map((p) => p.name).filter((name) => name && name !== 'Összesen');
+}
+
+// The whole path from the top of the budget down to the item, for the tooltips
+// that talk about a single year and have room to spell it out.
+function fullLocation(parents: BudgetNode[]): string {
+	const names = locationNames(parents);
+	return names.length === 0 ? 'Összesen' : names.join(' → ');
 }
 
 /**
@@ -305,7 +328,7 @@ function resolveForYear(
 	let current = root;
 	let movedTo: string | null = null;
 	for (const key of keys) {
-		let next = current.children?.find((child) => seriesKey(child) === key);
+		let next = current.children?.find((child) => seriesKey(child) === baseKey(key));
 		if (!next) {
 			const entry = findByAht(year, key);
 			if (!entry) return null;
@@ -348,17 +371,64 @@ function subtreeAhtCodes(node: BudgetNode): Set<string> {
 function contentSimilarity(a: BudgetNode, b: BudgetNode) {
 	const codesA = subtreeAhtCodes(a);
 	const codesB = subtreeAhtCodes(b);
-	if (codesA.size === 0 || codesB.size === 0) return { shared: 0, similarity: 0 };
+	// Without codes on both sides there is nothing to compare — `comparable`
+	// keeps that apart from "compared, and they have nothing in common".
+	if (codesA.size === 0 || codesB.size === 0)
+		return { shared: 0, similarity: 0, coverage: 0, comparable: false };
 	const [small, large] = codesA.size <= codesB.size ? [codesA, codesB] : [codesB, codesA];
 	let shared = 0;
 	for (const code of small) if (large.has(code)) shared++;
-	return { shared, similarity: shared / (codesA.size + codesB.size - shared) };
+	return {
+		shared,
+		similarity: shared / (codesA.size + codesB.size - shared),
+		// Share of the bigger side that both have — "half of the codes match".
+		coverage: shared / large.size,
+		comparable: true,
+	};
 }
 
 // Below this the two nodes have too little in common to call them the same item.
 // Tuned on the central budget: real renames land at 0.4+, genuinely different
 // funds and chapters that happen to swap places stay near 0.1.
 const MIN_CONTENT_SIMILARITY = 0.4;
+
+// An item that kept its identifier but changed its name has to share at least
+// this much of its AHT codes to count as the same series. A chapter that was
+// renamed *and* gutted — its programmes handed to other chapters — would
+// otherwise be drawn as a continuation of the old one, turning the split into a
+// spectacular drop. (EMMI → Kulturális és Innovációs Minisztérium in 2023
+// shares 27% of its codes; genuine renames like NGM → PM stay above 60%.)
+const MIN_RENAMED_COVERAGE = 0.5;
+
+function normalizeName(name: string): string {
+	return (
+		(name || '')
+			.toLowerCase()
+			// Chapters get renumbered without becoming a different chapter.
+			.replace(/^[ivxlcdm]+\.\s+/, '')
+			.replace(/[^\p{L}\p{N}]+/gu, ' ')
+			.trim()
+	);
+}
+
+/**
+ * Whether a year's node can carry on an existing series. Same name: yes — that
+ * is what the matching found it by. Renamed: only if the AHT codes below the
+ * two still mostly agree, so a rename that came with a reorganization starts a
+ * new series instead.
+ */
+function continuesSeries(
+	child: BudgetNode,
+	previous: BudgetNode,
+	match?: ReturnType<typeof contentSimilarity>,
+): boolean {
+	if (normalizeName(child.name) === normalizeName(previous.name)) return true;
+	if (!ahtEnabled.value) return true;
+	const overlap = match ?? contentSimilarity(child, previous);
+	// Nothing to compare — no reason to break the series apart.
+	if (!overlap.comparable) return true;
+	return overlap.coverage >= MIN_RENAMED_COVERAGE;
+}
 
 // Years where the item we drilled into is not in its usual place
 const pathMoves = computed(() => {
@@ -408,7 +478,9 @@ const levelItems = computed(() => {
 		let unmatched: BudgetNode[] = [];
 		for (const child of children) {
 			const item = byKey.get(seriesKey(child));
-			if (item && !item.byYear[year]) {
+			// A shared identifier is not enough when the name changed too — see
+			// `continuesSeries`; such a child starts a series of its own below.
+			if (item && !item.byYear[year] && continuesSeries(child, item.node)) {
 				item.byYear[year] = child;
 				// years.value is sorted ascending, so later iterations overwrite
 				// earlier ones — the label tracks the most recent name.
@@ -444,7 +516,10 @@ const levelItems = computed(() => {
 			for (const child of unmatched) {
 				for (const item of open) {
 					const match = contentSimilarity(child, item.node);
-					if (match.similarity >= MIN_CONTENT_SIMILARITY)
+					if (
+						match.similarity >= MIN_CONTENT_SIMILARITY &&
+						continuesSeries(child, item.node, match)
+					)
 						pairs.push({ child, item, ...match });
 				}
 			}
@@ -471,8 +546,10 @@ const levelItems = computed(() => {
 		}
 
 		for (const child of unmatched) {
-			// A key can already be taken when an earlier content match adopted it;
-			// suffixing keeps the two apart instead of dropping one of them.
+			// A key can already be taken — by an earlier content match, or by the
+			// series this one just split off from. Suffixing keeps the two apart
+			// instead of dropping one of them, and the newest item takes over the
+			// key so the following years carry on with it.
 			const key = seriesKey(child);
 			const item: LevelItem = {
 				key: byKey.has(key) ? `${key}#${items.length}` : key,
@@ -482,7 +559,7 @@ const levelItems = computed(() => {
 				rematches: {},
 			};
 			items.push(item);
-			if (!byKey.has(key)) byKey.set(key, item);
+			byKey.set(key, item);
 		}
 	}
 
@@ -511,12 +588,26 @@ type Series = {
 	/**
 	 * Years where the item wasn't in its usual place and had to be located by
 	 * its AHT code. `inside` means it turned up below this level, so its value
-	 * is already part of another bar segment here.
+	 * is already part of another bar segment here — `container` is the key of
+	 * that segment (null when it can't be identified). `at` is the shortened
+	 * location for the summary tooltips, `path` the full one.
 	 */
-	moves: Record<string, { at: string; inside: boolean }>;
+	moves: Record<string, { at: string; path: string; inside: boolean; container: string | null }>;
 	/** Years matched by content similarity — see `levelItems`. */
 	rematches: Record<string, { from: string; shared: number; similarity: number }>;
 };
+
+/**
+ * Which item of the current level a node belongs to, so an item that moved
+ * deeper can name the segment it ended up inside.
+ */
+const itemKeyByNode = computed(() => {
+	const map = new Map<BudgetNode, string>();
+	for (const item of levelItems.value) {
+		for (const node of Object.values(item.byYear)) map.set(node, item.key);
+	}
+	return map;
+});
 
 // Build time series data for all children
 const timeSeriesData = computed(() => {
@@ -559,11 +650,21 @@ const timeSeriesData = computed(() => {
 				.map((aht) => ahtLookup.value.byYear[year]?.get(aht))
 				.find(Boolean);
 			if (!entry) continue;
+			// The code leads to another item of this level — the series split in
+			// two (renamed and reorganized), and that node's value is its own.
+			const owner = itemKeyByNode.value.get(entry.node);
+			if (owner !== undefined && owner !== item.key) continue;
 			record(entry.node);
 			const levelNode = levelNodes[year];
+			// The ancestor right below the drilled-into node is the segment of this
+			// bar that swallowed the item's value.
+			const depth = levelNode ? entry.parents.indexOf(levelNode) : -1;
+			const containerNode = depth >= 0 ? entry.parents[depth + 1] : undefined;
 			series.moves[year] = {
 				at: describeLocation(entry.parents),
-				inside: !!levelNode && entry.parents.includes(levelNode),
+				path: fullLocation(entry.parents),
+				inside: depth >= 0,
+				container: containerNode ? (itemKeyByNode.value.get(containerNode) ?? null) : null,
 			};
 		}
 
@@ -594,11 +695,12 @@ const uncertainYears = computed(() => {
 
 const hasUncertainty = computed(() => Object.keys(uncertainYears.value).length > 0);
 
-function describeMove(move?: { at: string; inside: boolean }): string {
+function describeMove(move?: { at: string; path: string; inside: boolean }, full = false): string {
 	if (!move) return '';
+	const where = full ? move.path : move.at;
 	return move.inside
-		? `mélyebb szinten szerepel (${move.at}), az összege ott jelenik meg a sávban`
-		: `máshol szerepel (${move.at})`;
+		? `mélyebb szinten szerepel (${where}), az összege ott jelenik meg a sávban`
+		: `máshol szerepel (${where})`;
 }
 
 function describeRematch(rematch?: { from: string; shared: number; similarity: number }): string {
@@ -606,9 +708,12 @@ function describeRematch(rematch?: { from: string; shared: number; similarity: n
 	return `más azonosítóval szerepel, a tartalma alapján párosítva (előző neve: „${rematch.from}”, ${rematch.shared} közös AHT kód)`;
 }
 
-/** Why a given year of a series is uncertain, or an empty string if it isn't. */
-function describeUncertainty(series: Series, year: string): string {
-	return describeMove(series.moves[year]) || describeRematch(series.rematches[year]);
+/**
+ * Why a given year of a series is uncertain, or an empty string if it isn't.
+ * `full` spells out the whole path — for tooltips that cover a single year.
+ */
+function describeUncertainty(series: Series, year: string, full = false): string {
+	return describeMove(series.moves[year], full) || describeRematch(series.rematches[year]);
 }
 
 function isUncertain(series: Series, year: string): boolean {
@@ -747,10 +852,15 @@ const innerHeight = chartHeight - padding.top - padding.bottom;
 /**
  * Value a series contributes to the stacked bar. An item that moved *below*
  * this level is already counted inside another segment of the same bar, so
- * adding it again would inflate the stack — the details table still shows it.
+ * adding it again would inflate the stack — it is drawn inside that segment
+ * instead (see `nestedSegments`). When the segment holding it is hidden, the
+ * value isn't on the chart at all, so the item stacks on its own.
  */
 function getStackValue(series: Series, year: string): number {
-	if (series.moves[year]?.inside) return 0;
+	const move = series.moves[year];
+	if (move?.inside && !(move.container !== null && hiddenSeries.value.has(move.container))) {
+		return 0;
+	}
 	return getDisplayValue(series, year);
 }
 
@@ -784,6 +894,52 @@ const stackedData = computed(() => {
 
 	return result;
 });
+
+/**
+ * Items that moved to a deeper level: their value is already inside another
+ * segment of this bar, so they get no segment of their own — the bar would
+ * double-count them. Where inside the bar they sit is only shown while the item
+ * is hovered (from the legend, or from a year where it does have a segment);
+ * the blocks are stacked from the base of the segment that holds them.
+ */
+const nestedSegments = computed(() => {
+	const result: Record<string, { key: string; title: string; y0: number; y1: number }[]> = {};
+	const byKey = new Map(stackedData.value.map((series) => [series.key, series]));
+
+	for (const year of years.value) {
+		const segments: { key: string; title: string; y0: number; y1: number }[] = [];
+		// How much of each container is already taken by the blocks placed in it.
+		const filled = new Map<string, number>();
+
+		for (const series of timeSeriesData.value) {
+			if (hiddenSeries.value.has(series.key)) continue;
+			const containerKey = series.moves[year]?.container;
+			// No container, or it's hidden — then getStackValue gave the item its own segment.
+			const container = containerKey ? byKey.get(containerKey) : undefined;
+			const span = container?.stackedValues[year];
+			if (!container || !span) continue;
+
+			const value = getDisplayValue(series, year);
+			if (value <= 0) continue;
+			const base = (filled.get(container.key) || 0) + span.y0;
+			filled.set(container.key, (filled.get(container.key) || 0) + value);
+			// Values are sums of their children, so a block fits inside its container —
+			// clamp anyway, rather than let bad input draw outside the bar.
+			const y0 = Math.min(base, span.y1);
+			const y1 = Math.min(base + value, span.y1);
+			if (y1 <= y0) continue;
+
+			segments.push({ key: series.key, title: segmentTooltip(series, year), y0, y1 });
+		}
+
+		if (segments.length > 0) result[year] = segments;
+	}
+
+	return result;
+});
+
+// So a small item still shows up as a marker instead of a hairline.
+const MIN_NESTED_HEIGHT = 2;
 
 // Values of the parent node (the one we drilled into), per year, in current display mode.
 // Used to render a dotted outline showing the previous-level bar when drilled down.
@@ -1073,6 +1229,15 @@ function canDrillDown(key: string): boolean {
 }
 
 // Calculate delta (change from previous year)
+/**
+ * Whether the series covers a year at all. A series that starts or ends
+ * mid-chart — a chapter that was wound up, or one that split off from another —
+ * has no figure for the rest, which is not the same as a figure of zero.
+ */
+function hasValue(series: Series, year: string): boolean {
+	return series.values[year] !== undefined;
+}
+
 function getDelta(
 	seriesKeyToFind: string,
 	year: string,
@@ -1081,9 +1246,11 @@ function getDelta(
 	if (yearIndex === 0) return null;
 	const series = timeSeriesData.value.find((s) => s.key === seriesKeyToFind);
 	if (!series) return null;
-	const currentValue = getDisplayValue(series, year);
 	const prevYear = years.value[yearIndex - 1];
 	if (!prevYear) return null;
+	// Nothing to compare against a year the item didn't exist in.
+	if (!hasValue(series, year) || !hasValue(series, prevYear)) return null;
+	const currentValue = getDisplayValue(series, year);
 	const prevValue = getDisplayValue(series, prevYear);
 	const delta = currentValue - prevValue;
 	const percent = prevValue !== 0 ? (delta / prevValue) * 100 : null;
@@ -1122,6 +1289,23 @@ const hoveredSeries = computed(() => {
 function nameFor(series: Series, year: string): string {
 	return series.names[year] || series.name;
 }
+
+/**
+ * Tooltip of a bar segment. For a year where the item was reorganized, the
+ * name alone is misleading — it is followed by the place it actually sits in
+ * that year's budget.
+ */
+function segmentTooltip(series: Series, year: string): string {
+	const name = nameFor(series, year);
+	const move = series.moves[year];
+	if (!move) return name;
+	return `${name} — helye ebben az évben: ${move.path}`;
+}
+
+// Bootstrap caps tooltips at 200px, too narrow for a budget path. Widened via
+// a per-element template, so the tooltips of the rest of the site stay as they are.
+const PATH_TOOLTIP_TEMPLATE =
+	'<div class="tooltip ts-path-tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>';
 
 // Details panel heading: the hovered year's name when hovering a bar, the most
 // recent name when hovering the legend (which covers all years at once).
@@ -1419,7 +1603,10 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 											clickable: canClick(series.key),
 										}"
 										data-toggle="tooltip"
-										:title="nameFor(series, year)"
+										:data-template="
+											series.moves[year] ? PATH_TOOLTIP_TEMPLATE : undefined
+										"
+										:title="segmentTooltip(series, year)"
 										@mouseenter="
 											hovered = series.key;
 											hoveredYear = year;
@@ -1454,6 +1641,70 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 										:fill="`url(#${hatchId})`"
 										class="moved-overlay"
 									/>
+								</template>
+							</g>
+
+							<!--
+								Items that moved a level deeper have no segment of their
+								own — their value is inside another one. Hovering the item
+								(here or in the legend) highlights where it sits.
+							-->
+							<g class="nested-bars">
+								<template
+									v-for="(year, yearIndex) in years"
+									:key="'nested-year-' + year"
+								>
+									<template
+										v-for="segment in nestedSegments[year] || []"
+										:key="'nested-' + segment.key + '-' + year"
+									>
+										<template v-if="hovered === segment.key">
+											<rect
+												:x="xScale(yearIndex) - barWidth / 2"
+												:y="yScale(segment.y1)"
+												:width="barWidth"
+												:height="
+													Math.max(
+														MIN_NESTED_HEIGHT,
+														yScale(segment.y0) - yScale(segment.y1),
+													)
+												"
+												:fill="bgColor(segment.key, true, false)"
+												:stroke="strokeColor(segment.key, true)"
+												class="bar nested-bar"
+												:class="{ clickable: canClick(segment.key) }"
+												data-toggle="tooltip"
+												:data-template="PATH_TOOLTIP_TEMPLATE"
+												:title="segment.title"
+												@mouseenter="
+													hovered = segment.key;
+													hoveredYear = year;
+													hoverSide =
+														yearIndex >= years.length / 2
+															? 'right'
+															: 'left';
+												"
+												@mouseleave="
+													hovered = null;
+													hoveredYear = null;
+												"
+												@click="drillDown(segment.key)"
+											/>
+											<rect
+												:x="xScale(yearIndex) - barWidth / 2"
+												:y="yScale(segment.y1)"
+												:width="barWidth"
+												:height="
+													Math.max(
+														MIN_NESTED_HEIGHT,
+														yScale(segment.y0) - yScale(segment.y1),
+													)
+												"
+												:fill="`url(#${hatchId})`"
+												class="moved-overlay"
+											/>
+										</template>
+									</template>
 								</template>
 							</g>
 
@@ -1512,11 +1763,16 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 										v-if="isUncertain(hoveredSeries, year)"
 										class="fas fa-exclamation-triangle moved-icon"
 										data-toggle="tooltip"
-										:title="describeUncertainty(hoveredSeries, year)"
+										:data-template="PATH_TOOLTIP_TEMPLATE"
+										:title="describeUncertainty(hoveredSeries, year, true)"
 									/>
 								</td>
 								<td class="text-right">
-									{{ getStringValue(hoveredSeries, year) }}
+									{{
+										hasValue(hoveredSeries, year)
+											? getStringValue(hoveredSeries, year)
+											: '—'
+									}}
 								</td>
 								<td
 									class="text-right delta"
@@ -1561,7 +1817,11 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 							backgroundColor: bgColor(series.key, false, false),
 						}"
 					/>
-					<span class="legend-label">{{ series.name }}</span>
+					<span
+						class="legend-label"
+						:data-label="series.name"
+						>{{ series.name }}</span
+					>
 					<i
 						v-if="hasAnyUncertainty(series)"
 						class="fas fa-fw fa-exclamation-triangle moved-icon ml-1"
@@ -1599,7 +1859,9 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 					tartalmuk alapján követjük tovább, de az összehasonlításuk bizonytalan: a
 					<i class="fas fa-exclamation-triangle moved-icon" />
 					jellel és a sávozott mintával jelölt tételekre, illetve évekre mutatva
-					olvasható, hogy mi történt velük.
+					olvasható, hogy hol szerepelnek az adott évben. Ha egy tétel abban az évben
+					mélyebb szinten volt, nincs saját sávrésze — a tételre mutatva kiemeljük, hol
+					van az összege a sávon belül.
 				</span>
 			</div>
 
@@ -1633,14 +1895,19 @@ watch([() => view, () => side, mode, path, hiddenSeries], () => nextTick(reinitT
 									v-if="isUncertain(hoveredSeries, year)"
 									class="fas fa-exclamation-triangle moved-icon"
 									data-toggle="tooltip"
-									:title="describeUncertainty(hoveredSeries, year)"
+									:data-template="PATH_TOOLTIP_TEMPLATE"
+									:title="describeUncertainty(hoveredSeries, year, true)"
 								/>
 							</td>
 							<td class="name-cell">
 								{{ hoveredSeries.names[year] || '—' }}
 							</td>
 							<td class="text-right">
-								{{ getStringValue(hoveredSeries, year) }}
+								{{
+									hasValue(hoveredSeries, year)
+										? getStringValue(hoveredSeries, year)
+										: '—'
+								}}
 							</td>
 							<td
 								class="text-right delta"
@@ -1782,6 +2049,12 @@ $moved-color: #b8860b;
 		pointer-events: none;
 	}
 
+	// Highlight of an item that sits deeper in the tree, drawn over the segment
+	// that holds its value — only visible while that item is hovered.
+	.nested-bar {
+		stroke-width: 2;
+	}
+
 	.moved-marker {
 		font-size: 14px;
 		fill: $moved-color;
@@ -1909,6 +2182,18 @@ $moved-color: #b8860b;
 
 		.legend-label {
 			font-size: 0.875rem;
+
+			// Highlighting an item bolds it, which used to re-wrap the whole legend
+			// under the cursor — losing the hover, and with it the highlight on the
+			// chart. Reserving the bold width keeps the layout still.
+			&::after {
+				content: attr(data-label);
+				display: block;
+				height: 0;
+				overflow: hidden;
+				visibility: hidden;
+				font-weight: bold;
+			}
 		}
 
 		&.is-embedded .legend-label {
@@ -1993,5 +2278,12 @@ $moved-color: #b8860b;
 			display: none;
 		}
 	}
+}
+
+// Bootstrap tooltips are 200px wide — a budget path needs more room. The tooltip
+// is appended to the body, so this rule can't live inside .time-series.
+.tooltip.ts-path-tooltip .tooltip-inner {
+	max-width: 340px;
+	text-align: left;
 }
 </style>
