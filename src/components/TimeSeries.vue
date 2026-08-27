@@ -325,11 +325,11 @@ function locationNames(parents: BudgetNode[]): string[] {
 	return parents.map((p) => p.name).filter((name) => name && name !== 'Összesen');
 }
 
-// The whole path from the top of the budget down to the item, for the tooltips
-// that talk about a single year and have room to spell it out.
-function fullLocation(parents: BudgetNode[]): string {
+// The whole path from the top of the budget down to the item, level by level,
+// for the tooltips that talk about a single year and have room to spell it out.
+function fullLocation(parents: BudgetNode[]): string[] {
 	const names = locationNames(parents);
-	return names.length === 0 ? 'Összesen' : names.join(' → ');
+	return names.length === 0 ? ['Összesen'] : names;
 }
 
 /**
@@ -699,9 +699,9 @@ type Series = {
 	 * its AHT code. `inside` means it turned up below this level, so its value
 	 * is already part of another bar segment here — `container` is the key of
 	 * that segment (null when it can't be identified). `at` is the shortened
-	 * location for the summary tooltips, `path` the full one.
+	 * location for the summary tooltips, `path` the full one, level by level.
 	 */
-	moves: Record<string, { at: string; path: string; inside: boolean; container: string | null }>;
+	moves: Record<string, { at: string; path: string[]; inside: boolean; container: string | null }>;
 	/** Years matched by content similarity — see `levelItems`. */
 	rematches: Record<string, { from: string; shared: number; similarity: number }>;
 };
@@ -800,12 +800,11 @@ const uncertainYears = computed(() => {
 
 const hasUncertainty = computed(() => Object.keys(uncertainYears.value).length > 0);
 
-function describeMove(move?: { at: string; path: string; inside: boolean }, full = false): string {
+function describeMove(move?: { at: string; inside: boolean }): string {
 	if (!move) return '';
-	const where = full ? move.path : move.at;
 	return move.inside
-		? `mélyebb szinten szerepel (${where}), az összege ott jelenik meg a sávban`
-		: `máshol szerepel (${where})`;
+		? `mélyebb szinten szerepel (${move.at}), az összege ott jelenik meg a sávban`
+		: `máshol szerepel (${move.at})`;
 }
 
 function describeRematch(rematch?: { from: string; shared: number; similarity: number }): string {
@@ -813,12 +812,9 @@ function describeRematch(rematch?: { from: string; shared: number; similarity: n
 	return `más azonosítóval szerepel, a tartalma alapján párosítva (előző neve: „${rematch.from}”, ${rematch.shared} közös AHT kód)`;
 }
 
-/**
- * Why a given year of a series is uncertain, or an empty string if it isn't.
- * `full` spells out the whole path — for tooltips that cover a single year.
- */
-function describeUncertainty(series: Series, year: string, full = false): string {
-	return describeMove(series.moves[year], full) || describeRematch(series.rematches[year]);
+/** Why a given year of a series is uncertain, or an empty string if it isn't. */
+function describeUncertainty(series: Series, year: string): string {
+	return describeMove(series.moves[year]) || describeRematch(series.rematches[year]);
 }
 
 function isUncertain(series: Series, year: string): boolean {
@@ -1395,21 +1391,83 @@ function nameFor(series: Series, year: string): string {
 }
 
 /**
- * Tooltip of a bar segment. For a year where the item was reorganized, the
- * name alone is misleading — it is followed by the place it actually sits in
- * that year's budget.
+ * These tooltips are built as markup, so every value that goes into them is
+ * escaped — the names come from the budget files, not from us.
  */
-function segmentTooltip(series: Series, year: string): string {
-	const name = nameFor(series, year);
-	const move = series.moves[year];
-	if (!move) return name;
-	return `${name} — helye ebben az évben: ${move.path}`;
+function escapeHtml(text: string): string {
+	return text
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;');
 }
 
-// Bootstrap caps tooltips at 200px, too narrow for a budget path. Widened via
-// a per-element template, so the tooltips of the rest of the site stay as they are.
-const PATH_TOOLTIP_TEMPLATE =
-	'<div class="tooltip ts-path-tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>';
+// Levels past this one stop stepping in, so a deep path can't push its own text
+// off the side of the tooltip.
+const MAX_PATH_INDENT = 3;
+
+/**
+ * A budget path as an indented tree instead of one arrow-separated line: the
+ * levels stay apart from each other, and from whatever the tooltip said above
+ * them. The last level — where the item actually sits — is the one emphasized.
+ */
+function pathHtml(steps: string[]): string {
+	const lines = steps.map((step, index) => {
+		const classes = ['ts-tip-step', `indent-${Math.min(index, MAX_PATH_INDENT)}`];
+		if (index === steps.length - 1) classes.push('is-last');
+		return `<div class="${classes.join(' ')}">${escapeHtml(step)}</div>`;
+	});
+	return `<div class="ts-tip-path">${lines.join('')}</div>`;
+}
+
+/** The line above the rule: what happened to the item in this year. */
+function noteHtml(note: string): string {
+	return `<div class="ts-tip-note">${escapeHtml(note)}</div>`;
+}
+
+/** A labelled path below a rule, separating it from the lines above. */
+function pathSection(label: string, steps: string[]): string {
+	return `<div class="ts-tip-label">${escapeHtml(label)}</div>${pathHtml(steps)}`;
+}
+
+/**
+ * Tooltip of a bar segment. For a year where the item was reorganized, the
+ * name alone is misleading — it is followed by the place it actually sits in
+ * that year's budget, set apart from the name so the two don't read as one.
+ */
+function segmentTooltip(series: Series, year: string): string {
+	const name = `<div class="ts-tip-name">${escapeHtml(nameFor(series, year))}</div>`;
+	const move = series.moves[year];
+	if (!move) return name;
+	return name + pathSection('Helye ebben az évben', move.path);
+}
+
+/**
+ * The ⚠ of the details table, which covers a single year and has room for the
+ * whole path: what happened on one line, where it ended up below it.
+ */
+function uncertaintyDetailTooltip(series: Series, year: string): string {
+	const move = series.moves[year];
+	if (move) {
+		const note = move.inside
+			? 'Ebben az évben mélyebb szinten szerepel, az összege ott jelenik meg a sávban.'
+			: 'Ebben az évben máshol szerepel.';
+		return noteHtml(note) + pathSection('Helye ebben az évben', move.path);
+	}
+	const rematch = series.rematches[year];
+	if (!rematch) return '';
+	const shared = `${rematch.shared} közös AHT kód`;
+	return (
+		noteHtml(`Más azonosítóval szerepel, a tartalma alapján párosítva (${shared}).`) +
+		pathSection('Előző neve', [rematch.from])
+	);
+}
+
+// Bootstrap caps tooltips at 200px and centers them, too narrow and too jumbled
+// for a budget path. Widened via a per-element template, so the tooltips of the
+// rest of the site stay as they are.
+const WIDE_TOOLTIP_TEMPLATE =
+	'<div class="tooltip ts-wide-tooltip" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>';
 
 // Details panel heading: the hovered year's name when hovering a bar, the most
 // recent name when hovering the legend (which covers all years at once).
@@ -1521,7 +1579,7 @@ watch(
 						class="btn btn-sm"
 						:class="showOtherSections ? 'btn-primary' : 'btn-outline-secondary'"
 						data-toggle="tooltip"
-						:data-template="PATH_TOOLTIP_TEMPLATE"
+						:data-template="WIDE_TOOLTIP_TEMPLATE"
 						:title="
 							showOtherSections
 								? 'Az átszervezés miatt más fejezetbe vagy címbe került tételeket az AHT kódjuk alapján követi az ábra, és az összegük itt is megjelenik (sávozott mintával jelölve). Kattints, ha csak az itt szereplő tételeket szeretnéd látni.'
@@ -1734,9 +1792,8 @@ watch(
 											clickable: canClick(series.key),
 										}"
 										data-toggle="tooltip"
-										:data-template="
-											series.moves[year] ? PATH_TOOLTIP_TEMPLATE : undefined
-										"
+										data-html="true"
+										:data-template="WIDE_TOOLTIP_TEMPLATE"
 										:title="segmentTooltip(series, year)"
 										@mouseenter="
 											hovered = series.key;
@@ -1805,7 +1862,8 @@ watch(
 												class="bar nested-bar"
 												:class="{ clickable: canClick(segment.key) }"
 												data-toggle="tooltip"
-												:data-template="PATH_TOOLTIP_TEMPLATE"
+												data-html="true"
+												:data-template="WIDE_TOOLTIP_TEMPLATE"
 												:title="segment.title"
 												@mouseenter="
 													hovered = segment.key;
@@ -1894,8 +1952,9 @@ watch(
 										v-if="isUncertain(hoveredSeries, year)"
 										class="fas fa-exclamation-triangle moved-icon"
 										data-toggle="tooltip"
-										:data-template="PATH_TOOLTIP_TEMPLATE"
-										:title="describeUncertainty(hoveredSeries, year, true)"
+										data-html="true"
+										:data-template="WIDE_TOOLTIP_TEMPLATE"
+										:title="uncertaintyDetailTooltip(hoveredSeries, year)"
 									/>
 								</td>
 								<td class="text-right">
@@ -2026,8 +2085,9 @@ watch(
 									v-if="isUncertain(hoveredSeries, year)"
 									class="fas fa-exclamation-triangle moved-icon"
 									data-toggle="tooltip"
-									:data-template="PATH_TOOLTIP_TEMPLATE"
-									:title="describeUncertainty(hoveredSeries, year, true)"
+									data-html="true"
+									:data-template="WIDE_TOOLTIP_TEMPLATE"
+									:title="uncertaintyDetailTooltip(hoveredSeries, year)"
 								/>
 							</td>
 							<td class="name-cell">
@@ -2411,10 +2471,76 @@ $moved-color: #b8860b;
 	}
 }
 
-// Bootstrap tooltips are 200px wide — a budget path needs more room. The tooltip
-// is appended to the body, so this rule can't live inside .time-series.
-.tooltip.ts-path-tooltip .tooltip-inner {
-	max-width: 340px;
-	text-align: left;
+// Tooltips that carry an item and the place it sits in. Bootstrap's are 200px
+// wide and centered — a budget path needs more room, and lines that all start
+// at the same edge. The tooltip is appended to the body, so these rules can't
+// live inside .time-series.
+.tooltip.ts-wide-tooltip {
+	.tooltip-inner {
+		max-width: min(340px, calc(100vw - 2rem));
+		padding: 0.5rem 0.625rem;
+		text-align: left;
+	}
+
+	// The item itself: the one thing the reader is looking for, so it carries
+	// the weight and nothing else does.
+	.ts-tip-name {
+		font-weight: 600;
+		line-height: 1.3;
+	}
+
+	.ts-tip-note {
+		line-height: 1.35;
+	}
+
+	// Doubles as the rule that cuts the path off from the name above it —
+	// without it the two ran together into a single sentence.
+	.ts-tip-label {
+		margin-top: 0.45rem;
+		padding-top: 0.35rem;
+		border-top: 1px solid rgba(255, 255, 255, 0.25);
+		font-size: 0.72em;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		opacity: 0.65;
+	}
+
+	// A notch smaller than the name above it: it is context, not the answer.
+	.ts-tip-path {
+		margin-top: 0.3rem;
+		font-size: 0.92em;
+	}
+
+	// The ↳ hangs into the indent, so a level too long for one line wraps
+	// underneath its own text rather than under the marker.
+	.ts-tip-step {
+		padding-left: 1em;
+		text-indent: -1em;
+		line-height: 1.3;
+		opacity: 0.7;
+
+		+ .ts-tip-step::before {
+			content: '↳\00a0';
+			opacity: 0.6;
+		}
+
+		&:first-child {
+			padding-left: 0;
+			text-indent: 0;
+		}
+
+		// Where the item ended up — the end of the path is what it is read for.
+		// Lifted out of the path without the weight of the name, so the two
+		// don't compete for the same glance.
+		&.is-last {
+			opacity: 1;
+		}
+	}
+
+	@for $level from 1 through 3 {
+		.ts-tip-step.indent-#{$level} {
+			margin-left: $level * 0.7rem;
+		}
+	}
 }
 </style>
