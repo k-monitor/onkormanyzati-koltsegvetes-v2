@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import tinycolor from 'tinycolor2';
 
-const {
-	side,
-	view = 'func',
-	embedded = false,
-} = defineProps<{
+const { side, view = 'func', embedded = false } = defineProps<{
 	side: 'expense' | 'income';
 	view?: 'func' | 'econ';
 	embedded?: boolean;
@@ -20,7 +16,7 @@ function normalizeId(id: string | number | undefined): string {
 	// Strip leading zeros from letter-prefixed numeric IDs (e.g. "K01" → "K1", "K0000001" → "K1")
 	return s.replace(
 		/^([A-Za-z]+)0*(\d+)$/,
-		(_, prefix, digits) => prefix + String(Number(digits)),
+		(_, prefix, digits) => prefix + String(Number(digits))
 	);
 }
 
@@ -52,7 +48,7 @@ watch(
 		hovered.value = null;
 		hoveredYear.value = null;
 		hiddenSeries.value = new Set();
-	},
+	}
 );
 
 // Toggle series visibility
@@ -161,7 +157,9 @@ const years = computed(() => {
 	return Object.keys(DATA)
 		.filter((year) => DATA[year]?.[side]?.[view])
 		.filter((year) => !allowedYears || allowedYears.includes(year))
-		.filter((year) => mode.value !== 'gdp' || (typeof gdp[year] === 'number' && gdp[year] > 0))
+		.filter(
+			(year) => mode.value !== 'gdp' || (typeof gdp[year] === 'number' && gdp[year] > 0)
+		)
 		.sort();
 });
 
@@ -347,7 +345,7 @@ function fullLocation(parents: BudgetNode[]): string[] {
  */
 function resolveForYear(
 	year: string,
-	keys: string[],
+	keys: string[]
 ): { node: BudgetNode; movedTo: string | null } | null {
 	const root = getRootForYear(year);
 	if (!root) return null;
@@ -363,7 +361,9 @@ function resolveForYear(
 			current = own;
 			continue;
 		}
-		const entry = item.ahts.map((aht) => ahtLookup.value.byYear[year]?.get(aht)).find(Boolean);
+		const entry = item.ahts
+			.map((aht) => ahtLookup.value.byYear[year]?.get(aht))
+			.find(Boolean);
 		if (!entry) return null;
 		// The code leads to another item of the same level — the series split in
 		// two, and that node belongs to the other half.
@@ -426,9 +426,9 @@ function contentSimilarity(a: BudgetNode, b: BudgetNode) {
 }
 
 // Below this the two nodes have too little in common to call them the same item.
-// Tuned on the central budget: real renames land at 0.4+, genuinely different
+// Tuned on the central budget: real renames land at 0.2+, genuinely different
 // funds and chapters that happen to swap places stay near 0.1.
-const MIN_CONTENT_SIMILARITY = 0.4;
+const MIN_CONTENT_SIMILARITY = 0.2;
 
 // An item that kept its identifier but changed its name has to share at least
 // this much of its AHT codes to count as the same series. A chapter that was
@@ -436,7 +436,7 @@ const MIN_CONTENT_SIMILARITY = 0.4;
 // otherwise be drawn as a continuation of the old one, turning the split into a
 // spectacular drop. (EMMI → Kulturális és Innovációs Minisztérium in 2023
 // shares 27% of its codes; genuine renames like NGM → PM stay above 60%.)
-const MIN_RENAMED_COVERAGE = 0.5;
+const MIN_RENAMED_COVERAGE = 0.3;
 
 function normalizeName(name: string): string {
 	return (
@@ -458,7 +458,7 @@ function normalizeName(name: string): string {
 function continuesSeries(
 	child: BudgetNode,
 	previous: BudgetNode,
-	match?: ReturnType<typeof contentSimilarity>,
+	match?: ReturnType<typeof contentSimilarity>
 ): boolean {
 	if (normalizeName(child.name) === normalizeName(previous.name)) return true;
 	if (!ahtEnabled.value) return true;
@@ -479,6 +479,21 @@ const pathMoves = computed(() => {
 	return result;
 });
 
+/**
+ * A year joined to a series by something other than its identifier: by the
+ * item's name, or by the budget items below it. `from` is the name the series
+ * carried until then, so the reader can see what was joined to what — null when
+ * the name didn't change at all, which is the usual case for a name match.
+ * `shared` and `similarity` describe the AHT code overlap and only mean
+ * anything for a content match.
+ */
+type Rematch = {
+	from: string | null;
+	by: 'name' | 'content';
+	shared: number;
+	similarity: number;
+};
+
 /** One item of the current level, with the node it maps to in each year. */
 type LevelItem = {
 	key: string;
@@ -487,17 +502,17 @@ type LevelItem = {
 	byYear: Record<string, BudgetNode>;
 	/** Every AHT code the item was seen under, newest first. */
 	ahts: string[];
-	/** Years matched by content rather than by AHT code / economic ID. */
-	rematches: Record<string, { from: string; shared: number; similarity: number }>;
+	/** Years matched by name or content, not by AHT code / economic ID. */
+	rematches: Record<string, Rematch>;
 };
 
 /**
  * The items of the level below `keys`, aligned across years (union, so items
  * only present in some years still appear). Matching goes AHT code → economic ID
- * → content similarity, the last one covering the section levels: chapters and
- * titles are renumbered and renamed freely, and often carry no AHT code of
- * their own, so without it the same ministry would be split into two series
- * (and mixed with whatever else took its place).
+ * → name → content similarity, the last two covering the section levels:
+ * chapters and titles are renumbered and renamed freely, and often carry no AHT
+ * code of their own, so without them the same ministry would be split into two
+ * series (and mixed with whatever else took its place).
  */
 function computeLevelItems(keys: string[]): LevelItem[] {
 	const items: LevelItem[] = [];
@@ -530,6 +545,51 @@ function computeLevelItems(keys: string[]): LevelItem[] {
 			}
 		}
 
+		// A section that kept its name is the same section, whatever happened to
+		// its identifier and to the money below it. The content pass below can't
+		// see that: a chapter that was renumbered *and* reorganized shares too
+		// few of its AHT codes to be paired by them, and would be drawn as two
+		// series — the old one ending, a new one of the same name starting.
+		if (unmatched.length > 0) {
+			const takenItems = new Set<LevelItem>();
+			const takenChildren = new Set<BudgetNode>();
+			const nameOf = (node: BudgetNode) => normalizeName(node.name);
+			for (const child of unmatched) {
+				const name = nameOf(child);
+				// Two children of one name: nothing says which is which, so leave
+				// them to the content pass, which compares what is inside them.
+				if (!name || unmatched.filter((other) => nameOf(other) === name).length > 1)
+					continue;
+				const candidates = items.filter(
+					(item) =>
+						!item.byYear[year] &&
+						!takenItems.has(item) &&
+						nameOf(item.node) === name &&
+						// An item whose AHT code is in this year's tree sits where the
+						// code says it does — that is followed as a move or a split
+						// further down, and the name mustn't contradict it.
+						!item.ahts.some((aht) => ahtLookup.value.byYear[year]?.has(aht))
+				);
+				if (candidates.length !== 1) continue;
+				const item = candidates[0]!;
+				takenItems.add(item);
+				takenChildren.add(child);
+				item.rematches[year] = {
+					// Only the numbering usually differs, and that is on both labels.
+					from: item.node.name === child.name ? null : item.node.name,
+					by: 'name',
+					shared: 0,
+					similarity: 0,
+				};
+				item.byYear[year] = child;
+				item.node = child;
+				if (child.aht && item.ahts[0] !== child.aht) item.ahts.unshift(child.aht);
+				// Register the new key so the following years match without a search.
+				byKey.set(seriesKey(child), item);
+			}
+			unmatched = unmatched.filter((child) => !takenChildren.has(child));
+		}
+
 		if (ahtEnabled.value && unmatched.length > 0) {
 			// Items with nothing at this level in this year, and whose AHT codes are
 			// gone for good — none of them shows up in this or any later year. An
@@ -543,8 +603,8 @@ function computeLevelItems(keys: string[]): LevelItem[] {
 				(item) =>
 					!item.byYear[year] &&
 					!item.ahts.some((aht) =>
-						remainingYears.some((later) => ahtLookup.value.byYear[later]?.has(aht)),
-					),
+						remainingYears.some((later) => ahtLookup.value.byYear[later]?.has(aht))
+					)
 			);
 			const pairs: {
 				child: BudgetNode;
@@ -572,6 +632,7 @@ function computeLevelItems(keys: string[]): LevelItem[] {
 				takenItems.add(pair.item);
 				pair.item.rematches[year] = {
 					from: pair.item.node.name,
+					by: 'content',
 					shared: pair.shared,
 					similarity: pair.similarity,
 				};
@@ -639,7 +700,7 @@ const alignmentSignature = computed(() =>
 		ahtEnabled.value ? 'aht' : '',
 		showOtherSections.value ? 'other' : '',
 		kgrFilter.value ? [...kgrFilter.value].join('.') : '',
-	].join('|'),
+	].join('|')
 );
 
 const levelItemsCache = new Map<string, LevelItem[]>();
@@ -701,9 +762,12 @@ type Series = {
 	 * that segment (null when it can't be identified). `at` is the shortened
 	 * location for the summary tooltips, `path` the full one, level by level.
 	 */
-	moves: Record<string, { at: string; path: string[]; inside: boolean; container: string | null }>;
-	/** Years matched by content similarity — see `levelItems`. */
-	rematches: Record<string, { from: string; shared: number; similarity: number }>;
+	moves: Record<
+		string,
+		{ at: string; path: string[]; inside: boolean; container: string | null }
+	>;
+	/** Years matched by name or by content similarity — see `levelItems`. */
+	rematches: Record<string, Rematch>;
 };
 
 /**
@@ -769,7 +833,7 @@ const timeSeriesData = computed(() => {
 				at: describeLocation(entry.parents),
 				path: fullLocation(entry.parents),
 				inside: depth >= 0,
-				container: containerNode ? (itemKeyByNode.value.get(containerNode) ?? null) : null,
+				container: containerNode ? itemKeyByNode.value.get(containerNode) ?? null : null,
 			};
 		}
 
@@ -787,7 +851,8 @@ const uncertainYears = computed(() => {
 
 	for (const year of years.value) {
 		const entries: { name: string; reason: string }[] = [];
-		if (pathMoves.value[year]) entries.push({ name: drilledName, reason: 'máshol szerepel' });
+		if (pathMoves.value[year])
+			entries.push({ name: drilledName, reason: 'máshol szerepel' });
 		for (const series of timeSeriesData.value) {
 			if (hiddenSeries.value.has(series.key)) continue;
 			const reason = shortReason(series, year);
@@ -807,9 +872,16 @@ function describeMove(move?: { at: string; inside: boolean }): string {
 		: `máshol szerepel (${move.at})`;
 }
 
-function describeRematch(rematch?: { from: string; shared: number; similarity: number }): string {
+function describeRematch(rematch?: Rematch): string {
 	if (!rematch) return '';
-	return `más azonosítóval szerepel, a tartalma alapján párosítva (előző neve: „${rematch.from}”, ${rematch.shared} közös AHT kód)`;
+	const notes = rematch.from ? [`előző neve: „${rematch.from}”`] : [];
+	let how = 'a neve alapján párosítva';
+	if (rematch.by === 'content') {
+		how = 'a tartalma alapján párosítva';
+		notes.push(`${rematch.shared} közös AHT kód`);
+	}
+	const details = notes.length > 0 ? ` (${notes.join(', ')})` : '';
+	return `más azonosítóval szerepel, ${how}${details}`;
 }
 
 /** Why a given year of a series is uncertain, or an empty string if it isn't. */
@@ -841,7 +913,8 @@ function joinYears(list: string[]): string {
 	for (const year of sorted) {
 		const run = runs[runs.length - 1];
 		const previous = run?.[run.length - 1];
-		if (run && previous && order.indexOf(year) === order.indexOf(previous) + 1) run.push(year);
+		if (run && previous && order.indexOf(year) === order.indexOf(previous) + 1)
+			run.push(year);
 		else runs.push([year]);
 	}
 	return runs
@@ -861,7 +934,9 @@ function uncertaintyTooltip(series: Series): string {
 		else byNote.set(note, [year]);
 	}
 	const notes = [...byNote].map(([note, list]) => `${joinYears(list)}: ${note}`);
-	return `Ez a tétel átszervezés miatt nem mindig ugyanott szerepel, ezért az összehasonlítás bizonytalan${series.aht ? ` (AHT: ${series.aht})` : ''}. ${notes.join('; ')}`;
+	return `Ez a tétel átszervezés miatt nem mindig ugyanott szerepel, ezért az összehasonlítás bizonytalan${
+		series.aht ? ` (AHT: ${series.aht})` : ''
+	}. ${notes.join('; ')}`;
 }
 
 // How many item names the year summary spells out before it just counts them.
@@ -879,7 +954,9 @@ function yearUncertaintyTooltip(year: string): string {
 		const listed = names.slice(0, MAX_LISTED_ITEMS).join(', ');
 		return `${reason}: ${listed}${rest > 0 ? ` és további ${rest} tétel` : ''}`;
 	});
-	return `${year} – átszervezés. ${parts.join('; ')}. Részletek a jelmagyarázat ⚠ jelénél.`;
+	return `${year} – átszervezés. ${parts.join(
+		'; '
+	)}. Részletek a jelmagyarázat ⚠ jelénél.`;
 }
 
 // Helper to get display value (raw, inflation-adjusted, or GDP-adjusted)
@@ -888,7 +965,7 @@ function getDisplayValue(
 		values: Record<string, number>;
 		adjustedValues: Record<string, number>;
 	},
-	year: string,
+	year: string
 ): number {
 	if (mode.value === 'inflation' && inflationEnabled.value) {
 		return series.adjustedValues[year] || 0;
@@ -910,7 +987,7 @@ function getStringValue(
 		values: Record<string, number>;
 		adjustedValues: Record<string, number>;
 	},
-	year: string,
+	year: string
 ): string {
 	if (mode.value === 'inflation' && inflationEnabled.value) {
 		return groupNums(series.adjustedValues[year] || 0);
@@ -919,7 +996,9 @@ function getStringValue(
 		const gdp = gdpValues.value[year];
 		if (gdp && gdp > 0) {
 			// Show as percentage of GDP
-			return (((series.values[year] || 0) / gdp) * 100).toFixed(2).replace('.', ',') + ' %';
+			return (
+				(((series.values[year] || 0) / gdp) * 100).toFixed(2).replace('.', ',') + ' %'
+			);
 		}
 		return '0 %';
 	}
@@ -958,7 +1037,10 @@ const innerHeight = chartHeight - padding.top - padding.bottom;
  */
 function getStackValue(series: Series, year: string): number {
 	const move = series.moves[year];
-	if (move?.inside && !(move.container !== null && hiddenSeries.value.has(move.container))) {
+	if (
+		move?.inside &&
+		!(move.container !== null && hiddenSeries.value.has(move.container))
+	) {
 		return 0;
 	}
 	return getDisplayValue(series, year);
@@ -1003,7 +1085,10 @@ const stackedData = computed(() => {
  * the blocks are stacked from the base of the segment that holds them.
  */
 const nestedSegments = computed(() => {
-	const result: Record<string, { key: string; title: string; y0: number; y1: number }[]> = {};
+	const result: Record<
+		string,
+		{ key: string; title: string; y0: number; y1: number }[]
+	> = {};
 	const byKey = new Map(stackedData.value.map((series) => [series.key, series]));
 
 	for (const year of years.value) {
@@ -1341,7 +1426,7 @@ function hasValue(series: Series, year: string): boolean {
 function getDelta(
 	seriesKeyToFind: string,
 	year: string,
-	yearIndex: number,
+	yearIndex: number
 ): { value: number; percent: number | null } | null {
 	if (yearIndex === 0) return null;
 	const series = timeSeriesData.value.find((s) => s.key === seriesKeyToFind);
@@ -1456,11 +1541,12 @@ function uncertaintyDetailTooltip(series: Series, year: string): string {
 	}
 	const rematch = series.rematches[year];
 	if (!rematch) return '';
-	const shared = `${rematch.shared} közös AHT kód`;
-	return (
-		noteHtml(`Más azonosítóval szerepel, a tartalma alapján párosítva (${shared}).`) +
-		pathSection('Előző neve', [rematch.from])
-	);
+	const note =
+		rematch.by === 'name'
+			? 'Más azonosítóval szerepel, a neve alapján párosítva.'
+			: `Más azonosítóval szerepel, a tartalma alapján párosítva (${rematch.shared} közös AHT kód).`;
+	const previous = rematch.from ? pathSection('Előző neve', [rematch.from]) : '';
+	return noteHtml(note) + previous;
 }
 
 // Bootstrap caps tooltips at 200px and centers them, too narrow and too jumbled
@@ -1498,16 +1584,13 @@ onUpdated(regenerateTooltips);
 watch(
 	[() => view, () => side, mode, path, hiddenSeries, showOtherSections],
 	() => nextTick(reinitTooltips),
-	{ deep: true },
+	{ deep: true }
 );
 </script>
 
 <template>
 	<div class="time-series">
-		<div
-			v-if="years.length === 0"
-			class="alert alert-info"
-		>
+		<div v-if="years.length === 0" class="alert alert-info">
 			Nincs elérhető funkcionális adat ehhez a kategóriához.
 		</div>
 
@@ -1530,14 +1613,8 @@ watch(
 				</nav>
 
 				<!-- Mode chooser: regular, inflation, GDP -->
-				<div
-					v-if="inflationEnabled || gdpEnabled"
-					class="mode-toggle"
-				>
-					<div
-						class="btn-group btn-group-sm"
-						role="group"
-					>
+				<div v-if="inflationEnabled || gdpEnabled" class="mode-toggle">
+					<div class="btn-group btn-group-sm" role="group">
 						<button
 							class="btn"
 							:class="mode === 'regular' ? 'btn-primary' : 'btn-outline-secondary'"
@@ -1571,10 +1648,7 @@ watch(
 				</div>
 
 				<!-- Follow items into other chapters/titles by their AHT code -->
-				<div
-					v-if="ahtEnabled"
-					class="mode-toggle other-sections-toggle"
-				>
+				<div v-if="ahtEnabled" class="mode-toggle other-sections-toggle">
 					<button
 						class="btn btn-sm"
 						:class="showOtherSections ? 'btn-primary' : 'btn-outline-secondary'"
@@ -1587,10 +1661,7 @@ watch(
 						"
 						@click="showOtherSections = !showOtherSections"
 					>
-						<i
-							class="fas fa-fw"
-							:class="showOtherSections ? 'fa-eye' : 'fa-eye-slash'"
-						/>
+						<i class="fas fa-fw" :class="showOtherSections ? 'fa-eye' : 'fa-eye-slash'" />
 						Máshol szereplő tételek
 					</button>
 				</div>
@@ -1614,13 +1685,7 @@ watch(
 								patternUnits="userSpaceOnUse"
 								patternTransform="rotate(45)"
 							>
-								<line
-									x1="0"
-									y1="0"
-									x2="0"
-									y2="6"
-									class="moved-hatch-line"
-								/>
+								<line x1="0" y1="0" x2="0" y2="6" class="moved-hatch-line" />
 							</pattern>
 						</defs>
 						<g :transform="`translate(${padding.left}, ${padding.top})`">
@@ -1654,14 +1719,8 @@ watch(
 
 							<!-- X-axis labels (years) -->
 							<g class="x-axis">
-								<template
-									v-for="(year, index) in years"
-									:key="year"
-								>
-									<a
-										v-if="!embedded"
-										:href="yearHref(year)"
-									>
+								<template v-for="(year, index) in years" :key="year">
+									<a v-if="!embedded" :href="yearHref(year)">
 										<text
 											:x="xScale(index)"
 											:y="innerHeight + 25"
@@ -1691,20 +1750,14 @@ watch(
 
 							<!-- N/A indicator for years with no data at the drilled-into level -->
 							<g class="na-markers">
-								<template
-									v-for="(year, yearIndex) in years"
-									:key="'na-' + year"
-								>
+								<template v-for="(year, yearIndex) in years" :key="'na-' + year">
 									<g
 										v-if="yearStates[year] === 'na'"
 										:transform="`translate(${xScale(yearIndex)}, ${innerHeight - 22})`"
 										data-toggle="tooltip"
 										title="Nincs megjeleníthető adat."
 									>
-										<circle
-											r="16"
-											class="na-circle"
-										/>
+										<circle r="16" class="na-circle" />
 										<text
 											text-anchor="middle"
 											dominant-baseline="central"
@@ -1717,14 +1770,8 @@ watch(
 							</g>
 
 							<!-- Dotted outline of the parent bar (the item we drilled into) -->
-							<g
-								v-if="parentValues"
-								class="parent-outlines"
-							>
-								<template
-									v-for="(year, yearIndex) in years"
-									:key="'outline-' + year"
-								>
+							<g v-if="parentValues" class="parent-outlines">
+								<template v-for="(year, yearIndex) in years" :key="'outline-' + year">
 									<rect
 										v-if="parentValues[year] !== undefined"
 										:x="xScale(yearIndex) - barWidth / 2"
@@ -1739,14 +1786,8 @@ watch(
 							</g>
 
 							<!-- Dotted outline of the full level total, including items hidden by kgrOnly -->
-							<g
-								v-if="levelTotalValues"
-								class="level-total-outlines"
-							>
-								<template
-									v-for="(year, yearIndex) in years"
-									:key="'leveltotal-' + year"
-								>
+							<g v-if="levelTotalValues" class="level-total-outlines">
+								<template v-for="(year, yearIndex) in years" :key="'leveltotal-' + year">
 									<rect
 										v-if="levelTotalValues[year] !== undefined"
 										:x="xScale(yearIndex) - barWidth / 2"
@@ -1764,10 +1805,7 @@ watch(
 
 							<!-- Stacked bars for each year -->
 							<g class="bars">
-								<template
-									v-for="(year, yearIndex) in years"
-									:key="'year-' + year"
-								>
+								<template v-for="(year, yearIndex) in years" :key="'year-' + year">
 									<rect
 										v-for="series in stackedData"
 										:key="'bar-' + series.key + '-' + year"
@@ -1782,7 +1820,7 @@ watch(
 											bgColor(
 												series.key,
 												hovered === series.key,
-												hovered !== null && hovered !== series.key,
+												hovered !== null && hovered !== series.key
 											)
 										"
 										:stroke="strokeColor(series.key, hovered === series.key)"
@@ -1798,8 +1836,7 @@ watch(
 										@mouseenter="
 											hovered = series.key;
 											hoveredYear = year;
-											hoverSide =
-												yearIndex >= years.length / 2 ? 'right' : 'left';
+											hoverSide = yearIndex >= years.length / 2 ? 'right' : 'left';
 										"
 										@mouseleave="
 											hovered = null;
@@ -1812,10 +1849,7 @@ watch(
 
 							<!-- Uncertainty hatching over the segments of moved items -->
 							<g class="moved-overlays">
-								<template
-									v-for="(year, yearIndex) in years"
-									:key="'moved-year-' + year"
-								>
+								<template v-for="(year, yearIndex) in years" :key="'moved-year-' + year">
 									<rect
 										v-for="series in stackedData.filter((s) => s.moves[year])"
 										:key="'moved-' + series.key + '-' + year"
@@ -1838,10 +1872,7 @@ watch(
 								(here or in the legend) highlights where it sits.
 							-->
 							<g class="nested-bars">
-								<template
-									v-for="(year, yearIndex) in years"
-									:key="'nested-year-' + year"
-								>
+								<template v-for="(year, yearIndex) in years" :key="'nested-year-' + year">
 									<template
 										v-for="segment in nestedSegments[year] || []"
 										:key="'nested-' + segment.key + '-' + year"
@@ -1854,7 +1885,7 @@ watch(
 												:height="
 													Math.max(
 														MIN_NESTED_HEIGHT,
-														yScale(segment.y0) - yScale(segment.y1),
+														yScale(segment.y0) - yScale(segment.y1)
 													)
 												"
 												:fill="bgColor(segment.key, true, false)"
@@ -1868,10 +1899,7 @@ watch(
 												@mouseenter="
 													hovered = segment.key;
 													hoveredYear = year;
-													hoverSide =
-														yearIndex >= years.length / 2
-															? 'right'
-															: 'left';
+													hoverSide = yearIndex >= years.length / 2 ? 'right' : 'left';
 												"
 												@mouseleave="
 													hovered = null;
@@ -1886,7 +1914,7 @@ watch(
 												:height="
 													Math.max(
 														MIN_NESTED_HEIGHT,
-														yScale(segment.y0) - yScale(segment.y1),
+														yScale(segment.y0) - yScale(segment.y1)
 													)
 												"
 												:fill="`url(#${hatchId})`"
@@ -1899,10 +1927,7 @@ watch(
 
 							<!-- Warning marker above the bars of years affected by a move -->
 							<g class="moved-markers">
-								<template
-									v-for="(year, yearIndex) in years"
-									:key="'movedmark-' + year"
-								>
+								<template v-for="(year, yearIndex) in years" :key="'movedmark-' + year">
 									<text
 										v-if="uncertainYears[year]"
 										:x="xScale(yearIndex)"
@@ -1933,19 +1958,14 @@ watch(
 								<th>Év</th>
 								<th class="text-right">
 									Összeg
-									<template v-if="mode === 'inflation'">
-										({{ baseYear }})</template
-									>
+									<template v-if="mode === 'inflation'"> ({{ baseYear }})</template>
 									<template v-if="mode === 'gdp'"> (% GDP)</template>
 								</th>
 								<th class="text-right">Változás</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr
-								v-for="(year, index) in years"
-								:key="year"
-							>
+							<tr v-for="(year, index) in years" :key="year">
 								<td>
 									{{ year }}
 									<i
@@ -1980,10 +2000,7 @@ watch(
 			</div>
 
 			<!-- Legend -->
-			<div
-				class="legend"
-				:class="{ 'is-embedded': embedded }"
-			>
+			<div class="legend" :class="{ 'is-embedded': embedded }">
 				<div
 					v-for="series in timeSeriesData"
 					:key="'legend-' + series.key"
@@ -2007,21 +2024,14 @@ watch(
 							backgroundColor: bgColor(series.key, false, false),
 						}"
 					/>
-					<span
-						class="legend-label"
-						:data-label="series.name"
-						>{{ series.name }}</span
-					>
+					<span class="legend-label" :data-label="series.name">{{ series.name }}</span>
 					<i
 						v-if="hasAnyUncertainty(series)"
 						class="fas fa-fw fa-exclamation-triangle moved-icon ml-1"
 						data-toggle="tooltip"
 						:title="uncertaintyTooltip(series)"
 					/>
-					<i
-						v-if="canDrillDown(series.key)"
-						class="fas fa-fw fa-level-down-alt ml-1"
-					/>
+					<i v-if="canDrillDown(series.key)" class="fas fa-fw fa-level-down-alt ml-1" />
 					<button
 						class="toggle-visibility-btn"
 						:class="{ 'is-hidden': hiddenSeries.has(series.key) }"
@@ -2038,10 +2048,7 @@ watch(
 			</div>
 
 			<!-- Reorganization warning: some items are not in the same place every year -->
-			<div
-				v-if="hasUncertainty"
-				class="moved-note"
-			>
+			<div v-if="hasUncertainty" class="moved-note">
 				<i class="fas fa-exclamation-triangle moved-icon mr-2" />
 				<span>
 					Néhány tétel átszervezés miatt nem minden évben ugyanott szerepel a
@@ -2056,10 +2063,7 @@ watch(
 			</div>
 
 			<!-- Details panel for mobile (below legend) -->
-			<div
-				v-if="hoveredSeries"
-				class="details-panel details-panel-mobile"
-			>
+			<div v-if="hoveredSeries" class="details-panel details-panel-mobile">
 				<h5>{{ hoveredName }}</h5>
 				<table class="table table-sm">
 					<thead>
@@ -2075,10 +2079,7 @@ watch(
 						</tr>
 					</thead>
 					<tbody>
-						<tr
-							v-for="(year, index) in years"
-							:key="year"
-						>
+						<tr v-for="(year, index) in years" :key="year">
 							<td>
 								{{ year }}
 								<i
