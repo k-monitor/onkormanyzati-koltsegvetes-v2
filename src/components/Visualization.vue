@@ -334,7 +334,7 @@ onUpdated(regenerateTooltips);
 							<span class="d-none d-md-inline ml-1"
 								>({{ Math.round((n.value / (node?.value || 1)) * 100) }}%)</span
 							>
-							<span class="d-sm-none"><br />{{ n.name }}</span>
+							<span class="d-sm-none"><br >{{ n.name }}</span>
 							<i
 								v-if="n.children && n.children.length"
 								class="fas fa-fw fa-level-down-alt ml-1"
@@ -517,8 +517,7 @@ onUpdated(regenerateTooltips);
 
 	.vis {
 		@include media-breakpoint-up(sm) {
-			height: var(--vis-height, 75vh);
-			min-height: 400px;
+			min-height: max(var(--vis-height, 75vh), 400px);
 		}
 		font-size: 90%;
 
@@ -528,7 +527,7 @@ onUpdated(regenerateTooltips);
 		}
 
 		& > div {
-			height: 100%;
+			align-self: stretch;
 		}
 
 		.bar,
