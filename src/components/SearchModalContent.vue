@@ -31,6 +31,12 @@ const range = computed(() => {
 	return res.map((r) => r * suffix.value.value);
 });
 
+// Milestone descriptions are searched too, so fetch the searched year(s) once the
+// user actually searches; results update reactively as the files arrive.
+watch([searchTerm, selectedYear], ([term, y]) => {
+	if (term.length >= 3) loadMilestones(y);
+});
+
 const results = computed(() => {
 	if (searchTerm.value.length < 3 && range.value.length == 0) return [];
 	const valueSearch = range.value.length > 0;

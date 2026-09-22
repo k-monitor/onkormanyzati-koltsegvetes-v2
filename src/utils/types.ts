@@ -47,9 +47,11 @@ export type Milestone = {
 
 export type MilestoneWithId = Milestone & { id: string };
 
-export type Milestones = {
-	milestones: { [id: string]: Milestone };
+// static/data/milestones/index.json — see scripts/prepare-milestones.js
+export type MilestonesIndex = {
 	rels: { [year: string]: Record<string, string> };
+	years: { [year: string]: { file: string; count: number } };
+	positioned: { [id: string]: Milestone };
 };
 
 export type SearchResult = {

@@ -5,6 +5,8 @@ const tag = ref<string | null>(null);
 
 const milestones = computed(() => MILESTONES_BY_YEAR[year.value] || []);
 
+watch(year, (y) => loadMilestones(y), { immediate: true });
+
 const tags = computed(() => {
 	const dict: Record<string, boolean> = {};
 	milestones.value.forEach((m) => {
@@ -56,8 +58,11 @@ function navigateMapOnly(direction: 'prev' | 'next') {
 	handleMilestoneOpened(target.id);
 }
 
-const msHandler = (id: string) => {
+const msHandler = async (id: string) => {
 	tag.value = null;
+	// The event can arrive (from a hash, search or chart) before this year's
+	// milestones are fetched.
+	await loadMilestones(year.value);
 	nextTick(() => {
 		// A grid card already renders this milestone's modal — show it directly.
 		// Otherwise it's an onlyOnMap milestone: route it through the host modal.

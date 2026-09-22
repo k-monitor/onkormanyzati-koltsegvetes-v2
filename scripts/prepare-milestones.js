@@ -6,7 +6,11 @@ const INPUT_FILE = './input/config.xlsx';
 // Written to the public dir (not src/data) so it is served as a static asset and
 // lazy-loaded at runtime instead of bundled into the JS. The milestones dataset can be
 // tens of MB; bundling it can OOM `nuxt generate` and bloat the client chunk.
-const OUTPUT_FILE = './static/data/milestones.json';
+// It is split so the client never has to download everything at once:
+// - index.json: rels, per-year counts/file names and the positioned (map) milestones
+// - <n>.json: all milestones of one year, fetched when that year is viewed/searched
+const OUTPUT_DIR = './static/data/milestones';
+const LEGACY_OUTPUT_FILE = './static/data/milestones.json';
 
 export default () => {
 	const workbook = xlsx.readFile(INPUT_FILE);
@@ -67,6 +71,21 @@ export default () => {
 		}
 	});
 
-	fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
-	fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output));
+	const byYear = {};
+	const positioned = {};
+	Object.entries(output.milestones).forEach(([id, m]) => {
+		(byYear[m.year] ||= {})[id] = m;
+		if (m.position) positioned[id] = m;
+	});
+
+	const index = { rels: output.rels, years: {}, positioned };
+	fs.rmSync(OUTPUT_DIR, { recursive: true, force: true });
+	fs.rmSync(LEGACY_OUTPUT_FILE, { force: true });
+	fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+	Object.entries(byYear).forEach(([year, milestones], i) => {
+		const file = i + '.json';
+		index.years[year] = { file, count: Object.keys(milestones).length };
+		fs.writeFileSync(path.join(OUTPUT_DIR, file), JSON.stringify(milestones));
+	});
+	fs.writeFileSync(path.join(OUTPUT_DIR, 'index.json'), JSON.stringify(index));
 };

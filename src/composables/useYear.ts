@@ -215,7 +215,7 @@ export default createGlobalState(() => {
 	});
 
 	const canShowMilestones = computed(() => {
-		return CONFIG.modules.milestones && (MILESTONES_BY_YEAR[year.value]?.length || 0) > 0;
+		return CONFIG.modules.milestones && (MILESTONE_COUNTS[year.value] || 0) > 0;
 	});
 
 	return {
