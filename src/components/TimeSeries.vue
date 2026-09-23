@@ -1626,17 +1626,17 @@ watch(
 							title="Nominális értékek megjelenítése"
 							@click="mode = 'regular'"
 						>
-							Nominál
+							Nominális
 						</button>
 						<button
 							v-if="inflationEnabled"
 							class="btn"
 							:class="mode === 'inflation' ? 'btn-primary' : 'btn-outline-secondary'"
 							data-toggle="tooltip"
-							title="Infláció korrigált értékek"
+							title="Inflációval korrigált értékek"
 							@click="mode = 'inflation'"
 						>
-							Infláció korrigált
+							Inflációval korrigált
 						</button>
 						<button
 							v-if="gdpEnabled"
