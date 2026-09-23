@@ -184,13 +184,18 @@ const kgrFilter = computed(() => {
 	return ids.length > 0 ? new Set(ids) : null;
 });
 
-// Skip the balance rows (FH/FT), they are only meant for the Mérleg chart
+// Skip the FH balance rows, they are only meant for the Mérleg chart. The FT
+// rows (e.g. FT1 Költségvetési hiány) are shown as series of their own.
 function isBalanceItem(node: BudgetNode): boolean {
-	return normalizeId(node.id).startsWith('F');
+	return normalizeId(node.id).startsWith('FH');
+}
+
+function isDeficitItem(node: BudgetNode): boolean {
+	return normalizeId(node.id).startsWith('FT');
 }
 
 function passesKgrFilter(node: BudgetNode): boolean {
-	if (view !== 'econ' || !kgrFilter.value) return true;
+	if (view !== 'econ' || !kgrFilter.value || isDeficitItem(node)) return true;
 	return kgrFilter.value.has(normalizeId(node.id));
 }
 
@@ -1186,7 +1191,6 @@ const levelTotalValues = computed(() => {
 	// When the user has isolated/hidden series, the stack no longer represents the
 	// kgr-visible total, so the full-level line would be misleading — drop it entirely.
 	if (hiddenSeries.value.size > 0) return null;
-	const filter = kgrFilter.value;
 	const result: Record<string, number> = {};
 	let any = false;
 	for (const year of years.value) {
@@ -1198,7 +1202,7 @@ const levelTotalValues = computed(() => {
 		for (const child of node.children) {
 			if (isBalanceItem(child)) continue;
 			fullSum += child.value;
-			if (filter.has(normalizeId(child.id))) {
+			if (passesKgrFilter(child)) {
 				visibleCount++;
 			} else {
 				// Removed by the kgr filter — this is what the dotted line surfaces.
