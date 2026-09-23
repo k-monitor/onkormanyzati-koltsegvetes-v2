@@ -1,10 +1,13 @@
 <script setup lang="ts">
-onMounted(() => {
-	window.addEventListener('scroll', function () {
-		const scrollPosition = window.pageYOffset;
-		const bgParallax = document.getElementById('feedback-parallax');
-		if (bgParallax) bgParallax.style.backgroundPositionY = scrollPosition / -12 + '%';
-	});
+const section = ref<HTMLElement | null>(null);
+
+useScrollFrame(() => {
+	const el = section.value;
+	if (!el) return;
+	// The section is near the bottom of the page: only repaint while it is visible.
+	const rect = el.getBoundingClientRect();
+	if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+	el.style.backgroundPositionY = window.scrollY / -12 + '%';
 });
 </script>
 
@@ -12,6 +15,7 @@ onMounted(() => {
 	<section
 		class="page-section bg-primary"
 		id="feedback-parallax"
+		ref="section"
 	>
 		<div class="container">
 			<div class="row">

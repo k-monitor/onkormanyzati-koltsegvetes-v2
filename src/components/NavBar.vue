@@ -11,6 +11,22 @@ const showBanner = computed(() => isBannerVisible.value && CONFIG.navBar.showBan
 
 const { init: initScrollspy, destroy: destroyScrollspy } = useScrollspy();
 
+function updateBannerTop() {
+	const $ = window.$;
+	$('#banner').css('top', $('#mainNav').height() + 30 + 'px');
+}
+
+// Collapse the navbar when page is scrolled (also runs once on mount, in case
+// the page is not at the top).
+let navbarScrolled: boolean | null = null;
+useScrollFrame(() => {
+	const scrolled = window.scrollY > 100;
+	if (scrolled === navbarScrolled) return;
+	navbarScrolled = scrolled;
+	window.$('#mainNav').toggleClass('navbar-scrolled', scrolled);
+	updateBannerTop();
+});
+
 function scrollToTop() {
 	window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -24,26 +40,8 @@ onMounted(() => {
 		initScrollspy();
 	}
 
-	// Collapse Navbar
-	const navbarCollapse = function () {
-		if ($('#mainNav').offset().top > 100) {
-			$('#mainNav').addClass('navbar-scrolled');
-		} else {
-			$('#mainNav').removeClass('navbar-scrolled');
-		}
-		// Set banner position
-		$('#banner').css('top', $('#mainNav').height() + 30 + 'px');
-	};
-	// Collapse now if page is not at top
-	navbarCollapse();
-
 	// Fix banner position after nav bar transition
-	$('#mainNav').on('transitionend', function () {
-		$('#banner').css('top', $('#mainNav').height() + 30 + 'px');
-	});
-
-	// Collapse the navbar when page is scrolled
-	$(window).scroll(navbarCollapse);
+	$('#mainNav').on('transitionend', updateBannerTop);
 });
 
 onUnmounted(() => {

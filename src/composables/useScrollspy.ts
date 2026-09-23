@@ -116,7 +116,16 @@ export default () => {
 		}
 	}
 
+	let frame = 0;
 	function onScroll() {
+		if (frame) return;
+		frame = requestAnimationFrame(() => {
+			frame = 0;
+			updateActiveSection();
+		});
+	}
+
+	function updateActiveSection() {
 		const activeSection = getActiveSection();
 
 		// Update URL if section changed
@@ -127,12 +136,13 @@ export default () => {
 	}
 
 	function init() {
-		window.addEventListener('scroll', onScroll);
-		setTimeout(onScroll, 0);
+		window.addEventListener('scroll', onScroll, { passive: true });
+		setTimeout(updateActiveSection, 0);
 	}
 
 	function destroy() {
 		window.removeEventListener('scroll', onScroll);
+		if (frame) cancelAnimationFrame(frame);
 		if (navigationScrollTimeout) {
 			clearTimeout(navigationScrollTimeout);
 		}
