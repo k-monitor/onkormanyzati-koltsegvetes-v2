@@ -116,13 +116,14 @@ export default () => {
 		}
 	}
 
-	let frame = 0;
+	// The URL is only updated once scrolling settles. Rewriting it mid-scroll made
+	// Firefox stutter on the live site: Google Tag Manager wraps
+	// history.replaceState and does its history-change work on every call.
+	const SCROLL_IDLE_MS = 250;
+	let idleTimeout: ReturnType<typeof setTimeout> | null = null;
 	function onScroll() {
-		if (frame) return;
-		frame = requestAnimationFrame(() => {
-			frame = 0;
-			updateActiveSection();
-		});
+		if (idleTimeout) clearTimeout(idleTimeout);
+		idleTimeout = setTimeout(updateActiveSection, SCROLL_IDLE_MS);
 	}
 
 	function updateActiveSection() {
@@ -142,7 +143,7 @@ export default () => {
 
 	function destroy() {
 		window.removeEventListener('scroll', onScroll);
-		if (frame) cancelAnimationFrame(frame);
+		if (idleTimeout) clearTimeout(idleTimeout);
 		if (navigationScrollTimeout) {
 			clearTimeout(navigationScrollTimeout);
 		}
