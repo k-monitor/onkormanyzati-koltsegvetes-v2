@@ -1446,8 +1446,12 @@ function getDelta(
 	return { value: delta, percent };
 }
 
-// Get the last (most recent) year for inflation label
-const baseYear = computed(() => years.value[years.value.length - 1] || '');
+// Get the last (most recent) year for inflation label. Only the year number is shown,
+// without any suffix of the label ("2026 Tisza" -> "2026").
+const baseYear = computed(() => {
+	const label = years.value[years.value.length - 1] || '';
+	return label.match(/^\d{4}/)?.[0] ?? label;
+});
 
 function formatDelta(delta: { value: number; percent: number | null } | null): string {
 	if (!delta) return '—';
