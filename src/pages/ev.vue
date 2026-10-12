@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { canShowMilestones, year, handleYearSelected, setHashMode, reinitializeFromHash } = useYear();
+const { canShowMilestones, year, handleYearSelected, setHashMode, reinitializeFromHash } =
+	useYear();
 setHashMode('full');
 onMounted(() => {
 	reinitializeFromHash();
@@ -34,6 +35,10 @@ useHead({
 	title: () =>
 		[year.value, CONFIG.seo.pageTitle, CONFIG.seo.siteName].filter(Boolean).join(' | '),
 });
+
+const hasIncomeData = computed(() => !!DATA[year.value]?.income);
+const hasExpenseData = computed(() => !!DATA[year.value]?.expense);
+const hasInexData = computed(() => hasIncomeData.value && hasExpenseData.value);
 </script>
 
 <template>
@@ -45,18 +50,18 @@ useHead({
 		>
 			<PublicationSection v-if="mod === 'pub' && CONFIG.modules.pub" />
 			<Inex
-				v-else-if="mod === 'inex' && CONFIG.modules.inex"
+				v-else-if="mod === 'inex' && CONFIG.modules.inex && hasInexData"
 				class="bg-light"
 			/>
 			<VisualizationSection
-				v-else-if="mod === 'income' && CONFIG.modules.income"
+				v-else-if="mod === 'income' && CONFIG.modules.income && hasIncomeData"
 				id="income"
 				side="income"
 				:text="CONFIG.vis.incomeText"
 				:title="CONFIG.vis.income"
 			/>
 			<VisualizationSection
-				v-else-if="mod === 'expense'"
+				v-else-if="mod === 'expense' && hasExpenseData"
 				id="expense"
 				class="bg-light"
 				side="expense"

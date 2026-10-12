@@ -1,8 +1,8 @@
-import { shallowReactive } from "vue";
-import configJson from "~/data/config.json";
-import dataJson from "~/data/data.json";
-import tagsJson from "../data/tags.json";
-import tooltipsJson from "~/data/tooltips.json";
+import { shallowReactive } from 'vue';
+import configJson from '~/data/config.json';
+import dataJson from '~/data/data.json';
+import tagsJson from '../data/tags.json';
+import tooltipsJson from '~/data/tooltips.json';
 
 export const CONFIG = configJson;
 export const DATA = dataJson as BudgetData;
@@ -14,16 +14,12 @@ export const DATA = dataJson as BudgetData;
 // shallowReactive (not reactive): the entries are read-only, so we only need the
 // top-level key-add to be reactive — deep-proxying lot of objects is pure overhead.
 export const MILESTONES = shallowReactive<Record<string, Milestone>>({});
-export const MILESTONE_RELS = shallowReactive<
-	Record<string, Record<string, string>>
->({});
+export const MILESTONE_RELS = shallowReactive<Record<string, Record<string, string>>>({});
 
 // Milestones grouped by year, with their id baked in. Built once at load so views
 // (MilestoneSection, canShowMilestones) get an O(1) per-year lookup instead of
 // rescanning all milestones through the reactive proxy on every year switch.
-export const MILESTONES_BY_YEAR = shallowReactive<
-	Record<string, MilestoneWithId[]>
->({});
+export const MILESTONES_BY_YEAR = shallowReactive<Record<string, MilestoneWithId[]>>({});
 
 export function setMilestones(data: Milestones) {
 	Object.assign(MILESTONES, data.milestones);
@@ -41,7 +37,6 @@ export const TAGS = tagsJson;
 export const TOOLTIPS = tooltipsJson as Record<string, Record<string, string>>;
 
 // disabling modules if there's no data
-if (Object.values(DATA).some((b) => !b.income)) CONFIG.modules.income = 0;
 if (!CONFIG.modules.income) CONFIG.modules.inex = 0;
 
 // fixing default year on the fly

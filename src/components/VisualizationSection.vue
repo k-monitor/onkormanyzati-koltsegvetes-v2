@@ -10,7 +10,11 @@ const { year } = useYear();
 </script>
 
 <template>
-	<section class="page-section" :class="{ 'embed-mode': height }" :style="height ? { '--embed-height': height + 'px' } : undefined">
+	<section
+		class="page-section"
+		:class="{ 'embed-mode': height }"
+		:style="height ? { '--embed-height': height + 'px' } : undefined"
+	>
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-lg-8 text-center">
@@ -24,8 +28,8 @@ const { year } = useYear();
 			<div class="row justify-content-center vis-row">
 				<div class="col-lg-8 text-center">
 					<Visualization
-						:defaultMode="side == 'expense' ? 1 : 0"
 						:id="side + '-vis'"
+						:default-mode="side == 'expense' ? 1 : 0"
 						:year="year"
 						:side="side"
 						:height="height"
@@ -37,23 +41,27 @@ const { year } = useYear();
 				</p>
 			</div>
 			<div
-				class="row justify-content-center mt-5"
 				v-if="text && !height"
+				class="row justify-content-center mt-5"
 			>
 				<div class="col-lg-8 text-center">
 					<VueMarkdown
 						:source="text"
-						:anchorAttributes="{ target: '_blank' }"
+						:anchor-attributes="{ target: '_blank' }"
 					/>
 				</div>
 			</div>
 			<div
-				class="row justify-content-center mt-3 source-row"
 				v-if="height"
+				class="row justify-content-center mt-3 source-row"
 			>
 				<div class="col-lg-8 text-center">
-					<a :href="CONFIG.url" target="_blank" class="source-link">
-						<i class="fas fa-external-link-alt mr-1"></i>
+					<a
+						:href="CONFIG.url"
+						target="_blank"
+						class="source-link"
+					>
+						<i class="fas fa-external-link-alt mr-1" />
 						{{ CONFIG.seo.siteName }} - {{ CONFIG.seo.pageTitle }}
 					</a>
 				</div>
