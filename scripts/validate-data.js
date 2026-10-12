@@ -5,7 +5,7 @@ export default () => {
 
 	Object.keys(data).forEach((year) => {
 		['expense', 'income'].forEach((side) => {
-			const root = data[year][side].econ;
+			const root = data[year][side]?.econ || {};
 			validateSum(root, year);
 		});
 	});
