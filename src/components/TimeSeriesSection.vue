@@ -1,5 +1,14 @@
 <script setup lang="ts">
-const props = defineProps<{
+// The defaults must be explicit: Vue casts an omitted boolean prop to false,
+// which would disable both views on the embed pages.
+const {
+	side,
+	title,
+	text = '',
+	funcEnabled = true,
+	econEnabled = true,
+	embedded = false,
+} = defineProps<{
 	side: 'expense' | 'income';
 	title: string;
 	text?: string;
@@ -8,9 +17,8 @@ const props = defineProps<{
 	embedded?: boolean;
 }>();
 
-// Default both to true if not provided
-const isFuncEnabled = computed(() => props.funcEnabled !== false);
-const isEconEnabled = computed(() => props.econEnabled !== false);
+const isFuncEnabled = computed(() => funcEnabled);
+const isEconEnabled = computed(() => econEnabled);
 
 const years = computed(() => {
 	const allowedYears = CONFIG.timeseries?.years
@@ -34,8 +42,8 @@ const hasFuncData = computed(() => {
 		isFuncEnabled.value &&
 		years.value.some(
 			(year) =>
-				(DATA[year]?.expense?.func && props.side === 'expense') ||
-				(DATA[year]?.income?.func && props.side === 'income'),
+				(DATA[year]?.expense?.func && side === 'expense') ||
+				(DATA[year]?.income?.func && side === 'income'),
 		)
 	);
 });
@@ -46,8 +54,8 @@ const hasEconData = computed(() => {
 		isEconEnabled.value &&
 		years.value.some(
 			(year) =>
-				(DATA[year]?.expense?.econ && props.side === 'expense') ||
-				(DATA[year]?.income?.econ && props.side === 'income'),
+				(DATA[year]?.expense?.econ && side === 'expense') ||
+				(DATA[year]?.income?.econ && side === 'income'),
 		)
 	);
 });

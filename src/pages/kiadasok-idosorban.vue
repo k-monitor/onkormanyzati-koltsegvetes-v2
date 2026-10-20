@@ -29,7 +29,6 @@ useHead({
 			side="expense"
 			:embedded="true"
 			title="Kiadások idősorban"
-			text="**Segítünk értelmezni!** Ez a vizualizáció megmutatja, hogyan változtak az önkormányzat kiadásai funkcionális bontásban az évek során. Kattintson egy kategóriára a részletesebb bontás megtekintéséhez!"
 		/>
 	</div>
 </template>
