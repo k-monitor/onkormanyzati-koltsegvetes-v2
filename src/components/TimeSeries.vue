@@ -2455,7 +2455,6 @@ $moved-color: #b8860b;
 			position: absolute;
 			top: 0;
 			width: 330px;
-			max-height: 350px;
 			overflow-y: auto;
 			z-index: 10;
 			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
